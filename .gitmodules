@@ -1,0 +1,6 @@
+[submodule "DLMML"]
+	path = DLMML
+	url = https://github.com/Auto-DL/DLMML.git
+[submodule "CModel"]
+	path = CModel
+	url = https://github.com/Auto-DL/CModel.git
