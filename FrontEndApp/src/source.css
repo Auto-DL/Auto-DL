@@ -1,0 +1,20 @@
+.source{
+    width: 35vh;
+    border-right: 3px solid #eee;
+    /* background-color: blue; */
+}
+.source ul{
+    width: 100%;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.source ul li{
+    cursor: pointer;
+    padding: 10px;
+}
+
+.source ul li:hover{
+    background: #eee;
+}

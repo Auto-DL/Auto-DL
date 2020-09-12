@@ -1,0 +1,23 @@
+.App {
+  text-align: center;
+  display: flex;
+  /* width:100%; */
+  /* height:100%; */
+}
+.body3{
+  padding: 3%;
+  /* width:50%; */
+  /* height:100%; */
+  /* float: left; */
+}
+
+.desp{
+  font-size: 12px;
+  padding: 1%;
+}
+.batch{
+  /* padding: 5%; */
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  transition: 0.3s;
+  border-radius: 10px; /* 5px rounded corners */   
+}
