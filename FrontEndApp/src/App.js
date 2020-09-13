@@ -15,7 +15,11 @@ import Select from '@material-ui/core/Select';
 import Button from '@material-ui/core/Button';
 import axios from 'axios';
 import PopUp from './PopUp';
-
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 // import classes from '*.module.css';
 
 class App extends Component {
@@ -564,6 +568,8 @@ class App extends Component {
         this.togglePop = this.togglePop.bind(this);
         this.generate = this.generate.bind(this);
         this.save_value = this.save_value.bind(this);
+        this.api_2 = this.api_2.bind(this);
+
 
     }
 
@@ -689,6 +695,20 @@ class App extends Component {
     generate = () => {
       this.generate_code();
       this.togglePop();
+    }
+
+    api_2 = () => {
+        axios.post(`/v1/train/`).then(response => {
+            console.log(response);
+            alert("training started");
+            // let message = response.data.message;
+            // let _path = response.data.path;
+            // this.setState({
+            //   msg: message,
+            //   path: _path
+            // });
+        // this.togglePop();
+      })
     }
     // 1. File saved susslly
     // 2. Path of the file "file:///<location>"
@@ -879,11 +899,36 @@ class App extends Component {
                     }>
                         Generate Code
                     </Button>
-                    {this.state.seen ? 
+                    {/* {this.state.seen ? 
                       <PopUp toggle={this.togglePop} 
                             path={this.state.path} 
                             message={this.state.msg}
-                      /> : null}
+                      /> : null} */}
+
+
+        <Dialog
+        // className={classes.padd}
+        maxWidth={'lg'}
+        open={this.state.seen}
+        // fullScreen={true}
+        onClose={this.togglePop}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+        >
+        <DialogTitle id="alert-dialog-title">{this.state.msg}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+          {this.state.path}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={this.api_2} color="primary">
+           Train
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+
                 </div>
             </div>
         );
