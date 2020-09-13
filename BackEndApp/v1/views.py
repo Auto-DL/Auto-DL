@@ -31,8 +31,8 @@ def generate(request):
         path = ''
     else:
         print("File generated") 
-        msg = 'file generated successfully'
-        path = 'file://'+os.getcwd()+os.sep+'test.py'
+        msg = 'file generated'
+        path = 'file:///'+os.getcwd()+os.sep+'test.py'
 
     return JsonResponse({
                             'message': msg, 
