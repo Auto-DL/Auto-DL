@@ -19,8 +19,8 @@ def generate(request):
     inputs_json = json.loads(body_unicode)
     inputs = json_to_dict.MakeDict(inputs_json).parse()
 
-    lib = inputs['lib']
-    lang = inputs['lang']
+    lib = inputs.get('lib', 'keras')
+    lang = inputs.get('lang', 'python')
     parser_path = 'DLMML.parser.'+lang+'.'+lib+'.main'
     parser = importlib.import_module(parser_path)
 
@@ -38,3 +38,12 @@ def generate(request):
                             'message': msg, 
                             'path': path
                         })
+
+@api_view(['POST'])
+def train(request):
+    try:
+        os.system("gnome-terminal -e ./train.sh")
+        msg = 'Training started successfully'
+    except Exception as e:
+        msg = e
+    return JsonResponse({'message': msg})
