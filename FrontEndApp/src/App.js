@@ -700,14 +700,8 @@ class App extends Component {
     api_2 = () => {
         axios.post(`/v1/train/`).then(response => {
             console.log(response);
-            alert("training started");
-            // let message = response.data.message;
-            // let _path = response.data.path;
-            // this.setState({
-            //   msg: message,
-            //   path: _path
-            // });
-        // this.togglePop();
+            alert("Model Training Started!");
+
       })
     }
     // 1. File saved susslly
@@ -918,6 +912,7 @@ class App extends Component {
         <DialogTitle id="alert-dialog-title">{this.state.msg}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
+          Generated file's path:  
           {this.state.path}
           </DialogContentText>
         </DialogContent>
