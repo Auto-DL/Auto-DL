@@ -28,9 +28,13 @@ def generate(request):
     if status:
         print("Error", error)
         msg = error
+        path = ''
     else:
         print("File generated") 
         msg = 'file generated'
+        path = 'file:///'+os.getcwd()+os.sep+'test.py'
 
-    return JsonResponse({'message': msg})
-
+    return JsonResponse({
+                            'message': msg, 
+                            'path': path
+                        })
