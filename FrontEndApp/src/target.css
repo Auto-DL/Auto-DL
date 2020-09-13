@@ -1,0 +1,8 @@
+.target{
+    /* display: flex; */
+    /* flex-direction: column; */
+    width: 110vh;
+    height: 100%;
+    /* background-color: purple; */
+    border: 3px solid rgb(148, 144, 144);
+}
