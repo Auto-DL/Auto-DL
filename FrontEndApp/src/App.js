@@ -5,7 +5,6 @@ import Collect_param from './Collect_param';
 import {DragDropContext} from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 import _ from 'lodash';
-// import './App.css';
 import classes from './App.module.css';
 import TextField from '@material-ui/core/TextField';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -597,10 +596,10 @@ class App extends Component {
     }
 
     togglePop = () => {
-      this.setState({
-        seen: !this.state.seen
-      });
-     };
+        this.setState({
+            seen: !this.state.seen
+        });
+    };
 
     generate_code() {
 
@@ -682,19 +681,16 @@ class App extends Component {
             let message = response.data.message;
             let _path = response.data.path;
 
-            this.setState({
-              msg: message,
-              path: _path
-            });
+            this.setState({msg: message, path: _path});
 
             console.log(message, _path);
-            
+
         })
     }
 
     generate = () => {
-      this.generate_code();
-      this.togglePop();
+        this.generate_code();
+        this.togglePop();
     }
 
     api_2 = () => {
@@ -702,10 +698,8 @@ class App extends Component {
             console.log(response);
             alert("Model Training Started!");
 
-      })
+        })
     }
-    // 1. File saved susslly
-    // 2. Path of the file "file:///<location>"
 
     showinfo(component) {
 
@@ -886,7 +880,9 @@ class App extends Component {
                     } </div>
 
                 </div>
-                <div className={classes.but}>
+                <div className={
+                    classes.but
+                }>
                     <Button variant="contained" color="primary"
                         onClick={
                             this.generate
@@ -900,28 +896,36 @@ class App extends Component {
                       /> : null} */}
 
 
-        <Dialog
-        // className={classes.padd}
-        maxWidth={'lg'}
-        open={this.state.seen}
-        // fullScreen={true}
-        onClose={this.togglePop}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-        >
-        <DialogTitle id="alert-dialog-title">{this.state.msg}</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-          Generated file's path:  
-          {this.state.path}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={this.api_2} color="primary">
-           Train
-          </Button>
-        </DialogActions>
-      </Dialog>
+                    <Dialog // className={classes.padd}
+                        maxWidth={'lg'}
+                        open={
+                            this.state.seen
+                        }
+                        // fullScreen={true}
+                        onClose={
+                            this.togglePop
+                        }
+                        aria-labelledby="alert-dialog-title"
+                        aria-describedby="alert-dialog-description">
+                        <DialogTitle id="alert-dialog-title">
+                            {
+                            this.state.msg
+                        }</DialogTitle>
+                        <DialogContent>
+                            <DialogContentText id="alert-dialog-description">
+                                Generated file's path: {
+                                this.state.path
+                            } </DialogContentText>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={
+                                    this.api_2
+                                }
+                                color="primary">
+                                Train
+                            </Button>
+                        </DialogActions>
+                    </Dialog>
 
 
                 </div>
