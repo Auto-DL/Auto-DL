@@ -7,5 +7,4 @@ urlpatterns = [
     path('train/', views.train, name='train'),
     path('compile/', views.compile, name='compile'),
 
-
 ]
