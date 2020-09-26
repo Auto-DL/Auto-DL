@@ -47,3 +47,21 @@ def train(request):
     except Exception as e:
         msg = e
     return JsonResponse({'message': msg})
+
+@api_view(['POST'])
+def compile(request):
+    try:
+        body_unicode = request.body.decode('utf-8')
+        inputs_json = json.loads(body_unicode)
+        inputs = json_to_dict.MakeDict(inputs_json).parse()
+
+        lib = inputs.get('lib', 'keras')
+        lang = inputs.get('lang', 'python')
+        test_path = 'DLMML.parser.'+lang+'.'+lib+'.test_model'
+        test_model = importlib.import_module(test_path)
+
+        status, error = test_model.test_compile_model(inputs)
+        print(status, error)
+    except Exception as e:
+        status, error = 1, e
+    return JsonResponse({'status':status, 'error':error})
