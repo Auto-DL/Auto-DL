@@ -6,6 +6,11 @@ import sys
 import os
 import json
 import importlib
+from django.contrib.auth import login
+
+from rest_framework import permissions
+from rest_framework.authtoken.serializers import AuthTokenSerializer
+from knox.views import LoginView as KnoxLoginView
 
 sys.path.append('..')
 
@@ -65,3 +70,13 @@ def compile(request):
     except Exception as e:
         status, error = 1, e
     return JsonResponse({'status':status, 'error':error})
+
+class LoginAPI(KnoxLoginView):
+    permission_classes = (permissions.AllowAny,)
+
+    def post(self, request, format=None):
+        serializer = AuthTokenSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
+        login(request, user)
+        return super(LoginAPI, self).post(request, format=None)
