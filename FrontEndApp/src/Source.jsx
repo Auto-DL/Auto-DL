@@ -10,7 +10,7 @@ import './source.css';
 // ]
 class Source extends React.Component{
     render(){
-        console.log('this.props ', this.props)
+        // console.log('this.props ', this.props)
         return(
             <div className="source">
             <ul>
