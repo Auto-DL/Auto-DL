@@ -573,24 +573,35 @@ class App extends Component {
     }
 
     save_value = (prop) => (event) => {
-        console.log(prop, event.target.value);
-        // not working index error
-        console.log(this.state.selected_layer_name);
+        const {components} = this.state;
         var param = prop;
-        var name = this.state.selected_layer_name;
-        console.log(this.state.data[name][param]);
+        var layer = this.state.selected_layer_name;
+        var index = this.state.selected_layer;
+        // console.log(this.state.data);
+        // console.log(index,prop, event.target.value);
+        // not working index error
+        // console.log(this.state.selected_layer,this.state.selected_layer_name);
+        // console.log(this.state.selected_layer,layer.name,param);
 
-        var temp = this.state.data[name][param];
-        console.log(name, param, temp);
+        // console.log(this.state.data[name][param]);
+
+        // var temp = this.state.data[name][param];
+        // console.log(name, param, temp);
+
         // if( 'value' in temp)
         // {
         // alert('hi');
         // }
         // else{
-        var pervstate = this.state.data;
-        pervstate[name][param]['value'] = event.target.value;
-        this.setState({data: pervstate});
-        console.log(this.state.data[name][param]);
+        const pervstate=Object.assign([], components);
+        // const pervstate = components;
+        // console.log(pervstate);
+        pervstate[index][param]['value'] = event.target.value;
+        // console.log(pervstate);
+        this.setState({components: pervstate});
+        // console.log(this.state.components)
+        // console.log(this.state.data[name][param]);
+
         // }
 
     }
@@ -602,88 +613,127 @@ class App extends Component {
     };
 
     generate_code() {
-
-        var list_of_components = this.state.components;
         var final_dict = {};
-        var _dict = {
-            "Layer-1-Conv2D-filters": 32,
-            "Layer-1-Conv2D-kernel_size": [
-                3, 3
-            ],
-            "Layer-1-Conv2D-activation": "relu",
-            "Layer-1-Conv2D-padding": "same",
-            "Layer-1-Conv2D-input_shape": [
-                200, 200, 3
-            ],
+        const temp=this.state.components;
+        // const dic={...temp};
+        // var dic=Object.assign({}, temp);
+        var dic=_.cloneDeep(temp);
+        // console.log(dic); 
+        var i=0;
+        for (let [key0, value0] of Object.entries(dic)) {
+            console.log(value0);
+            i=i+1;
+            for (var key1 in value0) {
+                console.log(key1);
+                if (key1 !== 'name'){
 
-            "Layer-2-MaxPooling2D-pool_size": [
-                2, 2
-            ],
+                    for (var key2 in dic[key0][key1]) {
+                        if (key2==='value') {
+                            // console.log(dic[key1][key2]);
+                            // console.log(dic[key1]);
+                            // dic=_.omit(dic[key1],key2);
+                            // delete dic[key1][key2];
+                            // console.log(dic[key1]);
+                            // console.log(dic);
+                            console.log(i);
+                            console.log(dic[key0].name);
+                            console.log(key1);
+                            console.log(dic[key0][key1][key2]);
 
-            "Layer-3-Flatten-": {},
-
-            "Layer-4-Dense-units": 128,
-            "Layer-4-Dense-activation": "relu",
-            "Layer-4-Dense-kernel_initializer": "he_uniform",
-
-            "Layer-5-Dense-units": 1,
-            "Layer-5-Dense-activation": "sigmoid",
-
-            "dataset-type": "image",
-            "dataset-path": "../data/dogs_and_cats",
-
-            "image-augment-rotation_range": 40,
-            "image-augment-width_shift_range": 0.2,
-            "image-augment-height_shift_range": 0.2,
-            "image-augment-horizontal_flip": "True",
-            "image-augment-rescale": 0.0039215,
-
-            "image-params-target_size": [
-                200, 200
-            ],
-            "image-params-batch_size": 64,
-            "image-params-class_mode": "binary",
-
-            "optimizer": "sgd",
-            "loss": "binary_crossentropy",
-            "metrics": ["accuracy"],
-            "epochs": 5,
-
-            "verbose": 1,
-            "plot": "True",
-            "save_plots": "True"
-        };
-
-        for (var i = 0; i < list_of_components.length; i++) {
-            console.log(list_of_components[i]['component']);
-            var name = list_of_components[i]['component'];
-            console.log(this.state.data[name]);
-
-            var temp_dict = this.state.data[name];
-            var list_of_param = Object.keys(temp_dict);
-
-            for (var j = 0; j < list_of_param.length; j++) {
-                if (this.state.data[name][list_of_param[j]]['value']) {
-                    console.log(name, list_of_param[j], this.state.data[name][list_of_param[j]]['value']);
-                    final_dict[`Layer-${
-                            i + 1
-                        }-${name}-${
-                            list_of_param[j]
-                        }`] = this.state.data[name][list_of_param[j]]['value'];
+                            final_dict[`Layer-${
+                                i
+                            }-${dic[key0].name}-${
+                                key1
+                            }`] = dic[key0][key1][key2]; 
+                        }
+                    }
                 }
+                
             }
         }
-
         console.log(final_dict);
 
-        axios.post(`/v1/generate/`, _dict).then(response => {
-            console.log(response);
+        // var list_of_components = this.state.components;
+        // var final_dict = {};
+        // var _dict = {
+        //     "Layer-1-Conv2D-filters": 32,
+        //     "Layer-1-Conv2D-kernel_size": [
+        //         3, 3
+        //     ],
+        //     "Layer-1-Conv2D-activation": "relu",
+        //     "Layer-1-Conv2D-padding": "same",
+        //     "Layer-1-Conv2D-input_shape": [
+        //         200, 200, 3
+        //     ],
+
+        //     "Layer-2-MaxPooling2D-pool_size": [
+        //         2, 2
+        //     ],
+
+        //     "Layer-3-Flatten-": {},
+
+        //     "Layer-4-Dense-units": 128,
+        //     "Layer-4-Dense-activation": "relu",
+        //     "Layer-4-Dense-kernel_initializer": "he_uniform",
+
+        //     "Layer-5-Dense-units": 1,
+        //     "Layer-5-Dense-activation": "sigmoid",
+
+        //     "dataset-type": "image",
+        //     "dataset-path": "../data/dogs_and_cats",
+
+        //     "image-augment-rotation_range": 40,
+        //     "image-augment-width_shift_range": 0.2,
+        //     "image-augment-height_shift_range": 0.2,
+        //     "image-augment-horizontal_flip": "True",
+        //     "image-augment-rescale": 0.0039215,
+
+        //     "image-params-target_size": [
+        //         200, 200
+        //     ],
+        //     "image-params-batch_size": 64,
+        //     "image-params-class_mode": "binary",
+
+        //     "optimizer": "sgd",
+        //     "loss": "binary_crossentropy",
+        //     "metrics": ["accuracy"],
+        //     "epochs": 5,
+
+        //     "verbose": 1,
+        //     "plot": "True",
+        //     "save_plots": "True"
+        // };
+
+        // for (var i = 0; i < list_of_components.length; i++) {
+        //     // console.log(list_of_components[i]['component']);
+        //     var name = list_of_components[i]['name'];
+        //     // console.log(this.state.data[name]);
+
+        //     var temp_dict = list_of_components[i];
+        //     var list_of_param = Object.keys(temp_dict);
+
+        //     for (var j = 0; j < list_of_param.length; j++) {
+        //         if (this.state.data[name][list_of_param[j]]['value']) {
+        //             // console.log(name, list_of_param[j], this.state.data[name][list_of_param[j]]['value']);
+        //             final_dict[`Layer-${
+        //                     i + 1
+        //                 }-${name}-${
+        //                     list_of_param[j]
+        //                 }`] = this.state.data[name][list_of_param[j]]['value'];
+        //         }
+        //     }
+        // }
+
+        // console.log(final_dict);
+
+        axios.post(`/v1/generate/`, final_dict).then(response => {
+            // console.log(response);
             let message = response.data.message;
             let _path = response.data.path;
 
             this.setState({msg: message, path: _path});
 
-            console.log(message, _path);
+            // console.log(message, _path);
 
         })
     }
@@ -695,7 +745,7 @@ class App extends Component {
 
     api_2 = () => {
         axios.post(`/v1/train/`).then(response => {
-            console.log(response);
+            // console.log(response);
             alert("Model Training Started!");
 
         })
@@ -704,21 +754,21 @@ class App extends Component {
     showinfo(component) {
 
         console.log(component);
-        console.log(this.state.data[component]);
-        var temp = this.state.data[component];
-        this.setState({selected_layer_type: temp});
+        // var temp = this.state.data[component];
+        this.setState({selected_layer_type: component});
 
         var ele = this.state.components;
-        console.log(ele.lastIndexOf(component));
+        // console.log(ele.lastIndexOf(component));
         var index = ele.lastIndexOf(component);
-        this.setState({selected_layer: index, selected_layer_name: component});
+        console.log(index,component.name)
+        this.setState({selected_layer: index, selected_layer_name: component.name});
 
     }
 
 
     delete(component) {
-        console.log(component);
-        console.log(component['component']);
+        // console.log(component);
+        // console.log(component['component']);
 
         // console.log(this.state.components);
         var ele = this.state.components;
@@ -737,7 +787,7 @@ class App extends Component {
 
         var temp1 = this.state.data[component['component']];
         var temp2 = this.state.selected_layer_type;
-        console.log(temp1, temp2)
+        // console.log(temp1, temp2)
         if (_.isEqual(temp1, temp2)) {
             this.setState({selected_layer_type: {}});
         }
@@ -747,142 +797,183 @@ class App extends Component {
 
     onDrop(component) {
         const {components} = this.state;
-        console.log(component)
-        const newComponentsList = _.concat([], components, component)
+        // console.log(component)
+        // console.log(this.state.data[component.component])
+        const temp=this.state.data[component.component];
+        // const dic={...temp};
+        // var dic=Object.assign({}, temp);
+        var dic=_.cloneDeep(temp);
+        // console.log(dic); 
+        for (var key1 in dic) {
+            for (var key2 in dic[key1]) {
+                if (key2==='value') {
+                    console.log(dic[key1][key2]);
+                    // console.log(dic[key1]);
+                    // dic=_.omit(dic[key1],key2);
+                    delete dic[key1][key2];
+                    // console.log(dic[key1]);
+                    // console.log(dic); 
+                }
+            }
+        }
+
+        dic['name']=component.component;
+        const newComponentsList = _.concat([], components,dic)
+        // console.log(newComponentsList);
         this.setState({components: newComponentsList})
+        // console.log(this.state.components);
+        // console.log(this.state.data);
     }
 
 
     render() {
         const {components, data, selected_layer_type} = this.state;
         var data_list = Object.keys(data);
-        console.log('state components ', components)
+        // console.log('state components ', components)
+        // console.log(this.state.data);
+        // console.log(this.state.components);
+        // console.log(this.state.selected_layer_type);
         return (
 
             <div>
 
-                <div className={
-                    classes.App
-                }>
+                        <div className={classes.App}>
 
-
-                    <div className={
-                        classes.body1
-                    }>
-                        <Source list={data_list}/>
-                    </div>
-                    <div className={
-                        classes.body2
-                    }>
-                        <Target onDrop={
-                                this.onDrop
-                            }
-                            ondelete={
-                                this.delete
-                            }
-                            oninfo={
-                                this.showinfo
-                            }
-                            components={components}/>
-                    </div>
-
-                    <div className={
-                        classes.body3
-                    }>
-                        {
-                        Object.keys(this.state.selected_layer_type).length === 0 ? (
-                            <h3>please select some layer first</h3>
-                        ) : (
                             <div className={
-                                classes.innerpad
+                                classes.body1
+                            }>
+                                <Source list={data_list}/>
+                            </div>
+                         
+                            <div className={
+                                classes.body2
+                            }>
+                                <Target onDrop={
+                                        this.onDrop
+                                    }
+                                    ondelete={
+                                        this.delete
+                                    }
+                                    oninfo={
+                                        this.showinfo
+                                    }
+                                    components={components}/>
+                            </div>
+
+                            <div className={
+                                classes.body3
                             }>
                                 {
-
-                                Object.keys(this.state.selected_layer_type).map(key => (
+                                Object.keys(this.state.selected_layer_type).length === 0 ? (
+                                    <h3>please select some layer first</h3>
+                                ) : (
                                     <div className={
-                                        classes.batch
+                                        classes.innerpad
                                     }>
-                                        <div> {key}
-                                            - {/* The Parameter name is <b>{key}</b> and this is a  */}
-                                            {
-                                            this.state.selected_layer_type[key]["Required"] == 1 ? (
-                                                <span>
-                                                    Required
-                                                </span>
-                                            ) : (
-                                                <span>
-                                                    Optional
-                                                </span>
-                                            )
-                                        }
-                                            {/* Parameter */} </div>
-                                        <br></br>
                                         {
-                                        this.state.selected_layer_type[key]["Datatype"] == 'select' ? (
-                                            <div>
 
-                                                <FormControl variant="outlined" size="small">
-                                                    <InputLabel htmlFor="outlined-age-native-simple">
-                                                        {key}</InputLabel>
-                                                    <Select native
-                                                        value={
-                                                            this.state.selected_layer_type[key]["value"] ? this.state.selected_layer_type[key]["value"] : this.state.selected_layer_type[key]["Default"]
-                                                        }
-                                                        // onChange={handleChange}
-                                                        onChange={
-                                                            this.save_value(key)
-                                                        }
-                                                        label={key}
-                                                        // inputthis.state={{
-                                                        // name: 'age',
-                                                        // id: 'outlined-age-native-simple',
-                                                        // }}
-                                                    >
-                                                        {
-                                                        this.state.selected_layer_type[key]["Options"].map(arr => (
-                                                            <option value={arr}>
-                                                                {arr}</option>
-                                                        ))
-                                                    } </Select>
-                                                </FormControl>
-
-                                            </div>
-                                        ) : (
-                                            <div>
-                                                <TextField required size="small" id="outlined-required" label="Required"
-                                                    defaultValue={
-                                                        this.state.selected_layer_type[key]["Default"]
-                                                    }
-                                                    variant="outlined"
-                                                    onChange={
-                                                        this.save_value(key)
-                                                    }
-                                                    helperText={
-                                                        `Example - ${
-                                                            this.state.selected_layer_type[key]["Example"]
-                                                        }`
-                                                    }/>
-                                            </div>
-                                        )
-                                    }
-
-                                        <div className={
-                                            classes.desp
-                                        }>
+                                        Object.keys(this.state.components[this.state.selected_layer]).map((key,index) => (
+                                            <>
                                             {
-                                            this.state.selected_layer_type[key]["Description"]
-                                        } </div>
-                                        <br/>
-                                    </div>
-                                ))
-                            } </div>
-                        )
-                    } </div>
+                                            key==='name' ?
+                                            null
+                                            :
+                                                    <div className={
+                                                classes.batch
+                                            }>
 
-                </div>
-                <div className={
-                    classes.but
-                }>
+                                                <div> {key}
+                                                    - {/* The Parameter name is <b>{key}</b> and this is a  */}
+                                                    {
+                                                    this.state.selected_layer_type[key]["Required"] == 1 ? (
+                                                        <span>
+                                                            Required
+                                                        </span>
+                                                    ) : (
+                                                        <span>
+                                                            Optional
+                                                        </span>
+                                                    )
+                                                }
+                                                    {/* Parameter */} </div>
+                                                <br></br>
+                                                {
+                                                this.state.components[this.state.selected_layer][key]["Datatype"] == 'select' ? (
+                                                    <div>
+                                                        {/* {this.state.components[this.state.selected_layer][key]["value"] ? this.state.components[this.state.selected_layer][key]["value"] : this.state.components[this.state.selected_layer][key]["Default"]} */}
+                                                                {/* {this.state.components[this.state.selected_layer][key]["Default"]} */}
+                                                        <FormControl variant="outlined" size="small">
+                                                            <InputLabel htmlFor="outlined-age-native-simple">
+                                                                {key }</InputLabel>
+                                                            <Select native
+                                                                value={
+                                                                    this.state.components[this.state.selected_layer][key]["value"] ? this.state.components[this.state.selected_layer][key]["value"] : this.state.components[this.state.selected_layer][key]["Default"]
+                                                                    // this.state.selected_layer_type[key].hasOwnProperty(key) ? this.state.selected_layer_type[key]["value"] : this.state.selected_layer_type[key]["Default"]
+                                                                }
+                                                                // onChange={handleChange}
+                                                                onChange={
+                                                                    this.save_value(key)
+                                                                }
+                                                                label={key}
+                                                                // inputthis.state={{
+                                                                // name: 'age',
+                                                                // id: 'outlined-age-native-simple',
+                                                                // }}
+                                                            >
+                                                                {
+                                                                this.state.components[this.state.selected_layer][key]["Options"].map(arr => (
+                                                                    <option value={arr}>
+                                                                        {arr}</option>
+                                                                ))
+                                                            } </Select>
+                                                        </FormControl>
+
+                                                    </div>
+                                                ) : (
+                                                    <div>
+                                                        {/* {this.state.components[this.state.selected_layer][key]["value"] ? this.state.components[this.state.selected_layer][key]["value"] : this.state.components[this.state.selected_layer][key]["Default"]} */}
+                                                                {/* {this.state.components[this.state.selected_layer][key]["Default"]} */}
+                                                        <TextField required size="small" id="outlined-required" label="Required"
+                                                            value={
+                                                                // this.state.selected_layer_type[key]["Default"]
+                                                                
+                                                                this.state.components[this.state.selected_layer][key]["value"] ? this.state.components[this.state.selected_layer][key]["value"] : this.state.components[this.state.selected_layer][key]["Default"]
+                                                                // this.state.selected_layer_type[key].hasOwnProperty(key) ? this.state.selected_layer_type[key]["value"] : this.state.selected_layer_type[key]["Default"]
+
+                                                            }
+                                                            variant="outlined"
+                                                            onChange={
+                                                                this.save_value(key)
+                                                            }
+                                                            helperText={
+                                                                `Example - ${
+                                                                    this.state.components[this.state.selected_layer][key]["Example"]
+                                                                }`
+                                                            }/>
+                                                    </div>
+                                                )
+                                                }
+
+                                                <div className={
+                                                    classes.desp
+                                                }>
+                                                    {
+                                                    this.state.components[this.state.selected_layer][key]["Description"]
+                                                } </div>
+                                                <br/>
+                                            </div>
+                                            
+                                            }
+                                            </>
+                                        ))
+                                    } </div>
+                                )
+                            } </div>
+
+                        </div>
+
+                <div className={classes.but}>
+
                     <Button variant="contained" color="primary"
                         onClick={
                             this.generate
@@ -894,7 +985,6 @@ class App extends Component {
                             path={this.state.path} 
                             message={this.state.msg}
                       /> : null} */}
-
 
                     <Dialog // className={classes.padd}
                         maxWidth={'lg'}
@@ -927,8 +1017,8 @@ class App extends Component {
                         </DialogActions>
                     </Dialog>
 
-
                 </div>
+            
             </div>
         );
     }
