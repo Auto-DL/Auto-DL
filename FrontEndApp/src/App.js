@@ -36,7 +36,7 @@ class App extends Component {
                         "Example": 32,
                         "Default": "NA",
                         "Required": 1,
-                        "DataType": "number",
+                        "Datatype": "number",
                         "Options": [],
                         "Description": "the dimensionality of the output space [i.e.the number of output filters in the convolution]"
                     },
@@ -45,7 +45,7 @@ class App extends Component {
                         "Example": "channels_last",
                         "Default": "channels_last",
                         "Required": 0,
-                        "DataType": "select",
+                        "Datatype": "select",
                         "Options": [
                             "channels_last", "channels_first"
                         ],
@@ -58,7 +58,7 @@ class App extends Component {
                         ],
                         "Default": "NA",
                         "Required": 1,
-                        "DataType": "Tuple",
+                        "Datatype": "Tuple",
                         "Options": [],
                         "Description": "Specifies the height and width of the 2D convolution window"
 
@@ -69,7 +69,7 @@ class App extends Component {
                         ],
                         "Default": "[1, 1]",
                         "Required": 0,
-                        "DataType": "Tuple",
+                        "Datatype": "Tuple",
                         "Options": [],
                         "Description": "Specifies the strides of the convolution along the height and width."
                     },
@@ -78,7 +78,7 @@ class App extends Component {
                         "Example": "valid",
                         "Default": "valid",
                         "Required": 0,
-                        "DataType": "select",
+                        "Datatype": "select",
                         "Options": [
                             "valid", "same"
                         ],
@@ -89,7 +89,7 @@ class App extends Component {
                         "Example": "glorot_uniform",
                         "Default": "glorot_uniform",
                         "Required": 0,
-                        "DataType": "select",
+                        "Datatype": "select",
                         "Options": [
                             "random_normal",
                             "random_uniform",
@@ -107,7 +107,7 @@ class App extends Component {
                         "Example ": "zeros",
                         "Default": "zeros",
                         "Required": 0,
-                        "DataType": "select",
+                        "Datatype": "select",
                         "Options": [
                             "random_normal",
                             "random_uniform",
@@ -129,7 +129,7 @@ class App extends Component {
                         "Example": 32,
                         "Default": "NA",
                         "Required": 1,
-                        "DataType": "number",
+                        "Datatype": "number",
                         "Options": [],
                         "Description": "Positive integer, dimensionality of the output space."
                     },
@@ -138,7 +138,7 @@ class App extends Component {
                         "Example": "True",
                         "Default": "True",
                         "Required": 0,
-                        "DataType": "select",
+                        "Datatype": "select",
                         "Options": [
                             "True", "False"
                         ],
@@ -148,7 +148,7 @@ class App extends Component {
                         "Example": "relu",
                         "Default": "NA",
                         "Required": 1,
-                        "DataType": "select",
+                        "Datatype": "select",
                         "Options": [
                             "relu",
                             "sigmoid",
@@ -166,7 +166,7 @@ class App extends Component {
                         "Example": "glorot_uniform",
                         "Default": "glorot_uniform",
                         "Required": 0,
-                        "DataType": "select",
+                        "Datatype": "select",
                         "Options": [
                             "random_normal",
                             "random_uniform",
@@ -185,7 +185,7 @@ class App extends Component {
                         "Example": "zeros",
                         "Default": "zeros",
                         "Required": 0,
-                        "DataType": "select",
+                        "Datatype": "select",
                         "Options": [
                             "random_normal",
                             "random_uniform",
@@ -207,7 +207,7 @@ class App extends Component {
                         "Example": 32,
                         "Default": "NA",
                         "Required": 1,
-                        "DataType": "number",
+                        "Datatype": "number",
                         "Options": [],
                         "Description": "Positive integer, dimensionality of the output space."
                     },
@@ -254,7 +254,7 @@ class App extends Component {
                         "Example": "glorot_uniform",
                         "Default": "glorot_uniform",
                         "Required": 0,
-                        "DataType": "select",
+                        "Datatype": "select",
                         "Options": [
                             "random_normal",
                             "random_uniform",
@@ -273,7 +273,7 @@ class App extends Component {
                         "Example ": "zeros ",
                         "Default": "zeros",
                         "Required": 0,
-                        "DataType": "select",
+                        "Datatype": "select",
                         "Options": [
                             "random_normal",
                             "random_uniform",
@@ -293,7 +293,7 @@ class App extends Component {
                         "Default": 0,
                         "Example": 0.4,
                         "Required": 0,
-                        "DataType": "number",
+                        "Datatype": "number",
                         "Options": [],
                         "Description": "Float between 0 and 1. Fraction of the units to drop for the linear transformation of the inputs. Default: 0."
                     },
@@ -302,7 +302,7 @@ class App extends Component {
                         "Default": "False",
                         "Example": "True",
                         "Required": 0,
-                        "DataType": "select",
+                        "Datatype": "select",
                         "Options": [
                             "True", "False"
                         ],
@@ -313,7 +313,7 @@ class App extends Component {
                         "Default": "False",
                         "Example": "True",
                         "Required": 0,
-                        "DataType": "select",
+                        "Datatype": "select",
                         "Options": [
                             "True", "False"
                         ],
@@ -327,7 +327,7 @@ class App extends Component {
                         "Default": "NA",
                         "Example": "cell",
                         "Required": 1,
-                        "DataType": "text",
+                        "Datatype": "text",
                         "Options": [],
                         "Description": "An RNN cell instance"
                     }
@@ -339,7 +339,7 @@ class App extends Component {
                         "Example": 32,
                         "Default": "NA",
                         "Required": 1,
-                        "DataType": "number",
+                        "Datatype": "number",
                         "Options": [],
                         "Description": "Positive integer, dimensionality of the output space."
                     },
@@ -367,7 +367,7 @@ class App extends Component {
                         "Example": "True",
                         "Default": "True",
                         "Required": 0,
-                        "DataType": "select",
+                        "Datatype": "select",
                         "Options": [
                             "True", "False"
                         ],
@@ -377,7 +377,7 @@ class App extends Component {
                         "Default": 0,
                         "Example": 0.4,
                         "Required": 0,
-                        "DataType": "number",
+                        "Datatype": "number",
                         "Options": [],
                         "Description": "Float between 0 and 1. Fraction of the units to drop for the linear transformation of the inputs. Default: 0."
                     }
@@ -389,7 +389,7 @@ class App extends Component {
                         "Default": "NA",
                         "Example": 0.4,
                         "Required": 1,
-                        "DataType": "number",
+                        "Datatype": "number",
                         "Options": [],
                         "Description": "Float between 0 and 1. Fraction of the input units to drop."
                     },
@@ -398,7 +398,7 @@ class App extends Component {
                         "Default": "None",
                         "Example": "[batch_size, 1, features]",
                         "Required": 0,
-                        "DataType": "tuple",
+                        "Datatype": "tuple",
                         "Options": [],
                         "Description": "1D integer tensor representing the shape of the binary dropout mask that will be multiplied with the input. For instance, if your inputs have shape [batch_size, timesteps, features] and you want the dropout mask to be the same for all timesteps, you can use noise_shape=[batch_size, 1, features]"
                     },
@@ -407,7 +407,7 @@ class App extends Component {
                         "Default": "NA",
                         "Example": 42,
                         "Required": 0,
-                        "DataType": "number",
+                        "Datatype": "number",
                         "Options": [],
                         "Description": "A Python integer to use as random seed"
                     }
@@ -419,7 +419,7 @@ class App extends Component {
                         "Example": "channels_last",
                         "Default": "channels_last",
                         "Required": 0,
-                        "DataType": "select",
+                        "Datatype": "select",
                         "Options": [
                             "channels_last", "channels_first"
                         ],
@@ -440,7 +440,7 @@ class App extends Component {
                         ],
                         "Default": "NA",
                         "Required": 1,
-                        "DataType": "tuple",
+                        "Datatype": "tuple",
                         "Options": [],
                         "Description": "The tuple interpreted as [[top_pad, bottom_pad], [left_pad, right_pad]]"
                     },
@@ -449,7 +449,7 @@ class App extends Component {
                         "Example": "channels_last",
                         "Default": "channels_last",
                         "Required": 0,
-                        "DataType": "select",
+                        "Datatype": "select",
                         "Options": [
                             "channels_last", "channels_first"
                         ],
@@ -466,7 +466,7 @@ class App extends Component {
                         ],
                         "Default": "NA",
                         "Required": 1,
-                        "DataType": "tuple",
+                        "Datatype": "tuple",
                         "Options": [],
                         "Description": "integer or tuple of 2 integers, factors by which to downscale [vertical, horizontal]. [2, 2] will halve the input in both spatial dimension. If only one integer is specified, the same window length will be used for both dimensions"
 
@@ -478,7 +478,7 @@ class App extends Component {
                         ],
                         "Default": "NA",
                         "Required": 0,
-                        "DataType": "tuple",
+                        "Datatype": "tuple",
                         "Options": [],
                         "Description": "Tuple of 2 integers, or None. Strides values. If None, it will default to pool_size."
                     },
@@ -487,7 +487,7 @@ class App extends Component {
                         "Example": "channels_last",
                         "Default": "channels_last",
                         "Required": 0,
-                        "DataType": "select",
+                        "Datatype": "select",
                         "Options": [
                             "channels_last", "channels_first"
                         ],
@@ -498,7 +498,7 @@ class App extends Component {
                         "Example": "valid",
                         "Default": "valid",
                         "Required": 0,
-                        "DataType": "select",
+                        "Datatype": "select",
                         "Options": [
                             "valid", "same"
                         ],
@@ -514,7 +514,7 @@ class App extends Component {
                         ],
                         "Default": "NA",
                         "Required": 1,
-                        "DataType": "tuple",
+                        "Datatype": "tuple",
                         "Options": [],
                         "Description": "integer or tuple of 2 integers, factors by which to downscale [vertical, horizontal]. [2, 2] will halve the input in both spatial dimensions. If only one integer is specified, the same window length will be used for both dimensions"
                     },
@@ -526,7 +526,7 @@ class App extends Component {
                         ],
                         "Default": "NA",
                         "Required": 0,
-                        "DataType": "tuple",
+                        "Datatype": "tuple",
                         "Options": [],
                         "Description": "Tuple of 2 integers, or None. Strides values. If None, it will default to pool_size."
                     },
@@ -535,7 +535,7 @@ class App extends Component {
                         "Example": "channels_last",
                         "Default": "channels_last",
                         "Required": 0,
-                        "DataType": "select",
+                        "Datatype": "select",
                         "Options": [
                             "channels_last", "channels_first"
                         ],
@@ -546,7 +546,7 @@ class App extends Component {
                         "Example": "valid",
                         "Default": "valid",
                         "Required": 0,
-                        "DataType": "select",
+                        "Datatype": "select",
                         "Options": [
                             "valid", "same"
                         ],
@@ -621,8 +621,9 @@ class App extends Component {
         // console.log(dic); 
         var i=0;
         for (let [key0, value0] of Object.entries(dic)) {
-            console.log(value0);
+            console.log(key0,value0);
             i=i+1;
+            // if()
             for (var key1 in value0) {
                 console.log(key1);
                 if (key1 !== 'name'){
@@ -646,8 +647,15 @@ class App extends Component {
                                 key1
                             }`] = dic[key0][key1][key2]; 
                         }
+                        else if (dic[key0].name === "Flatten")
+                        {
+                            final_dict[`Layer-${
+                                i
+                            }-${dic[key0].name}`] = ''; 
+                        }
                     }
                 }
+                // else if(dic[key0][key1] === "Flatten")
                 
             }
         }
@@ -655,55 +663,56 @@ class App extends Component {
 
         // var list_of_components = this.state.components;
         // var final_dict = {};
-        // var _dict = {
-        //     "Layer-1-Conv2D-filters": 32,
-        //     "Layer-1-Conv2D-kernel_size": [
-        //         3, 3
-        //     ],
-        //     "Layer-1-Conv2D-activation": "relu",
-        //     "Layer-1-Conv2D-padding": "same",
-        //     "Layer-1-Conv2D-input_shape": [
-        //         200, 200, 3
-        //     ],
+        var _dict = {
+            // "Layer-1-Conv2D-filters": 32,
+            // "Layer-1-Conv2D-kernel_size": [
+            //     3, 3
+            // ],
+            // "Layer-1-Conv2D-activation": "relu",
+            // "Layer-1-Conv2D-padding": "same",
+            // "Layer-1-Conv2D-input_shape": [
+            //     200, 200, 3
+            // ],
 
-        //     "Layer-2-MaxPooling2D-pool_size": [
-        //         2, 2
-        //     ],
+            // "Layer-2-MaxPooling2D-pool_size": [
+            //     2, 2
+            // ],
 
-        //     "Layer-3-Flatten-": {},
+            // "Layer-3-Flatten-": {},
 
-        //     "Layer-4-Dense-units": 128,
-        //     "Layer-4-Dense-activation": "relu",
-        //     "Layer-4-Dense-kernel_initializer": "he_uniform",
+            // "Layer-4-Dense-units": 128,
+            // "Layer-4-Dense-activation": "relu",
+            // "Layer-4-Dense-kernel_initializer": "he_uniform",
 
-        //     "Layer-5-Dense-units": 1,
-        //     "Layer-5-Dense-activation": "sigmoid",
+            // "Layer-5-Dense-units": 1,
+            // "Layer-5-Dense-activation": "sigmoid",
 
-        //     "dataset-type": "image",
-        //     "dataset-path": "../data/dogs_and_cats",
+            "dataset-type": "image",
+            "dataset-path": "../data/dogs_and_cats",
 
-        //     "image-augment-rotation_range": 40,
-        //     "image-augment-width_shift_range": 0.2,
-        //     "image-augment-height_shift_range": 0.2,
-        //     "image-augment-horizontal_flip": "True",
-        //     "image-augment-rescale": 0.0039215,
+            "image-augment-rotation_range": 40,
+            "image-augment-width_shift_range": 0.2,
+            "image-augment-height_shift_range": 0.2,
+            "image-augment-horizontal_flip": "True",
+            "image-augment-rescale": 0.0039215,
 
-        //     "image-params-target_size": [
-        //         200, 200
-        //     ],
-        //     "image-params-batch_size": 64,
-        //     "image-params-class_mode": "binary",
+            "image-params-target_size": [
+                200, 200
+            ],
+            "image-params-batch_size": 64,
+            "image-params-class_mode": "binary",
 
-        //     "optimizer": "sgd",
-        //     "loss": "binary_crossentropy",
-        //     "metrics": ["accuracy"],
-        //     "epochs": 5,
+            "optimizer": "sgd",
+            "loss": "binary_crossentropy",
+            "metrics": ["accuracy"],
+            "epochs": 5,
 
-        //     "verbose": 1,
-        //     "plot": "True",
-        //     "save_plots": "True"
-        // };
-
+            "verbose": 1,
+            "plot": "True",
+            "save_plots": "True"
+        };
+        var dict_call = Object.assign({}, final_dict, _dict);
+        console.log(dict_call);
         // for (var i = 0; i < list_of_components.length; i++) {
         //     // console.log(list_of_components[i]['component']);
         //     var name = list_of_components[i]['name'];
@@ -726,7 +735,7 @@ class App extends Component {
 
         // console.log(final_dict);
 
-        axios.post(`/v1/generate/`, final_dict).then(response => {
+        axios.post(`/v1/generate/`, dict_call).then(response => {
             // console.log(response);
             let message = response.data.message;
             let _path = response.data.path;
