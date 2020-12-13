@@ -398,7 +398,7 @@ class App extends Component {
                         "Default": "None",
                         "Example": "[batch_size, 1, features]",
                         "Required": 0,
-                        "Datatype": "tuple",
+                        "Datatype": "Tuple",
                         "Options": [],
                         "Description": "1D integer tensor representing the shape of the binary dropout mask that will be multiplied with the input. For instance, if your inputs have shape [batch_size, timesteps, features] and you want the dropout mask to be the same for all timesteps, you can use noise_shape=[batch_size, 1, features]"
                     },
@@ -440,9 +440,9 @@ class App extends Component {
                         ],
                         "Default": "NA",
                         "Required": 1,
-                        "Datatype": "tuple",
+                        "Datatype": "Tuple",
                         "Options": [],
-                        "Description": "The tuple interpreted as [[top_pad, bottom_pad], [left_pad, right_pad]]"
+                        "Description": "The Tuple interpreted as [[top_pad, bottom_pad], [left_pad, right_pad]]"
                     },
 
                     "data_format": {
@@ -466,9 +466,9 @@ class App extends Component {
                         ],
                         "Default": "NA",
                         "Required": 1,
-                        "Datatype": "tuple",
+                        "Datatype": "Tuple",
                         "Options": [],
-                        "Description": "integer or tuple of 2 integers, factors by which to downscale [vertical, horizontal]. [2, 2] will halve the input in both spatial dimension. If only one integer is specified, the same window length will be used for both dimensions"
+                        "Description": "integer or Tuple of 2 integers, factors by which to downscale [vertical, horizontal]. [2, 2] will halve the input in both spatial dimension. If only one integer is specified, the same window length will be used for both dimensions"
 
                     },
 
@@ -478,7 +478,7 @@ class App extends Component {
                         ],
                         "Default": "NA",
                         "Required": 0,
-                        "Datatype": "tuple",
+                        "Datatype": "Tuple",
                         "Options": [],
                         "Description": "Tuple of 2 integers, or None. Strides values. If None, it will default to pool_size."
                     },
@@ -514,9 +514,9 @@ class App extends Component {
                         ],
                         "Default": "NA",
                         "Required": 1,
-                        "Datatype": "tuple",
+                        "Datatype": "Tuple",
                         "Options": [],
-                        "Description": "integer or tuple of 2 integers, factors by which to downscale [vertical, horizontal]. [2, 2] will halve the input in both spatial dimensions. If only one integer is specified, the same window length will be used for both dimensions"
+                        "Description": "integer or Tuple of 2 integers, factors by which to downscale [vertical, horizontal]. [2, 2] will halve the input in both spatial dimensions. If only one integer is specified, the same window length will be used for both dimensions"
                     },
 
 
@@ -526,7 +526,7 @@ class App extends Component {
                         ],
                         "Default": "NA",
                         "Required": 0,
-                        "Datatype": "tuple",
+                        "Datatype": "Tuple",
                         "Options": [],
                         "Description": "Tuple of 2 integers, or None. Strides values. If None, it will default to pool_size."
                     },
