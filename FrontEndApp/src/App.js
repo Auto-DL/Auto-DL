@@ -641,17 +641,44 @@ class App extends Component {
                             console.log(key1);
                             console.log(dic[key0][key1][key2]);
 
+                        if (dic[key0][key1].Datatype === "number")
+                        {
                             final_dict[`Layer-${
                                 i
                             }-${dic[key0].name}-${
                                 key1
-                            }`] = dic[key0][key1][key2]; 
+                            }`] = parseInt(dic[key0][key1][key2]); 
+
+                        }
+                        else if (dic[key0][key1].Datatype === "Tuple")
+                        {
+                            const temp = dic[key0][key1][key2].split(",");
+                            console.log(temp);
+                            console.log(temp[0]);
+                            console.log(temp[1]);
+
+                            final_dict[`Layer-${
+                                i
+                            }-${dic[key0].name}-${
+                                key1
+                            }`] = [parseInt(temp[0]),parseInt(temp[1])]; 
+
+                        }
+                                else{
+                                    final_dict[`Layer-${
+                                        i
+                                    }-${dic[key0].name}-${
+                                        key1
+                                    }`] = dic[key0][key1][key2]; 
+
+                                }
                         }
                         else if (dic[key0].name === "Flatten")
                         {
                             final_dict[`Layer-${
                                 i
-                            }-${dic[key0].name}`] = ''; 
+                            }-${dic[key0].name}`+'-data_format'
+                            ] =  dic[key0][key1]['Default']; 
                         }
                     }
                 }
