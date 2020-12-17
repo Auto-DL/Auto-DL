@@ -14,7 +14,7 @@
 
 # Generator
 
-The interface section of Auto-DL. Contains front-end and back-end servers based on React and Django Rest Framework respectively.
+The interface section of Auto-DL contains front-end and back-end servers based on React and Django Rest Framework respectively.
 The backend calls the [DLMML API](https://www.github.com/Auto-DL/DLMML) according to the requests it recieves.
 
 Generator has DLMML as a submodule.
