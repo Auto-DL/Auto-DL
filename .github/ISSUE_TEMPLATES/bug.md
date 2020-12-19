@@ -3,7 +3,7 @@ name: Bug
 about: To report a bug found in the application.
 title: ''
 labels: bug
-assignees: ADI10HERO
+assignees: 
 
 ---
 
