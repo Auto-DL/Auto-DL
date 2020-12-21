@@ -82,6 +82,8 @@ WSGI_APPLICATION = 'BackEndApp.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'djongo',
+        'NAME': os.getenv("AUTH_DB"),
+        'ENFORCE_SCHEMA': False,
         'CLIENT': {
             'host': os.getenv("HOST"),
             'username': os.getenv("USER"),
@@ -90,7 +92,6 @@ DATABASES = {
         }
     }
 }
-print(DATABASES)
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
