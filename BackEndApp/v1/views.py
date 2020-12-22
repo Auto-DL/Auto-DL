@@ -19,8 +19,8 @@ def generate(request):
     inputs_json = json.loads(body_unicode)
     inputs = json_to_dict.MakeDict(inputs_json).parse()
 
-    lib = inputs['lib']
-    lang = inputs['lang']
+    lib = inputs.get('lib', 'keras')
+    lang = inputs.get('lang', 'python')
     parser_path = 'DLMML.parser.'+lang+'.'+lib+'.main'
     parser = importlib.import_module(parser_path)
 
@@ -28,9 +28,40 @@ def generate(request):
     if status:
         print("Error", error)
         msg = error
+        path = ''
     else:
         print("File generated") 
-        msg = 'file generated'
+        msg = 'File Generated Successfully'
+        path = 'file:///'+os.getcwd()+os.sep+'test.py'
 
+    return JsonResponse({
+                            'message': msg, 
+                            'path': path
+                        })
+
+@api_view(['POST'])
+def train(request):
+    try:
+        os.system("gnome-terminal -e ./train.sh")
+        msg = 'Training started successfully'
+    except Exception as e:
+        msg = e
     return JsonResponse({'message': msg})
 
+@api_view(['POST'])
+def compile(request):
+    try:
+        body_unicode = request.body.decode('utf-8')
+        inputs_json = json.loads(body_unicode)
+        inputs = json_to_dict.MakeDict(inputs_json).parse()
+
+        lib = inputs.get('lib', 'keras')
+        lang = inputs.get('lang', 'python')
+        test_path = 'DLMML.parser.'+lang+'.'+lib+'.test_model'
+        test_model = importlib.import_module(test_path)
+
+        status, error = test_model.test_compile_model(inputs)
+        print(status, error)
+    except Exception as e:
+        status, error = 1, e
+    return JsonResponse({'status':status, 'error':error})
