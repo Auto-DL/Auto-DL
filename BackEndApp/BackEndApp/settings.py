@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'authv1',
     'v1'
 ]
 
@@ -81,15 +82,7 @@ WSGI_APPLICATION = 'BackEndApp.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'djongo',
-        'NAME': os.getenv("AUTH_DB"),
-        'ENFORCE_SCHEMA': False,
-        'CLIENT': {
-            'host': os.getenv("HOST"),
-            'username': os.getenv("USER"),
-            'password': os.getenv("PASSWORD"),
-            'authMechanism': 'SCRAM-SHA-1'
-        }
+        'ENGINE': 'django.db.backends.dummy'
     }
 }
 
