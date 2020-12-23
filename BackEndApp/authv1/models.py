@@ -37,7 +37,7 @@ class User():
 
         user_document = {
             'username': self.username, 
-            'password': hashedpw,
+            'password': hashed_password,
             'first_name': self.attributes.get('first_name',''),
             'last_name': self.attributes.get('last_name',''),
             'email': self.attributes.get('email')
