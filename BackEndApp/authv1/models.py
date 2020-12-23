@@ -1,4 +1,6 @@
 import os
+import re
+import bcrypt
 from authv1 import connector
 
 
@@ -21,13 +23,21 @@ class User():
         if 'email' not in self.attributes:
             raise KeyError("Email is required")
 
-        #TODO: check email is valid
-        #TODO: check email and username are unique
-        #TODO: hash password
+        if self.find(by_email=True):
+            raise ValueError("Email invalid")
+
+        regex = '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$'
+        if (not re.search(regex, self.attributes.get('email'))):
+            raise ValueError("Email ivalid")
+
+        if self.find():
+            raise ValueError("Username invalid")
+
+        hashedpw = bcrypt.hashpw(self.password.encode('utf-8'), bcrypt.gensalt())
 
         user_document = {
             'username': self.username, 
-            'password': self.password,
+            'password': hashedpw,
             'first_name': self.attributes.get('first_name',''),
             'last_name': self.attributes.get('last_name',''),
             'email': self.attributes.get('email')
@@ -35,8 +45,14 @@ class User():
         return self.collection.insert_one(user_document)
 
 
-    def find(self):
+    def find(self, by_email=False):
         """ Returns user object is exists else returns None."""
+
+        if by_email:
+            return self.collection.find_one({
+            'email': self.attributes.get('email')
+        })
+
         return self.collection.find_one({
             'username': self.username
         })
