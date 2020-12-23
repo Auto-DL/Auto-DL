@@ -33,7 +33,7 @@ class User():
         if self.find():
             raise ValueError("Invalid username or username already exists")
 
-        hashedpw = bcrypt.hashpw(self.password.encode('utf-8'), bcrypt.gensalt())
+        hashed_password = bcrypt.hashpw(self.password.encode('utf-8'), bcrypt.gensalt())
 
         user_document = {
             'username': self.username, 
