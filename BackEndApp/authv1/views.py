@@ -54,7 +54,7 @@ def register(request):
     except Exception as e:
         message = str(e)
         status = 401
-
+        token = None
     return JsonResponse({
                             'message': message, 
                             'status': status,
