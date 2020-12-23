@@ -58,5 +58,6 @@ def register(request):
     return JsonResponse({
                             'message': message, 
                             'status': status,
-                            'username': username
+                            'username': username,
+                            'token': token
                         })
