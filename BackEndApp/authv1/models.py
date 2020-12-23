@@ -28,7 +28,7 @@ class User():
 
         regex = '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$'
         if (not re.search(regex, self.attributes.get('email'))):
-            raise ValueError("Email ivalid")
+            raise ValueError("Invalid email or email already exists")
 
         if self.find():
             raise ValueError("Username invalid")
