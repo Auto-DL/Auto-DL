@@ -2,8 +2,8 @@
 
 ### All Submissions:
 
-- [ ] Have you followed the guidelines in our Contributing document?
-- [ ] Have you checked to ensure there aren't other open [Pull Requests](../../../pulls) for the same update/change?
+- [ ] Have you followed the guidelines mentioned in our [Contributing document](/CONTRIBUTING.md)?
+- [ ] Have you ensured that there aren't other open [Pull Requests](../../../pulls) for the same update/change?
 - [ ] Is your [Pull Request](../../../pulls) linked to an [Issue](../../../issues)? If yes, please mention the Issue Number.
 
 ### New Feature Submissions:
