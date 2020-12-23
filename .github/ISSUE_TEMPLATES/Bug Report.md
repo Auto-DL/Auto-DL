@@ -7,11 +7,11 @@ assignees: ''
 
 ---
 
-## :bug::bug: Bug Report :bug::bug: 
+## Bug Report
 
 
 
-### ⚗️ Current Behavior
+### Current Behavior
 A clear and concise description of the behavior.
 
 **Input Code**
@@ -42,8 +42,8 @@ def function_right():
 - `Packages`: [ `Tensorflow==2.1.2 - latest`]
 
 
-### :bug::bug: Possible Solution  (optional)
+### Possible Solution  (optional)
 <!--- In case you have any suggestions on a fix for the bug -->
 
-### :bug::bug: Additional context/Screenshots (optional)
+### Additional context/Screenshots (optional)
 <!-- Add any other context about the problem here. If applicable, add screenshots to help explain. -->
