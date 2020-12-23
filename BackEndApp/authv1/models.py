@@ -31,7 +31,7 @@ class User():
             raise ValueError("Invalid email or email already exists")
 
         if self.find():
-            raise ValueError("Username invalid")
+            raise ValueError("Invalid username or username already exists")
 
         hashedpw = bcrypt.hashpw(self.password.encode('utf-8'), bcrypt.gensalt())
 
