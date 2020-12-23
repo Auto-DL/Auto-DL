@@ -7,7 +7,8 @@ assignees: ''
 
 ---
 
-## �� Bug Report ��
+## :bug::bug: Bug Report :bug::bug: 
+
 
 
 ### ⚗️ Current Behavior
@@ -41,8 +42,8 @@ def function_right():
 - `Packages`: [ `Tensorflow==2.1.2 - latest`]
 
 
-### �� Possible Solution  (optional)
+### :bug::bug: Possible Solution  (optional)
 <!--- In case you have any suggestions on a fix for the bug -->
 
-### �� Additional context/Screenshots (optional)
+### :bug::bug: Additional context/Screenshots (optional)
 <!-- Add any other context about the problem here. If applicable, add screenshots to help explain. -->
