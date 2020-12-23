@@ -7,7 +7,7 @@ assignees: ''
 
 ---
 
-## �� Feature Request �� 
+## Feature Request
 
 - [ ] Related to an existing [Issue](../../../issues) 
 - [ ] A new implementation (Improvement, Extension) 
