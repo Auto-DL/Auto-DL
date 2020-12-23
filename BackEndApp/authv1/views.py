@@ -50,7 +50,7 @@ def register(request):
 
         message = "Registered Successfully"
         status = 200
-
+        token = user.get('token', 'asdfghjklkjhgfdsa')
     except Exception as e:
         message = str(e)
         status = 401
