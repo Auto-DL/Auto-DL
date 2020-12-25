@@ -5,10 +5,24 @@ class LoginService {
 	
 	login(data) {
 		return axios.post(`auth/login/`,data)
+		.then(response => response)
+		// .catch(error => {
+		//   if (error.response) {
+		// 	console.log(error.response);
+		//   }
+		// });
+		.catch(error => error.response)
     }
     
     register(data) {
 		return axios.post(`auth/register/`,data)
+		.then(response => response)
+    //   	.catch(error => {
+    //     if (error.response) {
+    //       console.log(error.response);
+    //     }
+	//   });
+	.catch(error => error.response)
 	}
 
 }

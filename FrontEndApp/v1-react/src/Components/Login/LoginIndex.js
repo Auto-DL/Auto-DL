@@ -2,18 +2,13 @@ import { BrowserRouter,Link,Route, Switch, withRouter,Redirect  } from 'react-ro
 import React, { useEffect, useState } from "react";
 import LoginForm from './LoginForm';
 import Home from '../MainApp/Homeindex';
-
+import step1 from '../MainApp/Step1';
+import step2 from '../MainApp/Step2';
+import step3 from '../MainApp/Step3';
 
 function LoginIndex() {
 
-   
-  const [isLoggedin, setisLoggedin] = useState(false);
-  const loggedin = localStorage.getItem('isLoggedin');
-  console.log(loggedin);
-//   if (loggedin === '1'){
-//     setisLoggedin(true);
-//   };
-  
+  // const loggedin = JSON.parse(localStorage.getItem('isLoggedin'));
 
   return (
     <>
@@ -25,14 +20,13 @@ function LoginIndex() {
           {/* <Route path='/' exact component={LoginIndex} /> */}
           <Route path='/login' exact component={LoginForm} />
           <Route path='/home' exact component={Home} />
+          <Route path='/step-1'  component={step1} />
+          <Route path='/step-2'  component={step2} />
+          <Route path='/step-3'  component={step3} />
         
         </Switch>
-    {
-        loggedin === 'true' ?
-        <Redirect to="/home"/>
-        :
+
         <Redirect to="/login"/>
-    }
 
     </BrowserRouter>
     </>

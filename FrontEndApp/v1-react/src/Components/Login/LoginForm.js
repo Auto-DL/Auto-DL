@@ -46,7 +46,8 @@ import {
   Route,
   Link,
   Redirect,
-  useParams
+  useParams,
+  useHistory 
 } from "react-router-dom";
 
 function TabPanel(props) {
@@ -95,6 +96,7 @@ function Alert(props) {
 
 
 function LoginForm() {
+  const history = useHistory();
   const classes = useStyles();
   const theme = useTheme();
   const [values, setValues] = React.useState({
@@ -153,11 +155,24 @@ function LoginForm() {
         if (res.status === 200) {
           // const data = res.data.data.data
           console.log(res);
-          setalert({ ...values, 'msg':"Login succesfull",'severity':"success" });
+          setalert({ ...values, 'msg':res.data.message,'severity':"success" });
+          console.log(res.data.user);
+          console.log(res.data.token);
+          console.log(res.data.message);
+
+          localStorage.setItem(
+            'username',
+            JSON.stringify(res.data.user)
+          );
+          localStorage.setItem(
+            'token',
+            JSON.stringify(res.data.token)
+          );
+          history.push("/home");
 
         }
         else{
-          setalert({ ...values, 'msg':"Login failed",'severity':"error" });
+          setalert({ ...values, 'msg':res.data.message,'severity':"error" });
         }
     }
     else{
@@ -181,11 +196,25 @@ function LoginForm() {
       const res = await LoginService.register(data)
         if (res.status === 200) {
           // const data = res.data.data.data
-          console.log(res);
-              setalert({ ...values, 'msg':"Login succesfull",'severity':"success" });
+              console.log(res);
+              setalert({ ...values, 'msg':res.data.message,'severity':"success" });
+              console.log(res.data.username);
+              console.log(res.data.token);
+              console.log(res.data.message);
+    
+              
+              localStorage.setItem(
+                'username',
+                JSON.stringify(res.data.username)
+              );
+              localStorage.setItem(
+                'token',
+                JSON.stringify(res.data.token)
+              );
+              history.push("/home");
         }     
       else{
-        setalert({ ...values, 'msg':"Login failed",'severity':"error" });
+        setalert({ ...values, 'msg':res.data.message,'severity':"error" });
       }
   }
   else{

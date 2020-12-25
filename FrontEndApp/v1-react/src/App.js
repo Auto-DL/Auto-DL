@@ -13,7 +13,7 @@ function App() {
       <BrowserRouter>
         <Switch>
 
-          <Route path='/' exact component={LoginIndex} />
+          <Route path='/'  component={LoginIndex} />
           {/* <Route path='/login' exact component={LoginForm} /> */}
           {/* <Route path='/home' exact component={Home} /> */}
         
