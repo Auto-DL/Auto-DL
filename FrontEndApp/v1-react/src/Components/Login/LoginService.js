@@ -4,11 +4,11 @@ import axios from 'axios'
 class LoginService {
 	
 	login(data) {
-		return axios.get(`http://127.0.0.1:8000/auth/login/`,data)
+		return axios.post(`auth/login/`,data)
     }
     
     register(data) {
-		return axios.get(`http://127.0.0.1:8000/auth/register/`,data)
+		return axios.post(`auth/register/`,data)
 	}
 
 }

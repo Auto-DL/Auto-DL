@@ -148,7 +148,8 @@ function LoginForm() {
     console.log(data);
     // vallidation
     if(values.username !=='' && values.password !== ''){
-        const res = await LoginService.login(data)
+        const res = await LoginService.login(data);
+        console.log(res);
         if (res.status === 200) {
           // const data = res.data.data.data
           console.log(res);
