@@ -17,6 +17,7 @@ def login(request):
 
     session = Session(user)
     token = session.create()
+    token = str(token, "utf-8")
 
     if user is None or not bcrypt.checkpw(
         password.encode("utf-8"), user.get("password")
@@ -52,10 +53,15 @@ def register(request):
         )
         user_id = user.create()
 
-        json_response = login(request)
+        user = user.find()
+
+        session = Session(user)
+        token = session.create()
+        token = str(token, "utf-8")
+
         message = "Registered Successfully"
         status = 200
-        token = json_response.get('token')
+
     except Exception as e:
         message = str(e)
         status = 401
