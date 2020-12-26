@@ -8,16 +8,13 @@ import step3 from '../MainApp/Step3';
 
 function LoginIndex() {
 
-  // const loggedin = JSON.parse(localStorage.getItem('isLoggedin'));
-
   return (
     <>
-    {/* <h1>index</h1> */}
+  
 
     <BrowserRouter>
         <Switch>
 
-          {/* <Route path='/' exact component={LoginIndex} /> */}
           <Route path='/login' exact component={LoginForm} />
           <Route path='/home' exact component={Home} />
           <Route path='/step-1'  component={step1} />

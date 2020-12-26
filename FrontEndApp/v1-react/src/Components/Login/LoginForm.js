@@ -1,39 +1,22 @@
 import React from 'react';
-import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
-import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
-// import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
-// import { makeStyles } from '@material-ui/core/styles';
-import Container from '@material-ui/core/Container';
 import IconButton from '@material-ui/core/IconButton';
-import Input from '@material-ui/core/Input';
-import FilledInput from '@material-ui/core/FilledInput';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 import InputLabel from '@material-ui/core/InputLabel';
 import InputAdornment from '@material-ui/core/InputAdornment';
-import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
-// import TextField from '@material-ui/core/TextField';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
-import clsx from 'clsx';
-// import Register from './Register' ;
 import LoginService from './LoginService'
 import PropTypes from 'prop-types';
-// import SwipeableViews from 'react-swipeable-views';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-// import Typography from '@material-ui/core/Typography';
-// import Box from '@material-ui/core/Box';
 
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
@@ -86,7 +69,6 @@ function a11yProps(index) {
 const useStyles = makeStyles((theme) => ({
   root: {
     backgroundColor: theme.palette.background.paper,
-    // width: 500,
   },
 }));
 
@@ -147,18 +129,11 @@ function LoginForm() {
       'username':values.username,
       'password':values.password
     }
-    console.log(data);
     // vallidation
     if(values.username !=='' && values.password !== ''){
         const res = await LoginService.login(data);
-        console.log(res);
         if (res.status === 200) {
-          // const data = res.data.data.data
-          console.log(res);
           setalert({ ...values, 'msg':res.data.message,'severity':"success" });
-          console.log(res.data.user);
-          console.log(res.data.token);
-          console.log(res.data.message);
 
           localStorage.setItem(
             'username',
@@ -190,18 +165,11 @@ function LoginForm() {
       'email':values.email,
       'password':values.password
     }
-    console.log(data);
     // vallidation
     if(values.username !=='' && values.password !== '' && values.first_name !=='' && values.last_name !== ''&& values.email !== ''){
       const res = await LoginService.register(data)
         if (res.status === 200) {
-          // const data = res.data.data.data
-              console.log(res);
               setalert({ ...values, 'msg':res.data.message,'severity':"success" });
-              console.log(res.data.username);
-              console.log(res.data.token);
-              console.log(res.data.message);
-    
               
               localStorage.setItem(
                 'username',
@@ -228,7 +196,6 @@ function LoginForm() {
   return (
     <>
 
-    {/* <h1>LoginForm</h1> */}
     <br/>
     <br/>
 
@@ -250,7 +217,6 @@ function LoginForm() {
                         >
                           <Tab label="Login" {...a11yProps(0)} />
                           <Tab label="Register" {...a11yProps(1)} />
-                          {/* <Tab label="Item Three" {...a11yProps(2)} /> */}
                         </Tabs>
                   </AppBar>
                  
@@ -269,19 +235,11 @@ function LoginForm() {
                             name="Username"
                             autoComplete="Username"
                             autoFocus
-                            // helperText={`${this.state.password_limit}/10`}
-                            // FormHelperTextProps={{
-                            //   classes:{
-                            //     root: classe.lef,
-                            //     // error: classes.yourErrorCSS
-                            //   }
-                            // }}
                             onChange={handleChange('username')}  
                           />
                   
 
                         <FormControl fullWidth 
-                        // className={clsx(classe.margin, classe.textField)} 
                         margin="normal" variant="filled">
                             <InputLabel  htmlFor="outlined-adornment-password">Password *</InputLabel>
                             <OutlinedInput
@@ -300,7 +258,6 @@ function LoginForm() {
                                     {values.showPassword ? <Visibility /> : <VisibilityOff />}
                                   </IconButton>
                                 </InputAdornment>}
-                              // labelWidth={70}
                               
                             />
                           </FormControl>
@@ -317,7 +274,6 @@ function LoginForm() {
                           fullWidth
                           variant="contained"
                           color="primary"
-                          // className={classe.submit}
                           onClick={login}
                         >
                         LOGIN
@@ -350,7 +306,6 @@ function LoginForm() {
                               fullWidth
                               label="First name"
                               autoComplete="First name"
-                              // autoFocus
                               onChange={handleChange('first_name')}  
                             />
                             
@@ -361,7 +316,6 @@ function LoginForm() {
                             fullWidth
                             label="Last name"
                             autoComplete="Last name"
-                            // autoFocus
                             onChange={handleChange('last_name')}  
                           />
 
@@ -372,13 +326,11 @@ function LoginForm() {
                               fullWidth
                               label="email"
                               autoComplete="email"
-                              // autoFocus
                               onChange={handleChange('email')}  
                             />
                     
 
                           <FormControl fullWidth 
-                          // className={clsx(classe.margin, classe.textField)} 
                           margin="normal" variant="filled">
                               <InputLabel  htmlFor="outlined-adornment-password">Password *</InputLabel>
                               <OutlinedInput
@@ -397,7 +349,6 @@ function LoginForm() {
                                       {values.showPassword ? <Visibility /> : <VisibilityOff />}
                                     </IconButton>
                                   </InputAdornment>}
-                                // labelWidth={70}
                                 
                               />
                             </FormControl>
@@ -414,7 +365,6 @@ function LoginForm() {
                               fullWidth
                               variant="contained"
                               color="primary"
-                              // className={classe.submit}
                               onClick={register}
                             >
                             Register

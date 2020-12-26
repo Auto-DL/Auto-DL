@@ -3,26 +3,22 @@ import axios from 'axios'
 
 class LoginService {
 	
-	login(data) {
-		return axios.post(`auth/login/`,data)
-		.then(response => response)
-		// .catch(error => {
-		//   if (error.response) {
-		// 	console.log(error.response);
-		//   }
-		// });
-		.catch(error => error.response)
+	async login(data) {
+		try {
+			const response = await axios.post(`auth/login/`, data)
+			return response
+		} catch (error) {
+			return error.response
+		}
     }
     
-    register(data) {
-		return axios.post(`auth/register/`,data)
-		.then(response => response)
-    //   	.catch(error => {
-    //     if (error.response) {
-    //       console.log(error.response);
-    //     }
-	//   });
-	.catch(error => error.response)
+    async register(data) {
+		try {
+			const response = await axios.post(`auth/register/`, data)
+			return response
+		} catch (error) {
+			return error.response
+		}
 	}
 
 }
