@@ -5,6 +5,7 @@ import json
 import bcrypt
 
 from .models import User, Session
+from .store import Store
 
 
 @api_view(["POST"])
@@ -52,8 +53,10 @@ def register(request):
             **{"email": email, "first_name": first_name, "last_name": last_name}
         )
         user_id = user.create()
-
         user = user.find()
+
+        store_obj = Store(user)
+        cache_path = store_obj.create()
 
         session = Session(user)
         token = session.create()
