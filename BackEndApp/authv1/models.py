@@ -2,6 +2,7 @@ import os
 import re
 import bcrypt
 from authv1 import connector
+from authv1.auth import Token
 
 
 class User():
@@ -19,7 +20,6 @@ class User():
 
 
     def create(self):
-        print(self.attributes)
         if 'email' not in self.attributes:
             raise KeyError("Email is required")
 
@@ -85,3 +85,57 @@ class User():
         # create a new table for token storing
         # check if token for this guy exits
         # do stuff
+
+
+class Session():
+    def __init__(self, user, **kwargs):
+        self.user = user
+        self.db = connector.connect()
+        self.collection_name = kwargs.get('collection', 'session')
+        self.collection = self.db[self.collection_name]
+        self.attributes = kwargs
+
+
+    def create(self):
+        token_obj = Token(self.user)
+        token = token_obj.create()
+        expire = token_obj.expire
+
+        session_document = {
+            "token": token,
+            "expire": expire,
+            "user": self.user
+        }
+        try:
+            self.collection.insert_one(session_document)
+            return token
+        except:
+            return None
+
+
+    def delete(self, token):
+
+        delete_result = self.collection.delete_one({
+            'token': token
+        })
+        return delete_result.acknowledged
+
+
+    def find(self, token):
+        return self.collection.find_one({
+            'token': token
+        })
+
+
+    def verify(self, token):
+        session_obj = self.find(token)
+
+        if session_obj is None:
+            return False
+        
+        user = self.user
+        expire = session_obj.expire
+
+        token = session_obj.token
+        token_obj = Token(user, token, expire)
+        return token_obj.verify()

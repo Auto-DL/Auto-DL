@@ -4,7 +4,7 @@ from rest_framework.response import Response
 import json
 import bcrypt
 
-from .models import User
+from .models import User, Session
 
 
 @api_view(["POST"])
@@ -15,6 +15,10 @@ def login(request):
     user = User(username, password)
     user = user.find()
 
+    session = Session(user)
+    token = session.create()
+    token = str(token, "utf-8")
+
     if user is None or not bcrypt.checkpw(
         password.encode("utf-8"), user.get("password")
     ):
@@ -24,9 +28,10 @@ def login(request):
     else:
         status = 200
         message = "Login Successful"
-        token = user.get("token", "asdfghjklkjhgfdsa")
-    # TODO: Implement token based authentication
 
+        if token is None:
+            status = 500
+            message = "Some error occured"
     return JsonResponse(
         {"message": message, "user": username, "token": token}, status=status
     )
@@ -48,9 +53,15 @@ def register(request):
         )
         user_id = user.create()
 
+        user = user.find()
+
+        session = Session(user)
+        token = session.create()
+        token = str(token, "utf-8")
+
         message = "Registered Successfully"
         status = 200
-        token = "asdfghjklkjhgfdsa"
+
     except Exception as e:
         message = str(e)
         status = 401
