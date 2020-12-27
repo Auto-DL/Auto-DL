@@ -18,7 +18,6 @@ def login(request):
 
     session = Session(user)
     token = session.create()
-    token = str(token, "utf-8")
 
     if user is None or not bcrypt.checkpw(
         password.encode("utf-8"), user.get("password")
@@ -71,4 +70,26 @@ def register(request):
         token = None
     return JsonResponse(
         {"message": message, "username": username, "token": token}, status=status
+    )
+
+
+@api_view(["POST"])
+def logout(request):
+    try:
+        session_obj = Session({})
+        token = request.META.get('HTTP_TOKEN')
+        flag = session_obj.delete(token)
+
+        if not flag:
+            raise Exception("Some error occured while logging out")
+
+        message = "Logged out successfully"
+        status = 200
+
+    except Exception as e:
+        message = str(e)
+        status = 500
+
+    return JsonResponse(
+        {"message": message}, status=status
     )
