@@ -99,6 +99,7 @@ class Session():
     def create(self):
         token_obj = Token(self.user)
         token = token_obj.create()
+        token = str(token, 'utf-8')
         expire = token_obj.expire
 
         session_document = {
@@ -114,6 +115,9 @@ class Session():
 
 
     def delete(self, token):
+
+        if not self.find(token):
+            return False
 
         delete_result = self.collection.delete_one({
             'token': token
