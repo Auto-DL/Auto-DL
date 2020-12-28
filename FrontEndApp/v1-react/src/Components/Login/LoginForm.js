@@ -79,6 +79,11 @@ function Alert(props) {
 
 function LoginForm() {
   const history = useHistory();
+  var username = String(JSON.parse(localStorage.getItem('username')));
+  if (username !== null ){
+    history.push("/home");
+  }
+
   const classes = useStyles();
   const theme = useTheme();
   const [values, setValues] = React.useState({
