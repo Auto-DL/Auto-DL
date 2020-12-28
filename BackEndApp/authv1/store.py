@@ -39,5 +39,5 @@ class Store:
 
     def enlist(self):
         if not self.find():
-            return 1, "No such file or directory, call create() first"
+            raise Exception("No such file or directory, call create() first")
         return [f.name for f in os.scandir(self.path) if f.is_dir()]
