@@ -4,6 +4,7 @@ import bcrypt
 from authv1 import connector
 from authv1.auth import Token
 
+DATE_FORMAT = "%Y/%m/%d %H/%M/%S"
 
 class User():
     def __init__(self, username, password, **kwargs):
@@ -100,7 +101,7 @@ class Session():
         token_obj = Token(self.user)
         token = token_obj.create()
         token = str(token, 'utf-8')
-        expire = token_obj.expire
+        expire = token_obj.expire.strftime(DATE_FORMAT)
 
         session_document = {
             "token": token,
@@ -116,7 +117,10 @@ class Session():
 
     def delete(self, token):
 
-        if not self.find(token):
+        if not self.verify(token):
+            return False
+
+        if self.user is None:
             return False
 
         delete_result = self.collection.delete_one({
@@ -136,10 +140,10 @@ class Session():
 
         if session_obj is None:
             return False
-        
-        user = self.user
-        expire = session_obj.expire
 
-        token = session_obj.token
+        user = session_obj.get('user')
+        expire = session_obj.get('expire')
+        token = session_obj.get('token')
+
         token_obj = Token(user, token, expire)
         return token_obj.verify()

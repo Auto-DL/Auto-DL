@@ -11,11 +11,13 @@ sys.path.append("..")
 
 from authv1.store import Store
 from authv1.models import User
+from authv1.decorators import is_authenticated
 from DLMML.utils import json_to_dict
 from DLMML.parser import *
 
 
 @api_view(["POST"])
+@is_authenticated
 def generate(request):
     body_unicode = request.body.decode("utf-8")
     inputs_json = json.loads(body_unicode)
@@ -40,6 +42,7 @@ def generate(request):
 
 
 @api_view(["POST"])
+@is_authenticated
 def train(request):
     try:
         os.system("gnome-terminal -e ./train.sh")
@@ -50,6 +53,7 @@ def train(request):
 
 
 @api_view(["POST"])
+@is_authenticated
 def compile(request):
     try:
         body_unicode = request.body.decode("utf-8")
@@ -69,6 +73,7 @@ def compile(request):
 
 
 @api_view(["POST"])
+@is_authenticated
 def get_all_projects(request):
     try:
         username = request.data.get("username")
@@ -95,6 +100,7 @@ def get_all_projects(request):
 
 
 @api_view(["POST"])
+@is_authenticated
 def get_project(request):
     try:
         username = request.data.get("username")
@@ -122,6 +128,7 @@ def get_project(request):
 
 
 @api_view(["POST"])
+@is_authenticated
 def edit_project(request):
     try:
         username = request.data.get("username")
@@ -162,6 +169,7 @@ def edit_project(request):
 
 
 @api_view(["POST"])
+@is_authenticated
 def delete_project(request):
     try:
         username = request.data.get("username")

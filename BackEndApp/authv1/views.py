@@ -76,7 +76,11 @@ def register(request):
 @api_view(["POST"])
 def logout(request):
     try:
-        session_obj = Session({})
+
+        username = request.data.get("username")
+        user = User(username=username, password=None)
+        user = user.find()
+        session_obj = Session(user)
         token = request.META.get('HTTP_TOKEN')
         flag = session_obj.delete(token)
 
