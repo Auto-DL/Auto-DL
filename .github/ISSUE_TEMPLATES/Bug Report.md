@@ -32,4 +32,4 @@ A clear and concise description of what you expected to happen (or code).
 <!-- In case you have any suggestions/fixes -->
 
 ### Additional context/Screenshots
-<!-- Add any other context about the problem here. If applicable, add screenshots to help explain. -->
+<!-- Add any other context about the problem here. If applicable, add screenshots. (Highly recommended if its a front end bug) -->
