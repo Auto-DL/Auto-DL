@@ -31,5 +31,5 @@ A clear and concise description of what you expected to happen (or code).
 ### Possible Solution  (optional)
 <!-- In case you have any suggestions/fixes -->
 
-### Additional context/Screenshots (optional)
+### Additional context/Screenshots
 <!-- Add any other context about the problem here. If applicable, add screenshots to help explain. -->
