@@ -15,8 +15,8 @@ function LoginIndex() {
     <BrowserRouter>
         <Switch>
 
-          <Route path='/login' exact component={LoginForm} />
-          <Route path='/home' exact component={Home} />
+          <Route path='/login' exact  component={LoginForm} />
+          <Route path='/home'    component={Home} />
           <Route path='/step-1'  component={step1} />
           <Route path='/step-2'  component={step2} />
           <Route path='/step-3'  component={step3} />
