@@ -21,7 +21,7 @@ class Store:
         os.makedirs(_path, exist_ok=True)
         return _path
 
-    def find(self, project=None):
+    def exist(self, project=None):
         _path = self.path
         if project is not None:
             _path = posixpath.join(_path, project)
@@ -38,6 +38,6 @@ class Store:
             return 1, str(e)
 
     def enlist(self):
-        if not self.find():
+        if not self.exist():
             raise Exception("No such file or directory, call create() first")
         return [f.name for f in os.scandir(self.path) if f.is_dir()]

@@ -88,9 +88,9 @@ def get_all_projects(request):
 
         status, success, message = 200, True, "Projects Fetched"
     except Exception as e:
-        status, success, message, projects = 500, False, str(e), []
+        status, success, message, projects = 500, False, str(e), ''
     return JsonResponse(
-        {success: success, message: message, projects: projects}, status=status
+        {"success": success, "message": message, "projects": projects}, status=status
     )
 
 
@@ -103,8 +103,9 @@ def get_project(request):
 
         store_obj = Store(user)
         project_id = request.data.get("project_id")
-        project_dir = store_obj.find(project_id)
-        print(project_dir)
+        if not store_obj.exist(project_id):
+            raise Exception("No such project exists")
+        project_dir = store_obj.path + os.sep + project_id
 
         with open(project_dir + os.sep + "layers.json", "r") as f:
             layers = json.load(f)
@@ -116,7 +117,7 @@ def get_project(request):
     except Exception as e:
         status, success, message, b2f_json = 500, False, str(e), {}
     return JsonResponse(
-        {success: success, message: message, b2f_json: b2f_json}, status=status
+        {"success": success, "message": message, "b2f_json": b2f_json}, status=status
     )
 
 
@@ -133,7 +134,9 @@ def edit_project(request):
         output_file_name = request.data.get("output_file_name")
 
         store_obj = Store(user)
-        project_dir = store_obj.find(project_id)
+        if not store_obj.exist(project_id):
+            raise Exception("No such project exists")
+        project_dir = store_obj.path + os.sep + project_id
 
         with open(project_dir + os.sep + "meta.json", "r") as f:
             metadata = json.load(f)
@@ -155,7 +158,7 @@ def edit_project(request):
         status, success, message = 200, True, "Project Updated Successfully"
     except Exception as e:
         status, success, message = 500, False, str(e)
-    return JsonResponse({success: success, message: message}, status=status)
+    return JsonResponse({"success": success, "message": message}, status=status)
 
 
 @api_view(["POST"])
@@ -176,4 +179,4 @@ def delete_project(request):
         status, success, message = 200, True, "Project Deleted Successfully"
     except Exception as e:
         status, success, message = 500, False, str(e)
-    return JsonResponse({success: success, message: message}, status=status)
+    return JsonResponse({"success": success, "message": message}, status=status)
