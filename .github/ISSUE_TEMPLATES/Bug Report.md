@@ -19,12 +19,6 @@ If possible please provide a minimal code sample or steps to replicate the issue
 **Expected behavior/code**
 A clear and concise description of what you expected to happen (or code).
 
-```python
-def function_right():
-    # Here is the fix
-    print("Ok)
-    
-```
 
 ### ⚙️ Environment
 
