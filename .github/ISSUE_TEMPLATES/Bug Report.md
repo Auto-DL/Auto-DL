@@ -14,13 +14,7 @@ assignees: ''
 ### Current Behavior
 A clear and concise description of the behavior.
 
-**Input Code**
-- REPL or Repo link if applicable:
-
-```python
-def function_wrong():
-    pass
-```
+If possible please provide a minimal code sample or steps to replicate the issue 
 
 **Expected behavior/code**
 A clear and concise description of what you expected to happen (or code).
