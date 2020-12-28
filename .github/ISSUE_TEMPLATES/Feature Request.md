@@ -12,13 +12,8 @@ assignees: ''
 - [ ] Related to an existing [Issue](../../../../issues) 
 - [ ] A new implementation (Improvement, Extension) 
 
-### Is your feature request related to a problem?
-
-A clear and concise description of what the problem is. For e.g. I have an issue when [...]
-
-### If your feature will improve `Auto-DL`
-
-A clear and concise description of how it will help `Auto-DL`. Please prefer references, if possible [...]
+### Feature Description
+<!-- A clear and concise description of the feature you're requesting -->
 
 ### Description of the possible solution
 
