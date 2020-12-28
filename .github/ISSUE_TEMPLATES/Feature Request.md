@@ -15,14 +15,8 @@ assignees: ''
 ### Feature Description
 <!-- A clear and concise description of the feature you're requesting -->
 
-### Description of the possible solution
+### Possible Solution
+<!-- We would love to know if you can suggest a solution to the feature you're requesting, if nothing else it'll help us understand your expectations -->
 
-A clear and concise description of what you want to happen. Add any considered drawbacks.
-
-### An alternative solution to the problem can look like
-
-A clear and concise description of any alternative solutions or features you've considered.
-
-**Teachability, Documentation, Adoption, Migration Strategy**
-If you can, explain how users will be able to use this and possibly write out a version of the docs.
-Can you add a screenshot or design?
+### Additional context (optional)
+<!-- If you can, explain how users will be able to use this and possibly write out a version of the docs or add a screenshot or design for the same -->
