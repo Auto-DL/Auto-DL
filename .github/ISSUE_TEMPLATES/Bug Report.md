@@ -27,7 +27,8 @@ A clear and concise description of what you expected to happen (or code).
     - **better**: [3.8.6 - Clang 12.0.0 (clang-1200.0.32.27)]
 - `OS`: [e.g. Ubuntu 18.04, OSX 10.13.4, Windows 10]
 
-<!-- Optional Section below. Remove if not being used -->
+
+<!-- Optional Sections below. Remove if not being used -->
 
 ### Possible Solution
 <!-- In case you have any suggestions/fixes -->
