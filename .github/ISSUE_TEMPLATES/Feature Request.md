@@ -9,10 +9,8 @@ assignees: ''
 
 ## Feature Request
 
-- [ ] Related to an existing [Issue](../../../../issues) 
-- [ ] A new implementation (Improvement, Extension) 
-
-
+Is your feature request related to an existing [Issue](../../../../issues) or a new implementation?
+<!--  If related to an issue, please link it here using #<issue-number>  -->
 
 
 ### Feature Description
