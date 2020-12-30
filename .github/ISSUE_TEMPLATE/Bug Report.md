@@ -9,13 +9,13 @@ assignees: ''
 
 ## Bug Report
 
-
+<!-- Please try to summarize the bug in a few lines -->
 
 ### Current Behavior
 <!-- A clear and concise description of the behavior.  If possible please provide a minimal code sample or steps to replicate the issue -->
 
 ### Expected behavior/code
-A clear and concise description of what you expected to happen (or code).
+<!-- A clear and concise description of what you expected to happen (or code). -->
 
 
 ### ⚙️ Environment

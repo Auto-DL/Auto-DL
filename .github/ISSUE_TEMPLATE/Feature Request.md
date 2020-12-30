@@ -2,15 +2,15 @@
 name: Feature Request
 about: Suggest an idea for this project
 title: ""
-labels: 'enhancement'
+labels: 'feature'
 assignees: ''
 
 ---
 
 ## Feature Request
 
-Is your feature request related to an existing [Issue](../../../../issues) or a new implementation?
-<!--  If related to an issue, please link it here using #<issue-number>  -->
+Is your feature request related to an existing [Issue](https://www.github.com/Auto-DL/Generator/issues) or a new implementation?
+<!--  If related to an issue, please link it here using "See #<issue-number>"  -->
 
 
 ### Feature Description
