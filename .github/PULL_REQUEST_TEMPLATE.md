@@ -1,10 +1,10 @@
-
 ---
 name: PR template
 about: Submit a patch to fix issues and improve Auto-DL
 title: "[Fixes #] "
 labels: ''
 assignees: ''
+
 ---
 
 ## Pull Request

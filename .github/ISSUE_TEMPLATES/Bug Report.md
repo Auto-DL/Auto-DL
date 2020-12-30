@@ -12,11 +12,9 @@ assignees: ''
 
 
 ### Current Behavior
-A clear and concise description of the behavior.
+<!-- A clear and concise description of the behavior.  If possible please provide a minimal code sample or steps to replicate the issue -->
 
-If possible please provide a minimal code sample or steps to replicate the issue 
-
-**Expected behavior/code**
+### Expected behavior/code
 A clear and concise description of what you expected to happen (or code).
 
 
