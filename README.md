@@ -31,7 +31,7 @@ Generator has DLMML as a submodule.
 
 3.  ```sh
     # install the requirements, this might take some time, be patient
-    pip install requirements.txt
+    pip install -r requirements.txt
     ```
 
 4.  ```sh

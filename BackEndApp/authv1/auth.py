@@ -42,6 +42,8 @@ class Token:
 
         secret = os.getenv("JWT_SECRET")
         decoded = jwt.decode(self.token, secret, algorithms="HS256")
+        decoded['expire'] = datetime.strptime(decoded.get('expire'), DATE_FORMAT)
+
         if (
             decoded.get("username") == self.user.get("username")
             and decoded.get("email") == self.user.get("email")
