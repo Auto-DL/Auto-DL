@@ -38,6 +38,8 @@ const useStyles = makeStyles((theme) => ({
 
 function Step1() {
   var username = JSON.parse(localStorage.getItem('username'));
+  var token = JSON.parse(localStorage.getItem('token'));
+
   const history = useHistory();
   const classes = useStyles();
   const [values, setValues] = React.useState({
@@ -85,7 +87,7 @@ function Step1() {
     console.log(data);
     // vallidation
     if(values.Project_Name !=='' && values.path !== '' && values.output_file_name !== ''){
-        const res = await HomeService.step_1(data);
+        const res = await HomeService.step_1(token,data);
         if (res.status === 200) {
           setalert({ ...values, 'msg':res.data.message,'severity':"success" });
 

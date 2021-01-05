@@ -3,9 +3,14 @@ import axios from 'axios'
 
 class HomeService {
 	
-	async step_1(data) {
+	async step_1(token,data) {
 		try {
-			const response = await axios.post(`auth/new_project/`, data)
+			const response = await axios.post(`v1/project/new`, data
+			,
+			{headers: {
+				'Content-Type': 'application/json',
+				Authorization: `Token ${token}`,
+			}})
 			return response
 		} catch (error) {
 			return error.response
