@@ -22,14 +22,6 @@ import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 
 import {
-  BrowserRouter as Router,
-  Switch,
-  useLocation,
-  IndexRoute,
-  Route,
-  Link,
-  Redirect,
-  useParams,
   useHistory 
 } from "react-router-dom";
 

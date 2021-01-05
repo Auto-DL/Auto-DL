@@ -1,8 +1,6 @@
-import { BrowserRouter,Link,Route, Switch, withRouter,Redirect  } from 'react-router-dom';
-import LoginForm from './Components/Login/LoginForm';
+import { BrowserRouter,Route, Switch, Redirect  } from 'react-router-dom';
 import LoginIndex from './Components/Login/LoginIndex';
-// import Home from './Components/MainApp/Homeindex';
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 function App() {
 
