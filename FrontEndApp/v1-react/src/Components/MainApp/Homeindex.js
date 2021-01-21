@@ -1,15 +1,5 @@
 import React from 'react';
-import {
-  BrowserRouter,
-  Switch,
-  useLocation,
-  IndexRoute,
-  Route,
-  Link,
-  Redirect,
-  useParams,
-  useHistory 
-} from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 
 
