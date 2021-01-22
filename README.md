@@ -55,7 +55,7 @@ Generator has DLMML as a submodule.
 7.  ```sh
     # finally, run the react frontend
     # on a new terminal tab
-    cd FrontEndApp
+    cd FrontEndApp/v1-react
     npm start
     ```
 
