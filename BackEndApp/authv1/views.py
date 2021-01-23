@@ -59,7 +59,6 @@ def register(request):
 
         session = Session(user)
         token = session.create()
-        token = str(token, "utf-8")
 
         message = "Registered Successfully"
         status = 200

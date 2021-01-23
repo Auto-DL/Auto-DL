@@ -10,7 +10,6 @@ import {
   useParams,
   useHistory,
 } from "react-router-dom";
-import AddCircleIcon from "@material-ui/icons/AddCircle";
 import HomeService from "./HomeService";
 import Project_table from "./Project_table";
 import Grid from "@material-ui/core/Grid";
