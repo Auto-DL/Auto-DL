@@ -1,27 +1,28 @@
-import { BrowserRouter,Route, Switch, Redirect  } from 'react-router-dom';
-import LoginIndex from './Components/Login/LoginIndex';
-import React from "react";
+import {
+  BrowserRouter,
+  Link,
+  Route,
+  Switch,
+  withRouter,
+  Redirect,
+} from "react-router-dom";
+import LoginForm from "./Components/Login/LoginForm";
+import LoginIndex from "./Components/Login/LoginIndex";
+// import Home from './Components/MainApp/Homeindex';
+import React, { useEffect, useState } from "react";
 
 function App() {
-
-
   return (
     <div className="App">
-
       <BrowserRouter>
         <Switch>
-
-          <Route path='/'  component={LoginIndex} />
+          <Route path="/" component={LoginIndex} />
           {/* <Route path='/login' exact component={LoginForm} /> */}
           {/* <Route path='/home' exact component={Home} /> */}
-        
         </Switch>
 
-        <Redirect to="/"/>
-
-     
+        <Redirect to="/" />
       </BrowserRouter>
-
     </div>
   );
 }
