@@ -23,8 +23,8 @@ sys.path.insert(0, os.path.abspath("../"))
 # -- Project information -----------------------------------------------------
 
 project = "auto-dl"
-copyright = "2021, adi"
-author = "adi"
+copyright = "2021, auto-dl"
+author = "auto-dl"
 
 # The full version, including alpha/beta/rc tags
 release = "v1_alpha"
