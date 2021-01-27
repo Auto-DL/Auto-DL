@@ -118,7 +118,6 @@ def get_project(request):
         with open(project_dir + os.sep + "layers.json", "r") as f:
             layers = json.load(f)
 
-        # TODO: Write parser to convert this to required format (b2f)
         b2f_json = layers
         status, success, message = 200, True, "Layers Fetched"
 
@@ -231,3 +230,57 @@ def create_project(request):
     except Exception as e:
         status, success, message = 500, False, str(e)
     return JsonResponse({"success": success, "message": message}, status=status)
+
+
+@api_view(["POST"])
+@is_authenticated
+def save_layers(request):
+    try:
+        username = request.data.get("username")
+        user = User(username=username, password=None)
+        user = user.find()
+
+        store_obj = Store(user)
+        project_id = request.data.get("project_id")
+        layers = request.data.get("layer_json")
+        components = request.data.get("component_array")
+
+        if not store_obj.exist(project_id):
+            raise Exception("No such project exists")
+
+        project_dir = store_obj.path + os.sep + project_id
+        with open(project_dir + os.sep + "layers.json", "w") as f:
+            json.dump(layers, f)
+
+        with open(project_dir + os.sep + "components.json", "w") as f:
+            json.dump(components, f)
+
+        status, success, message = 200, True, "Layers saved successfully"
+    except Exception as e:
+        status, success, message = 500, False, str(e)
+    return JsonResponse({"success": success, "message": message}, status=status)
+
+@api_view(["POST"])
+@is_authenticated
+def get_layers(request):
+    try:
+        username = request.data.get("username")
+        user = User(username=username, password=None)
+        user = user.find()
+
+        store_obj = Store(user)
+        project_id = request.data.get("project_id")
+        if not store_obj.exist(project_id):
+            raise Exception("No such project exists")
+        project_dir = store_obj.path + os.sep + project_id
+
+        with open(project_dir + os.sep + "components.json", "r") as f:
+            components = json.load(f)
+
+        status, success, message = 200, True, "Components Array Fetched"
+
+    except Exception as e:
+        status, success, message, components = 500, False, str(e), {}
+    return JsonResponse(
+        {"success": success, "message": message, "components": components}, status=status
+    )
