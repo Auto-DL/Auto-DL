@@ -47,7 +47,8 @@ __after that go to path in CMD mentioned below and do following steps to run the
 * <code>\Auto-DL\Generator\BackEnd\</code>
 Type 
 ```python manage.py server```
-This will start the backend server. 
+This will start the backend server.
+* 
 * <code>\Auto-DL\Generator\FrontEnd\v1-react</code>
 * after tracersing to this path in cmd type
 ```npm install``
