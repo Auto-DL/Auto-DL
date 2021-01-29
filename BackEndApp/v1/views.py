@@ -21,12 +21,19 @@ from .utils import generate_uid
 @api_view(["POST"])
 @is_authenticated
 def generate(request):
-    body_unicode = request.body.decode("utf-8")
-    inputs_json = json.loads(body_unicode)
-    inputs = json_to_dict.MakeDict(inputs_json).parse()
+    username = request.data.get("username")
+    user = User(username=username, password=None)
+    user = user.find()
+
+    training_params = request.data.get("training_params")
+    inputs = json_to_dict.MakeDict(training_params).parse()
 
     lib = inputs.get("lib", "keras")
     lang = inputs.get("lang", "python")
+
+    # TODO: read multiple cached jsons and update params,
+    #       eg. output_file_name
+
     parser_path = "DLMML.parser." + lang + "." + lib + ".main"
     parser = importlib.import_module(parser_path)
 
@@ -47,6 +54,7 @@ def generate(request):
 @is_authenticated
 def train(request):
     try:
+        # TODO: Run using python and capture logs.
         os.system("gnome-terminal -e ./train.sh")
         msg = "Training started successfully"
     except Exception as e:
@@ -58,12 +66,16 @@ def train(request):
 @is_authenticated
 def compile(request):
     try:
-        body_unicode = request.body.decode("utf-8")
-        inputs_json = json.loads(body_unicode)
-        inputs = json_to_dict.MakeDict(inputs_json).parse()
+        username = request.data.get("username")
+        user = User(username=username, password=None)
+        user = user.find()
+
+        training_params = request.data.get("training_params")
+        inputs = json_to_dict.MakeDict(training_params).parse()
 
         lib = inputs.get("lib", "keras")
         lang = inputs.get("lang", "python")
+
         test_path = "DLMML.parser." + lang + "." + lib + ".test_model"
         test_model = importlib.import_module(test_path)
 
@@ -260,6 +272,7 @@ def save_layers(request):
         status, success, message = 500, False, str(e)
     return JsonResponse({"success": success, "message": message}, status=status)
 
+
 @api_view(["POST"])
 @is_authenticated
 def get_layers(request):
@@ -282,5 +295,6 @@ def get_layers(request):
     except Exception as e:
         status, success, message, components = 500, False, str(e), {}
     return JsonResponse(
-        {"success": success, "message": message, "components": components}, status=status
+        {"success": success, "message": message, "components": components},
+        status=status,
     )
