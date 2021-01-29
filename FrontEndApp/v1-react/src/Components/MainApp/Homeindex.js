@@ -29,6 +29,8 @@ import MuiDialogActions from "@material-ui/core/DialogActions";
 import CloseIcon from "@material-ui/icons/Close";
 import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
+import Backdrop from '@material-ui/core/Backdrop';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const styles = (theme) => ({
   root: {
@@ -84,6 +86,10 @@ const useStyles = makeStyles((theme) => ({
     minWidth: "100%",
     marginTop: "20px",
   },
+  backdrop: {
+    zIndex: theme.zIndex.drawer + 1,
+    color: '#fff',
+  },
 }));
 
 function Home() {
@@ -135,6 +141,13 @@ function Home() {
   const handleChange = (prop) => (event) => {
     setValues({ ...values, [prop]: event.target.value });
   };
+  const [open_backdrop, setOpen_backdrop] = React.useState(false);
+  const handleClose_backdrop = () => {
+    setOpen_backdrop(false);
+  };
+  const handleToggle_backdrop = (state) => {
+    setOpen_backdrop(state);
+  };
 
   useEffect(() => {
     async function fetchData() {
@@ -142,9 +155,11 @@ function Home() {
         username: username,
       };
       console.log(token, data);
+      handleToggle_backdrop(true);
       const res = await HomeService.get_all(token, data);
 
       if (res.status === 200) {
+        handleToggle_backdrop(false);
         setAllProjects([...res.data.projects]);
       } else {
         localStorage.clear();
@@ -255,12 +270,9 @@ function Home() {
 
   return (
     <>
-      home
-      <br />
-      <p onClick={Logout}>Logout</p>
-      <br />
-      <br />
-      <br />
+      <Backdrop className={classes.backdrop} open={open_backdrop} onClick={handleClose_backdrop}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <Dialog
         onClose={handleCloseModal}
         aria-labelledby="customized-dialog-title"
@@ -446,7 +458,7 @@ function Home() {
       <Grid container>
         <Grid item lg={1} md={1} sm={1} xs={1}></Grid>
 
-        <Grid item lg={10} md={10} sm={10} xs={10}>
+        <Grid item lg={10} md={10} sm={10} xs={10} >
           <Project_table
             projects={AllProjects}
             editproject={editproject}
