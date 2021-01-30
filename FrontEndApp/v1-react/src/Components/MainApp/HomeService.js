@@ -2,6 +2,61 @@ import axios from "axios";
 // const BACKEND_API_URL = process.env.REACT_APP_BACKEND_API_URL
 
 class HomeService {
+  async generate_code(token, data) {
+    try {
+      const response = await axios.post(`v1/generate/`, data, {
+        headers: {
+          "Content-Type": "application/json",
+          token: `${token}`,
+        },
+      });
+      return response;
+    } catch (error) {
+      return error.response;
+    }
+  }
+  async train_model(token, data) {
+    try {
+      const response = await axios.post(`v1/train/`, data, {
+        headers: {
+          "Content-Type": "application/json",
+          token: `${token}`,
+        },
+      });
+      return response;
+    } catch (error) {
+      return error.response;
+    }
+  }
+
+  async get_layers(token, data) {
+    try {
+      const response = await axios.post(`v1/layers/get/`, data, {
+        headers: {
+          "Content-Type": "application/json",
+          token: `${token}`,
+        },
+      });
+      return response;
+    } catch (error) {
+      return error.response;
+    }
+  }
+
+  async save_layers(token, data) {
+    try {
+      const response = await axios.post(`v1/layers/save/`, data, {
+        headers: {
+          "Content-Type": "application/json",
+          token: `${token}`,
+        },
+      });
+      return response;
+    } catch (error) {
+      return error.response;
+    }
+  }
+
   async delete_project(token, data) {
     try {
       const response = await axios.post(`v1/project/delete/`, data, {
