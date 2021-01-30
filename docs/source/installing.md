@@ -1,6 +1,6 @@
 # Installation
-
-To use the application you need to follow the steps below successfully install the application and run it  
+!["alt"](/_static/adl_generator.png "account")
+- To use the application you need to follow the steps below successfully install the application and run it  
 
 __Downloading the project__
 * Go to : [Auto-DL project](https://github.com/Auto-DL/Generator) 

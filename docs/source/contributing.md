@@ -1,5 +1,7 @@
 # Contributing Guidelines
 
+!["alt"](/_static/adl_generator.png "account")
+
 Thank you for contributing to this project. We are excited to have you on board.
 
 There are a few guidelines to be kept in mind before contributing.
