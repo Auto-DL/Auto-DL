@@ -29,8 +29,8 @@ import MuiDialogActions from "@material-ui/core/DialogActions";
 import CloseIcon from "@material-ui/icons/Close";
 import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
-import Backdrop from '@material-ui/core/Backdrop';
-import CircularProgress from '@material-ui/core/CircularProgress';
+import Backdrop from "@material-ui/core/Backdrop";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 const styles = (theme) => ({
   root: {
@@ -88,7 +88,7 @@ const useStyles = makeStyles((theme) => ({
   },
   backdrop: {
     zIndex: theme.zIndex.drawer + 1,
-    color: '#fff',
+    color: "#fff",
   },
 }));
 
@@ -176,7 +176,7 @@ function Home() {
     };
     var res = await HomeService.get_project(token, data);
     console.log(res);
-    localStorage.setItem("json_data", JSON.stringify(res.data.b2f_json));
+    // localStorage.setItem("json_data", JSON.stringify(res.data.b2f_json));
     localStorage.setItem("project_details", JSON.stringify(proj));
     history.push("/step-2");
   };
@@ -252,7 +252,7 @@ function Home() {
       if (res.status === 200) {
         setalert({ ...values, msg: res.data.message, severity: "success" });
         localStorage.setItem("project_details", JSON.stringify(data));
-        history.push("/step-2");
+        // history.push("/step-2");
         // history.push("/home");
       } else {
         setalert({ ...values, msg: res.data.message, severity: "error" });
@@ -270,7 +270,11 @@ function Home() {
 
   return (
     <>
-      <Backdrop className={classes.backdrop} open={open_backdrop} onClick={handleClose_backdrop}>
+      <Backdrop
+        className={classes.backdrop}
+        open={open_backdrop}
+        onClick={handleClose_backdrop}
+      >
         <CircularProgress color="inherit" />
       </Backdrop>
       <Dialog
@@ -458,7 +462,7 @@ function Home() {
       <Grid container>
         <Grid item lg={1} md={1} sm={1} xs={1}></Grid>
 
-        <Grid item lg={10} md={10} sm={10} xs={10} >
+        <Grid item lg={10} md={10} sm={10} xs={10}>
           <Project_table
             projects={AllProjects}
             editproject={editproject}

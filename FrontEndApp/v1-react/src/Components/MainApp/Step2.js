@@ -12,17 +12,62 @@ import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
 import AppBar from "@material-ui/core/AppBar";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
-import Snackbar from "@material-ui/core/Snackbar";
-import MuiAlert from "@material-ui/lab/Alert";
 import Box from "@material-ui/core/Box";
 import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
-import OutlinedInput from "@material-ui/core/OutlinedInput";
 import InputLabel from "@material-ui/core/InputLabel";
-import InputAdornment from "@material-ui/core/InputAdornment";
-import Visibility from "@material-ui/icons/Visibility";
-import VisibilityOff from "@material-ui/icons/VisibilityOff";
 import PropTypes from "prop-types";
+import HomeService from "./HomeService";
+import Checkbox from "@material-ui/core/Checkbox";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Dialog from "@material-ui/core/Dialog";
+import MuiDialogTitle from "@material-ui/core/DialogTitle";
+import MuiDialogContent from "@material-ui/core/DialogContent";
+import MuiDialogActions from "@material-ui/core/DialogActions";
+import CloseIcon from "@material-ui/icons/Close";
+
+const styles = (theme) => ({
+  root: {
+    margin: 0,
+    padding: theme.spacing(2),
+  },
+  closeButton: {
+    position: "absolute",
+    right: theme.spacing(1),
+    top: theme.spacing(1),
+    color: theme.palette.grey[500],
+  },
+});
+const DialogTitle = withStyles(styles)((props) => {
+  const { children, classes, onClose, ...other } = props;
+  return (
+    <MuiDialogTitle disableTypography className={classes.root} {...other}>
+      <Typography variant="h6">{children}</Typography>
+      {onClose ? (
+        <IconButton
+          aria-label="close"
+          className={classes.closeButton}
+          onClick={onClose}
+        >
+          <CloseIcon />
+        </IconButton>
+      ) : null}
+    </MuiDialogTitle>
+  );
+});
+
+const DialogContent = withStyles((theme) => ({
+  root: {
+    padding: theme.spacing(2),
+  },
+}))(MuiDialogContent);
+
+const DialogActions = withStyles((theme) => ({
+  root: {
+    margin: 0,
+    padding: theme.spacing(1),
+  },
+}))(MuiDialogActions);
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -60,8 +105,8 @@ function a11yProps(index) {
 const useStyles = makeStyles((theme) => ({
   App: {
     // padding: "10px",
-    marginLeft:'5.3%',
-    marginRight:'10px',
+    marginLeft: "5.5%",
+    marginRight: "10px",
     // backgroundColor:'grey',
   },
   column1: {
@@ -148,7 +193,7 @@ const useStyles = makeStyles((theme) => ({
   },
   container: {
     position: "relative",
-    paddingLeft:"10%",
+    paddingLeft: "10%",
   },
   heading: {
     textAlign: "center",
@@ -173,8 +218,8 @@ const useStyles = makeStyles((theme) => ({
     textAlign: "center",
     transform: "translateY(30%)",
   },
-  spancss:{
-    marginLeft:'40%',
+  spancss: {
+    marginLeft: "40%",
   },
   value: {
     float: "right",
@@ -189,7 +234,7 @@ const useStyles = makeStyles((theme) => ({
     transform: "translateY(50%)",
     cursor: "pointer",
   },
-  delete:{
+  delete: {
     width: "97%",
     backgroundColor: "#D8D8D8",
     padding: "10px",
@@ -198,9 +243,25 @@ const useStyles = makeStyles((theme) => ({
     maxHeight: "60px",
     minWeight: "60px",
     minWeight: "60px",
-    margin:'10px',
+    margin: "10px",
     // paddingTop:'3px',
     textAlign: "center",
+  },
+  sel: {
+    width: "200px",
+    margin: "20px",
+  },
+  _hyper: {
+    width: "400px",
+    margin: "20px",
+    marginLeft: "30%",
+  },
+  save_plot: {
+    marginTop: "25px",
+  },
+  action_btn: {
+    float: "right",
+    margin: "5px",
   },
 }));
 
@@ -215,877 +276,903 @@ function Step2() {
   console.log(project_details);
   console.log(json_data);
 
-  
-
   const [components, setcomponents] = React.useState([]);
   const [selected_layer_type, setselected_layer_type] = React.useState("");
   const [selected_layer, setselected_layer] = React.useState(-1);
   const [selected_layer_name, setselected_layer_name] = React.useState("");
   const [value, setValue] = React.useState(0);
+  const [state_hyperparam, setstate_hyperparam] = React.useState({
+    metrics: "",
+    epochs: "",
+    verbose: "",
+    plot: false,
+    optimizer: "",
+    loss: "",
+  });
+  const [showoptimizer, setshowoptimizer] = React.useState(false);
+  const [selected_optimizer, setselected_optimizer] = React.useState({});
 
+  const [showloss, setshowloss] = React.useState(false);
+  const [selected_loss, setselected_loss] = React.useState({});
+
+  const [openModal, setOpenModal] = React.useState(false);
+  const [generated_file_path, setgenerated_file_path] = React.useState("");
+
+  const handleClickOpenModal = () => {
+    setOpenModal(true);
+  };
+  const handleCloseModal = () => {
+    setOpenModal(false);
+  };
+
+  async function saveData() {
+    const data = {
+      username: username,
+      project_id: project_details.project_id,
+      layer_json: {},
+      component_array: components,
+    };
+    console.log(token, data);
+    // handleToggle_backdrop(true);
+    const res = await HomeService.save_layers(token, data);
+
+    if (res.status === 200) {
+      // handleToggle_backdrop(false);
+      // setAllProjects([...res.data.projects]);
+      console.log(res);
+    } else {
+      // localStorage.clear();
+      // history.push("/login");
+    }
+  }
   const handleChangetabs = (event, newValue) => {
+    if (newValue !== 0) {
+      saveData();
+      console.log(genrate_layers());
+    }
     setValue(newValue);
   };
 
   console.log(components);
-  if (project_details.lib === new String("Pytorch").valueOf() || project_details.library === new String("Pytorch").valueOf()) {
-    var temp_pre={
-      "Input": {
-        "name": "Input",
-        "type": {
-          "Example": "image",
-          "Default": "None",
-          "Required": 1,
-          "DataType": "String",
-          "Options": ["image", "csv", "text"],
-          "Description": "Type of input to model"
-    
+  if (
+    project_details.lib === new String("Pytorch").valueOf() ||
+    project_details.library === new String("Pytorch").valueOf()
+  ) {
+    var temp_pre = {
+      Input: {
+        name: "Input",
+        type: {
+          Example: "image",
+          Default: "None",
+          Required: 1,
+          DataType: "String",
+          Options: ["image", "csv", "text"],
+          Description: "Type of input to model",
         },
-        "path": {
-          "Example": "/data/cats-vs-dogs/",
-          "Default": "None",
-          "Required": 1,
-          "DataType": "String",
-          "Options": [],
-          "Description": "Path to the data either absolute or relative"
-    
-        }
-      },
-      
-      "params": {
-        "name": "params",
-    
-        "batch_size_train": {
-          "Example": 32,
-          "Default": 1,
-          "Required": 1,
-          "DataType": "number",
-          "Options": [],
-          "Description": "how many samples per batch to load (Training) "
+        path: {
+          Example: "/data/cats-vs-dogs/",
+          Default: "None",
+          Required: 1,
+          DataType: "String",
+          Options: [],
+          Description: "Path to the data either absolute or relative",
         },
-        "n_batch_test": {
-          "Example": 32,
-          "Default": 1,
-          "Required": 1,
-          "DataType": "number",
-          "Options": [],
-          "Description": "how many samples per batch to load (Test) "
-        },
-        "num_workers": {
-          "Example": 2,
-          "Default": 0,
-          "Required": 0,
-          "DataType": "number",
-          "Options": [],
-          "Description": "how many subprocesses to use for data loading. 0 means that the data will be loaded in the main process "
-    
-        },
-    
-        "shuffle": {
-          "Example": "False",
-          "Default": "True",
-          "Required": 0,
-          "DataType": "select",
-          "Options": ["True", "False"],
-          "Description": "set to True to have the data reshuffled at every epoch"
-        },
-    
-        "n_epochs": {
-          "Example": 1,
-          "Default": "NA",
-          "Required": 1,
-          "DataType": "number",
-          "Options": [],
-          "Description": "Number of epochs to train the model"
-    
-        }
       },
 
-      "CenterCrop": {
-        "name": "augment",
-        "input-type": "image",
-    
-        "size": {
-          "Example": "10",
-          "Default": "",
-          "Required": 1,
-          "DataType": "number",
-          "Options": [],
-          "Description": "Output size of the cropped image "
-        }
-      },
-    
-      "Grayscale": {
-        "name": "augment",
-        "input-type": "image",
-        "num_output_channels": {
-          "Example": "1",
-          "Default": "1",
-          "Required": 1,
-          "DataType": "number",
-          "Options": [1, 3],
-          "Description": "Number of output channels "
-    
-        }
-      },
-      "Resize": {
-        "name": "augment",
-        "input-type": "image",
-        "size": {
-          "Example": "10",
-          "Default": "",
-          "Required": 1,
-          "DataType": "number",
-          "Options": [],
-          "Description": "Output size of the image"
+      params: {
+        name: "params",
+
+        batch_size_train: {
+          Example: 32,
+          Default: 1,
+          Required: 1,
+          DataType: "number",
+          Options: [],
+          Description: "how many samples per batch to load (Training) ",
         },
-        "interpolation": {
-          "Example": "2",
-          "Default": "2",
-          "Required": 0,
-          "DataType": "number",
-          "Options": [],
-          "Description": "Desired interpolation enum defined by filters"
-        }
-      },
-      "ToTensor": {
-        "name": "augment",
-        "input-type": "image"
+        n_batch_test: {
+          Example: 32,
+          Default: 1,
+          Required: 1,
+          DataType: "number",
+          Options: [],
+          Description: "how many samples per batch to load (Test) ",
+        },
+        num_workers: {
+          Example: 2,
+          Default: 0,
+          Required: 0,
+          DataType: "number",
+          Options: [],
+          Description:
+            "how many subprocesses to use for data loading. 0 means that the data will be loaded in the main process ",
+        },
+
+        shuffle: {
+          Example: "False",
+          Default: "True",
+          Required: 0,
+          DataType: "select",
+          Options: ["True", "False"],
+          Description: "set to True to have the data reshuffled at every epoch",
+        },
+
+        n_epochs: {
+          Example: 1,
+          Default: "NA",
+          Required: 1,
+          DataType: "number",
+          Options: [],
+          Description: "Number of epochs to train the model",
+        },
       },
 
-    };
-    var temp_loss={
-      "L1Loss": {
-        "name": "l1loss",
-        "type": "loss-function",
-        "reduction": {
-          "Example": "sum",
-          "Default": "mean",
-          "Required": 0,
-          "DataType": "select",
-          "Options": ["none", "mean", "sum"],
-          "Description": "measures the mean absolute error (MAE) between each element in the input xx and target yy. 'none': no reduction will be applied, 'mean': the sum of the output will be divided by the number of elements in the output, 'sum': the output will be summed."
-    
-        }
-      },
-    
-      "MSELoss": {
-        "name": "mseLoss",
-        "type": "loss-function",
-        "reduction": {
-          "Example": "sum",
-          "Default": "mean",
-          "Required": 0,
-          "DataType": "select",
-          "Options": ["none", "mean", "sum"],
-          "Description": "Specifies the reduction to apply to the output: 'none' | 'mean' | 'sum'. 'none': no reduction will be applied, 'mean': the sum of the output will be divided by the number of elements in the output, 'sum': the output will be summed. Note: size_average and reduce are in the process of being deprecated, and in the meantime, specifying either of those two args will override reduction. Default: 'mean'"
-        }
-    
-    
-    
-    
-      },
-    
-      "CrossEntropyLoss": {
-        "name": "cross-entropy-loss",
-        "type": "loss-function",
-        "weight": {
-          "Example": "torch.ones([64])",
-          "Default": "None",
-          "Required": 0,
-          "DataType": "Tensor",
-          "Options": [],
-          "Description": " a manual rescaling weight given to each class. If given, has to be a Tensor of size C"
-    
+      CenterCrop: {
+        name: "augment",
+        "input-type": "image",
+
+        size: {
+          Example: "10",
+          Default: "",
+          Required: 1,
+          DataType: "number",
+          Options: [],
+          Description: "Output size of the cropped image ",
         },
-        "reduction": {
-          "Example": "sum",
-          "Default": "mean",
-          "Required": 0,
-          "DataType": "select",
-          "Options": ["none", "mean", "sum"],
-          "Description": "Specifies the reduction to apply to the output. 'none': no reduction will be applied, 'mean': the sum of the output will be divided by the number of elements in the output, 'sum': the output will be summed."
-    
-        },
-        "ignore_index": {
-          "Example": "-100",
-          "Default": "-100",
-          "Required": 0,
-          "DataType": "int",
-          "Options": [],
-          "Description": "Specifies a target value that is ignored and does not contribute to the input gradient. When size_average is True, the loss is averaged over non-ignored targets"
-    
-        }
-    
-    
-      },
-    
-      "NLLLoss": {
-        "name": "nlloss",
-        "type": "loss-function",
-        "weight": {
-          "Example": "torch.ones([64])",
-          "Default": "None",
-          "Required": 0,
-          "DataType": "Tensor",
-          "Options": [],
-          "Description": " a manual rescaling weight given to each class. If given, has to be a Tensor of size C. Otherwise, it is treated as if having all ones."
-        },
-        "ignore_index": {
-          "Example": "-100",
-          "Default": "-100",
-          "Required": 0,
-          "DataType": "int",
-          "Options": [],
-          "Description": "Specifies a target value that is ignored and does not contribute to the input gradient. When size_average is True, the loss is averaged over non-ignored targets"
-    
-        },
-        "reduction": {
-          "Example": "sum",
-          "Default": "mean",
-          "Required": 0,
-          "DataType": "select",
-          "Options": ["none", "mean", "sum"],
-          "Description": "Specifies the reduction to apply to the output: 'none' | 'mean' | 'sum'. 'none': no reduction will be applied, 'mean': the sum of the output will be divided by the number of elements in the output, 'sum': the output will be summed. Note: size_average and reduce are in the process of being deprecated, and in the meantime, specifying either of those two args will override reduction. Default: 'mean'"
-        }
-    
-    
-      },
-    
-      "BCELoss": {
-        "name": "bceLoss",
-        "type": "loss-function",
-        "weight": {
-          "Example": "torch.ones([64])",
-          "Default": "None",
-          "Required": 0,
-          "DataType": "Tensor",
-          "Options": [],
-          "Description": " a manual rescaling weight given to each class.  If given, has to be a Tensor of size nbatch."
-    
-        },
-        "reduction": {
-          "Example": "sum",
-          "Default": "mean",
-          "Required": 0,
-          "DataType": "select",
-          "Options": ["none", "mean", "sum"],
-          "Description": "Specifies the reduction to apply to the output. 'none': no reduction will be applied, 'mean': the sum of the output will be divided by the number of elements in the output, 'sum': the output will be summed."
-    
-        }
-    
-    
-      },
-    
-      "BCEWithLogitsLoss": {
-        "name": "bce-logits-loss",
-        "type": "loss-function",
-        "weight": {
-          "Example": "torch.ones([64])",
-          "Default": "None",
-          "Required": 0,
-          "DataType": "Tensor",
-          "Options": [],
-          "Description": "a manual rescaling weight given to the loss of each batch element. If given, has to be a Tensor of size nbatch."
-        },
-    
-        "pos_weight": {
-          "Example": "torch.ones([64])",
-          "Default": "None",
-          "Required": 0,
-          "DataType": "Tensor",
-          "Options": [],
-          "Description": " a weight of positive examples. Must be a vector with length equal to the number of classes."
-        },
-    
-        "reduction": {
-          "Example": "sum",
-          "Default": "mean",
-          "Required": 0,
-          "DataType": "select",
-          "Options": ["none", "mean", "sum"],
-          "Description": "Specifies the reduction to apply to the output: 'none' | 'mean' | 'sum'. 'none': no reduction will be applied, 'mean': the sum of the output will be divided by the number of elements in the output, 'sum': the output will be summed. Note: size_average and reduce are in the process of being deprecated, and in the meantime, specifying either of those two args will override reduction. Default: 'mean'"
-        }
-    
-    
-    
       },
 
-      "SmoothL1Loss": {
-        "name": "mseLoss",
-        "type": "loss-function",
-        "reduction": {
-          "Example": "sum",
-          "Default": "mean",
-          "Required": 0,
-          "DataType": "select",
-          "Options": ["none", "mean", "sum"],
-          "Description": "Specifies the reduction to apply to the output: 'none' | 'mean' | 'sum'. 'none': no reduction will be applied, 'mean': the sum of the output will be divided by the number of elements in the output, 'sum': the output will be summed. Note: size_average and reduce are in the process of being deprecated, and in the meantime, specifying either of those two args will override reduction. Default: 'mean'"
+      Grayscale: {
+        name: "augment",
+        "input-type": "image",
+        num_output_channels: {
+          Example: "1",
+          Default: "1",
+          Required: 1,
+          DataType: "number",
+          Options: [1, 3],
+          Description: "Number of output channels ",
         },
-        "beta": {
-          "Example": "0.5",
-          "Default": "1.0",
-          "Required": 0,
-          "DataType": "number",
-          "Options": [],
-          "Description": "Specifies the threshold at which to change between L1 and L2 loss. This value defaults to 1.0."
-        }
-    
+      },
+      Resize: {
+        name: "augment",
+        "input-type": "image",
+        size: {
+          Example: "10",
+          Default: "",
+          Required: 1,
+          DataType: "number",
+          Options: [],
+          Description: "Output size of the image",
+        },
+        interpolation: {
+          Example: "2",
+          Default: "2",
+          Required: 0,
+          DataType: "number",
+          Options: [],
+          Description: "Desired interpolation enum defined by filters",
+        },
+      },
+      ToTensor: {
+        name: "augment",
+        "input-type": "image",
       },
     };
-    var temp_optimizer={
-      "SGD": {
-        "name": "SGD",
-        "type": "optimizer",
-        "lr": {
-          "Example": 0.1,
-          "Default": "NA",
-          "Required": 1,
-          "DataType": "number",
-          "Options": [],
-          "Description": "learning rate"
+    var temp_loss = {
+      L1Loss: {
+        name: "l1loss",
+        type: "loss-function",
+        reduction: {
+          Example: "sum",
+          Default: "mean",
+          Required: 0,
+          DataType: "select",
+          Options: ["none", "mean", "sum"],
+          Description:
+            "measures the mean absolute error (MAE) between each element in the input xx and target yy. 'none': no reduction will be applied, 'mean': the sum of the output will be divided by the number of elements in the output, 'sum': the output will be summed.",
         },
-    
-        "momentum": {
-          "Example": 0.9,
-          "Default": 0,
-          "Required": 0,
-          "DataType": "number",
-          "Options": [],
-          "Description": "momentum factor"
-    
-    
-        },
-    
-        "dampening": {
-          "Example": 0.2,
-          "Default": 0,
-          "Required": 0,
-          "DataType": "number",
-          "Options": [],
-          "Description": "dampening for momentum"
-        },
-    
-        "nesterov": {
-          "Example": "True",
-          "Default": "False",
-          "Required": 0,
-          "DataType": "select",
-          "Options": ["True", "False"],
-          "Description": "enables Nesterov momentum (default: False)"
-        }
       },
-    
-      "Adagrad": {
-        "lr": {
-          "Example": 0.1,
-          "Default": "NA",
-          "Required": 1,
-          "DataType": "number",
-          "Options": [],
-          "Description": "learning rate"
+
+      MSELoss: {
+        name: "mseLoss",
+        type: "loss-function",
+        reduction: {
+          Example: "sum",
+          Default: "mean",
+          Required: 0,
+          DataType: "select",
+          Options: ["none", "mean", "sum"],
+          Description:
+            "Specifies the reduction to apply to the output: 'none' | 'mean' | 'sum'. 'none': no reduction will be applied, 'mean': the sum of the output will be divided by the number of elements in the output, 'sum': the output will be summed. Note: size_average and reduce are in the process of being deprecated, and in the meantime, specifying either of those two args will override reduction. Default: 'mean'",
         },
-        "lr_decay": {
-          "Example": 0.1,
-          "Default": 0,
-          "Required": 0,
-          "DataType": "number",
-          "Options": [],
-          "Description": "learning rate decay"
+      },
+
+      CrossEntropyLoss: {
+        name: "cross-entropy-loss",
+        type: "loss-function",
+        weight: {
+          Example: "torch.ones([64])",
+          Default: "None",
+          Required: 0,
+          DataType: "Tensor",
+          Options: [],
+          Description:
+            " a manual rescaling weight given to each class. If given, has to be a Tensor of size C",
+        },
+        reduction: {
+          Example: "sum",
+          Default: "mean",
+          Required: 0,
+          DataType: "select",
+          Options: ["none", "mean", "sum"],
+          Description:
+            "Specifies the reduction to apply to the output. 'none': no reduction will be applied, 'mean': the sum of the output will be divided by the number of elements in the output, 'sum': the output will be summed.",
+        },
+        ignore_index: {
+          Example: "-100",
+          Default: "-100",
+          Required: 0,
+          DataType: "int",
+          Options: [],
+          Description:
+            "Specifies a target value that is ignored and does not contribute to the input gradient. When size_average is True, the loss is averaged over non-ignored targets",
+        },
+      },
+
+      NLLLoss: {
+        name: "nlloss",
+        type: "loss-function",
+        weight: {
+          Example: "torch.ones([64])",
+          Default: "None",
+          Required: 0,
+          DataType: "Tensor",
+          Options: [],
+          Description:
+            " a manual rescaling weight given to each class. If given, has to be a Tensor of size C. Otherwise, it is treated as if having all ones.",
+        },
+        ignore_index: {
+          Example: "-100",
+          Default: "-100",
+          Required: 0,
+          DataType: "int",
+          Options: [],
+          Description:
+            "Specifies a target value that is ignored and does not contribute to the input gradient. When size_average is True, the loss is averaged over non-ignored targets",
+        },
+        reduction: {
+          Example: "sum",
+          Default: "mean",
+          Required: 0,
+          DataType: "select",
+          Options: ["none", "mean", "sum"],
+          Description:
+            "Specifies the reduction to apply to the output: 'none' | 'mean' | 'sum'. 'none': no reduction will be applied, 'mean': the sum of the output will be divided by the number of elements in the output, 'sum': the output will be summed. Note: size_average and reduce are in the process of being deprecated, and in the meantime, specifying either of those two args will override reduction. Default: 'mean'",
+        },
+      },
+
+      BCELoss: {
+        name: "bceLoss",
+        type: "loss-function",
+        weight: {
+          Example: "torch.ones([64])",
+          Default: "None",
+          Required: 0,
+          DataType: "Tensor",
+          Options: [],
+          Description:
+            " a manual rescaling weight given to each class.  If given, has to be a Tensor of size nbatch.",
+        },
+        reduction: {
+          Example: "sum",
+          Default: "mean",
+          Required: 0,
+          DataType: "select",
+          Options: ["none", "mean", "sum"],
+          Description:
+            "Specifies the reduction to apply to the output. 'none': no reduction will be applied, 'mean': the sum of the output will be divided by the number of elements in the output, 'sum': the output will be summed.",
+        },
+      },
+
+      BCEWithLogitsLoss: {
+        name: "bce-logits-loss",
+        type: "loss-function",
+        weight: {
+          Example: "torch.ones([64])",
+          Default: "None",
+          Required: 0,
+          DataType: "Tensor",
+          Options: [],
+          Description:
+            "a manual rescaling weight given to the loss of each batch element. If given, has to be a Tensor of size nbatch.",
+        },
+
+        pos_weight: {
+          Example: "torch.ones([64])",
+          Default: "None",
+          Required: 0,
+          DataType: "Tensor",
+          Options: [],
+          Description:
+            " a weight of positive examples. Must be a vector with length equal to the number of classes.",
+        },
+
+        reduction: {
+          Example: "sum",
+          Default: "mean",
+          Required: 0,
+          DataType: "select",
+          Options: ["none", "mean", "sum"],
+          Description:
+            "Specifies the reduction to apply to the output: 'none' | 'mean' | 'sum'. 'none': no reduction will be applied, 'mean': the sum of the output will be divided by the number of elements in the output, 'sum': the output will be summed. Note: size_average and reduce are in the process of being deprecated, and in the meantime, specifying either of those two args will override reduction. Default: 'mean'",
+        },
+      },
+
+      SmoothL1Loss: {
+        name: "mseLoss",
+        type: "loss-function",
+        reduction: {
+          Example: "sum",
+          Default: "mean",
+          Required: 0,
+          DataType: "select",
+          Options: ["none", "mean", "sum"],
+          Description:
+            "Specifies the reduction to apply to the output: 'none' | 'mean' | 'sum'. 'none': no reduction will be applied, 'mean': the sum of the output will be divided by the number of elements in the output, 'sum': the output will be summed. Note: size_average and reduce are in the process of being deprecated, and in the meantime, specifying either of those two args will override reduction. Default: 'mean'",
+        },
+        beta: {
+          Example: "0.5",
+          Default: "1.0",
+          Required: 0,
+          DataType: "number",
+          Options: [],
+          Description:
+            "Specifies the threshold at which to change between L1 and L2 loss. This value defaults to 1.0.",
+        },
+      },
+    };
+    var temp_optimizer = {
+      SGD: {
+        name: "SGD",
+        type: "optimizer",
+        lr: {
+          Example: 0.1,
+          Default: "NA",
+          Required: 1,
+          DataType: "number",
+          Options: [],
+          Description: "learning rate",
+        },
+
+        momentum: {
+          Example: 0.9,
+          Default: 0,
+          Required: 0,
+          DataType: "number",
+          Options: [],
+          Description: "momentum factor",
+        },
+
+        dampening: {
+          Example: 0.2,
+          Default: 0,
+          Required: 0,
+          DataType: "number",
+          Options: [],
+          Description: "dampening for momentum",
+        },
+
+        nesterov: {
+          Example: "True",
+          Default: "False",
+          Required: 0,
+          DataType: "select",
+          Options: ["True", "False"],
+          Description: "enables Nesterov momentum (default: False)",
+        },
+      },
+
+      Adagrad: {
+        name: "Adagrad",
+        type: "optimizer",
+        lr: {
+          Example: 0.1,
+          Default: "NA",
+          Required: 1,
+          DataType: "number",
+          Options: [],
+          Description: "learning rate",
+        },
+        lr_decay: {
+          Example: 0.1,
+          Default: 0,
+          Required: 0,
+          DataType: "number",
+          Options: [],
+          Description: "learning rate decay",
         },
         "weight_decay ": {
-    
-          "Example": 0.1,
-          "Default": 0,
-          "Required": 0,
-          "DataType": "number",
-          "Options": [],
-          "Description": "weight decay (L2 penalty)"
+          Example: 0.1,
+          Default: 0,
+          Required: 0,
+          DataType: "number",
+          Options: [],
+          Description: "weight decay (L2 penalty)",
         },
-        "eps": {
-          "Example": 0.1,
-          "Default": 0.0000000001,
-          "Required": 0,
-          "DataType": "number",
-          "Options": [],
-          "Description": " term added to the denominator to improve numerical stability "
-        }
-    
+        eps: {
+          Example: 0.1,
+          Default: 0.0000000001,
+          Required: 0,
+          DataType: "number",
+          Options: [],
+          Description:
+            " term added to the denominator to improve numerical stability ",
+        },
       },
-    
-      "Adam": {
-        "lr": {
-          "Example": 0.1,
-          "Default": 0.001,
-          "Required": 0,
-          "DataType": "number",
-          "Options": [],
-          "Description": "learning rate"
-        },
-    
-        "betas": {
-          "Example": [0.2, 0.222],
-          "Default": [0.9, 0.999],
-          "Required": 0,
-          "DataType": "Tuple",
-          "Options": [],
-          "Description": "(Tuple[float, float]) coefficients used for computing running averages of gradient and its square (default: (0.9, 0.999))"
-    
-        },
-    
-        "eps": {
-          "Example": 0.0001,
-          "Default": 0.00000001,
-          "Required": 0,
-          "DataType": "number",
-          "Options": [],
-          "Description": " term added to the denominator to improve numerical stability  (default: 1e-8)"
-        },
-    
-        "weight_decay": {
-          "Example": 0.1,
-          "Default": 0,
-          "Required": 0,
-          "DataType": "number",
-          "Options": [],
-          "Description": "weight decay (L2 penalty) (default: 0)"
-        },
-    
-        "amsgrad": {
-          "Example": "True",
-          "Default": "False",
-          "Required": 0,
-          "DataType": "select",
-          "Options": ["True", "False"],
-          "Description": "whether to use the AMSGrad variant of this algorithm from the paper On the Convergence of Adam and Beyond (default: False)"
-        }
-    
-      },
-    
-      "RMSProp": {
-        "lr": {
-          "Example": 0.1,
-          "Default": 0.01,
-          "Required": 0,
-          "DataType": "number",
-          "Options": [],
-          "Description": "learning rate"
-        },
-    
-        "momentum": {
-          "Example": 0.1,
-          "Default": 0,
-          "Required": 0,
-          "DataType": "number",
-          "Options": [],
-          "Description": "momentum factor"
-        },
-    
-        "alpha": {
-          "Example": 0.1,
-          "Default": 0.99,
-          "Required": 0,
-          "DataType": "number",
-          "Options": [],
-          "Description": "smoothing constant"
-        },
-    
-        "eps": {
-          "Example": 0.0001,
-          "Default": 0.000000001,
-          "Required": 0,
-          "DataType": "number",
-          "Options": [],
-          "Description": "term added to the denominator to improve numerical stability (default: 1e-8)"
-        },
-    
-        "centered": {
-          "Example": "True",
-          "Default": "False",
-          "Required": 0,
-          "DataType": "select",
-          "Options": ["True", "False"],
-          "Description": " if True, compute the centered RMSProp, the gradient is normalized by an estimation of its variance"
-        },
-    
-        "weight_decay": {
-          "Example": 0.1,
-          "Default": 0,
-          "Required": 0,
-          "DataType": "number",
-          "Options": [],
-          "Description": "weight decay (L2 penalty) (default: 0)"
-        }
-    
-      }
-    };
-    var temp_json={
-        
-        "Linear": {
-          "in_features ": {
-            "Example": "3",
-            "Default": "",
-            "Required": 1,
-            "DataType": "number",
-            "Options": [],
-            "Description": " size of each input sample"
-          },
-          "out_features": {
-            "Example": "3",
-            "Default": "",
-            "Required": 1,
-            "DataType": "number",
-            "Options": [],
-            "Description": "size of each output sample"
-      
-          },
-          "bias": {
-            "Example": "False",
-            "Default": "True",
-            "Required": 0,
-            "DataType": "select",
-            "Options": ["True", "False"],
-            "Description": "If set to False, the layer will not learn an additive bias."
-          }
-        },
-      
-        "Conv2d": {
-      
-          "in_channels": {
-            "Example": "3",
-            "Default": "",
-            "Required": 1,
-            "DataType": "number",
-            "Options": [],
-            "Description": "Number of channels in the input image."
-          },
-      
-          "out_channels": {
-            "Example": "6",
-            "Default": "",
-            "Required": 1,
-            "DataType": "number",
-            "Options": [],
-            "Description": "Number of channels in the output image."
-      
-      
-          },
-          "kernel_size": {
-            "Example": "5",
-            "Default": "",
-            "Required": 1,
-            "DataType": "number",
-            "Options": [],
-            "Description": "Size of the convolving kernel."
-          }
-      
-      
-      
-      
-        },
-        "LSTM": {
-      
-          "input_size": {
-            "Example": "5",
-            "Default": "",
-            "Required": 1,
-            "DataType": "number",
-            "Options": [],
-            "Description": "The number of expected features in the input x"
-      
-          },
-          "hidden_size": {
-            "Example": "5",
-            "Default": "",
-            "Required": 1,
-            "DataType": "number",
-            "Options": [],
-            "Description": "The number of features in the hidden state h"
-      
-          },
-          "num_layers": {
-            "Example": "5",
-            "Default": "",
-            "Required": 1,
-            "DataType": "number",
-            "Options": [],
-            "Description": "Number of recurrent layers. E.g., setting num_layers=2 would mean stacking two LSTMs"
-          },
-          "bias": {
-            "Example": "False",
-            "Default": "True",
-            "Required": 0,
-            "DataType": "select",
-            "Options": ["True", "False"],
-            "Description": "Whether to use bias weights b_ih and b_hh"
-      
-          },
-          "dropout": {
-            "Example": "1",
-            "Default": "0 ",
-            "Required": 0,
-            "DataType": "number",
-            "Options": [],
-            "Description": " If non-zero, introduces a Dropout layer on the outputs of each LSTM layer except the last layer, with dropout probability equal to dropout"
-      
-          }
-        },
-        "RNNBase": {
-      
-          "input_size ": {
-            "Example": "5",
-            "Default": "",
-            "Required": 1,
-            "DataType": "number",
-            "Options": [],
-            "Description": "The number of expected features in the input x"
-      
-          },
-          "hidden_size": {
-            "Example": "5",
-            "Default": "",
-            "Required": 1,
-            "DataType": "number",
-            "Options": [],
-            "Description": "The number of features in the hidden state h"
-      
-          },
-          "num_layers": {
-            "Example": "5",
-            "Default": "",
-            "Required": 1,
-            "DataType": "number",
-            "Options": [],
-            "Description": "Number of recurrent layers. E.g., setting num_layers=2 would mean stacking two LSTMs"
-          },
-      
-          "bias": {
-            "Example": "False",
-            "Default": "True",
-            "Required": 0,
-            "DataType": "select",
-            "Options": ["True", "False"],
-            "Description": "Whether to use bias weights b_ih and b_hh"
-      
-          },
-      
-          "dropout": {
-            "Example": "1",
-            "Default": "0 ",
-            "Required": 0,
-            "DataType": "number",
-            "Options": [],
-            "Description": " If non-zero, introduces a Dropout layer on the outputs of each LSTM layer except the last layer, with dropout probability equal to dropout"
-      
-          }
-      
-      
-      
-        },
-      
-        "Dropout": {
-          "p": {
-            "Example": "0.3",
-            "Default": "0.5 ",
-            "Required": 1,
-            "DataType": "number",
-            "Options": [],
-            "Description": "probability of an element to be zeroed"
-      
-          },
-          "inplace": {
-      
-            "Example": "True",
-            "Default": "False",
-            "Required": 0,
-            "DataType": "select",
-            "Options": ["True", "False"],
-            "Description": "Whether to do this operation in-place"
-          }
-      
-        },
-      
-        "Flatten": {
-          "start_dim ": {
-            "Example": "1",
-            "Default": "1",
-            "Required": 1,
-            "DataType": "number",
-            "Options": [],
-            "Description": "first dim to flatten"
-      
-          },
-          "end_dim": {
-            "Example": "1",
-            "Default": "-1",
-            "Required": 1,
-            "DataType": "number",
-            "Options": [],
-            "Description": "last dim to flatten "
-          }
-        },
-      
-        "ZeroPad2d": {
-          "padding": {
-            "Example": "(1, 1, 2, 0)",
-            "Default": "",
-            "Required": 1,
-            "DataType": "Tuple",
-            "Options": [],
-            "Description": "Pads the input tensor boundaries with zero.  Uses (padding_left, paddding_right, padding_top, padding_bottom)"
-      
-      
-          }
-      
-        },
-        "AvgPool2d": {
-          "kernel_size ": {
-            "Example": "(3, 2)",
-            "Default": "",
-            "Required": 1,
-            "DataType": "Tuple",
-            "Options": [],
-            "Description": "the size of the window. The first, int is used for the height dimension, and the second int for the width dimension"
-          },
-          "stride": {
-            "Example": "(2, 1)",
-            "Default": "",
-            "Required": 1,
-            "DataType": "Tuple",
-            "Options": [],
-            "Description": "the stride of the window. Default value is kernel_size. The first, int is used for the height dimension, and the second int for the width dimension"
-          },
-          "padding": {
-            "Example": "(2, 2)",
-            "Default": "",
-            "Required": 0,
-            "DataType": "Tuple",
-            "Options": [],
-            "Description": "implicit zero paddings to be added on both sides. The first, int is used for the height dimension, and the second int for the width dimension"
-          }
-        },
-      
-        "MaxPool2d": {
-      
-          "kernel_size ": {
-            "Example": "(3, 2)",
-            "Default": "",
-            "Required": 1,
-            "DataType": "Tuple",
-            "Options": [],
-            "Description": "the size of the window. The first, int is used for the height dimension, and the second int for the width dimension"
-          },
-          "stride": {
-            "Example": "(2, 1)",
-            "Default": "",
-            "Required": 1,
-            "DataType": "Tuple",
-            "Options": [],
-            "Description": "the stride of the window. Default value is kernel_size. The first, int is used for the height dimension, and the second int for the width dimension"
-          },
-          "padding": {
-            "Example": "(2, 2)",
-            "Default": "",
-            "Required": 0,
-            "DataType": "Tuple",
-            "Options": [],
-            "Description": "implicit zero paddings to be added on both sides. The first, int is used for the height dimension, and the second int for the width dimension"
-          }
+
+      Adam: {
+        name: "Adam",
+        type: "optimizer",
+        lr: {
+          Example: 0.1,
+          Default: 0.001,
+          Required: 0,
+          DataType: "number",
+          Options: [],
+          Description: "learning rate",
         },
 
-        "ReLU": {
-          "name": "relu",
-          "type": "activation-layer",
-          "inplace": {
-            "Example": "True",
-            "Default": "False",
-            "Required": 0,
-            "DataType": "Bool",
-            "Options": ["True", "False"],
-            "Description": "Applies the rectified linear unit function element-wise"
-      
-          }
-      
+        betas: {
+          Example: [0.2, 0.222],
+          Default: [0.9, 0.999],
+          Required: 0,
+          DataType: "Tuple",
+          Options: [],
+          Description:
+            "(Tuple[float, float]) coefficients used for computing running averages of gradient and its square (default: (0.9, 0.999))",
         },
-      
-        "RReLU": {
-          "name": "rectified-relu",
-          "type": "activation-layer",
-      
-          "lower": {
-            "Example": "0.2",
-            "Default": "0.125",
-            "Required": 0,
-            "DataType": "number",
-            "Options": [],
-            "Description": "lower bound of the uniform distribution"
-          },
-      
-          "upper": {
-            "Example": "0.5",
-            "Default": "0.333333",
-            "Required": 0,
-            "DataType": "number",
-            "Options": [],
-            "Description": "Upper bound of the uniform distribution"
-          },
-      
-          "inplace": {
-            "Example": "True",
-            "Default": "False",
-            "Required": 0,
-            "DataType": "Bool",
-            "Options": ["True", "False"],
-            "Description": "Applies the rectified linear unit function element-wise"
-      
-          }
-      
+
+        eps: {
+          Example: 0.0001,
+          Default: 0.00000001,
+          Required: 0,
+          DataType: "number",
+          Options: [],
+          Description:
+            " term added to the denominator to improve numerical stability  (default: 1e-8)",
         },
-      
-        "Sigmoid": {
-          "name": "sigmoid",
-          "type": "activation-layer"
+
+        weight_decay: {
+          Example: 0.1,
+          Default: 0,
+          Required: 0,
+          DataType: "number",
+          Options: [],
+          Description: "weight decay (L2 penalty) (default: 0)",
         },
-      
-        "Tanh": {
-          "name": "tanh",
-          "type": "activation-layer"
+
+        amsgrad: {
+          Example: "True",
+          Default: "False",
+          Required: 0,
+          DataType: "select",
+          Options: ["True", "False"],
+          Description:
+            "whether to use the AMSGrad variant of this algorithm from the paper On the Convergence of Adam and Beyond (default: False)",
         },
-      
-        "Softmax": {
-          "name": "softmax",
-          "type": "activation-layer",
-          "dim": {
-            "Example": "1",
-            "Default": "None",
-            "Required": 0,
-            "DataType": "int",
-            "Options": [],
-            "Description": "A dimension along which Softmax will be computed (so every slice along dim will sum to 1)."
-          }
+      },
+
+      RMSProp: {
+        name: "RMSProp",
+        type: "optimizer",
+        lr: {
+          Example: 0.1,
+          Default: 0.01,
+          Required: 0,
+          DataType: "number",
+          Options: [],
+          Description: "learning rate",
         },
-      
-        "Softmax2d": {
-          "name": "softmax-2d",
-          "type": "activation-layer"
+
+        momentum: {
+          Example: 0.1,
+          Default: 0,
+          Required: 0,
+          DataType: "number",
+          Options: [],
+          Description: "momentum factor",
         },
-      
-        "LogSoftmax": {
-          "name": "logsoftmax",
-          "type": "activation-layer",
-          "dim": {
-            "Example": "1",
-            "Default": "None",
-            "Required": 0,
-            "DataType": "int",
-            "Options": [],
-            "Description": "A dimension along which Softmax will be computed (so every slice along dim will sum to 1)."
-          }
+
+        alpha: {
+          Example: 0.1,
+          Default: 0.99,
+          Required: 0,
+          DataType: "number",
+          Options: [],
+          Description: "smoothing constant",
         },
+
+        eps: {
+          Example: 0.0001,
+          Default: 0.000000001,
+          Required: 0,
+          DataType: "number",
+          Options: [],
+          Description:
+            "term added to the denominator to improve numerical stability (default: 1e-8)",
+        },
+
+        centered: {
+          Example: "True",
+          Default: "False",
+          Required: 0,
+          DataType: "select",
+          Options: ["True", "False"],
+          Description:
+            " if True, compute the centered RMSProp, the gradient is normalized by an estimation of its variance",
+        },
+
+        weight_decay: {
+          Example: 0.1,
+          Default: 0,
+          Required: 0,
+          DataType: "number",
+          Options: [],
+          Description: "weight decay (L2 penalty) (default: 0)",
+        },
+      },
     };
-  }
-  else if(project_details.lib === new String("Keras").valueOf() || project_details.library === new String("Keras").valueOf()){
-    var temp_json={
+    var temp_json = {
+      Linear: {
+        in_features: {
+          Example: "3",
+          Default: "",
+          Required: 1,
+          DataType: "number",
+          Options: [],
+          Description: " size of each input sample",
+        },
+        out_features: {
+          Example: "3",
+          Default: "",
+          Required: 1,
+          DataType: "number",
+          Options: [],
+          Description: "size of each output sample",
+        },
+        bias: {
+          Example: "False",
+          Default: "True",
+          Required: 0,
+          DataType: "select",
+          Options: ["True", "False"],
+          Description:
+            "If set to False, the layer will not learn an additive bias.",
+        },
+      },
+
+      Conv2d: {
+        in_channels: {
+          Example: "3",
+          Default: "",
+          Required: 1,
+          DataType: "number",
+          Options: [],
+          Description: "Number of channels in the input image.",
+        },
+
+        out_channels: {
+          Example: "6",
+          Default: "",
+          Required: 1,
+          DataType: "number",
+          Options: [],
+          Description: "Number of channels in the output image.",
+        },
+        kernel_size: {
+          Example: "5",
+          Default: "",
+          Required: 1,
+          DataType: "number",
+          Options: [],
+          Description: "Size of the convolving kernel.",
+        },
+      },
+      LSTM: {
+        input_size: {
+          Example: "5",
+          Default: "",
+          Required: 1,
+          DataType: "number",
+          Options: [],
+          Description: "The number of expected features in the input x",
+        },
+        hidden_size: {
+          Example: "5",
+          Default: "",
+          Required: 1,
+          DataType: "number",
+          Options: [],
+          Description: "The number of features in the hidden state h",
+        },
+        num_layers: {
+          Example: "5",
+          Default: "",
+          Required: 1,
+          DataType: "number",
+          Options: [],
+          Description:
+            "Number of recurrent layers. E.g., setting num_layers=2 would mean stacking two LSTMs",
+        },
+        bias: {
+          Example: "False",
+          Default: "True",
+          Required: 0,
+          DataType: "select",
+          Options: ["True", "False"],
+          Description: "Whether to use bias weights b_ih and b_hh",
+        },
+        dropout: {
+          Example: "1",
+          Default: "0 ",
+          Required: 0,
+          DataType: "number",
+          Options: [],
+          Description:
+            " If non-zero, introduces a Dropout layer on the outputs of each LSTM layer except the last layer, with dropout probability equal to dropout",
+        },
+      },
+      RNNBase: {
+        input_size: {
+          Example: "5",
+          Default: "",
+          Required: 1,
+          DataType: "number",
+          Options: [],
+          Description: "The number of expected features in the input x",
+        },
+        hidden_size: {
+          Example: "5",
+          Default: "",
+          Required: 1,
+          DataType: "number",
+          Options: [],
+          Description: "The number of features in the hidden state h",
+        },
+        num_layers: {
+          Example: "5",
+          Default: "",
+          Required: 1,
+          DataType: "number",
+          Options: [],
+          Description:
+            "Number of recurrent layers. E.g., setting num_layers=2 would mean stacking two LSTMs",
+        },
+
+        bias: {
+          Example: "False",
+          Default: "True",
+          Required: 0,
+          DataType: "select",
+          Options: ["True", "False"],
+          Description: "Whether to use bias weights b_ih and b_hh",
+        },
+
+        dropout: {
+          Example: "1",
+          Default: "0 ",
+          Required: 0,
+          DataType: "number",
+          Options: [],
+          Description:
+            " If non-zero, introduces a Dropout layer on the outputs of each LSTM layer except the last layer, with dropout probability equal to dropout",
+        },
+      },
+
+      Dropout: {
+        p: {
+          Example: "0.3",
+          Default: "0.5 ",
+          Required: 1,
+          DataType: "number",
+          Options: [],
+          Description: "probability of an element to be zeroed",
+        },
+        inplace: {
+          Example: "True",
+          Default: "False",
+          Required: 0,
+          DataType: "select",
+          Options: ["True", "False"],
+          Description: "Whether to do this operation in-place",
+        },
+      },
+
+      Flatten: {
+        start_dim: {
+          Example: "1",
+          Default: "1",
+          Required: 1,
+          DataType: "number",
+          Options: [],
+          Description: "first dim to flatten",
+        },
+        end_dim: {
+          Example: "1",
+          Default: "-1",
+          Required: 1,
+          DataType: "number",
+          Options: [],
+          Description: "last dim to flatten ",
+        },
+      },
+
+      ZeroPad2d: {
+        padding: {
+          Example: "(1, 1, 2, 0)",
+          Default: "",
+          Required: 1,
+          DataType: "Tuple",
+          Options: [],
+          Description:
+            "Pads the input tensor boundaries with zero.  Uses (padding_left, paddding_right, padding_top, padding_bottom)",
+        },
+      },
+      AvgPool2d: {
+        kernel_size: {
+          Example: "(3, 2)",
+          Default: "",
+          Required: 1,
+          DataType: "Tuple",
+          Options: [],
+          Description:
+            "the size of the window. The first, int is used for the height dimension, and the second int for the width dimension",
+        },
+        stride: {
+          Example: "(2, 1)",
+          Default: "",
+          Required: 1,
+          DataType: "Tuple",
+          Options: [],
+          Description:
+            "the stride of the window. Default value is kernel_size. The first, int is used for the height dimension, and the second int for the width dimension",
+        },
+        padding: {
+          Example: "(2, 2)",
+          Default: "",
+          Required: 0,
+          DataType: "Tuple",
+          Options: [],
+          Description:
+            "implicit zero paddings to be added on both sides. The first, int is used for the height dimension, and the second int for the width dimension",
+        },
+      },
+
+      MaxPool2d: {
+        "kernel_size ": {
+          Example: "(3, 2)",
+          Default: "",
+          Required: 1,
+          DataType: "Tuple",
+          Options: [],
+          Description:
+            "the size of the window. The first, int is used for the height dimension, and the second int for the width dimension",
+        },
+        stride: {
+          Example: "(2, 1)",
+          Default: "",
+          Required: 1,
+          DataType: "Tuple",
+          Options: [],
+          Description:
+            "the stride of the window. Default value is kernel_size. The first, int is used for the height dimension, and the second int for the width dimension",
+        },
+        padding: {
+          Example: "(2, 2)",
+          Default: "",
+          Required: 0,
+          DataType: "Tuple",
+          Options: [],
+          Description:
+            "implicit zero paddings to be added on both sides. The first, int is used for the height dimension, and the second int for the width dimension",
+        },
+      },
+
+      ReLU: {
+        name: "relu",
+        type: "activation-layer",
+        inplace: {
+          Example: "True",
+          Default: "False",
+          Required: 0,
+          DataType: "Bool",
+          Options: ["True", "False"],
+          Description:
+            "Applies the rectified linear unit function element-wise",
+        },
+      },
+
+      RReLU: {
+        name: "rectified-relu",
+        type: "activation-layer",
+
+        lower: {
+          Example: "0.2",
+          Default: "0.125",
+          Required: 0,
+          DataType: "number",
+          Options: [],
+          Description: "lower bound of the uniform distribution",
+        },
+
+        upper: {
+          Example: "0.5",
+          Default: "0.333333",
+          Required: 0,
+          DataType: "number",
+          Options: [],
+          Description: "Upper bound of the uniform distribution",
+        },
+
+        inplace: {
+          Example: "True",
+          Default: "False",
+          Required: 0,
+          DataType: "Bool",
+          Options: ["True", "False"],
+          Description:
+            "Applies the rectified linear unit function element-wise",
+        },
+      },
+
+      Sigmoid: {
+        name: "sigmoid",
+        type: "activation-layer",
+      },
+
+      Tanh: {
+        name: "tanh",
+        type: "activation-layer",
+      },
+
+      Softmax: {
+        name: "softmax",
+        type: "activation-layer",
+        dim: {
+          Example: "1",
+          Default: "None",
+          Required: 0,
+          DataType: "int",
+          Options: [],
+          Description:
+            "A dimension along which Softmax will be computed (so every slice along dim will sum to 1).",
+        },
+      },
+
+      Softmax2d: {
+        name: "softmax-2d",
+        type: "activation-layer",
+      },
+
+      LogSoftmax: {
+        name: "logsoftmax",
+        type: "activation-layer",
+        dim: {
+          Example: "1",
+          Default: "None",
+          Required: 0,
+          DataType: "int",
+          Options: [],
+          Description:
+            "A dimension along which Softmax will be computed (so every slice along dim will sum to 1).",
+        },
+      },
+    };
+  } else if (
+    project_details.lib === new String("Keras").valueOf() ||
+    project_details.library === new String("Keras").valueOf()
+  ) {
+    var temp_json = {
       Conv2D: {
         filters: {
           Example: 32,
@@ -1096,7 +1183,7 @@ function Step2() {
           Description:
             "the dimensionality of the output space [i.e.the number of output filters in the convolution]",
         },
-  
+
         data_format: {
           Example: "channels_last",
           Default: "channels_last",
@@ -1106,7 +1193,7 @@ function Step2() {
           Description:
             "A string, one of channels_last [default] or channels_first.",
         },
-  
+
         kernel_size: {
           Example: [2, 2],
           Default: "NA",
@@ -1125,7 +1212,7 @@ function Step2() {
           Description:
             "Specifies the strides of the convolution along the height and width.",
         },
-  
+
         padding: {
           Example: "valid",
           Default: "valid",
@@ -1135,7 +1222,7 @@ function Step2() {
           Description:
             '"valid" means no padding. "same" results in padding evenly to the left/right or up/down of the input such that output has the same height/width dimension as the input.',
         },
-  
+
         kernel_initializer: {
           Example: "glorot_uniform",
           Default: "glorot_uniform",
@@ -1173,7 +1260,7 @@ function Step2() {
           Description: "Initializer for the bias vector",
         },
       },
-  
+
       Dense: {
         units: {
           Example: 32,
@@ -1183,7 +1270,7 @@ function Step2() {
           Options: [],
           Description: "Positive integer, dimensionality of the output space.",
         },
-  
+
         use_bias: {
           Example: "True",
           Default: "True",
@@ -1209,7 +1296,7 @@ function Step2() {
           ],
           Description: "Activation function, if required",
         },
-  
+
         kernel_initializer: {
           Example: "glorot_uniform",
           Default: "glorot_uniform",
@@ -1228,7 +1315,7 @@ function Step2() {
           ],
           Description: "Initializer for the kernel weights matrix",
         },
-  
+
         bias_initializer: {
           Example: "zeros",
           Default: "zeros",
@@ -1248,7 +1335,7 @@ function Step2() {
           Description: "Initializer for the bias vector",
         },
       },
-  
+
       LSTM: {
         units: {
           Example: 32,
@@ -1258,7 +1345,7 @@ function Step2() {
           Options: [],
           Description: "Positive integer, dimensionality of the output space.",
         },
-  
+
         activation: {
           Example: "tanh",
           Default: "tanh",
@@ -1278,7 +1365,7 @@ function Step2() {
           Description:
             'Activation function to use. Default: hyperbolic tangent [tanh]. If you pass None, no activation is applied [ie. "linear " activation: a[x] = x]',
         },
-  
+
         recurrent_activation: {
           Example: "sigmoid",
           Default: "sigmoid",
@@ -1298,7 +1385,7 @@ function Step2() {
           Description:
             'Activation function to use for the recurrent step. Default: sigmoid [sigmoid]. If you pass None, no activation is applied [ie. "linear " activation: a[x] = x].',
         },
-  
+
         kernel_initializer: {
           Example: "glorot_uniform",
           Default: "glorot_uniform",
@@ -1317,7 +1404,7 @@ function Step2() {
           ],
           Description: "Initializer for the kernel weights matrix",
         },
-  
+
         bias_initializer: {
           "Example ": "zeros ",
           Default: "zeros",
@@ -1336,7 +1423,7 @@ function Step2() {
           ],
           Description: "Initializer for the bias vector",
         },
-  
+
         dropout: {
           Default: 0,
           Example: 0.4,
@@ -1346,7 +1433,7 @@ function Step2() {
           Description:
             "Float between 0 and 1. Fraction of the units to drop for the linear transformation of the inputs. Default: 0.",
         },
-  
+
         return_sequences: {
           Default: "False",
           Example: "True",
@@ -1356,7 +1443,7 @@ function Step2() {
           Description:
             "Boolean. Whether to return the last output. in the output sequence, or the full sequence. Default: False",
         },
-  
+
         return_state: {
           Default: "False",
           Example: "True",
@@ -1367,7 +1454,7 @@ function Step2() {
             "Boolean. Whether to return the last state in addition to the output. Default: False.",
         },
       },
-  
+
       BaseRNN: {
         cell: {
           Default: "NA",
@@ -1378,7 +1465,7 @@ function Step2() {
           Description: "An RNN cell instance",
         },
       },
-  
+
       SimpleRNN: {
         units: {
           Example: 32,
@@ -1388,7 +1475,7 @@ function Step2() {
           Options: [],
           Description: "Positive integer, dimensionality of the output space.",
         },
-  
+
         activation: {
           Example: "tanh",
           Default: "tanh",
@@ -1408,7 +1495,7 @@ function Step2() {
           Description:
             'Activation function to use. Default: hyperbolic tangent [tanh]. If you pass None, no activation is applied [ie. "linear " activation: a[x] = x]',
         },
-  
+
         use_bias: {
           Example: "True",
           Default: "True",
@@ -1427,7 +1514,7 @@ function Step2() {
             "Float between 0 and 1. Fraction of the units to drop for the linear transformation of the inputs. Default: 0.",
         },
       },
-  
+
       Dropout: {
         rate: {
           Default: "NA",
@@ -1438,7 +1525,7 @@ function Step2() {
           Description:
             "Float between 0 and 1. Fraction of the input units to drop.",
         },
-  
+
         noise_shape: {
           Default: "None",
           Example: "[batch_size, 1, features]",
@@ -1448,7 +1535,7 @@ function Step2() {
           Description:
             "1D integer tensor representing the shape of the binary dropout mask that will be multiplied with the input. For instance, if your inputs have shape [batch_size, timesteps, features] and you want the dropout mask to be the same for all timesteps, you can use noise_shape=[batch_size, 1, features]",
         },
-  
+
         seed: {
           Default: "NA",
           Example: 42,
@@ -1458,7 +1545,7 @@ function Step2() {
           Description: "A Python integer to use as random seed",
         },
       },
-  
+
       Flatten: {
         data_format: {
           Example: "channels_last",
@@ -1470,7 +1557,7 @@ function Step2() {
             "A string, one of channels_last [default] or channels_first.",
         },
       },
-  
+
       ZeroPadding2D: {
         padding: {
           Example: [
@@ -1484,7 +1571,7 @@ function Step2() {
           Description:
             "The Tuple interpreted as [[top_pad, bottom_pad], [left_pad, right_pad]]",
         },
-  
+
         data_format: {
           Example: "channels_last",
           Default: "channels_last",
@@ -1495,7 +1582,7 @@ function Step2() {
             "A string, one of channels_last [default] or channels_first.",
         },
       },
-  
+
       AveragePooling2D: {
         pool_size: {
           Example: [2, 2],
@@ -1506,7 +1593,7 @@ function Step2() {
           Description:
             "integer or Tuple of 2 integers, factors by which to downscale [vertical, horizontal]. [2, 2] will halve the input in both spatial dimension. If only one integer is specified, the same window length will be used for both dimensions",
         },
-  
+
         strides: {
           Example: [2, 2],
           Default: "NA",
@@ -1516,7 +1603,7 @@ function Step2() {
           Description:
             "Tuple of 2 integers, or None. Strides values. If None, it will default to pool_size.",
         },
-  
+
         data_format: {
           Example: "channels_last",
           Default: "channels_last",
@@ -1526,7 +1613,7 @@ function Step2() {
           Description:
             "A string, one of channels_last [default] or channels_first.",
         },
-  
+
         padding: {
           Example: "valid",
           Default: "valid",
@@ -1537,7 +1624,7 @@ function Step2() {
             '"valid" means no padding. "same" results in padding evenly to the left/right or up/down of the input such that output has the same height/width dimension as the input.',
         },
       },
-  
+
       MaxPooling2D: {
         pool_size: {
           Example: [2, 2],
@@ -1548,7 +1635,7 @@ function Step2() {
           Description:
             "integer or Tuple of 2 integers, factors by which to downscale [vertical, horizontal]. [2, 2] will halve the input in both spatial dimensions. If only one integer is specified, the same window length will be used for both dimensions",
         },
-  
+
         strides: {
           Example: [2, 2],
           Default: "NA",
@@ -1558,7 +1645,7 @@ function Step2() {
           Description:
             "Tuple of 2 integers, or None. Strides values. If None, it will default to pool_size.",
         },
-  
+
         data_format: {
           Example: "channels_last",
           Default: "channels_last",
@@ -1568,7 +1655,7 @@ function Step2() {
           Description:
             "A string, one of channels_last [default] or channels_first.",
         },
-  
+
         padding: {
           Example: "valid",
           Default: "valid",
@@ -1580,9 +1667,593 @@ function Step2() {
         },
       },
     };
+    var temp_loss = {
+      L1Loss: {
+        name: "l1loss",
+        type: "loss-function",
+        reduction: {
+          Example: "sum",
+          Default: "mean",
+          Required: 0,
+          DataType: "select",
+          Options: ["none", "mean", "sum"],
+          Description:
+            "measures the mean absolute error (MAE) between each element in the input xx and target yy. 'none': no reduction will be applied, 'mean': the sum of the output will be divided by the number of elements in the output, 'sum': the output will be summed.",
+        },
+      },
+
+      MSELoss: {
+        name: "mseLoss",
+        type: "loss-function",
+        reduction: {
+          Example: "sum",
+          Default: "mean",
+          Required: 0,
+          DataType: "select",
+          Options: ["none", "mean", "sum"],
+          Description:
+            "Specifies the reduction to apply to the output: 'none' | 'mean' | 'sum'. 'none': no reduction will be applied, 'mean': the sum of the output will be divided by the number of elements in the output, 'sum': the output will be summed. Note: size_average and reduce are in the process of being deprecated, and in the meantime, specifying either of those two args will override reduction. Default: 'mean'",
+        },
+      },
+
+      CrossEntropyLoss: {
+        name: "cross-entropy-loss",
+        type: "loss-function",
+        weight: {
+          Example: "torch.ones([64])",
+          Default: "None",
+          Required: 0,
+          DataType: "Tensor",
+          Options: [],
+          Description:
+            " a manual rescaling weight given to each class. If given, has to be a Tensor of size C",
+        },
+        reduction: {
+          Example: "sum",
+          Default: "mean",
+          Required: 0,
+          DataType: "select",
+          Options: ["none", "mean", "sum"],
+          Description:
+            "Specifies the reduction to apply to the output. 'none': no reduction will be applied, 'mean': the sum of the output will be divided by the number of elements in the output, 'sum': the output will be summed.",
+        },
+        ignore_index: {
+          Example: "-100",
+          Default: "-100",
+          Required: 0,
+          DataType: "int",
+          Options: [],
+          Description:
+            "Specifies a target value that is ignored and does not contribute to the input gradient. When size_average is True, the loss is averaged over non-ignored targets",
+        },
+      },
+
+      NLLLoss: {
+        name: "nlloss",
+        type: "loss-function",
+        weight: {
+          Example: "torch.ones([64])",
+          Default: "None",
+          Required: 0,
+          DataType: "Tensor",
+          Options: [],
+          Description:
+            " a manual rescaling weight given to each class. If given, has to be a Tensor of size C. Otherwise, it is treated as if having all ones.",
+        },
+        ignore_index: {
+          Example: "-100",
+          Default: "-100",
+          Required: 0,
+          DataType: "int",
+          Options: [],
+          Description:
+            "Specifies a target value that is ignored and does not contribute to the input gradient. When size_average is True, the loss is averaged over non-ignored targets",
+        },
+        reduction: {
+          Example: "sum",
+          Default: "mean",
+          Required: 0,
+          DataType: "select",
+          Options: ["none", "mean", "sum"],
+          Description:
+            "Specifies the reduction to apply to the output: 'none' | 'mean' | 'sum'. 'none': no reduction will be applied, 'mean': the sum of the output will be divided by the number of elements in the output, 'sum': the output will be summed. Note: size_average and reduce are in the process of being deprecated, and in the meantime, specifying either of those two args will override reduction. Default: 'mean'",
+        },
+      },
+
+      BCELoss: {
+        name: "bceLoss",
+        type: "loss-function",
+        weight: {
+          Example: "torch.ones([64])",
+          Default: "None",
+          Required: 0,
+          DataType: "Tensor",
+          Options: [],
+          Description:
+            " a manual rescaling weight given to each class.  If given, has to be a Tensor of size nbatch.",
+        },
+        reduction: {
+          Example: "sum",
+          Default: "mean",
+          Required: 0,
+          DataType: "select",
+          Options: ["none", "mean", "sum"],
+          Description:
+            "Specifies the reduction to apply to the output. 'none': no reduction will be applied, 'mean': the sum of the output will be divided by the number of elements in the output, 'sum': the output will be summed.",
+        },
+      },
+
+      BCEWithLogitsLoss: {
+        name: "bce-logits-loss",
+        type: "loss-function",
+        weight: {
+          Example: "torch.ones([64])",
+          Default: "None",
+          Required: 0,
+          DataType: "Tensor",
+          Options: [],
+          Description:
+            "a manual rescaling weight given to the loss of each batch element. If given, has to be a Tensor of size nbatch.",
+        },
+
+        pos_weight: {
+          Example: "torch.ones([64])",
+          Default: "None",
+          Required: 0,
+          DataType: "Tensor",
+          Options: [],
+          Description:
+            " a weight of positive examples. Must be a vector with length equal to the number of classes.",
+        },
+
+        reduction: {
+          Example: "sum",
+          Default: "mean",
+          Required: 0,
+          DataType: "select",
+          Options: ["none", "mean", "sum"],
+          Description:
+            "Specifies the reduction to apply to the output: 'none' | 'mean' | 'sum'. 'none': no reduction will be applied, 'mean': the sum of the output will be divided by the number of elements in the output, 'sum': the output will be summed. Note: size_average and reduce are in the process of being deprecated, and in the meantime, specifying either of those two args will override reduction. Default: 'mean'",
+        },
+      },
+
+      SmoothL1Loss: {
+        name: "mseLoss",
+        type: "loss-function",
+        reduction: {
+          Example: "sum",
+          Default: "mean",
+          Required: 0,
+          DataType: "select",
+          Options: ["none", "mean", "sum"],
+          Description:
+            "Specifies the reduction to apply to the output: 'none' | 'mean' | 'sum'. 'none': no reduction will be applied, 'mean': the sum of the output will be divided by the number of elements in the output, 'sum': the output will be summed. Note: size_average and reduce are in the process of being deprecated, and in the meantime, specifying either of those two args will override reduction. Default: 'mean'",
+        },
+        beta: {
+          Example: "0.5",
+          Default: "1.0",
+          Required: 0,
+          DataType: "number",
+          Options: [],
+          Description:
+            "Specifies the threshold at which to change between L1 and L2 loss. This value defaults to 1.0.",
+        },
+      },
+    };
+    var temp_optimizer = {
+      SGD: {
+        name: "SGD",
+        type: "optimizer",
+        lr: {
+          Example: 0.1,
+          Default: "NA",
+          Required: 1,
+          DataType: "number",
+          Options: [],
+          Description: "learning rate",
+        },
+
+        momentum: {
+          Example: 0.9,
+          Default: 0,
+          Required: 0,
+          DataType: "number",
+          Options: [],
+          Description: "momentum factor",
+        },
+
+        dampening: {
+          Example: 0.2,
+          Default: 0,
+          Required: 0,
+          DataType: "number",
+          Options: [],
+          Description: "dampening for momentum",
+        },
+
+        nesterov: {
+          Example: "True",
+          Default: "False",
+          Required: 0,
+          DataType: "select",
+          Options: ["True", "False"],
+          Description: "enables Nesterov momentum (default: False)",
+        },
+      },
+
+      Adagrad: {
+        name: "Adagrad",
+        type: "optimizer",
+        lr: {
+          Example: 0.1,
+          Default: "NA",
+          Required: 1,
+          DataType: "number",
+          Options: [],
+          Description: "learning rate",
+        },
+        lr_decay: {
+          Example: 0.1,
+          Default: 0,
+          Required: 0,
+          DataType: "number",
+          Options: [],
+          Description: "learning rate decay",
+        },
+        "weight_decay ": {
+          Example: 0.1,
+          Default: 0,
+          Required: 0,
+          DataType: "number",
+          Options: [],
+          Description: "weight decay (L2 penalty)",
+        },
+        eps: {
+          Example: 0.1,
+          Default: 0.0000000001,
+          Required: 0,
+          DataType: "number",
+          Options: [],
+          Description:
+            " term added to the denominator to improve numerical stability ",
+        },
+      },
+
+      Adam: {
+        name: "Adam",
+        type: "optimizer",
+        lr: {
+          Example: 0.1,
+          Default: 0.001,
+          Required: 0,
+          DataType: "number",
+          Options: [],
+          Description: "learning rate",
+        },
+
+        betas: {
+          Example: [0.2, 0.222],
+          Default: [0.9, 0.999],
+          Required: 0,
+          DataType: "Tuple",
+          Options: [],
+          Description:
+            "(Tuple[float, float]) coefficients used for computing running averages of gradient and its square (default: (0.9, 0.999))",
+        },
+
+        eps: {
+          Example: 0.0001,
+          Default: 0.00000001,
+          Required: 0,
+          DataType: "number",
+          Options: [],
+          Description:
+            " term added to the denominator to improve numerical stability  (default: 1e-8)",
+        },
+
+        weight_decay: {
+          Example: 0.1,
+          Default: 0,
+          Required: 0,
+          DataType: "number",
+          Options: [],
+          Description: "weight decay (L2 penalty) (default: 0)",
+        },
+
+        amsgrad: {
+          Example: "True",
+          Default: "False",
+          Required: 0,
+          DataType: "select",
+          Options: ["True", "False"],
+          Description:
+            "whether to use the AMSGrad variant of this algorithm from the paper On the Convergence of Adam and Beyond (default: False)",
+        },
+      },
+
+      RMSProp: {
+        name: "RMSProp",
+        type: "optimizer",
+        lr: {
+          Example: 0.1,
+          Default: 0.01,
+          Required: 0,
+          DataType: "number",
+          Options: [],
+          Description: "learning rate",
+        },
+
+        momentum: {
+          Example: 0.1,
+          Default: 0,
+          Required: 0,
+          DataType: "number",
+          Options: [],
+          Description: "momentum factor",
+        },
+
+        alpha: {
+          Example: 0.1,
+          Default: 0.99,
+          Required: 0,
+          DataType: "number",
+          Options: [],
+          Description: "smoothing constant",
+        },
+
+        eps: {
+          Example: 0.0001,
+          Default: 0.000000001,
+          Required: 0,
+          DataType: "number",
+          Options: [],
+          Description:
+            "term added to the denominator to improve numerical stability (default: 1e-8)",
+        },
+
+        centered: {
+          Example: "True",
+          Default: "False",
+          Required: 0,
+          DataType: "select",
+          Options: ["True", "False"],
+          Description:
+            " if True, compute the centered RMSProp, the gradient is normalized by an estimation of its variance",
+        },
+
+        weight_decay: {
+          Example: 0.1,
+          Default: 0,
+          Required: 0,
+          DataType: "number",
+          Options: [],
+          Description: "weight decay (L2 penalty) (default: 0)",
+        },
+      },
+    };
+    var temp_pre = {
+      Input: {
+        name: "Input",
+        type: {
+          Example: "image",
+          Default: "None",
+          Required: 1,
+          DataType: "String",
+          Options: ["image", "csv", "text"],
+          Description: "Type of input to model",
+        },
+        path: {
+          Example: "/data/cats-vs-dogs/",
+          Default: "None",
+          Required: 1,
+          DataType: "String",
+          Options: [],
+          Description: "Path to the data either absolute or relative",
+        },
+      },
+
+      augment: {
+        name: "augment",
+        "input-type": "image",
+
+        rotation_range: {
+          Example: 40,
+          Default: 0,
+          Required: 0,
+          DataType: "number",
+          Options: [],
+          Description: "Degree range for random rotations",
+        },
+        width_shift_range: {
+          Example: "0.1",
+          Default: "0.0",
+          Required: 0,
+          DataType: "number",
+          Options: [],
+          Description: "fraction of total width",
+        },
+
+        height_shift_range: {
+          Example: "0.1",
+          Default: "0.0",
+          Required: 0,
+          DataType: "number",
+          Options: [],
+          Description: "fraction of total height",
+        },
+
+        horizontal_flip: {
+          Example: "True",
+          Default: "",
+          Required: 0,
+          DataType: "select",
+          Options: ["True", "False"],
+          Description: "Whether you want to flip images horizontally",
+        },
+
+        rescale: {
+          Example: 0.0039215,
+          Default: 0,
+          Required: 0,
+          DataType: "number",
+          Options: [],
+          Description: "multiplies the data by the value provided",
+        },
+      },
+
+      params: {
+        name: "params",
+        "input-type": "image",
+
+        target_size: {
+          Example: [200, 200],
+          Default: "None",
+          Required: 1,
+          DataType: "tuple",
+          Options: [],
+          Description: "Target size of the image",
+        },
+        batch_size: {
+          Example: 64,
+          Default: 32,
+          Required: 1,
+          DataType: "number",
+          Options: [],
+          Description: "Size of the batches of data",
+        },
+
+        class_mode: {
+          Example: "binary",
+          Default: "categorical",
+          Required: 1,
+          DataType: "select",
+          Options: [
+            "binary",
+            "categorical",
+            "input",
+            "multi_output",
+            "raw",
+            "sparse",
+            "None",
+          ],
+          Description: "Mode for yielding the targets",
+        },
+      },
+    };
+    var hyper = {
+      params: {
+        name: "params",
+        input_type: "all",
+        optimizer: {
+          Example: "sgd",
+          Default: "rmsprop",
+          Required: 1,
+          DataType: "select",
+          Options: ["sgd", "rmsprop", "adam", "adadelta", "adagrad"],
+          Description:
+            "Optimizers tie together the loss function and model parameters by updating the model in response to the output of the loss function",
+        },
+        loss: {
+          Example: "binary_crossentropy",
+          Default: "None",
+          Required: 1,
+          DataType: "select",
+          Options: [
+            "binary_crossentropy",
+            "categorical_crossentropy",
+            "poisson",
+            "mean_squared_error",
+            "mean_absolute_error",
+            "cosine_similarity ",
+            "hinge",
+          ],
+          Description:
+            "The purpose of loss functions is to compute the quantity that a model should seek to minimize during training.",
+        },
+        metrics: {
+          Example: ["Accuracy"],
+          Default: "None",
+          Required: 1,
+          DataType: "Tuple",
+          Options: [
+            "Accuracy",
+            "BinaryCrossentropy",
+            "CategoricalCrossentropy",
+            "RootMeanSquaredError",
+            "CosineSimilarity",
+            "AUC",
+            "Precision",
+            "Recall",
+            "MeanIoU",
+            "Hinge",
+          ],
+          Description:
+            "A metric is a function that is used to judge the performance of your model. Metric functions are similar to loss functions, except that the results from evaluating a metric are not used when training the model.",
+        },
+        epochs: {
+          Example: 5,
+          Default: "None",
+          Required: 1,
+          DataType: "number",
+          Options: [],
+          Description: "Number of iterations for training",
+        },
+        verbose: {
+          Example: 1,
+          Default: 1,
+          Required: 0,
+          DataType: "number",
+          Options: [1, 0],
+          Description: "Verbosity level",
+        },
+        plot: {
+          Example: "False",
+          Default: "True",
+          Required: 0,
+          DataType: "select",
+          Options: ["True", "False"],
+          Description: "Whether to plot training graphs",
+        },
+        save_plots: {
+          Example: "False",
+          Default: "True",
+          Required: 0,
+          DataType: "select",
+          Options: ["True", "False"],
+          Description: "Whether to save training graphs",
+        },
+      },
+    };
   }
   console.log(temp_json);
+  // setall_optimizer(temp_optimizer);
+  const [all_optimizer, setall_optimizer] = React.useState(temp_optimizer);
+  const [all_loss, setall_loss] = React.useState(temp_loss);
   const [jsondata, setjsondata] = React.useState(temp_json);
+
+  useEffect(() => {
+    async function fetchData() {
+      const data = {
+        username: username,
+        project_id: project_details.project_id,
+      };
+      console.log(token, data);
+      // handleToggle_backdrop(true);
+      const res = await HomeService.get_layers(token, data);
+
+      if (res.status === 200) {
+        // handleToggle_backdrop(false);
+        // setAllProjects([...res.data.projects]);
+        setcomponents(res.data.components);
+        console.log(res.data.components);
+      } else {
+        // localStorage.clear();
+        // history.push("/login");
+      }
+    }
+    fetchData();
+  }, []);
+
   const handleDragEnd = ({ destination, source }) => {
     if (!destination) {
       return;
@@ -1602,12 +2273,12 @@ function Step2() {
       destination.droppableId === new String("delete").valueOf() &&
       source.droppableId === new String("target").valueOf()
     ) {
-        const element = components[source.index];
-        var temp = components.filter((item) => item !== element);
-        setcomponents(temp);
-        setselected_layer(-1);
-        setselected_layer_name("");
-        setselected_layer_type("");
+      const element = components[source.index];
+      var temp = components.filter((item) => item !== element);
+      setcomponents(temp);
+      setselected_layer(-1);
+      setselected_layer_name("");
+      setselected_layer_type("");
     }
     if (
       destination.droppableId === new String("target").valueOf() &&
@@ -1664,103 +2335,299 @@ function Step2() {
     setcomponents(pervstate);
   };
 
-  const generate_code = () => {
+  const genrate_layers = () => {
     var final_dict = {};
     const temp = components;
     var dic = _.cloneDeep(temp);
     var i = 0;
-    for (let [key0, value0] of Object.entries(dic)) {
-      console.log(key0, value0);
-      i = i + 1;
-      for (var key1 in value0) {
-        console.log(key1);
-        if (!(key1 === "name" || key1 === "id")) {
-          for (var key2 in dic[key0][key1]) {
-            if (key2 === new String("value").valueOf()) {
-              console.log(i);
-              console.log(dic[key0].name);
-              console.log(key1);
-              console.log(dic[key0][key1][key2]);
+    if (project_details.lib === new String("Pytorch").valueOf()) {
+      for (let [key0, value0] of Object.entries(dic)) {
+        console.log(key0, value0);
+        i = i + 1;
+        for (var key1 in value0) {
+          console.log(key1);
+          if (!(key1 === "name" || key1 === "id")) {
+            if (key1 === "type") {
+              final_dict[
+                `activation_function-${i}-${dic[key0].name}` + "-selected"
+              ] = true;
+            } else {
+              for (var key2 in dic[key0][key1]) {
+                if (key2 === new String("value").valueOf()) {
+                  // console.log(i);
+                  // console.log(dic[key0].name);
+                  // console.log(key1);
+                  // console.log(dic[key0][key1][key2]);
 
-              if (dic[key0][key1].Datatype === new String("number").valueOf()) {
-                final_dict[`Layer-${i}-${dic[key0].name}-${key1}`] = parseInt(
-                  dic[key0][key1][key2]
-                );
-              } else if (
-                dic[key0][key1].Datatype === new String("tuple").valueOf()
-              ) {
-                const temp = dic[key0][key1][key2].split(",");
-                console.log(temp);
-                console.log(temp[0]);
-                console.log(temp[1]);
+                  if (
+                    dic[key0][key1].Datatype === new String("number").valueOf()
+                  ) {
+                    final_dict[
+                      `Layer-${i}-${dic[key0].name}-${key1}`
+                    ] = parseInt(dic[key0][key1][key2]);
+                  } else if (
+                    dic[key0][key1].Datatype === new String("tuple").valueOf()
+                  ) {
+                    const temp = dic[key0][key1][key2].split(",");
+                    console.log(temp);
+                    console.log(temp[0]);
+                    console.log(temp[1]);
 
-                final_dict[`Layer-${i}-${dic[key0].name}-${key1}`] = [
-                  parseInt(temp[0]),
-                  parseInt(temp[1]),
-                ];
-              } else {
-                final_dict[`Layer-${i}-${dic[key0].name}-${key1}`] =
-                  dic[key0][key1][key2];
-                console.log(dic[key0][key1][key2]);
+                    final_dict[`Layer-${i}-${dic[key0].name}-${key1}`] = [
+                      parseInt(temp[0]),
+                      parseInt(temp[1]),
+                    ];
+                  } else {
+                    final_dict[`Layer-${i}-${dic[key0].name}-${key1}`] =
+                      dic[key0][key1][key2];
+                    console.log(dic[key0][key1][key2]);
+                  }
+                }
               }
-            } else if (dic[key0].name === new String("Flatten").valueOf()) {
-              console.log("Flatten");
-              final_dict[`Layer-${i}-${dic[key0].name}` + "-data_format"] =
-                dic[key0][key1]["Default"];
+            }
+          }
+        }
+      }
+    } else if (project_details.lib === new String("Keras").valueOf()) {
+      for (let [key0, value0] of Object.entries(dic)) {
+        console.log(key0, value0);
+        i = i + 1;
+        for (var key1 in value0) {
+          console.log(key1);
+          if (!(key1 === "name" || key1 === "id")) {
+            for (var key2 in dic[key0][key1]) {
+              if (key2 === new String("value").valueOf()) {
+                // console.log(i);
+                // console.log(dic[key0].name);
+                // console.log(key1);
+                // console.log(dic[key0][key1][key2]);
+
+                if (
+                  dic[key0][key1].Datatype === new String("number").valueOf()
+                ) {
+                  final_dict[`Layer-${i}-${dic[key0].name}-${key1}`] = parseInt(
+                    dic[key0][key1][key2]
+                  );
+                } else if (
+                  dic[key0][key1].Datatype === new String("tuple").valueOf()
+                ) {
+                  const temp = dic[key0][key1][key2].split(",");
+                  console.log(temp);
+                  console.log(temp[0]);
+                  console.log(temp[1]);
+
+                  final_dict[`Layer-${i}-${dic[key0].name}-${key1}`] = [
+                    parseInt(temp[0]),
+                    parseInt(temp[1]),
+                  ];
+                } else {
+                  final_dict[`Layer-${i}-${dic[key0].name}-${key1}`] =
+                    dic[key0][key1][key2];
+                  console.log(dic[key0][key1][key2]);
+                }
+              } else if (dic[key0].name === new String("Flatten").valueOf()) {
+                console.log("Flatten");
+                final_dict[`Layer-${i}-${dic[key0].name}` + "-data_format"] =
+                  dic[key0][key1]["Default"];
+              }
             }
           }
         }
       }
     }
+
+    return final_dict;
+  };
+  const generate_hyper = () => {
+    if (project_details.lib === new String("Pytorch").valueOf()) {
+      const final_dict = {};
+      var i = 0;
+      for (let [key0, value0] of Object.entries(selected_optimizer)) {
+        console.log(key0, value0);
+        i = i + 1;
+        for (var key1 in value0) {
+          // console.log(key1);
+          if (!(key1 === "name" || key1 === "id")) {
+            if (key1 === new String("value").valueOf()) {
+              // console.log(i);
+              // console.log(dic[key0].name);
+              // console.log(key1);
+              // console.log(dic[key0][key1][key2]);
+
+              if (
+                selected_optimizer[key0][key1].Datatype ===
+                new String("number").valueOf()
+              ) {
+                final_dict[
+                  `${selected_optimizer.type}-${selected_optimizer.name}-${key0}`
+                ] = parseInt(selected_optimizer[key0][key1]);
+              } else if (
+                selected_optimizer[key0][key1].Datatype ===
+                new String("tuple").valueOf()
+              ) {
+                const temp = selected_optimizer[key0][key1].split(",");
+                console.log(temp);
+                console.log(temp[0]);
+                console.log(temp[1]);
+
+                final_dict[
+                  `${selected_optimizer.type}-${selected_optimizer.name}-${key0}`
+                ] = [parseInt(temp[0]), parseInt(temp[1])];
+              } else {
+                final_dict[
+                  `${selected_optimizer.type}-${selected_optimizer.name}-${key0}`
+                ] = selected_optimizer[key0][key1];
+                console.log(selected_optimizer[key0][key1]);
+              }
+            }
+          }
+        }
+      }
+      var i = 0;
+      for (let [key0, value0] of Object.entries(selected_loss)) {
+        console.log(key0, value0);
+        i = i + 1;
+        for (var key1 in value0) {
+          // console.log(key1);
+          if (!(key1 === "name" || key1 === "id")) {
+            if (key1 === new String("value").valueOf()) {
+              // console.log(i);
+              // console.log(dic[key0].name);
+              // console.log(key1);
+              // console.log(dic[key0][key1][key2]);
+
+              if (
+                selected_loss[key0][key1].Datatype ===
+                new String("number").valueOf()
+              ) {
+                final_dict[
+                  `${selected_loss.type}-${selected_loss.name}-${key0}`
+                ] = parseInt(selected_loss[key0][key1]);
+              } else if (
+                selected_loss[key0][key1].Datatype ===
+                new String("tuple").valueOf()
+              ) {
+                const temp = selected_loss[key0][key1].split(",");
+                console.log(temp);
+                console.log(temp[0]);
+                console.log(temp[1]);
+
+                final_dict[
+                  `${selected_loss.type}-${selected_loss.name}-${key0}`
+                ] = [parseInt(temp[0]), parseInt(temp[1])];
+              } else {
+                final_dict[
+                  `${selected_loss.type}-${selected_loss.name}-${key0}`
+                ] = selected_loss[key0][key1];
+                console.log(selected_loss[key0][key1]);
+              }
+            }
+          }
+        }
+      }
+      console.log(final_dict);
+
+      const dict = {
+        metrics: state_hyperparam.metrics,
+        epochs: state_hyperparam.epochs,
+        verbose: state_hyperparam.verbose,
+        plot: state_hyperparam.plot,
+      };
+      var temp = Object.assign({}, final_dict, dict);
+    } else {
+      var temp = {
+        metrics: state_hyperparam.metrics,
+        epochs: state_hyperparam.epochs,
+        verbose: state_hyperparam.verbose,
+        plot: state_hyperparam.plot,
+        loss: state_hyperparam.loss,
+        optimizer: state_hyperparam.optimizer,
+        "dataset-type": "image",
+        "dataset-path": "../data/dogs_and_cats",
+      };
+    }
+
+    return temp;
+  };
+  const generate_code = async () => {
+    const hyper_data = generate_hyper();
+    const layers_data = genrate_layers();
+    var _data = Object.assign({}, hyper_data, layers_data);
+    const data = {
+      username: username,
+      project_id: project_details.project_id,
+      training_params: _data,
+    };
+    const res = await HomeService.generate_code(token, data);
+
+    if (res.status === 200) {
+      // handleToggle_backdrop(false);
+      // setAllProjects([...res.data.projects]);
+      setOpenModal(true);
+      setgenerated_file_path(res.data.path);
+    } else {
+      // localStorage.clear();
+      // history.push("/login");
+    }
+  };
+  const generate_code_1 = () => {
+    var final_dict = genrate_layers();
+
+    // here
     console.log(final_dict);
 
-    var _dict = {
-      // "Layer-1-Conv2D-filters": 32,
-      // "Layer-1-Conv2D-kernel_size": [
-      //     3, 3
-      // ],
-      // "Layer-1-Conv2D-activation": "relu",
-      // "Layer-1-Conv2D-padding": "same",
-      // "Layer-1-Conv2D-input_shape": [
-      //     200, 200, 3
-      // ],
+    if (project_details.lib === new String("Pytorch").valueOf()) {
+      console.log("pyyytorch");
+    } else if (project_details.lib === new String("Keras").valueOf()) {
+      var _dict = {
+        // "Layer-1-Conv2D-filters": 32,
+        // "Layer-1-Conv2D-kernel_size": [
+        //     3, 3
+        // ],
+        // "Layer-1-Conv2D-activation": "relu",
+        // "Layer-1-Conv2D-padding": "same",
+        // "Layer-1-Conv2D-input_shape": [
+        //     200, 200, 3
+        // ],
 
-      // "Layer-2-MaxPooling2D-pool_size": [
-      //     2, 2
-      // ],
+        // "Layer-2-MaxPooling2D-pool_size": [
+        //     2, 2
+        // ],
 
-      // "Layer-3-Flatten-": {},
+        // "Layer-3-Flatten-": {},
 
-      // "Layer-4-Dense-units": 128,
-      // "Layer-4-Dense-activation": "relu",
-      // "Layer-4-Dense-kernel_initializer": "he_uniform",
+        // "Layer-4-Dense-units": 128,
+        // "Layer-4-Dense-activation": "relu",
+        // "Layer-4-Dense-kernel_initializer": "he_uniform",
 
-      // "Layer-5-Dense-units": 1,
-      // "Layer-5-Dense-activation": "sigmoid",
+        // "Layer-5-Dense-units": 1,
+        // "Layer-5-Dense-activation": "sigmoid",
 
-      "dataset-type": "image",
-      "dataset-path": "../data/dogs_and_cats",
+        "dataset-type": "image",
+        "dataset-path": "../data/dogs_and_cats",
 
-      "image-augment-rotation_range": 40,
-      "image-augment-width_shift_range": 0.2,
-      "image-augment-height_shift_range": 0.2,
-      "image-augment-horizontal_flip": "True",
-      "image-augment-rescale": 0.0039215,
+        "image-augment-rotation_range": 40,
+        "image-augment-width_shift_range": 0.2,
+        "image-augment-height_shift_range": 0.2,
+        "image-augment-horizontal_flip": "True",
+        "image-augment-rescale": 0.0039215,
 
-      "image-params-target_size": [200, 200],
-      "image-params-batch_size": 64,
-      "image-params-class_mode": "binary",
+        "image-params-target_size": [200, 200],
+        "image-params-batch_size": 64,
+        "image-params-class_mode": "binary",
 
-      optimizer: "sgd",
-      loss: "binary_crossentropy",
-      metrics: ["accuracy"],
-      epochs: 5,
-
-      verbose: 1,
-      plot: "True",
-      save_plots: "True",
-    };
-    var dict_call = Object.assign({}, final_dict, _dict);
+        optimizer: "sgd",
+        loss: "binary_crossentropy",
+        metrics: ["accuracy"],
+        epochs: 5,
+        verbose: 1,
+        plot: "True",
+        save_plots: "True",
+      };
+      // var dict_call = Object.assign({}, final_dict, _dict);
+      var dict_call = _dict;
+    }
+    // api call
     console.log(dict_call);
     const test_data = {
       username: username,
@@ -1779,293 +2646,792 @@ function Step2() {
         console.log(response);
       });
   };
-  const Train = ()=>{
-    console.log("train");
+  const go_to_file_path = () => {
+    window.open(generated_file_path, "_blank");
+  };
+  const Train = async () => {
+    const hyper_data = generate_hyper();
+    const layers_data = genrate_layers();
+    var _data = Object.assign({}, hyper_data, layers_data);
+    const data = {
+      username: username,
+      project_id: project_details.project_id,
+      training_params: _data,
+    };
+    const res = await HomeService.train_model(token, data);
+
+    if (res.status === 200) {
+      // handleToggle_backdrop(false);
+      // setAllProjects([...res.data.projects]);
+      console.log(res);
+    } else {
+      // localStorage.clear();
+      // history.push("/login");
+    }
+  };
+
+  const handleChange_hyperparameter = (prop) => (event) => {
+    if (prop === "plot") {
+      setstate_hyperparam({
+        ...state_hyperparam,
+        [prop]: !state_hyperparam.plot,
+      });
+    } else if (prop === "metrics") {
+      setstate_hyperparam({
+        ...state_hyperparam,
+        [prop]: [event.target.value],
+      });
+    } else {
+      if (project_details.lib === new String("Pytorch").valueOf()) {
+        setstate_hyperparam({
+          ...state_hyperparam,
+          [prop]: parseInt(event.target.value),
+        });
+      } else {
+        setstate_hyperparam({
+          ...state_hyperparam,
+          [prop]: event.target.value,
+        });
+      }
+    }
+    console.log(prop, state_hyperparam.plot);
+  };
+
+  const handleChange_hyperparameter_l_o = (prop) => (event) => {
+    if (prop === "optimizer") {
+      if (event.target.value !== "") {
+        console.log(all_optimizer[event.target.value]);
+        setselected_optimizer(all_optimizer[event.target.value]);
+        setstate_hyperparam({
+          ...state_hyperparam,
+          optimizer: event.target.value,
+        });
+        setshowoptimizer(true);
+      }
+    } else {
+      if (event.target.value !== "") {
+        console.log(all_loss[event.target.value]);
+        setselected_loss(all_loss[event.target.value]);
+        setstate_hyperparam({ ...state_hyperparam, loss: event.target.value });
+        setshowloss(true);
+      }
+    }
+  };
+
+  const save_value_hyper = (prop, b) => (event) => {
+    if (b === "optimizer") {
+      var param = prop;
+      const pervstate = Object.assign([], selected_optimizer);
+      pervstate[param]["value"] = event.target.value;
+      // console.log(event.target.value);
+      setselected_optimizer(pervstate);
+    } else {
+      var param = prop;
+      const pervstate = Object.assign([], selected_loss);
+      pervstate[param]["value"] = event.target.value;
+      // console.log(event.target.value);
+      setselected_loss(pervstate);
+    }
+  };
+
+  const _hyper = (a, b) => {
+    if (a === "optimizer") {
+      if (b === "save") {
+        setshowoptimizer(false);
+      } else {
+        setstate_hyperparam({ ...state_hyperparam, optimizer: "" });
+        setselected_optimizer({});
+        setshowoptimizer(false);
+      }
+    } else {
+      if (b === "save") {
+        setshowloss(false);
+      } else {
+        setstate_hyperparam({ ...state_hyperparam, loss: "" });
+        setselected_loss({});
+        setshowloss(false);
+      }
+    }
   };
 
   return (
+    <div className={classes.App}>
+      <Dialog onClose={handleCloseModal} open={openModal}>
+        <DialogTitle onClose={handleCloseModal}>Generated code</DialogTitle>
+        <DialogContent dividers>{generated_file_path}</DialogContent>
+        <DialogActions>
+          {/* <a href = {generated_file_path} target = "_blank">Go to file path</a> */}
+          {/* <Button onClick={go_to_file_path} color="primary">
+                Go to file path
+              </Button> */}
+          <Button onClick={handleCloseModal} color="default">
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
 
-        <div className={classes.App}>
-          
-          <AppBar position="static" color="default">
-              <Tabs
-                value={value}
-                onChange={handleChangetabs}
-                indicatorColor="primary"
-                textColor="primary"
-                variant="fullWidth"
-                aria-label="full width tabs example"
-              >
-                <Tab label="Preprocessing" {...a11yProps(0)} />
-                <Tab label="Model" {...a11yProps(1)} />
-                <Tab label="Hyperparameters" {...a11yProps(2)} />
-              </Tabs>
-            </AppBar>
+      <AppBar position="static" color="default">
+        <Tabs
+          value={value}
+          onChange={handleChangetabs}
+          indicatorColor="primary"
+          textColor="primary"
+          variant="fullWidth"
+          aria-label="full width tabs example"
+        >
+          {/* <Tab label="Preprocessing" {...a11yProps(0)} /> */}
+          <Tab label="Model" {...a11yProps(0)} />
+          <Tab label="Hyperparameters" {...a11yProps(1)} />
+        </Tabs>
+      </AppBar>
 
-            <TabPanel value={value} index={0} dir={theme.direction}>
+      {/* <TabPanel value={value} index={0} dir={theme.direction}>
             Preprocessing
-            </TabPanel>
+            </TabPanel> */}
 
-            <TabPanel value={value} index={1} dir={theme.direction}>
-              
-              <DragDropContext onDragEnd={handleDragEnd}>
-              
-              <Grid container>
-                <Grid item lg={3} md={3} sm={4} xs={4} className={classes.grid1}>
-                  <div key="source" className={classes.column1}>
-                    <span className={classes.spancss}>Layers</span>
+      <TabPanel value={value} index={0} dir={theme.direction}>
+        <DragDropContext onDragEnd={handleDragEnd}>
+          <Grid container>
+            <Grid item lg={3} md={3} sm={4} xs={4} className={classes.grid1}>
+              <div key="source" className={classes.column1}>
+                <span className={classes.spancss}>Layers</span>
 
-                    <Droppable droppableId="source">
-                      {(provided, snapshot) => {
-                        return (
-                          <div
-                            ref={provided.innerRef}
-                            {...provided.droppableProps}
-                            className={classes.droppableColsource}
-                          >
-                            {Object.keys(jsondata).map((el, index) => {
-                              return (
-                                <Draggable key={el} index={index} draggableId={el}>
-                                  {(provided, snapshot) => {
-                                    // console.log(snapshot)
-                                    return (
-                                      <div
-                                        className={classes.item}
-                                        ref={provided.innerRef}
-                                        {...provided.draggableProps}
-                                        {...provided.dragHandleProps}
-                                      >
-                                        {el}
-                                      </div>
-                                    );
-                                  }}
-                                </Draggable>
-                              );
-                            })}
-                            {provided.placeholder}
-                          </div>
-                        );
-                      }}
-                    </Droppable>
-                  </div>
-                </Grid>
+                <Droppable droppableId="source">
+                  {(provided, snapshot) => {
+                    return (
+                      <div
+                        ref={provided.innerRef}
+                        {...provided.droppableProps}
+                        className={classes.droppableColsource}
+                      >
+                        {Object.keys(jsondata).map((el, index) => {
+                          return (
+                            <Draggable key={el} index={index} draggableId={el}>
+                              {(provided, snapshot) => {
+                                // console.log(snapshot)
+                                return (
+                                  <div
+                                    className={classes.item}
+                                    ref={provided.innerRef}
+                                    {...provided.draggableProps}
+                                    {...provided.dragHandleProps}
+                                  >
+                                    {el}
+                                  </div>
+                                );
+                              }}
+                            </Draggable>
+                          );
+                        })}
+                        {provided.placeholder}
+                      </div>
+                    );
+                  }}
+                </Droppable>
+              </div>
+            </Grid>
 
-                <Grid item lg={5} md={5} sm={4} xs={4} className={classes.grid2}>
-                  <div key="target" className={classes.column2}>
-                    <span className={classes.spancss}>Model</span>
+            <Grid item lg={5} md={5} sm={4} xs={4} className={classes.grid2}>
+              <div key="target" className={classes.column2}>
+                <span className={classes.spancss}>Model</span>
 
-                    <Droppable droppableId="target">
-                      {(provided, snapshot) => {
-                        return (
-                          <div
-                            ref={provided.innerRef}
-                            {...provided.droppableProps}
-                            className={classes.droppableColtarget}
-                          >
-                            {components.map((el, index) => {
-                              return (
-                                <Draggable
-                                  key={el.id}
-                                  index={index}
-                                  draggableId={el.id}
-                                >
-                                  {(provided, snapshot) => {
-                                    // console.log(snapshot)
-                                    return (
-                                      <div
-                                        className={classes.container}
-                                        ref={provided.innerRef}
-                                        {...provided.draggableProps}
-                                        {...provided.dragHandleProps}
-                                      >
-                                        <div
-                                          className={classes.item1}
-                                          onClick={() => showdetails(el)}
-                                        >
-                                          {el.name}
-                                        </div>
+                <Droppable droppableId="target">
+                  {(provided, snapshot) => {
+                    return (
+                      <div
+                        ref={provided.innerRef}
+                        {...provided.droppableProps}
+                        className={classes.droppableColtarget}
+                      >
+                        {components.map((el, index) => {
+                          return (
+                            <Draggable
+                              key={el.id}
+                              index={index}
+                              draggableId={el.id}
+                            >
+                              {(provided, snapshot) => {
+                                // console.log(snapshot)
+                                return (
+                                  <div
+                                    className={classes.container}
+                                    ref={provided.innerRef}
+                                    {...provided.draggableProps}
+                                    {...provided.dragHandleProps}
+                                  >
+                                    <div
+                                      className={classes.item1}
+                                      onClick={() => showdetails(el)}
+                                    >
+                                      {el.name}
+                                    </div>
 
-                                        {/* <div
+                                    {/* <div
                                           className={classes.styleclose}
                                           onClick={() => handledelete(el)}
                                         >
                                           <CloseIcon />
                                         </div> */}
-                                      </div>
-                                    );
-                                  }}
-                                </Draggable>
-                              );
-                            })}
-                            {provided.placeholder}
-                          </div>
-                        );
-                      }}
-                    </Droppable>
-                      
-                  </div>
+                                  </div>
+                                );
+                              }}
+                            </Draggable>
+                          );
+                        })}
+                        {provided.placeholder}
+                      </div>
+                    );
+                  }}
+                </Droppable>
+              </div>
+            </Grid>
 
-                   
-                </Grid>
+            <Grid item lg={4} md={4} sm={4} xs={4} className={classes.grid3}>
+              <div className={classes.column3}>
+                <div className={classes.body3}>
+                  {Object.keys(selected_layer_type).length === 0 ? (
+                    <h3>please select some layer first</h3>
+                  ) : (
+                    <div className={classes.innerpad}>
+                      <div className={classes.heading}>
+                        {selected_layer_name}
+                      </div>
+                      {Object.keys(components[selected_layer]).map(
+                        (key, index) => (
+                          <>
+                            {key === "name" ||
+                            key === "id" ||
+                            key === "type" ? null : (
+                              <div className={classes.batch}>
+                                <div className={classes.title}>
+                                  {" "}
+                                  {key}
+                                  &nbsp;{" "}
+                                  {selected_layer_type[key]["Required"] ===
+                                  1 ? (
+                                    <span>*</span>
+                                  ) : (
+                                    <span></span>
+                                  )}
+                                </div>
 
-                <Grid item lg={4} md={4} sm={4} xs={4} className={classes.grid3}>
-                  <div className={classes.column3}>
-                    <div className={classes.body3}>
-                      {Object.keys(selected_layer_type).length === 0 ? (
-                        <h3>please select some layer first</h3>
-                      ) : (
-                        <div className={classes.innerpad}>
-                          <div className={classes.heading}>
-                            {selected_layer_name}
-                          </div>
-                          {Object.keys(components[selected_layer]).map(
-                            (key, index) => (
-                              <>
-                                {key === "name" || key === "id" ? null : (
-                                  <div className={classes.batch}>
-                                    <div className={classes.title}>
-                                      {" "}
-                                      {key}
-                                      &nbsp;{" "}
-                                      {selected_layer_type[key]["Required"] === 1 ? (
-                                        <span>*</span>
-                                      ) : (
-                                        <span></span>
-                                      )}
-                                    </div>
-
-                                    <div
-                                      className={classes.infoicon}
-                                      title={
-                                        components[selected_layer][key]["Description"]
-                                      }
+                                <div
+                                  className={classes.infoicon}
+                                  title={
+                                    components[selected_layer][key][
+                                      "Description"
+                                    ]
+                                  }
+                                >
+                                  <HelpOutlineIcon />
+                                </div>
+                                {components[selected_layer][key]["Datatype"] ==
+                                "select" ? (
+                                  <div className={classes.value}>
+                                    <FormControl
+                                      fullWidth
+                                      variant="outlined"
+                                      size="small"
                                     >
-                                      <HelpOutlineIcon />
-                                    </div>
-                                    {components[selected_layer][key]["Datatype"] ==
-                                    "select" ? (
-                                      <div className={classes.value}>
-                                        <FormControl
-                                          fullWidth
-                                          variant="outlined"
-                                          size="small"
-                                        >
-                                        
-                                          <Select
-                                            native
-                                            value={
-                                              components[selected_layer][key]["value"]
-                                                ? components[selected_layer][key][
-                                                    "value"
-                                                  ]
-                                                : components[selected_layer][key][
-                                                    "Default"
-                                                  ]
-                                            }
-                                            onChange={save_value(key)}
-                                          >
-                                            {components[selected_layer][key][
-                                              "Options"
-                                            ].map((arr) => (
-                                              <option value={arr}>{arr}</option>
-                                            ))}{" "}
-                                          </Select>
-                                        </FormControl>
-                                      </div>
-                                    ) : (
-                                      <div className={classes.value}>
-                                        <TextField
-                                          required
-                                          size="small"
-                                          id="outlined-required"
-                                          value={
-                                            components[selected_layer][key]["value"]
-                                              ? components[selected_layer][key][
-                                                  "value"
-                                                ]
-                                              : components[selected_layer][key][
-                                                  "Default"
-                                                ]
-                                          }
-                                          variant="outlined"
-                                          onChange={save_value(key)}
-                                          helperText={`Example - ${components[selected_layer][key]["Example"]}`}
-                                        />
-                                      </div>
-                                    )}
+                                      <Select
+                                        native
+                                        value={
+                                          components[selected_layer][key][
+                                            "value"
+                                          ]
+                                            ? components[selected_layer][key][
+                                                "value"
+                                              ]
+                                            : components[selected_layer][key][
+                                                "Default"
+                                              ]
+                                        }
+                                        onChange={save_value(key)}
+                                      >
+                                        {components[selected_layer][key][
+                                          "Options"
+                                        ].map((arr) => (
+                                          <option value={arr}>{arr}</option>
+                                        ))}{" "}
+                                      </Select>
+                                    </FormControl>
+                                  </div>
+                                ) : (
+                                  <div className={classes.value}>
+                                    <TextField
+                                      required
+                                      size="small"
+                                      id="outlined-required"
+                                      value={
+                                        components[selected_layer][key]["value"]
+                                          ? components[selected_layer][key][
+                                              "value"
+                                            ]
+                                          : components[selected_layer][key][
+                                              "Default"
+                                            ]
+                                      }
+                                      variant="outlined"
+                                      onChange={save_value(key)}
+                                      helperText={`Example - ${components[selected_layer][key]["Example"]}`}
+                                    />
                                   </div>
                                 )}
-                              </>
-                            )
-                          )}
-                        </div>
-                      )}{" "}
+                              </div>
+                            )}
+                          </>
+                        )
+                      )}
                     </div>
-                  </div>
-                </Grid>
-              
-                <div className={classes.delete}>
-                    <Droppable droppableId="delete">
-                      {(provided, snapshot) => {
-                        return (
-                          <div
-                            ref={provided.innerRef}
-                            {...provided.droppableProps}
-                            // className={classes.droppableColtarget}
-                          >
-                          
-                          <h3>Drag here to delete the layer</h3>
+                  )}
+                </div>
+              </div>
+            </Grid>
 
-                            {provided.placeholder}
-                          </div>
-                        );
-                      }}
-                    </Droppable>
-                    
-                      
-                      </div>
-                
-              </Grid>
-             
-            </DragDropContext>
+            <div className={classes.delete}>
+              <Droppable droppableId="delete">
+                {(provided, snapshot) => {
+                  return (
+                    <div
+                      ref={provided.innerRef}
+                      {...provided.droppableProps}
+                      // className={classes.droppableColtarget}
+                    >
+                      <h3>Drag here to delete the layer</h3>
 
-              
-            </TabPanel>
+                      {provided.placeholder}
+                    </div>
+                  );
+                }}
+              </Droppable>
+            </div>
+          </Grid>
+        </DragDropContext>
+      </TabPanel>
 
-            <TabPanel value={value} index={2} dir={theme.direction}>
-                  hyperparam
-                  
-                  <Grid container>
-                    <Grid item lg={4} md={4}>
-                    </Grid>
-                    <Grid item lg={2} md={2}>
-                          <Button
-                          variant="contained"
-                          color="primary"
-                          onClick={() => generate_code()}
-                        >
-                          Generate Code
-                        </Button>
-                    </Grid>
-                    <Grid item lg={1} md={1}>
-                    </Grid>
-                    <Grid item lg={1} md={1}>
+      <TabPanel value={value} index={1} dir={theme.direction}>
+        <Grid container>
+          <Grid item lg={1} md={1} sm={1} xs={1}></Grid>
+          <Grid item lg={10} md={10} sm={10} xs={10}>
+            <Grid container>
+              {project_details.lib === new String("Pytorch").valueOf() ? (
+                <>
+                  <Grid item lg={12} md={12} sm={12} xs={12}>
+                    <FormControl variant="outlined" className={classes._hyper}>
+                      <InputLabel>optimizer</InputLabel>
+                      <Select
+                        native
+                        value={state_hyperparam.optimizer}
+                        onChange={handleChange_hyperparameter_l_o("optimizer")}
+                        label="optimizer"
+                        inputProps={{
+                          name: "optimizer",
+                        }}
+                      >
+                        <option aria-label="None" value="" />
+                        {Object.keys(all_optimizer).map((name, index) => {
+                          return <option value={name}>{name}</option>;
+                        })}
+                      </Select>
+                    </FormControl>
+
+                    {showoptimizer ? (
+                      <div className={classes.card}>
+                        {Object.keys(selected_optimizer).map((key, index) => (
+                          <>
+                            {key === "name" ||
+                            key === "id" ||
+                            key === "type" ? null : (
+                              <div className={classes.batch}>
+                                <div className={classes.title}>
+                                  {" "}
+                                  {key}
+                                  &nbsp;{" "}
+                                  {selected_optimizer[key]["Required"] === 1 ? (
+                                    <span>*</span>
+                                  ) : (
+                                    <span></span>
+                                  )}
+                                </div>
+
+                                <div
+                                  className={classes.infoicon}
+                                  title={selected_optimizer[key]["Description"]}
+                                >
+                                  <HelpOutlineIcon />
+                                </div>
+                                {selected_optimizer[key]["Datatype"] ==
+                                "select" ? (
+                                  <div className={classes.value}>
+                                    <FormControl
+                                      fullWidth
+                                      variant="outlined"
+                                      size="small"
+                                    >
+                                      <Select
+                                        native
+                                        value={
+                                          selected_optimizer[key]["value"]
+                                            ? selected_optimizer[key]["value"]
+                                            : selected_optimizer[key]["Default"]
+                                        }
+                                        onChange={save_value_hyper(
+                                          key,
+                                          "optimizer"
+                                        )}
+                                      >
+                                        {selected_optimizer[key]["Options"].map(
+                                          (arr) => (
+                                            <option value={arr}>{arr}</option>
+                                          )
+                                        )}{" "}
+                                      </Select>
+                                    </FormControl>
+                                  </div>
+                                ) : (
+                                  <div className={classes.value}>
+                                    <TextField
+                                      required
+                                      size="small"
+                                      id="outlined-required"
+                                      value={
+                                        selected_optimizer[key]["value"]
+                                          ? selected_optimizer[key]["value"]
+                                          : selected_optimizer[key]["Default"]
+                                      }
+                                      variant="outlined"
+                                      onChange={save_value_hyper(
+                                        key,
+                                        "optimizer"
+                                      )}
+                                      helperText={`Example - ${selected_optimizer[key]["Example"]}`}
+                                    />
+                                  </div>
+                                )}
+                              </div>
+                            )}
+                          </>
+                        ))}
+
                         <Button
+                          className={classes.action_btn}
+                          variant="contained"
+                          color="default"
+                          onClick={() => _hyper("optimizer", "cancle")}
+                        >
+                          Cancle
+                        </Button>
+
+                        <Button
+                          className={classes.action_btn}
                           variant="contained"
                           color="primary"
-                          onClick={() => Train()}
+                          onClick={() => _hyper("optimizer", "save")}
                         >
-                          Train
+                          Save
                         </Button>
-                    </Grid>
-                    <Grid item lg={4} md={4}>
-                    </Grid>
+                      </div>
+                    ) : null}
                   </Grid>
-            
-            </TabPanel>
 
-        </div>
+                  <Grid item lg={12} md={12} sm={12} xs={12}>
+                    <FormControl variant="outlined" className={classes._hyper}>
+                      <InputLabel>Loss</InputLabel>
+                      <Select
+                        native
+                        value={state_hyperparam.loss}
+                        onChange={handleChange_hyperparameter_l_o("loss")}
+                        label="loss"
+                        inputProps={{
+                          name: "loss",
+                        }}
+                      >
+                        <option aria-label="None" value="" />
+                        {Object.keys(all_loss).map((name, index) => {
+                          return <option value={name}>{name}</option>;
+                        })}
+                      </Select>
+                    </FormControl>
 
+                    {showloss ? (
+                      <div className={classes.card}>
+                        {Object.keys(selected_loss).map((key, index) => (
+                          <>
+                            {key === "name" ||
+                            key === "id" ||
+                            key === "type" ? null : (
+                              <div className={classes.batch}>
+                                <div className={classes.title}>
+                                  {" "}
+                                  {key}
+                                  &nbsp;{" "}
+                                  {selected_loss[key]["Required"] === 1 ? (
+                                    <span>*</span>
+                                  ) : (
+                                    <span></span>
+                                  )}
+                                </div>
+
+                                <div
+                                  className={classes.infoicon}
+                                  title={selected_loss[key]["Description"]}
+                                >
+                                  <HelpOutlineIcon />
+                                </div>
+                                {selected_loss[key]["Datatype"] == "select" ? (
+                                  <div className={classes.value}>
+                                    <FormControl
+                                      fullWidth
+                                      variant="outlined"
+                                      size="small"
+                                    >
+                                      <Select
+                                        native
+                                        value={
+                                          selected_loss[key]["value"]
+                                            ? selected_loss[key]["value"]
+                                            : selected_loss[key]["Default"]
+                                        }
+                                        onChange={save_value_hyper(key, "loss")}
+                                      >
+                                        {selected_loss[key]["Options"].map(
+                                          (arr) => (
+                                            <option value={arr}>{arr}</option>
+                                          )
+                                        )}{" "}
+                                      </Select>
+                                    </FormControl>
+                                  </div>
+                                ) : (
+                                  <div className={classes.value}>
+                                    <TextField
+                                      required
+                                      size="small"
+                                      id="outlined-required"
+                                      value={
+                                        selected_loss[key]["value"]
+                                          ? selected_loss[key]["value"]
+                                          : selected_loss[key]["Default"]
+                                      }
+                                      variant="outlined"
+                                      onChange={save_value_hyper(key, "loss")}
+                                      helperText={`Example - ${selected_loss[key]["Example"]}`}
+                                    />
+                                  </div>
+                                )}
+                              </div>
+                            )}
+                          </>
+                        ))}
+
+                        <Button
+                          className={classes.action_btn}
+                          variant="contained"
+                          color="default"
+                          onClick={() => _hyper("loss", "cancle")}
+                        >
+                          Cancle
+                        </Button>
+
+                        <Button
+                          className={classes.action_btn}
+                          variant="contained"
+                          color="primary"
+                          onClick={() => _hyper("loss", "save")}
+                        >
+                          Save
+                        </Button>
+                      </div>
+                    ) : null}
+                  </Grid>
+                </>
+              ) : (
+                <>
+                  <FormControl variant="outlined" className={classes.sel}>
+                    <InputLabel>optimizer</InputLabel>
+                    <Select
+                      native
+                      value={state_hyperparam.optimizer}
+                      onChange={handleChange_hyperparameter("optimizer")}
+                      label="optimizer"
+                      inputProps={{
+                        name: "optimizer",
+                      }}
+                    >
+                      <option aria-label="None" value="" />
+                      <option value={"sgd"}>sgd</option>
+                      <option value={"rmsprop"}>rmsprop</option>
+                      <option value={"adam"}>adam</option>
+                      <option value={"adadelta"}>adadelta</option>
+                      <option value={"adagrad"}>adagrad</option>
+                    </Select>
+                  </FormControl>
+
+                  <FormControl variant="outlined" className={classes.sel}>
+                    <InputLabel>loss</InputLabel>
+                    <Select
+                      native
+                      value={state_hyperparam.loss}
+                      onChange={handleChange_hyperparameter("loss")}
+                      label="loss"
+                      inputProps={{
+                        name: "loss",
+                      }}
+                    >
+                      <option aria-label="None" value="" />
+                      <option value={"binary_crossentropy"}>
+                        binary_crossentropy
+                      </option>
+                      <option value={"categorical_crossentropy"}>
+                        categorical_crossentropy
+                      </option>
+                      <option value={"poisson"}>poisson</option>
+                      <option value={"mean_squared_error"}>
+                        mean_squared_error
+                      </option>
+                      <option value={"mean_absolute_error"}>
+                        mean_absolute_error
+                      </option>
+                      <option value={"cosine_similarity"}>
+                        cosine_similarity
+                      </option>
+                      <option value={"hinge"}>hinge</option>
+                    </Select>
+                  </FormControl>
+                </>
+              )}
+
+              <Grid item lg={12} md={12} sm={12} xs={12}>
+                <TextField
+                  label="epochs"
+                  value={state_hyperparam.epochs}
+                  onChange={handleChange_hyperparameter("epochs")}
+                  variant="outlined"
+                  className={classes.sel}
+                />
+
+                <FormControl variant="outlined" className={classes.sel}>
+                  <InputLabel>verbose</InputLabel>
+                  <Select
+                    native
+                    value={state_hyperparam.verbose}
+                    onChange={handleChange_hyperparameter("verbose")}
+                    label="verbose"
+                    inputProps={{
+                      name: "verbose",
+                    }}
+                  >
+                    <option aria-label="None" value="" />
+                    <option value={1}>1</option>
+                    <option value={2}>2</option>
+                    <option value={3}>3</option>
+                    <option value={4}>4</option>
+                    <option value={5}>5</option>
+                  </Select>
+                </FormControl>
+
+                {project_details.lib === new String("Pytorch").valueOf() ? (
+                  <FormControl variant="outlined" className={classes.sel}>
+                    <InputLabel>metrics</InputLabel>
+                    <Select
+                      native
+                      value={state_hyperparam.metrics}
+                      onChange={handleChange_hyperparameter("metrics")}
+                      label="metrics"
+                      inputProps={{
+                        name: "metrics",
+                      }}
+                    >
+                      <option aria-label="None" value="" />
+                      <option value={"AUC"}>AUC</option>
+                      <option value={"Precision"}>Precision</option>
+                      <option value={"Recall"}>Recall</option>
+                      <option value={"True positives"}>True positives</option>
+                      <option value={"True negatives"}>True negatives</option>
+                      <option value={"False positives"}>False positives</option>
+                      <option value={"False negatives"}>False negatives</option>
+                      <option value={"Precision at recall"}>
+                        Precision at recall
+                      </option>
+                      <option value={"Sensitivity at specificity"}>
+                        Sensitivity at specificity
+                      </option>
+                      <option value={"Specificity at sensitivity"}>
+                        Specificity at sensitivity
+                      </option>
+                    </Select>
+                  </FormControl>
+                ) : (
+                  <FormControl variant="outlined" className={classes.sel}>
+                    <InputLabel>metrics</InputLabel>
+                    <Select
+                      native
+                      value={state_hyperparam.metrics}
+                      onChange={handleChange_hyperparameter("metrics")}
+                      label="metrics"
+                      inputProps={{
+                        name: "metrics",
+                      }}
+                    >
+                      <option aria-label="None" value="" />
+                      <option value={"Accuracy"}>Accuracy</option>
+                      <option value={"BinaryCrossentropy"}>
+                        BinaryCrossentropy
+                      </option>
+                      <option value={"CategoricalCrossentropy"}>
+                        CategoricalCrossentropy
+                      </option>
+                      <option value={"RootMeanSquaredError"}>
+                        CosineSimilarity
+                      </option>
+                      <option value={"AUC"}>Precision</option>
+                      <option value={"Recall"}>Recall</option>
+                      <option value={"MeanIoU"}>MeanIoU</option>
+                      <option value={"Hinge"}>Hinge</option>
+                    </Select>
+                  </FormControl>
+                )}
+                <FormControlLabel
+                  className={classes.save_plot}
+                  control={
+                    <Checkbox
+                      // checked={state.checkedB}
+                      // onChange={handleChange}
+                      onChange={handleChange_hyperparameter("plot")}
+                      value={state_hyperparam.plot}
+                      color="primary"
+                    />
+                  }
+                  label="Save Graphs"
+                />
+              </Grid>
+            </Grid>
+          </Grid>
+          <Grid item lg={1} md={1} sm={1} xs={1}></Grid>
+        </Grid>
+
+        <Grid container>
+          <Grid item lg={4} md={4}></Grid>
+          <Grid item lg={2} md={2}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => generate_code()}
+            >
+              Generate Code
+            </Button>
+          </Grid>
+          {/* <Grid item lg={1} md={1}>
+                    </Grid> */}
+          <Grid item lg={2} md={2}>
+            <Button variant="contained" color="primary" onClick={() => Train()}>
+              Train the Model
+            </Button>
+          </Grid>
+          <Grid item lg={4} md={4}></Grid>
+        </Grid>
+      </TabPanel>
+    </div>
   );
 }
 

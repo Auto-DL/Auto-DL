@@ -12,12 +12,12 @@ function App() {
   return (
     <div className="App">
       <div>
-      <BrowserRouter>
-        <Switch>
-          <Route path="/" component={LoginIndex} />
-        </Switch>
-        <Redirect to="/" />
-      </BrowserRouter>
+        <BrowserRouter>
+          <Switch>
+            <Route path="/" component={LoginIndex} />
+          </Switch>
+          <Redirect to="/" />
+        </BrowserRouter>
       </div>
     </div>
   );
