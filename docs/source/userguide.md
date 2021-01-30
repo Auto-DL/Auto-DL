@@ -1,5 +1,5 @@
 # User Guide
-!["alt"](/_static/adl_generator.png "account")
+!["alt"](./_static/adl_generator.png "account")
 - To use the application you need to follow the steps below successfully install the application and run it  
 
 __Downloading the project__
@@ -62,26 +62,26 @@ This will start the backend server.
 - Once you log in screen similar to following image will be shown.
 
 
-!["alt"](/_static/1.png "account")
+!["alt"](./_static/1.png)
 
 
 - click on the + button in right corner 
 
 
-!["alt"](/_static/2.png "account")
+!["alt"](./_static/2.png)
 
 
 - Fill the details of the model which you would like to create.
 - After filling the details save the changes.
 
 
-!["alt"](/_static/3.png "account")
+!["alt"](./_static/3.png)
 
 
 - After this following image will be shown to you
 
 
-!["alt"](/_static/4.png "account")
+!["alt"](./_static/4.png)
 
 
 - Drag required layers from left side to the target box
@@ -90,13 +90,13 @@ This will start the backend server.
 - How to fill the information is given right below the entity.
 
 
-!["alt"](/_static/5.png?raw=true "account")
+!["alt"](./_static/5.png)
 
 
 - After filling all the information click on the Generate code  Button.
 - It will create the code and store the name.py file in destination folder. 
 
-!["alt"](/_static/6.png "account")
+!["alt"](./_static/6.png)
 
 # Demo
-!["alt"](/_static/demo.gif "account")
+!["alt"](./_static/demo.gif)
