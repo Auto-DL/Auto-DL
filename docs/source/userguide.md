@@ -1,5 +1,5 @@
 # User Guide
-!["alt"](/_static/adl_generator.png "account")
+!["alt"](./_static/adl_generator.png "account")
 - To use the application you need to follow the steps below successfully install the application and run it  
 
 __Downloading the project__
