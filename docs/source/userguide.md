@@ -62,7 +62,7 @@ This will start the backend server.
 - Once you log in screen similar to following image will be shown.
 
 
-!["alt"](/_static/1.png "account")
+!["alt"](./_static/1.png)
 
 
 - click on the + button in right corner 
