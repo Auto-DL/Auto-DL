@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 @ECHO OFF
 
 pushd %~dp0
@@ -34,7 +33,6 @@ goto end
 
 :end
 popd
-=======
 @ECHO OFF
 
 pushd %~dp0
@@ -70,4 +68,3 @@ goto end
 
 :end
 popd
->>>>>>> 2772d010fbdd1d1d9a4c818e1e44c1fb1057b156

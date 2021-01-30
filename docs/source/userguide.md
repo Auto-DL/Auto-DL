@@ -44,14 +44,45 @@ To install npm follow the following steps
 __after that go to path in CMD mentioned below and do following steps to run the application__
 
 * To start the backend server traverse to the path in cmd.
-* <code>\Auto-DL\Generator\BackEnd\</code>
-Type 
+```\Auto-DL\Generator\BackEnd\```
+* Type 
 ```python manage.py server```
 This will start the backend server. 
-* <code>\Auto-DL\Generator\FrontEnd\v1-react</code>
+```\Auto-DL\Generator\FrontEnd\v1-react```
 * after tracersing to this path in cmd type
-```npm install``
+```npm install```
 ```npm start```
 * This will start front end app
 * type 
 <code>http://127.0.0.1:3000</code> in your browser
+
+# How to use the application 
+- Create account using email-Id if you haven't.
+- Login into your account.
+- Once you log in screen similar to following image will be shown.
+!["alt"](/_static/1.png?raw=true "account")
+
+- click on the + button in right corner 
+
+!["alt"](/_static/2.png?raw=true "account")
+
+- Fill the details of the model which you would like to create.
+- After filling the details save the changes.
+
+!["alt"](/_static/3.png?raw=true "account")
+
+- After this following image will be shown to you
+
+!["alt"](/_static/4.png?raw=true "account")
+
+- Drag required layers from left side to the target box
+- After dragging all the layers click on the 1st layer in the target box.
+- Fill the details of your required model 
+- How to fill the information is given right below the entity.
+
+!["alt"](/_static/5.png?raw=true "account")
+
+- After filling all the information click on the Generate code  Button.
+- It will create the code and store the name.py file in destination folder. 
+
+!["alt"](/_static/6.png?raw=true "account")
