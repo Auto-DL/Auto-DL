@@ -6,6 +6,7 @@ import sys
 import os
 import json
 import importlib
+import platform
 
 sys.path.append("..")
 
@@ -55,8 +56,16 @@ def generate(request):
 def train(request):
     try:
         # TODO: Run using python and capture logs.
-        os.system("gnome-terminal -e ./train.sh")
+        user_os = platform.system()
+        if user_os == "Linux":
+            os.system("gnome-terminal -e ./train.sh")
+        elif user_os == "Windows":
+            os.system("start cmd /k call train.bat")
+        else:
+            raise NotImplementedError("Training not supported on your platform")
+
         msg = "Training started successfully"
+
     except Exception as e:
         msg = e
     return JsonResponse({"message": msg})
