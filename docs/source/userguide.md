@@ -60,29 +60,29 @@ This will start the backend server.
 - Create account using email-Id if you haven't.
 - Login into your account.
 - Once you log in screen similar to following image will be shown.
-!["alt"](/_static/1.png?raw=true "account")
+!["alt"](/_static/1.png "account")
 
 - click on the + button in right corner 
 
-!["alt"](/_static/2.png?raw=true "account")
+!["alt"](/_static/2.png "account")
 
 - Fill the details of the model which you would like to create.
 - After filling the details save the changes.
 
-!["alt"](/_static/3.png?raw=true "account")
+!["alt"](/_static/3.png "account")
 
 - After this following image will be shown to you
 
-!["alt"](/_static/4.png?raw=true "account")
+!["alt"](/_static/4.png "account")
 
 - Drag required layers from left side to the target box
 - After dragging all the layers click on the 1st layer in the target box.
 - Fill the details of your required model 
 - How to fill the information is given right below the entity.
 
-!["alt"](/_static/5.png?raw=true "account")
+!["alt"](/_static/5.png "account")
 
 - After filling all the information click on the Generate code  Button.
 - It will create the code and store the name.py file in destination folder. 
 
-!["alt"](/_static/6.png?raw=true "account")
+!["alt"](/_static/6.png "account")
