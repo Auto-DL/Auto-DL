@@ -6,7 +6,6 @@ import sys
 import os
 import json
 import importlib
-import platform
 
 sys.path.append("..")
 
