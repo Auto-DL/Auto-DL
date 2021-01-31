@@ -25,15 +25,26 @@ def generate(request):
     user = User(username=username, password=None)
     user = user.find()
 
+    project_id = request.data.get("project_id")
+    store_obj = Store(user)
+    if not store_obj.exist(project_id):
+        raise Exception("No such project exists")
+    
+    project_dir = store_obj.path + os.sep + project_id
+    with open(project_dir + os.sep + "meta.json", "r") as f:
+            metadata = json.load(f)
+
+    lib = metadata.get("lib", "keras")
+    lang = metadata.get("lang", "python")
     training_params = request.data.get("training_params")
+
+    with open(project_dir + os.sep + "layers.json", "r") as f:
+            layers = json.load(f)
+
+    # TODO: Update training params with layers dict
+    #       Do this only when route updated from frontend
+
     inputs = json_to_dict.MakeDict(training_params).parse()
-
-    lib = inputs.get("lib", "keras")
-    lang = inputs.get("lang", "python")
-
-    # TODO: read multiple cached jsons and update params,
-    #       eg. output_file_name
-
     parser_path = "DLMML.parser." + lang + "." + lib + ".main"
     parser = importlib.import_module(parser_path)
 

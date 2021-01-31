@@ -309,7 +309,7 @@ function Step2() {
     const data = {
       username: username,
       project_id: project_details.project_id,
-      layer_json: {},
+      layer_json: genrate_layers(),
       component_array: components,
     };
     console.log(token, data);
