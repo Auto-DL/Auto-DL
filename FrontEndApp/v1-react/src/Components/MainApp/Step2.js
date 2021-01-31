@@ -288,6 +288,7 @@ function Step2() {
     plot: false,
     optimizer: "",
     loss: "",
+    learning_rate: "",
   });
   const [showoptimizer, setshowoptimizer] = React.useState(false);
   const [selected_optimizer, setselected_optimizer] = React.useState({});
@@ -1205,7 +1206,7 @@ function Step2() {
         },
         strides: {
           Example: [1, 1],
-          Default: "[1, 1]",
+          Default: "1, 1",
           Required: 0,
           Datatype: "Tuple",
           Options: [],
@@ -1520,7 +1521,7 @@ function Step2() {
           Default: "NA",
           Example: 0.4,
           Required: 1,
-          Datatype: "number",
+          Datatype: "float",
           Options: [],
           Description:
             "Float between 0 and 1. Fraction of the input units to drop.",
@@ -2409,17 +2410,27 @@ function Step2() {
                     dic[key0][key1][key2]
                   );
                 } else if (
-                  dic[key0][key1].Datatype === new String("tuple").valueOf()
+                  dic[key0][key1].Datatype === new String("float").valueOf()
+                ) {
+                  final_dict[
+                    `Layer-${i}-${dic[key0].name}-${key1}`
+                  ] = parseFloat(dic[key0][key1][key2]);
+                } else if (
+                  dic[key0][key1].Datatype === new String("Tuple").valueOf()
                 ) {
                   const temp = dic[key0][key1][key2].split(",");
                   console.log(temp);
-                  console.log(temp[0]);
-                  console.log(temp[1]);
-
-                  final_dict[`Layer-${i}-${dic[key0].name}-${key1}`] = [
-                    parseInt(temp[0]),
-                    parseInt(temp[1]),
-                  ];
+                  if (temp.length === 2) {
+                    final_dict[`Layer-${i}-${dic[key0].name}-${key1}`] = [
+                      parseInt(temp[0]),
+                      parseInt(temp[1]),
+                    ];
+                  } else if (temp.length === 4) {
+                    final_dict[`Layer-${i}-${dic[key0].name}-${key1}`] = [
+                      [parseInt(temp[0]), parseInt(temp[1])],
+                      [parseInt(temp[2]), parseInt(temp[3])],
+                    ];
+                  }
                 } else {
                   final_dict[`Layer-${i}-${dic[key0].name}-${key1}`] =
                     dic[key0][key1][key2];
@@ -2532,6 +2543,7 @@ function Step2() {
         epochs: state_hyperparam.epochs,
         verbose: state_hyperparam.verbose,
         plot: state_hyperparam.plot,
+        learning_rate: state_hyperparam.learning_rate,
       };
       var temp = Object.assign({}, final_dict, dict);
     } else {
@@ -2542,6 +2554,7 @@ function Step2() {
         plot: state_hyperparam.plot,
         loss: state_hyperparam.loss,
         optimizer: state_hyperparam.optimizer,
+        learning_rate: state_hyperparam.learning_rate,
         "dataset-type": "image",
         "dataset-path": "../data/dogs_and_cats",
       };
@@ -2672,14 +2685,26 @@ function Step2() {
 
   const handleChange_hyperparameter = (prop) => (event) => {
     if (prop === "plot") {
-      setstate_hyperparam({
-        ...state_hyperparam,
-        [prop]: !state_hyperparam.plot,
-      });
+      if (state_hyperparam.plot) {
+        setstate_hyperparam({
+          ...state_hyperparam,
+          [prop]: "False",
+        });
+      } else {
+        setstate_hyperparam({
+          ...state_hyperparam,
+          [prop]: "True",
+        });
+      }
     } else if (prop === "metrics") {
       setstate_hyperparam({
         ...state_hyperparam,
         [prop]: [event.target.value],
+      });
+    } else if (prop === "learning_rate") {
+      setstate_hyperparam({
+        ...state_hyperparam,
+        [prop]: parseFloat(event.target.value),
       });
     } else {
       if (project_details.lib === new String("Pytorch").valueOf()) {
@@ -2894,7 +2919,9 @@ function Step2() {
                   ) : (
                     <div className={classes.innerpad}>
                       <div className={classes.heading}>
-                        {selected_layer_name}
+                        {components[selected_layer].name
+                          ? components[selected_layer].name
+                          : null}
                       </div>
                       {Object.keys(components[selected_layer]).map(
                         (key, index) => (
@@ -3306,6 +3333,14 @@ function Step2() {
                   label="epochs"
                   value={state_hyperparam.epochs}
                   onChange={handleChange_hyperparameter("epochs")}
+                  variant="outlined"
+                  className={classes.sel}
+                />
+
+                <TextField
+                  label="learning rate"
+                  value={state_hyperparam.learning_rate}
+                  onChange={handleChange_hyperparameter("learning_rate")}
                   variant="outlined"
                   className={classes.sel}
                 />
