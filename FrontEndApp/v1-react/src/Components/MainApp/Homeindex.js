@@ -192,9 +192,9 @@ function Home() {
       ...values,
       project_name: "",
       data_dir: "",
-      language: "Python",
+      language: "python",
       task: "Classification",
-      library: "Keras",
+      library: "keras",
       output_file_name: "",
     });
   };
@@ -325,7 +325,7 @@ function Home() {
                 onChange={handleChange("language")}
                 label="Language"
               >
-                <MenuItem value={"Python"}>Python</MenuItem>
+                <MenuItem value={"python"}>Python</MenuItem>
               </Select>
             </FormControl>
           ) : (
@@ -336,7 +336,7 @@ function Home() {
                 onChange={handleChange("language")}
                 label="Language"
               >
-                <MenuItem value={"Python"}>Python</MenuItem>
+                <MenuItem value={"python"}>Python</MenuItem>
               </Select>
             </FormControl>
           )}
@@ -353,8 +353,8 @@ function Home() {
                 onChange={handleChange("library")}
                 label="Library"
               >
-                <MenuItem value={"Keras"}>Keras</MenuItem>
-                <MenuItem value={"Pytorch"}>Pytorch</MenuItem>
+                <MenuItem value={"keras"}>Keras</MenuItem>
+                <MenuItem value={"pytorch"}>Pytorch</MenuItem>
               </Select>
             </FormControl>
           ) : (
@@ -366,7 +366,7 @@ function Home() {
                 label="Library"
               >
                 <MenuItem value={"Keras"}>Keras</MenuItem>
-                <MenuItem value={"Pytorch"}>Pytorch</MenuItem>
+                <MenuItem value={"pytorch"}>Pytorch</MenuItem>
               </Select>
             </FormControl>
           )}

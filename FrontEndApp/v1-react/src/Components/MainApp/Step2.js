@@ -128,7 +128,10 @@ const useStyles = makeStyles((theme) => ({
   grid3: {},
   droppableColsource: {
     width: "95%",
-    backgroundColor: "yellow",
+    // backgroundColor: "yellow",
+    // backgroundColor: "#7fa0b1",
+    // backgroundColor: "#8e8e8e",
+    backgroundColor: "#c5e4ed",
     padding: "10px 10px 0 10px",
     borderRadius: "7px",
     display: "flex",
@@ -136,10 +139,15 @@ const useStyles = makeStyles((theme) => ({
     minHeight: "500px",
     maxHeight: "500px",
     overflowY: "auto",
+    border: "1px solid black",
+
   },
   droppableColtarget: {
     width: "95%",
-    backgroundColor: "orange",
+    // backgroundColor: "orange",
+    // backgroundColor: "#7fa0b1",
+    // backgroundColor: "#8e8e8e",
+    backgroundColor: "#c5e4ed",
     padding: "10px 10px 10px 10px",
     borderRadius: "7px",
     display: "flex",
@@ -147,10 +155,14 @@ const useStyles = makeStyles((theme) => ({
     minHeight: "500px",
     maxHeight: "500px",
     maxWidth: "100%",
+    overflowY: "auto",
+    border: "1px solid black",
+
   },
   body3: {
     width: "100%",
     backgroundColor: "#D8D8D8",
+    // backgroundColor: "#cfe7ff",
     padding: "10px",
     borderRadius: "7px",
     display: "flex",
@@ -163,22 +175,29 @@ const useStyles = makeStyles((theme) => ({
   item: {
     textAlign: "center",
     marginBottom: "10px",
-    backgroundColor: "#FFC270",
+    // backgroundColor: "#FFC270",
+    // backgroundColor: "#e2c3a7",
+    backgroundColor: "#adbce6",
     color: "black",
-    border: "1px solid white",
+    border: "1px solid black",
     padding: "5px",
     borderRadius: "7px",
+    // boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)',
+    // opacity: '0.7',
   },
 
   item1: {
     textAlign: "center",
     marginBottom: "10px",
-    backgroundColor: "#FFC270",
+    // backgroundColor: "#FFC270",
+    // backgroundColor: "#e2c3a7",
+    backgroundColor: "#adbce6", 
     color: "black",
-    border: "1px solid white",
+    border: "1px solid black",
     padding: "5px",
     borderRadius: "7px 7px 7px 7px",
     width: "85%",
+    // boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)',
     // float: "right",
   },
   styleclose: {
@@ -239,8 +258,8 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: "#D8D8D8",
     padding: "10px",
     borderRadius: "7px",
-    minHeight: "40px",
-    maxHeight: "60px",
+    minHeight: "80px",
+    maxHeight: "80px",
     minWeight: "60px",
     minWeight: "60px",
     margin: "10px",
@@ -288,6 +307,7 @@ function Step2() {
     plot: false,
     optimizer: "",
     loss: "",
+    learning_rate: "",
   });
   const [showoptimizer, setshowoptimizer] = React.useState(false);
   const [selected_optimizer, setselected_optimizer] = React.useState({});
@@ -1205,7 +1225,7 @@ function Step2() {
         },
         strides: {
           Example: [1, 1],
-          Default: "[1, 1]",
+          Default: "1, 1",
           Required: 0,
           Datatype: "Tuple",
           Options: [],
@@ -1520,7 +1540,7 @@ function Step2() {
           Default: "NA",
           Example: 0.4,
           Required: 1,
-          Datatype: "number",
+          Datatype: "float",
           Options: [],
           Description:
             "Float between 0 and 1. Fraction of the input units to drop.",
@@ -2309,6 +2329,28 @@ function Step2() {
       dic["name"] = list_names_of_source[source.index];
       const layer_name = list_names_of_source[source.index];
 
+      // filters: {
+      //   Example: 32,
+      //   Default: "NA",
+      //   Required: 1,
+      //   Datatype: "number",
+      //   Options: [],
+      //   Description:
+      //     "the dimensionality of the output space [i.e.the number of output filters in the convolution]",
+      // },
+      if(Array.isArray(components) && components.length === 0)
+      {
+        dic["input_size"]={
+          Example: [200,200,3],
+          Default: "NA",
+          Required: 1,
+          Datatype: "Tuple",
+          Options: [],
+          Description:
+            "Input shape for the first layer",
+        }
+      }
+
       components.splice(destination.index, 0, dic);
 
       setcomponents(components);
@@ -2409,17 +2451,34 @@ function Step2() {
                     dic[key0][key1][key2]
                   );
                 } else if (
-                  dic[key0][key1].Datatype === new String("tuple").valueOf()
+                  dic[key0][key1].Datatype === new String("float").valueOf()
                 ) {
-                  const temp = dic[key0][key1][key2].split(",");
+                  final_dict[
+                    `Layer-${i}-${dic[key0].name}-${key1}`
+                  ] = parseFloat(dic[key0][key1][key2]);
+                } else if (
+                  dic[key0][key1].Datatype === new String("Tuple").valueOf()
+                ) {
+                  // const temp = dic[key0][key1][key2].split(",");
+                  const temp = dic[key0][key1][key2].split(",").map(function(item) {
+                    return parseInt(item, 10);
+                  });
                   console.log(temp);
-                  console.log(temp[0]);
-                  console.log(temp[1]);
-
-                  final_dict[`Layer-${i}-${dic[key0].name}-${key1}`] = [
-                    parseInt(temp[0]),
-                    parseInt(temp[1]),
-                  ];
+                  if (temp.length === 4) {
+                    final_dict[`Layer-${i}-${dic[key0].name}-${key1}`] = [
+                      [parseInt(temp[0]), parseInt(temp[1])],
+                      [parseInt(temp[2]), parseInt(temp[3])],
+                    ];
+                  } 
+                  // else if (temp.length === 4) {
+                  //   final_dict[`Layer-${i}-${dic[key0].name}-${key1}`] = [
+                  //     [parseInt(temp[0]), parseInt(temp[1])],
+                  //     [parseInt(temp[2]), parseInt(temp[3])],
+                  //   ];
+                  // }
+                  else{
+                    final_dict[`Layer-${i}-${dic[key0].name}-${key1}`] = temp;
+                  }
                 } else {
                   final_dict[`Layer-${i}-${dic[key0].name}-${key1}`] =
                     dic[key0][key1][key2];
@@ -2532,6 +2591,7 @@ function Step2() {
         epochs: state_hyperparam.epochs,
         verbose: state_hyperparam.verbose,
         plot: state_hyperparam.plot,
+        learning_rate: state_hyperparam.learning_rate,
       };
       var temp = Object.assign({}, final_dict, dict);
     } else {
@@ -2542,6 +2602,7 @@ function Step2() {
         plot: state_hyperparam.plot,
         loss: state_hyperparam.loss,
         optimizer: state_hyperparam.optimizer,
+        learning_rate: state_hyperparam.learning_rate,
         "dataset-type": "image",
         "dataset-path": "../data/dogs_and_cats",
       };
@@ -2672,14 +2733,26 @@ function Step2() {
 
   const handleChange_hyperparameter = (prop) => (event) => {
     if (prop === "plot") {
-      setstate_hyperparam({
-        ...state_hyperparam,
-        [prop]: !state_hyperparam.plot,
-      });
+      if (state_hyperparam.plot) {
+        setstate_hyperparam({
+          ...state_hyperparam,
+          [prop]: "False",
+        });
+      } else {
+        setstate_hyperparam({
+          ...state_hyperparam,
+          [prop]: "True",
+        });
+      }
     } else if (prop === "metrics") {
       setstate_hyperparam({
         ...state_hyperparam,
         [prop]: [event.target.value],
+      });
+    } else if (prop === "learning_rate") {
+      setstate_hyperparam({
+        ...state_hyperparam,
+        [prop]: parseFloat(event.target.value),
       });
     } else {
       if (project_details.lib === new String("Pytorch").valueOf()) {
@@ -2778,6 +2851,7 @@ function Step2() {
           textColor="primary"
           variant="fullWidth"
           aria-label="full width tabs example"
+          // style={{ background: '#6f53ca' }}
         >
           {/* <Tab label="Preprocessing" {...a11yProps(0)} /> */}
           <Tab label="Model" {...a11yProps(0)} />
@@ -2894,7 +2968,9 @@ function Step2() {
                   ) : (
                     <div className={classes.innerpad}>
                       <div className={classes.heading}>
-                        {selected_layer_name}
+                        { 'name' in components[selected_layer]
+                          ? components[selected_layer].name
+                          : null}
                       </div>
                       {Object.keys(components[selected_layer]).map(
                         (key, index) => (
@@ -3306,6 +3382,14 @@ function Step2() {
                   label="epochs"
                   value={state_hyperparam.epochs}
                   onChange={handleChange_hyperparameter("epochs")}
+                  variant="outlined"
+                  className={classes.sel}
+                />
+
+                <TextField
+                  label="learning rate"
+                  value={state_hyperparam.learning_rate}
+                  onChange={handleChange_hyperparameter("learning_rate")}
                   variant="outlined"
                   className={classes.sel}
                 />

@@ -125,6 +125,7 @@ function Layout() {
     <div className={classes.root}>
       <CssBaseline />
       <AppBar
+        style={{ background: '#4467c6' }}
         position="fixed"
         className={clsx(classes.appBar, {
           [classes.appBarShift]: open,
@@ -143,7 +144,7 @@ function Layout() {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap>
-            Auto DL
+            Auto-DL
           </Typography>
         </Toolbar>
       </AppBar>
