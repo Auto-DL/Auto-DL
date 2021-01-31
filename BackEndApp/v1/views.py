@@ -66,8 +66,16 @@ def generate(request):
 def train(request):
     try:
         # TODO: Run using python and capture logs.
-        os.system("gnome-terminal -e ./train.sh")
+        user_os = sys.platform
+        if user_os == "linux" or user_os == "linux2":
+            os.system("gnome-terminal -e ./train.sh")
+        elif user_os == "win32":
+            os.system("start cmd /k call train.bat")
+        else:
+            raise NotImplementedError("Training not supported on your platform")
+
         msg = "Training started successfully"
+
     except Exception as e:
         msg = e
     return JsonResponse({"message": msg})
