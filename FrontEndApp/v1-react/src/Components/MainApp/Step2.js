@@ -128,7 +128,10 @@ const useStyles = makeStyles((theme) => ({
   grid3: {},
   droppableColsource: {
     width: "95%",
-    backgroundColor: "yellow",
+    // backgroundColor: "yellow",
+    // backgroundColor: "#7fa0b1",
+    // backgroundColor: "#8e8e8e",
+    backgroundColor: "#c5e4ed",
     padding: "10px 10px 0 10px",
     borderRadius: "7px",
     display: "flex",
@@ -136,10 +139,15 @@ const useStyles = makeStyles((theme) => ({
     minHeight: "500px",
     maxHeight: "500px",
     overflowY: "auto",
+    border: "1px solid black",
+
   },
   droppableColtarget: {
     width: "95%",
-    backgroundColor: "orange",
+    // backgroundColor: "orange",
+    // backgroundColor: "#7fa0b1",
+    // backgroundColor: "#8e8e8e",
+    backgroundColor: "#c5e4ed",
     padding: "10px 10px 10px 10px",
     borderRadius: "7px",
     display: "flex",
@@ -147,10 +155,14 @@ const useStyles = makeStyles((theme) => ({
     minHeight: "500px",
     maxHeight: "500px",
     maxWidth: "100%",
+    overflowY: "auto",
+    border: "1px solid black",
+
   },
   body3: {
     width: "100%",
     backgroundColor: "#D8D8D8",
+    // backgroundColor: "#cfe7ff",
     padding: "10px",
     borderRadius: "7px",
     display: "flex",
@@ -163,22 +175,29 @@ const useStyles = makeStyles((theme) => ({
   item: {
     textAlign: "center",
     marginBottom: "10px",
-    backgroundColor: "#FFC270",
+    // backgroundColor: "#FFC270",
+    // backgroundColor: "#e2c3a7",
+    backgroundColor: "#adbce6",
     color: "black",
-    border: "1px solid white",
+    border: "1px solid black",
     padding: "5px",
     borderRadius: "7px",
+    // boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)',
+    // opacity: '0.7',
   },
 
   item1: {
     textAlign: "center",
     marginBottom: "10px",
-    backgroundColor: "#FFC270",
+    // backgroundColor: "#FFC270",
+    // backgroundColor: "#e2c3a7",
+    backgroundColor: "#adbce6", 
     color: "black",
-    border: "1px solid white",
+    border: "1px solid black",
     padding: "5px",
     borderRadius: "7px 7px 7px 7px",
     width: "85%",
+    // boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)',
     // float: "right",
   },
   styleclose: {
@@ -239,8 +258,8 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: "#D8D8D8",
     padding: "10px",
     borderRadius: "7px",
-    minHeight: "40px",
-    maxHeight: "60px",
+    minHeight: "80px",
+    maxHeight: "80px",
     minWeight: "60px",
     minWeight: "60px",
     margin: "10px",
@@ -2803,6 +2822,7 @@ function Step2() {
           textColor="primary"
           variant="fullWidth"
           aria-label="full width tabs example"
+          // style={{ background: '#6f53ca' }}
         >
           {/* <Tab label="Preprocessing" {...a11yProps(0)} /> */}
           <Tab label="Model" {...a11yProps(0)} />
@@ -2919,7 +2939,7 @@ function Step2() {
                   ) : (
                     <div className={classes.innerpad}>
                       <div className={classes.heading}>
-                        {components[selected_layer].name
+                        { 'name' in components[selected_layer]
                           ? components[selected_layer].name
                           : null}
                       </div>
