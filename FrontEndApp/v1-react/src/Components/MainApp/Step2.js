@@ -2329,6 +2329,28 @@ function Step2() {
       dic["name"] = list_names_of_source[source.index];
       const layer_name = list_names_of_source[source.index];
 
+      // filters: {
+      //   Example: 32,
+      //   Default: "NA",
+      //   Required: 1,
+      //   Datatype: "number",
+      //   Options: [],
+      //   Description:
+      //     "the dimensionality of the output space [i.e.the number of output filters in the convolution]",
+      // },
+      if(Array.isArray(components) && components.length === 0)
+      {
+        dic["input_size"]={
+          Example: [200,200,3],
+          Default: "NA",
+          Required: 1,
+          Datatype: "Tuple",
+          Options: [],
+          Description:
+            "Input shape for the first layer",
+        }
+      }
+
       components.splice(destination.index, 0, dic);
 
       setcomponents(components);
@@ -2437,18 +2459,25 @@ function Step2() {
                 } else if (
                   dic[key0][key1].Datatype === new String("Tuple").valueOf()
                 ) {
-                  const temp = dic[key0][key1][key2].split(",");
+                  // const temp = dic[key0][key1][key2].split(",");
+                  const temp = dic[key0][key1][key2].split(",").map(function(item) {
+                    return parseInt(item, 10);
+                  });
                   console.log(temp);
-                  if (temp.length === 2) {
-                    final_dict[`Layer-${i}-${dic[key0].name}-${key1}`] = [
-                      parseInt(temp[0]),
-                      parseInt(temp[1]),
-                    ];
-                  } else if (temp.length === 4) {
+                  if (temp.length === 4) {
                     final_dict[`Layer-${i}-${dic[key0].name}-${key1}`] = [
                       [parseInt(temp[0]), parseInt(temp[1])],
                       [parseInt(temp[2]), parseInt(temp[3])],
                     ];
+                  } 
+                  // else if (temp.length === 4) {
+                  //   final_dict[`Layer-${i}-${dic[key0].name}-${key1}`] = [
+                  //     [parseInt(temp[0]), parseInt(temp[1])],
+                  //     [parseInt(temp[2]), parseInt(temp[3])],
+                  //   ];
+                  // }
+                  else{
+                    final_dict[`Layer-${i}-${dic[key0].name}-${key1}`] = temp;
                   }
                 } else {
                   final_dict[`Layer-${i}-${dic[key0].name}-${key1}`] =
