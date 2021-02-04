@@ -22,12 +22,12 @@ sys.path.insert(0, os.path.abspath("../"))
 
 # -- Project information -----------------------------------------------------
 
-project = "auto-dl"
-copyright = "2021, auto-dl"
-author = "auto-dl"
+project = "Auto-DL"
+copyright = "2021, Auto-DL"
+author = "Auto-DL"
 
 # The full version, including alpha/beta/rc tags
-release = "v1_alpha"
+release = "v1-alpha"
 
 
 # -- General configuration ---------------------------------------------------

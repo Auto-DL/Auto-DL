@@ -94,7 +94,7 @@ This will start the backend server.
 
 
 - After filling in all the information click on the Generate code button.
-- It will create the code and store the name.py file in thedestination folder. 
+- It will create the code and store the name.py file in the destination folder. 
 
 !["alt"](./_static/6.png)
 

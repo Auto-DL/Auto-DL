@@ -3,9 +3,8 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to auto-dl's documentation!
+Welcome to Auto-dl's documentation!
 ===================================
-
 
 
 .. toctree::
