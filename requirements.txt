@@ -8,3 +8,4 @@ python-dotenv==0.15.0
 pymongo==3.11.2
 bcrypt==3.2.0
 dnspython==2.0.0
+
