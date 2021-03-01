@@ -1473,17 +1473,6 @@ function Step2() {
         },
       },
 
-      BaseRNN: {
-        cell: {
-          Default: "NA",
-          Example: "cell",
-          Required: 1,
-          Datatype: "text",
-          Options: [],
-          Description: "An RNN cell instance",
-        },
-      },
-
       SimpleRNN: {
         units: {
           Example: 32,
