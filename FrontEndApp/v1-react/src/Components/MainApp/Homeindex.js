@@ -194,7 +194,7 @@ function Home() {
       data_dir: "",
       language: "python",
       task: "Classification",
-      library: "keras",
+      library: "Keras",
       output_file_name: "",
     });
   };
@@ -353,8 +353,8 @@ function Home() {
                 onChange={handleChange("library")}
                 label="Library"
               >
-                <MenuItem value={"keras"}>Keras</MenuItem>
-                <MenuItem value={"pytorch"}>Pytorch</MenuItem>
+                <MenuItem value={"Keras"}>Keras</MenuItem>
+                <MenuItem value={"Pytorch"}>Pytorch</MenuItem>
               </Select>
             </FormControl>
           ) : (
@@ -366,7 +366,7 @@ function Home() {
                 label="Library"
               >
                 <MenuItem value={"Keras"}>Keras</MenuItem>
-                <MenuItem value={"pytorch"}>Pytorch</MenuItem>
+                <MenuItem value={"Pytorch"}>Pytorch</MenuItem>
               </Select>
             </FormControl>
           )}

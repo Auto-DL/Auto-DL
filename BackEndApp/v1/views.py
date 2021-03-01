@@ -34,8 +34,8 @@ def generate(request):
     with open(project_dir + os.sep + "meta.json", "r") as f:
             metadata = json.load(f)
 
-    lib = metadata.get("lib", "keras")
-    lang = metadata.get("lang", "python")
+    lib = metadata.get("lib", "keras").lower()
+    lang = metadata.get("lang", "python").lower()
     training_params = request.data.get("training_params")
 
     with open(project_dir + os.sep + "layers.json", "r") as f:
