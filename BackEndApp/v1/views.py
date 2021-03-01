@@ -15,12 +15,13 @@ from authv1.decorators import is_authenticated
 from DLMML.utils import json_to_dict
 from DLMML.parser import *
 
-from .utils import generate_uid
+from .utils import generate_uid, get_augument_params
 
 
 @api_view(["POST"])
 @is_authenticated
 def generate(request):
+    training_params = request.data.get("training_params")
     username = request.data.get("username")
     user = User(username=username, password=None)
     user = user.find()
@@ -36,13 +37,19 @@ def generate(request):
 
     lib = metadata.get("lib", "keras").lower()
     lang = metadata.get("lang", "python").lower()
-    training_params = request.data.get("training_params")
+
+    meta_params = {}
+    meta_params["lib"] = lib
+    meta_params["lang"] = lang
+    meta_params["dataset-path"] = metadata.get("data_dir", ".")
+    meta_params["save_plots"] = training_params["plot"]
+    meta_params.update(get_augument_params())
 
     with open(project_dir + os.sep + "layers.json", "r") as f:
             layers = json.load(f)
 
-    # TODO: Update training params with layers dict
-    #       Do this only when route updated from frontend
+    training_params.update(meta_params)
+    training_params.update(layers)
 
     inputs = json_to_dict.MakeDict(training_params).parse()
     parser_path = "DLMML.parser." + lang + "." + lib + ".main"
