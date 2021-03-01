@@ -140,7 +140,6 @@ const useStyles = makeStyles((theme) => ({
     maxHeight: "500px",
     overflowY: "auto",
     border: "1px solid black",
-
   },
   droppableColtarget: {
     width: "95%",
@@ -157,7 +156,6 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: "100%",
     overflowY: "auto",
     border: "1px solid black",
-
   },
   body3: {
     width: "100%",
@@ -191,7 +189,7 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: "10px",
     // backgroundColor: "#FFC270",
     // backgroundColor: "#e2c3a7",
-    backgroundColor: "#adbce6", 
+    backgroundColor: "#adbce6",
     color: "black",
     border: "1px solid black",
     padding: "5px",
@@ -302,12 +300,12 @@ function Step2() {
   const [value, setValue] = React.useState(0);
   const [state_hyperparam, setstate_hyperparam] = React.useState({
     metrics: "",
-    epochs: "",
+    epochs: 0,
     verbose: "",
     plot: false,
     optimizer: "",
     loss: "",
-    learning_rate: "",
+    learning_rate: 0,
   });
   const [showoptimizer, setshowoptimizer] = React.useState(false);
   const [selected_optimizer, setselected_optimizer] = React.useState({});
@@ -2318,6 +2316,18 @@ function Step2() {
       const list_names_of_source = Object.keys(jsondata);
       const temp = jsondata[list_names_of_source[source.index]];
       var dic = _.cloneDeep(temp);
+
+      if (Array.isArray(components) && components.length === 0) {
+        dic["input_size"] = {
+          Example: [200, 200, 3],
+          Default: "NA",
+          Required: 1,
+          Datatype: "Tuple",
+          Options: [],
+          Description: "Input shape for the first layer",
+        };
+      }
+
       for (var key1 in dic) {
         for (var key2 in dic[key1]) {
           if (key2 === "value") {
@@ -2338,18 +2348,6 @@ function Step2() {
       //   Description:
       //     "the dimensionality of the output space [i.e.the number of output filters in the convolution]",
       // },
-      if(Array.isArray(components) && components.length === 0)
-      {
-        dic["input_size"]={
-          Example: [200,200,3],
-          Default: "NA",
-          Required: 1,
-          Datatype: "Tuple",
-          Options: [],
-          Description:
-            "Input shape for the first layer",
-        }
-      }
 
       components.splice(destination.index, 0, dic);
 
@@ -2460,23 +2458,25 @@ function Step2() {
                   dic[key0][key1].Datatype === new String("Tuple").valueOf()
                 ) {
                   // const temp = dic[key0][key1][key2].split(",");
-                  const temp = dic[key0][key1][key2].split(",").map(function(item) {
-                    return parseInt(item, 10);
-                  });
+                  const temp = dic[key0][key1][key2]
+                    .split(",")
+                    .map(function (item) {
+                      return parseInt(item, 10);
+                    });
                   console.log(temp);
                   if (temp.length === 4) {
                     final_dict[`Layer-${i}-${dic[key0].name}-${key1}`] = [
                       [parseInt(temp[0]), parseInt(temp[1])],
                       [parseInt(temp[2]), parseInt(temp[3])],
                     ];
-                  } 
+                  }
                   // else if (temp.length === 4) {
                   //   final_dict[`Layer-${i}-${dic[key0].name}-${key1}`] = [
                   //     [parseInt(temp[0]), parseInt(temp[1])],
                   //     [parseInt(temp[2]), parseInt(temp[3])],
                   //   ];
                   // }
-                  else{
+                  else {
                     final_dict[`Layer-${i}-${dic[key0].name}-${key1}`] = temp;
                   }
                 } else {
@@ -2497,6 +2497,46 @@ function Step2() {
 
     return final_dict;
   };
+
+  // true means it is complete
+  const layer_validation = () => {
+    var final_dict = {};
+    const temp = components;
+    var dic = _.cloneDeep(temp);
+    var i = 0;
+    var flag = true;
+
+    if (project_details.lib === new String("Keras").valueOf()) {
+      for (let [key0, value0] of Object.entries(dic)) {
+        // console.log(key0, value0);
+        i = i + 1;
+        for (var key1 in value0) {
+          // console.log(key1);
+          if (!(key1 === "name" || key1 === "id")) {
+            if (
+              dic[key0][key1]["Required"] &&
+              dic[key0][key1]["Datatype"] !== new String("select").valueOf()
+            ) {
+              if ("value" in dic[key0][key1]) {
+                continue;
+              } else {
+                flag = false;
+                break;
+              }
+            } else {
+              continue;
+            }
+          }
+        }
+      }
+    }
+    if (flag) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
   const generate_hyper = () => {
     if (project_details.lib === new String("Pytorch").valueOf()) {
       const final_dict = {};
@@ -2611,24 +2651,28 @@ function Step2() {
     return temp;
   };
   const generate_code = async () => {
-    const hyper_data = generate_hyper();
-    const layers_data = genrate_layers();
-    var _data = Object.assign({}, hyper_data, layers_data);
-    const data = {
-      username: username,
-      project_id: project_details.project_id,
-      training_params: _data,
-    };
-    const res = await HomeService.generate_code(token, data);
+    if (layer_validation()) {
+      const hyper_data = generate_hyper();
+      const layers_data = genrate_layers();
+      var _data = Object.assign({}, hyper_data, layers_data);
+      const data = {
+        username: username,
+        project_id: project_details.project_id,
+        training_params: _data,
+      };
+      const res = await HomeService.generate_code(token, data);
 
-    if (res.status === 200) {
-      // handleToggle_backdrop(false);
-      // setAllProjects([...res.data.projects]);
-      setOpenModal(true);
-      setgenerated_file_path(res.data.path);
+      if (res.status === 200) {
+        // handleToggle_backdrop(false);
+        // setAllProjects([...res.data.projects]);
+        setOpenModal(true);
+        setgenerated_file_path(res.data.path);
+      } else {
+        // localStorage.clear();
+        // history.push("/login");
+      }
     } else {
-      // localStorage.clear();
-      // history.push("/login");
+      alert("please fill all the required fileds in layers");
     }
   };
   const generate_code_1 = () => {
@@ -2748,11 +2792,6 @@ function Step2() {
       setstate_hyperparam({
         ...state_hyperparam,
         [prop]: [event.target.value],
-      });
-    } else if (prop === "learning_rate") {
-      setstate_hyperparam({
-        ...state_hyperparam,
-        [prop]: parseFloat(event.target.value),
       });
     } else {
       if (project_details.lib === new String("Pytorch").valueOf()) {
@@ -2968,7 +3007,7 @@ function Step2() {
                   ) : (
                     <div className={classes.innerpad}>
                       <div className={classes.heading}>
-                        { 'name' in components[selected_layer]
+                        {"name" in components[selected_layer]
                           ? components[selected_layer].name
                           : null}
                       </div>
@@ -3043,6 +3082,10 @@ function Step2() {
                                           ? components[selected_layer][key][
                                               "value"
                                             ]
+                                          : components[selected_layer][key][
+                                              "Default"
+                                            ] === "NA"
+                                          ? ""
                                           : components[selected_layer][key][
                                               "Default"
                                             ]
