@@ -14,6 +14,9 @@ urlpatterns = [
     path('project/delete/', views.delete_project, name='delete-project'),
     # step-1 routes
     path('project/new/', views.create_project, name='create-project'),
+    # pre-step-2 routes
+    path('preprocessing/get/', views.get_preprocessing_params, name='get-preprocessing'),
+    path('preprocessing/save/', views.save_preprocessing_params, name='save-preprocessing'),
     # step-2 routes
     path('layers/get/', views.get_layers, name='get-layers'),
     path('layers/save/', views.save_layers, name='save-layers'),
