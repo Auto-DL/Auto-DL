@@ -8,5 +8,7 @@ python-dotenv==0.15.0
 pymongo==3.11.2
 bcrypt==3.2.0
 dnspython==2.0.0
+# requirements-dev
 sphinx-markdown-tables==0.0.15
 pydata-sphinx-theme==0.5.0
+recommonmark==0.7.1
