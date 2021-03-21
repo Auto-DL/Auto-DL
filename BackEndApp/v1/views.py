@@ -15,7 +15,7 @@ from authv1.decorators import is_authenticated
 from DLMML.utils import json_to_dict
 from DLMML.parser import *
 
-from .utils import generate_uid, get_augument_params
+from .utils import generate_uid
 
 
 @api_view(["POST"])
@@ -35,6 +35,9 @@ def generate(request):
     with open(project_dir + os.sep + "meta.json", "r") as f:
             metadata = json.load(f)
 
+    with open(project_dir + os.sep + "preprocessing.json", "r") as f:
+            preprocessing = json.load(f)
+
     lib = metadata.get("lib", "keras").lower()
     lang = metadata.get("lang", "python").lower()
 
@@ -43,7 +46,7 @@ def generate(request):
     meta_params["lang"] = lang
     meta_params["dataset-path"] = metadata.get("data_dir", ".")
     meta_params["save_plots"] = training_params["plot"]
-    meta_params.update(get_augument_params())
+    meta_params.update(preprocessing)
 
     with open(project_dir + os.sep + "layers.json", "r") as f:
             layers = json.load(f)
@@ -322,5 +325,58 @@ def get_layers(request):
         status, success, message, components = 500, False, str(e), {}
     return JsonResponse(
         {"success": success, "message": message, "components": components},
+        status=status,
+    )
+
+
+@api_view(["POST"])
+@is_authenticated
+def save_preprocessing_params(request):
+    try:
+        username = request.data.get("username")
+        user = User(username=username, password=None)
+        user = user.find()
+
+        store_obj = Store(user)
+        project_id = request.data.get("project_id")
+        preprocessing = request.data.get("preprocessing_params")
+
+        if not store_obj.exist(project_id):
+            raise Exception("No such project exists")
+
+        project_dir = store_obj.path + os.sep + project_id
+        with open(project_dir + os.sep + "preprocessing.json", "w") as f:
+            json.dump(preprocessing, f)
+
+        status, success, message = 200, True, "Preprocessing params saved successfully"
+
+    except Exception as e:
+        status, success, message = 500, False, str(e)
+    return JsonResponse({"success": success, "message": message}, status=status)
+
+
+@api_view(["POST"])
+@is_authenticated
+def get_preprocessing_params(request):
+    try:
+        username = request.data.get("username")
+        user = User(username=username, password=None)
+        user = user.find()
+
+        store_obj = Store(user)
+        project_id = request.data.get("project_id")
+        if not store_obj.exist(project_id):
+            raise Exception("No such project exists")
+        project_dir = store_obj.path + os.sep + project_id
+
+        with open(project_dir + os.sep + "preprocessing.json", "r") as f:
+            preprocessing = json.load(f)
+
+        status, success, message = 200, True, "preprocessing params fetched"
+
+    except Exception as e:
+        status, success, message, preprocessing = 500, False, str(e), {}
+    return JsonResponse(
+        {"success": success, "message": message, "preprocessing": preprocessing},
         status=status,
     )
