@@ -25,6 +25,7 @@ import MuiDialogTitle from "@material-ui/core/DialogTitle";
 import MuiDialogContent from "@material-ui/core/DialogContent";
 import MuiDialogActions from "@material-ui/core/DialogActions";
 import CloseIcon from "@material-ui/icons/Close";
+import { OpacitySharp } from "@material-ui/icons";
 
 const styles = (theme) => ({
   root: {
@@ -280,6 +281,9 @@ const useStyles = makeStyles((theme) => ({
     float: "right",
     margin: "5px",
   },
+  pad: {
+    padding: "7px",
+  },
 }));
 
 function Step2() {
@@ -343,10 +347,33 @@ function Step2() {
       // history.push("/login");
     }
   }
+  async function savepre() {
+    const data = {
+      username: username,
+      project_id: project_details.project_id,
+      preprocessing_params: all_prepro,
+    };
+    console.log(token, data);
+    // handleToggle_backdrop(true);
+    const res = await HomeService.save_pre(token, data);
+
+    if (res.status === 200) {
+      // handleToggle_backdrop(false);
+      // setAllProjects([...res.data.projects]);
+      // setall_prepro(res.data.preprocessing);
+      console.log(res);
+    } else {
+      // localStorage.clear();
+      // history.push("/login");
+    }
+  }
   const handleChangetabs = (event, newValue) => {
-    if (newValue !== 0) {
+    if (newValue !== 1) {
       saveData();
       console.log(genrate_layers());
+    }
+    if (newValue !== 0) {
+      savepre();
     }
     setValue(newValue);
   };
@@ -356,125 +383,135 @@ function Step2() {
     project_details.lib === new String("Pytorch").valueOf() ||
     project_details.library === new String("Pytorch").valueOf()
   ) {
-    var temp_pre = {
-      Input: {
-        name: "Input",
+    var temp_pre_meta = {
+      dataset: {
+        name: "dataset",
         type: {
           Example: "image",
           Default: "None",
           Required: 1,
-          DataType: "String",
+          DataType: "select",
           Options: ["image", "csv", "text"],
           Description: "Type of input to model",
         },
-        path: {
-          Example: "/data/cats-vs-dogs/",
-          Default: "None",
-          Required: 1,
-          DataType: "String",
-          Options: [],
-          Description: "Path to the data either absolute or relative",
-        },
+        // path: {
+        //   Example: "/data/cats-vs-dogs/",
+        //   Default: "None",
+        //   Required: 1,
+        //   DataType: "String",
+        //   Options: [],
+        //   Description: "Path to the data either absolute or relative",
+        // },
       },
+    };
+    var temp_pre = {
+      // is param in image processing?
+      image: {
+        params: {
+          name: "params",
+          input_type: "image",
+          batch_size_train: {
+            Example: 32,
+            Default: 1,
+            Required: 1,
+            DataType: "number",
+            Options: [],
+            Description: "how many samples per batch to load (Training) ",
+          },
+          n_batch_test: {
+            Example: 32,
+            Default: 1,
+            Required: 1,
+            DataType: "number",
+            Options: [],
+            Description: "how many samples per batch to load (Test) ",
+          },
+          num_workers: {
+            Example: 2,
+            Default: 0,
+            Required: 0,
+            DataType: "number",
+            Options: [],
+            Description:
+              "how many subprocesses to use for data loading. 0 means that the data will be loaded in the main process ",
+          },
 
-      params: {
-        name: "params",
+          shuffle: {
+            Example: "False",
+            Default: "True",
+            Required: 0,
+            DataType: "select",
+            Options: ["True", "False"],
+            Description:
+              "set to True to have the data reshuffled at every epoch",
+          },
 
-        batch_size_train: {
-          Example: 32,
-          Default: 1,
-          Required: 1,
-          DataType: "number",
-          Options: [],
-          Description: "how many samples per batch to load (Training) ",
-        },
-        n_batch_test: {
-          Example: 32,
-          Default: 1,
-          Required: 1,
-          DataType: "number",
-          Options: [],
-          Description: "how many samples per batch to load (Test) ",
-        },
-        num_workers: {
-          Example: 2,
-          Default: 0,
-          Required: 0,
-          DataType: "number",
-          Options: [],
-          Description:
-            "how many subprocesses to use for data loading. 0 means that the data will be loaded in the main process ",
+          n_epochs: {
+            Example: 1,
+            Default: "NA",
+            Required: 1,
+            DataType: "number",
+            Options: [],
+            Description: "Number of epochs to train the model",
+          },
         },
 
-        shuffle: {
-          Example: "False",
-          Default: "True",
-          Required: 0,
-          DataType: "select",
-          Options: ["True", "False"],
-          Description: "set to True to have the data reshuffled at every epoch",
+        CenterCrop: {
+          name: "augment",
+          input_type: "image",
+
+          size: {
+            Example: "10",
+            Default: "",
+            Required: 1,
+            DataType: "number",
+            Options: [],
+            Description: "Output size of the cropped image ",
+          },
         },
 
-        n_epochs: {
-          Example: 1,
-          Default: "NA",
-          Required: 1,
-          DataType: "number",
-          Options: [],
-          Description: "Number of epochs to train the model",
+        Grayscale: {
+          name: "augment",
+          input_type: "image",
+
+          num_output_channels: {
+            Example: "1",
+            Default: "1",
+            Required: 1,
+            DataType: "number",
+            Options: [1, 3],
+            Description: "Number of output channels ",
+          },
         },
+        Resize: {
+          name: "augment",
+          input_type: "image",
+
+          size: {
+            Example: "10",
+            Default: "",
+            Required: 1,
+            DataType: "number",
+            Options: [],
+            Description: "Output size of the image",
+          },
+          interpolation: {
+            Example: "2",
+            Default: "2",
+            Required: 0,
+            DataType: "number",
+            Options: [],
+            Description: "Desired interpolation enum defined by filters",
+          },
+        },
+        // ToTensor: {
+        //   name: "augment",
+        //   input_type: "image",
+
+        // },
       },
-
-      CenterCrop: {
-        name: "augment",
-        "input-type": "image",
-
-        size: {
-          Example: "10",
-          Default: "",
-          Required: 1,
-          DataType: "number",
-          Options: [],
-          Description: "Output size of the cropped image ",
-        },
-      },
-
-      Grayscale: {
-        name: "augment",
-        "input-type": "image",
-        num_output_channels: {
-          Example: "1",
-          Default: "1",
-          Required: 1,
-          DataType: "number",
-          Options: [1, 3],
-          Description: "Number of output channels ",
-        },
-      },
-      Resize: {
-        name: "augment",
-        "input-type": "image",
-        size: {
-          Example: "10",
-          Default: "",
-          Required: 1,
-          DataType: "number",
-          Options: [],
-          Description: "Output size of the image",
-        },
-        interpolation: {
-          Example: "2",
-          Default: "2",
-          Required: 0,
-          DataType: "number",
-          Options: [],
-          Description: "Desired interpolation enum defined by filters",
-        },
-      },
-      ToTensor: {
-        name: "augment",
-        "input-type": "image",
-      },
+      csv: {},
+      text: {},
     };
     var temp_loss = {
       L1Loss: {
@@ -2038,114 +2075,119 @@ function Step2() {
         },
       },
     };
-    var temp_pre = {
-      Input: {
-        name: "Input",
+    var temp_pre_meta = {
+      dataset: {
+        name: "dataset",
         type: {
           Example: "image",
           Default: "None",
           Required: 1,
-          DataType: "String",
+          DataType: "select",
           Options: ["image", "csv", "text"],
           Description: "Type of input to model",
         },
-        path: {
-          Example: "/data/cats-vs-dogs/",
-          Default: "None",
-          Required: 1,
-          DataType: "String",
-          Options: [],
-          Description: "Path to the data either absolute or relative",
+        // path: {
+        //   Example: "/data/cats-vs-dogs/",
+        //   Default: "None",
+        //   Required: 1,
+        //   DataType: "String",
+        //   Options: [],
+        //   Description: "Path to the data either absolute or relative",
+        // },
+      },
+    };
+    var temp_pre = {
+      image: {
+        augment: {
+          name: "augment",
+          input_type: "image",
+
+          rotation_range: {
+            Example: 40,
+            Default: 0,
+            Required: 0,
+            DataType: "number",
+            Options: [],
+            Description: "Degree range for random rotations",
+          },
+          width_shift_range: {
+            Example: "0.1",
+            Default: "0.0",
+            Required: 0,
+            DataType: "number",
+            Options: [],
+            Description: "fraction of total width",
+          },
+
+          height_shift_range: {
+            Example: "0.1",
+            Default: "0.0",
+            Required: 0,
+            DataType: "number",
+            Options: [],
+            Description: "fraction of total height",
+          },
+
+          horizontal_flip: {
+            Example: "True",
+            Default: "",
+            Required: 0,
+            DataType: "select",
+            Options: ["True", "False"],
+            Description: "Whether you want to flip images horizontally",
+          },
+
+          rescale: {
+            Example: 0.0039215,
+            Default: 0,
+            Required: 0,
+            DataType: "number",
+            Options: [],
+            Description: "multiplies the data by the value provided",
+          },
+        },
+
+        params: {
+          name: "params",
+          input_type: "image",
+
+          target_size: {
+            Example: [200, 200],
+            Default: "None",
+            Required: 1,
+            DataType: "tuple",
+            Options: [],
+            Description: "Target size of the image",
+          },
+          batch_size: {
+            Example: 64,
+            Default: 32,
+            Required: 1,
+            DataType: "number",
+            Options: [],
+            Description: "Size of the batches of data",
+          },
+
+          class_mode: {
+            Example: "binary",
+            Default: "categorical",
+            Required: 1,
+            DataType: "select",
+            Options: [
+              "binary",
+              "categorical",
+              "input",
+              "multi_output",
+              "raw",
+              "sparse",
+              "None",
+            ],
+            Description: "Mode for yielding the targets",
+          },
         },
       },
-
-      augment: {
-        name: "augment",
-        "input-type": "image",
-
-        rotation_range: {
-          Example: 40,
-          Default: 0,
-          Required: 0,
-          DataType: "number",
-          Options: [],
-          Description: "Degree range for random rotations",
-        },
-        width_shift_range: {
-          Example: "0.1",
-          Default: "0.0",
-          Required: 0,
-          DataType: "number",
-          Options: [],
-          Description: "fraction of total width",
-        },
-
-        height_shift_range: {
-          Example: "0.1",
-          Default: "0.0",
-          Required: 0,
-          DataType: "number",
-          Options: [],
-          Description: "fraction of total height",
-        },
-
-        horizontal_flip: {
-          Example: "True",
-          Default: "",
-          Required: 0,
-          DataType: "select",
-          Options: ["True", "False"],
-          Description: "Whether you want to flip images horizontally",
-        },
-
-        rescale: {
-          Example: 0.0039215,
-          Default: 0,
-          Required: 0,
-          DataType: "number",
-          Options: [],
-          Description: "multiplies the data by the value provided",
-        },
-      },
-
-      params: {
-        name: "params",
-        "input-type": "image",
-
-        target_size: {
-          Example: [200, 200],
-          Default: "None",
-          Required: 1,
-          DataType: "tuple",
-          Options: [],
-          Description: "Target size of the image",
-        },
-        batch_size: {
-          Example: 64,
-          Default: 32,
-          Required: 1,
-          DataType: "number",
-          Options: [],
-          Description: "Size of the batches of data",
-        },
-
-        class_mode: {
-          Example: "binary",
-          Default: "categorical",
-          Required: 1,
-          DataType: "select",
-          Options: [
-            "binary",
-            "categorical",
-            "input",
-            "multi_output",
-            "raw",
-            "sparse",
-            "None",
-          ],
-          Description: "Mode for yielding the targets",
-        },
-      },
+      csv: {},
+      text: {},
     };
     var hyper = {
       params: {
@@ -2236,7 +2278,14 @@ function Step2() {
   // setall_optimizer(temp_optimizer);
   const [all_optimizer, setall_optimizer] = React.useState(temp_optimizer);
   const [all_loss, setall_loss] = React.useState(temp_loss);
+  const [all_prepro, setall_prepro] = React.useState({});
+  const [render_prepro_meta, setrender_prepro_meta] = React.useState(
+    temp_pre_meta
+  );
+  const [render_prepro, setrender_prepro] = React.useState(temp_pre);
+  const [show_pre, setshow_pre] = React.useState(false);
   const [jsondata, setjsondata] = React.useState(temp_json);
+  console.log(all_prepro);
 
   useEffect(() => {
     async function fetchData() {
@@ -2245,20 +2294,33 @@ function Step2() {
         project_id: project_details.project_id,
       };
       console.log(token, data);
-      // handleToggle_backdrop(true);
       const res = await HomeService.get_layers(token, data);
 
       if (res.status === 200) {
-        // handleToggle_backdrop(false);
-        // setAllProjects([...res.data.projects]);
         setcomponents(res.data.components);
         console.log(res.data.components);
       } else {
-        // localStorage.clear();
-        // history.push("/login");
       }
     }
     fetchData();
+    async function fetchDataPre() {
+      const data = {
+        username: username,
+        project_id: project_details.project_id,
+      };
+      console.log(token, data);
+      const res = await HomeService.get_pre(token, data);
+
+      if (res.status === 200) {
+        setall_prepro(res.data.preprocessing);
+        console.log(all_prepro);
+        if ("dataset-type" in res.data.preprocessing) {
+          setshow_pre(true);
+        }
+      } else {
+      }
+    }
+    fetchDataPre();
   }, []);
 
   const handleDragEnd = ({ destination, source }) => {
@@ -2632,8 +2694,6 @@ function Step2() {
         loss: state_hyperparam.loss,
         optimizer: state_hyperparam.optimizer,
         learning_rate: state_hyperparam.learning_rate,
-        "dataset-type": "image",
-        "dataset-path": "../data/dogs_and_cats",
       };
     }
 
@@ -2671,7 +2731,7 @@ function Step2() {
     console.log(final_dict);
 
     if (project_details.lib === new String("Pytorch").valueOf()) {
-      console.log("pyyytorch");
+      console.log("pytorch");
     } else if (project_details.lib === new String("Keras").valueOf()) {
       var _dict = {
         // "Layer-1-Conv2D-filters": 32,
@@ -2854,6 +2914,61 @@ function Step2() {
       }
     }
   };
+  const handle_pre_meta = (key, key1, datatype) => (event) => {
+    var temp_dic = {};
+    for (var key of Object.keys(temp_pre)) {
+      for (var key1 of Object.keys(temp_pre[key])) {
+        if (temp_pre[key][key1]) {
+          for (var key2 of Object.keys(temp_pre[key][key1])) {
+            if (key2 !== "name" && key2 !== "input_type")
+              temp_dic[`${key}-${key1}-${key2}`] =
+                temp_pre[key][key1][key2]["Default"];
+          }
+        } else {
+          temp_dic[`${key}-${key1}`] = temp_pre[key][key1]["Default"];
+        }
+      }
+    }
+    setall_prepro(temp_dic);
+    console.log(event.target.value);
+    all_prepro[`dataset-type`] = event.target.value;
+    setall_prepro(all_prepro);
+    setshow_pre(!show_pre);
+  };
+  const handle_pre = (key, key1, datatype) => (event) => {
+    if (datatype === new String("number").valueOf()) {
+      var dic = _.cloneDeep(all_prepro);
+      if (event.target.value.charAt(event.target.value.length - 1) === ".") {
+        dic[`${all_prepro["dataset-type"]}-${key}-${key1}`] =
+          event.target.value;
+      } else {
+        dic[`${all_prepro["dataset-type"]}-${key}-${key1}`] = parseFloat(
+          event.target.value
+        );
+      }
+    } else if (datatype === new String("tuple").valueOf()) {
+      var dic = _.cloneDeep(all_prepro);
+      dic[`${all_prepro["dataset-type"]}-${key}-${key1}`] = event.target.value;
+    } else {
+      console.log(event.target.value);
+      console.log(typeof event.target.value);
+      if (event.target.value === new String("true").valueOf()) {
+        var dic = _.cloneDeep(all_prepro);
+        dic[`${all_prepro["dataset-type"]}-${key}-${key1}`] = true;
+      } else if (event.target.value === new String("false").valueOf()) {
+        var dic = _.cloneDeep(all_prepro);
+        dic[`${all_prepro["dataset-type"]}-${key}-${key1}`] = false;
+      } else {
+        var dic = _.cloneDeep(all_prepro);
+        dic[`${all_prepro["dataset-type"]}-${key}-${key1}`] =
+          event.target.value;
+      }
+      // all_prepro[`${all_prepro['dataset-type']}-${key}-${key1}`] = event.target.value;
+      // var dic = _.cloneDeep(all_prepro);
+      // dic[`${all_prepro['dataset-type']}-${key}-${key1}`] = event.target.value;
+    }
+    setall_prepro(dic);
+  };
 
   return (
     <div className={classes.App}>
@@ -2881,17 +2996,186 @@ function Step2() {
           aria-label="full width tabs example"
           // style={{ background: '#6f53ca' }}
         >
-          {/* <Tab label="Preprocessing" {...a11yProps(0)} /> */}
-          <Tab label="Model" {...a11yProps(0)} />
-          <Tab label="Hyperparameters" {...a11yProps(1)} />
+          <Tab label="Preprocessing" {...a11yProps(0)} />
+          <Tab label="Model" {...a11yProps(1)} />
+          <Tab label="Hyperparameters" {...a11yProps(2)} />
         </Tabs>
       </AppBar>
 
-      {/* <TabPanel value={value} index={0} dir={theme.direction}>
-            Preprocessing
-            </TabPanel> */}
-
       <TabPanel value={value} index={0} dir={theme.direction}>
+        {value === 0 ? (
+          <Grid container>
+            <Grid item lg={1} md={1} sm={1} xs={1}></Grid>
+            <Grid item lg={10} md={10} sm={10} xs={10}>
+              <Grid container>
+                <Grid item lg={12} md={12} sm={12} xs={12}>
+                  {/* meta */}
+                  {Object.keys(render_prepro_meta).map((key, index) => (
+                    <>
+                      <div className={classes.heading}>{key}</div>
+                      <Grid container>
+                        {Object.keys(render_prepro_meta[key]).map(
+                          (key1, index1) =>
+                            key1 === "name" ? null : (
+                              <>
+                                <Grid
+                                  item
+                                  lg={3}
+                                  md={3}
+                                  sm={3}
+                                  xs={3}
+                                  className={classes.pad}
+                                >
+                                  <FormControl fullWidth variant="outlined">
+                                    <InputLabel>{key1}</InputLabel>
+                                    <Select
+                                      native
+                                      value={
+                                        `dataset-type` in all_prepro
+                                          ? all_prepro[`dataset-type`]
+                                          : ""
+                                      }
+                                      onChange={handle_pre_meta(
+                                        key,
+                                        key1,
+                                        render_prepro_meta[key][key1][
+                                          "DataType"
+                                        ]
+                                      )}
+                                      label={key1}
+                                      inputProps={{
+                                        name: { key1 },
+                                      }}
+                                    >
+                                      <option aria-label="None" value="" />
+                                      {render_prepro_meta[key][key1][
+                                        "Options"
+                                      ].map((op, i) => (
+                                        <option value={op}>{op}</option>
+                                      ))}
+                                    </Select>
+                                  </FormControl>
+                                </Grid>
+                              </>
+                            )
+                        )}
+                      </Grid>
+                    </>
+                  ))}
+                  {/* pre */}
+
+                  {show_pre ? (
+                    <>
+                      {Object.keys(
+                        render_prepro[all_prepro["dataset-type"]]
+                      ).map((key, index) => (
+                        <>
+                          <div className={classes.heading}>{key}</div>
+                          <Grid container>
+                            {Object.keys(
+                              render_prepro[all_prepro["dataset-type"]][key]
+                            ).map((key1, index1) =>
+                              key1 === "name" ||
+                              key1 === "input_type" ? null : (
+                                <>
+                                  <Grid
+                                    item
+                                    lg={3}
+                                    md={3}
+                                    sm={3}
+                                    xs={3}
+                                    className={classes.pad}
+                                  >
+                                    {render_prepro[all_prepro["dataset-type"]][
+                                      key
+                                    ][key1]["DataType"] === "select" ? (
+                                      <FormControl fullWidth variant="outlined">
+                                        <InputLabel>{key1}</InputLabel>
+                                        <Select
+                                          native
+                                          value={
+                                            all_prepro
+                                              ? all_prepro[
+                                                  `${all_prepro["dataset-type"]}-${key}-${key1}`
+                                                ]
+                                              : ""
+                                          }
+                                          onChange={handle_pre(
+                                            key,
+                                            key1,
+                                            render_prepro[
+                                              all_prepro["dataset-type"]
+                                            ][key][key1]["DataType"]
+                                          )}
+                                          label={key1}
+                                          inputProps={{
+                                            name: { key1 },
+                                          }}
+                                        >
+                                          <option aria-label="None" value="" />
+                                          {render_prepro[
+                                            all_prepro["dataset-type"]
+                                          ][key][key1]["Options"].map(
+                                            (op, i) => (
+                                              <option
+                                                value={
+                                                  op === "True"
+                                                    ? true
+                                                    : op === "False"
+                                                    ? false
+                                                    : op
+                                                }
+                                              >
+                                                {op}
+                                              </option>
+                                            )
+                                          )}
+                                        </Select>
+                                      </FormControl>
+                                    ) : (
+                                      <TextField
+                                        fullWidth
+                                        label={key1}
+                                        value={
+                                          all_prepro
+                                            ? all_prepro[
+                                                `${all_prepro["dataset-type"]}-${key}-${key1}`
+                                              ]
+                                            : ""
+                                        }
+                                        onChange={handle_pre(
+                                          key,
+                                          key1,
+                                          render_prepro[
+                                            all_prepro["dataset-type"]
+                                          ][key][key1]["DataType"]
+                                        )}
+                                        variant="outlined"
+                                        helperText={`Example - ${
+                                          render_prepro[
+                                            all_prepro["dataset-type"]
+                                          ][key][key1]["Example"]
+                                        }`}
+                                      />
+                                    )}
+                                  </Grid>
+                                </>
+                              )
+                            )}
+                          </Grid>
+                        </>
+                      ))}
+                    </>
+                  ) : null}
+                </Grid>
+              </Grid>
+            </Grid>
+            <Grid item lg={1} md={1} sm={1} xs={1}></Grid>
+          </Grid>
+        ) : null}
+      </TabPanel>
+
+      <TabPanel value={value} index={1} dir={theme.direction}>
         <DragDropContext onDragEnd={handleDragEnd}>
           <Grid container>
             <Grid item lg={3} md={3} sm={4} xs={4} className={classes.grid1}>
@@ -3117,7 +3401,7 @@ function Step2() {
         </DragDropContext>
       </TabPanel>
 
-      <TabPanel value={value} index={1} dir={theme.direction}>
+      <TabPanel value={value} index={2} dir={theme.direction}>
         <Grid container>
           <Grid item lg={1} md={1} sm={1} xs={1}></Grid>
           <Grid item lg={10} md={10} sm={10} xs={10}>

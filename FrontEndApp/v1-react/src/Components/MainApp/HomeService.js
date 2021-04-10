@@ -15,6 +15,32 @@ class HomeService {
       return error.response;
     }
   }
+  async save_pre(token, data) {
+    try {
+      const response = await axios.post(`v1/preprocessing/save/`, data, {
+        headers: {
+          "Content-Type": "application/json",
+          token: `${token}`,
+        },
+      });
+      return response;
+    } catch (error) {
+      return error.response;
+    }
+  }
+  async get_pre(token, data) {
+    try {
+      const response = await axios.post(`v1/preprocessing/get/`, data, {
+        headers: {
+          "Content-Type": "application/json",
+          token: `${token}`,
+        },
+      });
+      return response;
+    } catch (error) {
+      return error.response;
+    }
+  }
   async train_model(token, data) {
     try {
       const response = await axios.post(`v1/train/`, data, {
