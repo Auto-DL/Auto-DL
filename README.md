@@ -20,6 +20,13 @@ The backend calls the [DLMML API](https://www.github.com/Auto-DL/DLMML) accordin
 
 Generator has DLMML as a submodule.
 
+## Demo
+
+<img src="static/v1-alpha.gif">
+
+<br>
+<br>
+
 ## How to run
 
 1.  ```sh
@@ -62,12 +69,6 @@ Generator has DLMML as a submodule.
 
 **Note:**  For detailed instruction on data directory (point 5) please read [DLMML's User Guide](https://github.com/Auto-DL/DLMML/blob/master/docs/userguide.md).
 
-## Demo
-
-<img src="static/demo.gif">
-
-<br>
-<br>
 
 ## Where to go next?
 
