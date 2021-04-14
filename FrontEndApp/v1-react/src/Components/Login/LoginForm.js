@@ -139,7 +139,8 @@ function LoginForm() {
 
         localStorage.setItem("username", JSON.stringify(res.data.user));
         localStorage.setItem("token", JSON.stringify(res.data.token));
-        history.push("/home");
+        // history.push("/home");
+        window.location.reload();
       } else {
         setalert({ ...values, msg: res.data.message, severity: "error" });
       }
@@ -175,7 +176,8 @@ function LoginForm() {
 
         localStorage.setItem("username", JSON.stringify(res.data.username));
         localStorage.setItem("token", JSON.stringify(res.data.token));
-        history.push("/home");
+        // history.push("/home");
+        window.location.reload();
       } else {
         setalert({ ...values, msg: res.data.message, severity: "error" });
       }
