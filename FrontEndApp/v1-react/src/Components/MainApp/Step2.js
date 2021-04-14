@@ -2871,17 +2871,10 @@ function Step2() {
         [prop]: [event.target.value],
       });
     } else {
-      if (project_details.lib === new String("Pytorch").valueOf()) {
-        setstate_hyperparam({
-          ...state_hyperparam,
-          [prop]: parseInt(event.target.value),
-        });
-      } else {
-        setstate_hyperparam({
-          ...state_hyperparam,
-          [prop]: event.target.value,
-        });
-      }
+      setstate_hyperparam({
+        ...state_hyperparam,
+        [prop]: event.target.value,
+      });
     }
     console.log(prop, state_hyperparam.plot);
   };
