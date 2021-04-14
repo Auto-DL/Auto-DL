@@ -25,7 +25,7 @@ import MuiDialogTitle from "@material-ui/core/DialogTitle";
 import MuiDialogContent from "@material-ui/core/DialogContent";
 import MuiDialogActions from "@material-ui/core/DialogActions";
 import CloseIcon from "@material-ui/icons/Close";
-import { OpacitySharp } from "@material-ui/icons";
+import { CollectionsBookmarkOutlined, OpacitySharp } from "@material-ui/icons";
 
 const styles = (theme) => ({
   root: {
@@ -327,6 +327,30 @@ function Step2() {
     setOpenModal(false);
   };
 
+  const typecast_pre = () => {
+    console.log("typecast here");
+    console.log(all_prepro);
+    var dic = _.cloneDeep(all_prepro);
+
+    for (var key in all_prepro) {
+      console.log(key);
+      try {
+        console.log(typeof JSON.parse(all_prepro[key]));
+        console.log(JSON.parse(all_prepro[key]));
+        dic[key] = JSON.parse(all_prepro[key]);
+      } catch (err) {
+        console.log(err);
+        if (key.includes("target_size")) {
+          const temp = all_prepro[key].split(",");
+          dic[key] = [parseInt(temp[0]), parseInt(temp[1])];
+        } else {
+          dic[key] = all_prepro[key];
+        }
+      }
+    }
+    return dic;
+  };
+
   async function saveData() {
     const data = {
       username: username,
@@ -348,10 +372,13 @@ function Step2() {
     }
   }
   async function savepre() {
+    const all_prepro_dub = await typecast_pre();
+    console.log(all_prepro_dub);
+
     const data = {
       username: username,
       project_id: project_details.project_id,
-      preprocessing_params: all_prepro,
+      preprocessing_params: all_prepro_dub,
     };
     console.log(token, data);
     // handleToggle_backdrop(true);
@@ -373,6 +400,7 @@ function Step2() {
       console.log(genrate_layers());
     }
     if (newValue !== 0) {
+      // typecast_pre();
       savepre();
     }
     setValue(newValue);
@@ -2936,37 +2964,8 @@ function Step2() {
     setshow_pre(!show_pre);
   };
   const handle_pre = (key, key1, datatype) => (event) => {
-    if (datatype === new String("number").valueOf()) {
-      var dic = _.cloneDeep(all_prepro);
-      if (event.target.value.charAt(event.target.value.length - 1) === ".") {
-        dic[`${all_prepro["dataset-type"]}-${key}-${key1}`] =
-          event.target.value;
-      } else {
-        dic[`${all_prepro["dataset-type"]}-${key}-${key1}`] = parseFloat(
-          event.target.value
-        );
-      }
-    } else if (datatype === new String("tuple").valueOf()) {
-      var dic = _.cloneDeep(all_prepro);
-      dic[`${all_prepro["dataset-type"]}-${key}-${key1}`] = event.target.value;
-    } else {
-      console.log(event.target.value);
-      console.log(typeof event.target.value);
-      if (event.target.value === new String("true").valueOf()) {
-        var dic = _.cloneDeep(all_prepro);
-        dic[`${all_prepro["dataset-type"]}-${key}-${key1}`] = true;
-      } else if (event.target.value === new String("false").valueOf()) {
-        var dic = _.cloneDeep(all_prepro);
-        dic[`${all_prepro["dataset-type"]}-${key}-${key1}`] = false;
-      } else {
-        var dic = _.cloneDeep(all_prepro);
-        dic[`${all_prepro["dataset-type"]}-${key}-${key1}`] =
-          event.target.value;
-      }
-      // all_prepro[`${all_prepro['dataset-type']}-${key}-${key1}`] = event.target.value;
-      // var dic = _.cloneDeep(all_prepro);
-      // dic[`${all_prepro['dataset-type']}-${key}-${key1}`] = event.target.value;
-    }
+    var dic = _.cloneDeep(all_prepro);
+    dic[`${all_prepro["dataset-type"]}-${key}-${key1}`] = event.target.value;
     setall_prepro(dic);
   };
 

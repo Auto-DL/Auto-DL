@@ -354,7 +354,7 @@ function Home() {
                 label="Library"
               >
                 <MenuItem value={"Keras"}>Keras</MenuItem>
-                <MenuItem value={"Pytorch"}>Pytorch</MenuItem>
+                {/* <MenuItem value={"Pytorch"}>Pytorch</MenuItem> */}
               </Select>
             </FormControl>
           ) : (
@@ -366,7 +366,7 @@ function Home() {
                 label="Library"
               >
                 <MenuItem value={"Keras"}>Keras</MenuItem>
-                <MenuItem value={"Pytorch"}>Pytorch</MenuItem>
+                {/* <MenuItem value={"Pytorch"}>Pytorch</MenuItem> */}
               </Select>
             </FormControl>
           )}
