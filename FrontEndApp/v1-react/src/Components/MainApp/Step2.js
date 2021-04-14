@@ -341,8 +341,10 @@ function Step2() {
       } catch (err) {
         console.log(err);
         if (key.includes("target_size")) {
-          const temp = all_prepro[key].split(",");
-          dic[key] = [parseInt(temp[0]), parseInt(temp[1])];
+          if(typeof all_prepro[key] === "string"){
+            const temp = all_prepro[key].split(",");
+            dic[key] = [parseInt(temp[0]), parseInt(temp[1])];
+          }
         } else {
           dic[key] = all_prepro[key];
         }
