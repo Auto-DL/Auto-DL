@@ -12,6 +12,7 @@ sys.path.append("..")
 from authv1.store import Store
 from authv1.models import User
 from authv1.decorators import is_authenticated
+from v1.models import UserData
 from DLMML.utils import json_to_dict
 from DLMML.parser import *
 
@@ -30,13 +31,13 @@ def generate(request):
     store_obj = Store(user)
     if not store_obj.exist(project_id):
         raise Exception("No such project exists")
-    
+
     project_dir = store_obj.path + os.sep + project_id
     with open(project_dir + os.sep + "meta.json", "r") as f:
-            metadata = json.load(f)
+        metadata = json.load(f)
 
     with open(project_dir + os.sep + "preprocessing.json", "r") as f:
-            preprocessing = json.load(f)
+        preprocessing = json.load(f)
 
     lib = metadata.get("lib", "keras").lower()
     lang = metadata.get("lang", "python").lower()
@@ -49,7 +50,10 @@ def generate(request):
     meta_params.update(preprocessing)
 
     with open(project_dir + os.sep + "layers.json", "r") as f:
-            layers = json.load(f)
+        layers = json.load(f)
+
+    with open(project_dir + os.sep + "components.json", "r") as f:
+        components = json.load(f)
 
     training_params.update(meta_params)
     training_params.update(layers)
@@ -57,6 +61,10 @@ def generate(request):
     inputs = json_to_dict.MakeDict(training_params).parse()
     parser_path = "DLMML.parser." + lang + "." + lib + ".main"
     parser = importlib.import_module(parser_path)
+
+    # TODO: move to javascript in the next version
+    user_data = UserData(metadata, components, layers, inputs, preprocessing)
+    print(user_data.upload())
 
     status, error = parser.generate_code(inputs)
     if status:
