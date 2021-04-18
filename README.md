@@ -50,7 +50,19 @@ Generator has DLMML as a submodule.
 
     # go grab a cup of coffee, it takes an eternity XD
     ```
-5. Place data in the `./DLMML/data` directory.
+5. Place data in the `./data` directory.
+
+    Your data should be divided into classes for classification, for example, if you're classifying "Cats V/s Dogs", then your `./data` directory would look like:
+    ```sh
+    data
+    └───dogs_and_cats
+        ├───test
+        │   ├───cats
+        │   └───dogs
+        └───train
+            ├───cats
+            └───dogs
+    ```
 
 6.  ```sh
     # run the backend 
@@ -88,8 +100,6 @@ Please take a look at our [contributing guidelines](https://github.com/Auto-DL/G
 - Improve the UI and UX.
 
 - Show model training realted stats on the frontend.
-
-- Input form to contain the dataset path and other essential parameters.  
 
 - Visualization and data preprocessing steps.
 
