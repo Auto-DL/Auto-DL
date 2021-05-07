@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+    backend:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: Backend
+        entrypoint: ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+        ports:
+        - "8000:8000"
+        deploy: 
+            restart_policy:
+                condition: on-failure
+    frontend:
+        build: 
+            context: ./FrontEndApp
+            dockerfile: Dockerfile
+        image: auto-dl-frontend
+        container_name: frontend
+        entrypoint: ["npm", "start"]
+        ports:
+        - "3000:3000"
+        depends_on:
+            - backend
+        deploy: 
+            restart_policy:
+                condition: on-failure
