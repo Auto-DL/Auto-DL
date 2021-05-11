@@ -6,6 +6,7 @@ import sys
 import os
 import json
 import importlib
+import shutil
 
 sys.path.append("..")
 
@@ -75,6 +76,15 @@ def generate(request):
         print("File generated")
         msg = "File Generated Successfully"
         path = "file:///" + os.getcwd() + os.sep + "test.py"
+
+        # change the hardcoded path , frontend-->v1-react-->-->public
+        original = os.getcwd() + os.sep + "test.py"
+        cwd=os.getcwd()
+        path_parent = os.path.dirname(os.getcwd())
+        os.chdir(path_parent)
+        target = os.getcwd() + os.sep + "FrontEndApp" + os.sep + "v1-react" + os.sep + "public" + os.sep + "test.py"
+        os.chdir(cwd)
+        shutil.copyfile(original, target)
 
     return JsonResponse({"message": msg, "path": path})
 

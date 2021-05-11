@@ -2969,6 +2969,12 @@ function Step2() {
       <Dialog onClose={handleCloseModal} open={openModal}>
         <DialogTitle onClose={handleCloseModal}>Generated code</DialogTitle>
         <DialogContent dividers>{generated_file_path}</DialogContent>
+        <DialogContent>
+          <a href={"./test.py"} download>
+          Download-{generated_file_path.slice(-7)}
+          </a>
+        </DialogContent>
+        
         <DialogActions>
           {/* <a href = {generated_file_path} target = "_blank">Go to file path</a> */}
           {/* <Button onClick={go_to_file_path} color="primary">
