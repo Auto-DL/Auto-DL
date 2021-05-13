@@ -5,6 +5,7 @@ import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import Button from "@material-ui/core/Button";
 import axios from "axios";
+import fileDownload from 'js-file-download';
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { makeStyles, withStyles, useTheme } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
@@ -26,6 +27,8 @@ import MuiDialogContent from "@material-ui/core/DialogContent";
 import MuiDialogActions from "@material-ui/core/DialogActions";
 import CloseIcon from "@material-ui/icons/Close";
 import { CollectionsBookmarkOutlined, OpacitySharp } from "@material-ui/icons";
+import { Tooltip } from "@material-ui/core";
+
 
 const styles = (theme) => ({
   root: {
@@ -2833,6 +2836,17 @@ function Step2() {
   const go_to_file_path = () => {
     window.open(generated_file_path, "_blank");
   };
+  const download_code = async () => {
+    const data = {
+      username: username,
+      project_id: project_details.project_id,
+    };
+    const res = await HomeService.download_code(token, data);
+    if (res.status === 200) {
+      fileDownload(res.data, 'test.py');
+    }
+
+  };
   const Train = async () => {
     const hyper_data = generate_hyper();
     const layers_data = genrate_layers();
@@ -2967,16 +2981,39 @@ function Step2() {
   return (
     <div className={classes.App}>
       <Dialog onClose={handleCloseModal} open={openModal}>
-        <DialogTitle onClose={handleCloseModal}>Generated code</DialogTitle>
-        <DialogContent dividers>{generated_file_path}</DialogContent>
-        <DialogActions>
-          {/* <a href = {generated_file_path} target = "_blank">Go to file path</a> */}
-          {/* <Button onClick={go_to_file_path} color="primary">
-                Go to file path
-              </Button> */}
-          <Button onClick={handleCloseModal} color="default">
-            Close
+        <DialogTitle onClose={handleCloseModal}>Code Generated!</DialogTitle>
+        <DialogContent dividers>
+          <div>
+            <h3>
+              Instructions:
+            </h3>
+            <ul>
+              <li>
+                Click the "Download Code" button to download the generated code to any directory of your choice.
+              </li>
+              <br></br>
+              <Tooltip title="See value of 'base' variable in the python file">
+              <li>
+                Make sure you place the data files relative to the downloaded script
+              </li>
+              </Tooltip>
+              <br></br>
+              <li>
+              <Tooltip title="Exmaple: python3 test.py" placement="bottom-start">
+                <div> Run the code.</div>
+              </Tooltip>
+              </li>
+            </ul>
+          </div>
+        </DialogContent>
+        <DialogActions style={{justifyContent: 'center'}}>
+          <Button variant="contained"
+              onClick={download_code} color="primary">
+                Download Code
           </Button>
+          {/* <Button onClick={handleCloseModal} color="default">
+            Close
+          </Button> */}
         </DialogActions>
       </Dialog>
 

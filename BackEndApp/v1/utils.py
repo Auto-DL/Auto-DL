@@ -1,4 +1,5 @@
 from uuid import uuid4 as uid
+import os
 
 
 def generate_uid():
@@ -14,8 +15,14 @@ def get_augument_params():
         "image-augment-horizontal_flip": "True",
         "image-augment-rescale": 0.0039215,
         "image-params-target_size": [200, 200],
-	    "image-params-batch_size": 64
+        "image-params-batch_size": 64,
     }
+
+
+def copy_file(dest, filename="test.py"):
+    if not filename.endswith(".py"):
+        filename += ".py"
+    os.system('cp -f {} "{}"/{}'.format(filename, dest, filename))
 
 
 if __name__ == "__main__":
