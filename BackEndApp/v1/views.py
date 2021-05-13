@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 import sys
@@ -16,7 +16,7 @@ from v1.models import UserData
 from DLMML.utils import json_to_dict
 from DLMML.parser import *
 
-from .utils import generate_uid
+from .utils import generate_uid, copy_file
 
 
 @api_view(["POST"])
@@ -64,7 +64,6 @@ def generate(request):
 
     # TODO: move to javascript in the next version
     user_data = UserData(metadata, components, layers, inputs, preprocessing)
-    print(user_data.upload())
 
     status, error = parser.generate_code(inputs)
     if status:
@@ -75,6 +74,7 @@ def generate(request):
         print("File generated")
         msg = "File Generated Successfully"
         path = "file:///" + os.getcwd() + os.sep + "test.py"
+        copy_file(project_dir)
 
     return JsonResponse({"message": msg, "path": path})
 
@@ -388,3 +388,38 @@ def get_preprocessing_params(request):
         {"success": success, "message": message, "preprocessing": preprocessing},
         status=status,
     )
+
+
+@api_view(["POST"])
+@is_authenticated
+def download_code(request):
+    """
+    Endpoint for dowloading generated code.
+    Inputs:
+    -------
+    request:
+        Requires: username & project_id in request data
+                  token in request header
+    Returns:
+    --------
+    response: HttpResponse (Required File)
+              (Yes, not JsonResponse like other views)
+    """
+    try:
+        username = request.data.get("username")
+        user = User(username=username, password=None)
+        user = user.find()
+
+        store_obj = Store(user)
+        project_id = request.data.get("project_id")
+        if not store_obj.exist(project_id):
+            raise Exception("No such project exists")
+        project_dir = store_obj.path + os.sep + project_id
+
+        f = open(project_dir + os.sep + "test.py", "r")
+        response = HttpResponse(f, content_type="application/x-python-code")
+        response["Content-Disposition"] = "attachment; filename=test.py"
+
+    except Exception as e:
+        response = HttpResponse("<h1>File not found</h1>")
+    return response

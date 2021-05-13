@@ -2,6 +2,19 @@ import axios from "axios";
 // const BACKEND_API_URL = process.env.REACT_APP_BACKEND_API_URL
 
 class HomeService {
+  async download_code(token, data) {
+    try {
+      const response = await axios.post(`v1/code/download/`, data, {
+        headers: {
+          "Content-Type": "application/json",
+          token: `${token}`,
+        },
+      });
+      return response;
+    } catch (error) {
+      return error.response;
+    }
+  }
   async generate_code(token, data) {
     try {
       const response = await axios.post(`v1/generate/`, data, {
