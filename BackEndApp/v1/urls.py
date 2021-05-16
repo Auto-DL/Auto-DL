@@ -20,7 +20,8 @@ urlpatterns = [
     # step-2 routes
     path('layers/get/', views.get_layers, name='get-layers'),
     path('layers/save/', views.save_layers, name='save-layers'),
+    path('hyperparams/get/', views.get_hyperparams, name='get-hyperparams'),
+    path('hyperparams/save/', views.save_hyperparams, name='save-hyperparams'),
     # post-processing routes
     path('code/download/', views.download_code, name='dowload-code'),
-
 ]
