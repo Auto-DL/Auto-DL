@@ -400,14 +400,14 @@ def save_hyperparams(request):
 
         store_obj = Store(user)
         project_id = request.data.get("project_id")
-        preprocessing = request.data.get("hyperparams")
+        hyperparams = request.data.get("hyperparams")
 
         if not store_obj.exist(project_id):
             raise Exception("No such project exists")
 
         project_dir = store_obj.path + os.sep + project_id
         with open(project_dir + os.sep + "hyperparams.json", "w") as f:
-            json.dump(preprocessing, f)
+            json.dump(hyperparams, f)
 
         status, success, message = 200, True, "Hyperparams saved successfully"
 
@@ -431,14 +431,14 @@ def get_hyperparams(request):
         project_dir = store_obj.path + os.sep + project_id
 
         with open(project_dir + os.sep + "hyperparams.json", "r") as f:
-            preprocessing = json.load(f)
+            hyperparams = json.load(f)
 
         status, success, message = 200, True, "hyperparams fetched"
 
     except Exception as e:
-        status, success, message, preprocessing = 500, False, str(e), {}
+        status, success, message, hyperparams = 500, False, str(e), {}
     return JsonResponse(
-        {"success": success, "message": message, "preprocessing": preprocessing},
+        {"success": success, "message": message, "hyperparams": hyperparams},
         status=status,
     )
 

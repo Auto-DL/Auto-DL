@@ -154,7 +154,7 @@ function Home() {
       const data = {
         username: username,
       };
-      console.log(token, data);
+      // console.log(token, data);
       handleToggle_backdrop(true);
       const res = await HomeService.get_all(token, data);
 
@@ -175,7 +175,7 @@ function Home() {
       username: username,
     };
     var res = await HomeService.get_project(token, data);
-    console.log(res);
+    // console.log(res);
     // localStorage.setItem("json_data", JSON.stringify(res.data.b2f_json));
     localStorage.setItem("project_details", JSON.stringify(proj));
     history.push("/step-2");
@@ -199,9 +199,9 @@ function Home() {
     });
   };
   const editproject = (proj) => {
-    console.log(proj);
-    console.log(proj.lang);
-    console.log(proj.lib);
+    // console.log(proj);
+    // console.log(proj.lang);
+    // console.log(proj.lib);
 
     setSelectedProject(proj);
     setValues({
@@ -214,7 +214,7 @@ function Home() {
       output_file_name: proj.output_file_name,
     });
     setIsEdit(true);
-    console.log(values);
+    // console.log(values);
     setOpenModal(true);
   };
 
@@ -235,7 +235,7 @@ function Home() {
           output_file_name: values.output_file_name,
           username: username,
         };
-        console.log(data);
+        // console.log(data);
         var res = await HomeService.edit_project(token, data);
       } else {
         var data = {

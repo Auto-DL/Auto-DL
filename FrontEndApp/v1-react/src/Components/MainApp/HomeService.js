@@ -2,6 +2,32 @@ import axios from "axios";
 // const BACKEND_API_URL = process.env.REACT_APP_BACKEND_API_URL
 
 class HomeService {
+  async get_hyperparams(token, data) {
+    try {
+      const response = await axios.post(`v1/hyperparams/get/`, data, {
+        headers: {
+          "Content-Type": "application/json",
+          token: `${token}`,
+        },
+      });
+      return response;
+    } catch (error) {
+      return error.response;
+    }
+  }
+  async save_hyperparams(token, data) {
+    try {
+      const response = await axios.post(`v1/hyperparams/save/`, data, {
+        headers: {
+          "Content-Type": "application/json",
+          token: `${token}`,
+        },
+      });
+      return response;
+    } catch (error) {
+      return error.response;
+    }
+  }
   async download_code(token, data) {
     try {
       const response = await axios.post(`v1/code/download/`, data, {
