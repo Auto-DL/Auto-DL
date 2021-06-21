@@ -7,14 +7,12 @@ import os
 import json
 import importlib
 
-sys.path.append("..")
-
 from authv1.store import Store
 from authv1.models import User
 from authv1.decorators import is_authenticated
 from v1.models import UserData
-from DLMML.utils import json_to_dict
-from DLMML.parser import *
+from dlmml.utils import json_to_dict
+from dlmml.parser import *
 
 from .utils import generate_uid, copy_file
 
@@ -59,7 +57,7 @@ def generate(request):
     training_params.update(layers)
 
     inputs = json_to_dict.MakeDict(training_params).parse()
-    parser_path = "DLMML.parser." + lang + "." + lib + ".main"
+    parser_path = "dlmml.parser." + lang + "." + lib + ".main"
     parser = importlib.import_module(parser_path)
 
     # TODO: move to javascript in the next version
