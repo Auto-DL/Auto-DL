@@ -125,7 +125,6 @@ const useStyles = makeStyles((theme) => ({
   grid3: {},
   droppableColsource: {
     width: "95%",
-
     backgroundColor: "#c5e4ed",
     padding: "10px 10px 0 10px",
     borderRadius: "7px",
