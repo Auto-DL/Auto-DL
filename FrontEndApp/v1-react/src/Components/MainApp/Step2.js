@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import _ from "lodash";
 import TextField from "@material-ui/core/TextField";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import Button from "@material-ui/core/Button";
-import axios from "axios";
 import fileDownload from "js-file-download";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { makeStyles, withStyles, useTheme } from "@material-ui/core/styles";
@@ -26,7 +25,6 @@ import MuiDialogTitle from "@material-ui/core/DialogTitle";
 import MuiDialogContent from "@material-ui/core/DialogContent";
 import MuiDialogActions from "@material-ui/core/DialogActions";
 import CloseIcon from "@material-ui/icons/Close";
-import { CollectionsBookmarkOutlined, OpacitySharp } from "@material-ui/icons";
 import { Tooltip } from "@material-ui/core";
 
 const styles = (theme) => ({
@@ -273,11 +271,8 @@ const useStyles = makeStyles((theme) => ({
     padding: "10px",
     borderRadius: "7px",
     minHeight: "80px",
-    maxHeight: "80px",
-    minWeight: "60px",
     minWeight: "60px",
     margin: "10px",
-    // paddingTop:'3px',
     textAlign: "center",
   },
   sel: {
@@ -305,12 +300,8 @@ function Step2() {
   const classes = useStyles();
   const theme = useTheme();
   var project_details = JSON.parse(localStorage.getItem("project_details"));
-  var json_data = JSON.parse(localStorage.getItem("json_data"));
   var username = JSON.parse(localStorage.getItem("username"));
   var token = JSON.parse(localStorage.getItem("token"));
-
-  // console.log(project_details);
-  // console.log(json_data);
 
   const [components, setcomponents] = React.useState([]);
   const [selected_layer_type, setselected_layer_type] = React.useState("");
@@ -335,26 +326,17 @@ function Step2() {
   const [openModal, setOpenModal] = React.useState(false);
   const [generated_file_path, setgenerated_file_path] = React.useState("");
 
-  const handleClickOpenModal = () => {
-    setOpenModal(true);
-  };
   const handleCloseModal = () => {
     setOpenModal(false);
   };
 
   const typecast_pre = () => {
-    // console.log("typecast here");
-    // console.log(all_prepro);
     var dic = _.cloneDeep(all_prepro);
 
     for (var key in all_prepro) {
-      // console.log(key);
       try {
-        // console.log(typeof JSON.parse(all_prepro[key]));
-        // console.log(JSON.parse(all_prepro[key]));
         dic[key] = JSON.parse(all_prepro[key]);
       } catch (err) {
-        // console.log(err);
         if (key.includes("target_size")) {
           if (typeof all_prepro[key] === "string") {
             const temp = all_prepro[key].split(",");
@@ -428,21 +410,20 @@ function Step2() {
   }
 
   const handleChangetabs = (event, newValue) => {
-    if (newValue !== 1 && value == 1) {
+    if (newValue !== 1 && value === 1) {
       saveData();
       // console.log(genrate_layers());
     }
-    if (newValue !== 0 && value == 0) {
+    if (newValue !== 0 && value === 0) {
       // typecast_pre();
       savepre();
     }
-    if (newValue !== 2 && value == 2) {
+    if (newValue !== 2 && value === 2) {
       savehyper();
     }
     setValue(newValue);
   };
 
-  // console.log(components);
   if (
     project_details.lib === new String("Pytorch").valueOf() ||
     project_details.library === new String("Pytorch").valueOf()
@@ -1291,7 +1272,7 @@ function Step2() {
     project_details.lib === new String("Keras").valueOf() ||
     project_details.library === new String("Keras").valueOf()
   ) {
-    var temp_json = {
+    temp_json = {
       Conv2D: {
         filters: {
           Example: 32,
@@ -1775,7 +1756,7 @@ function Step2() {
         },
       },
     };
-    var temp_loss = {
+    temp_loss = {
       L1Loss: {
         name: "l1loss",
         type: "loss-function",
@@ -1948,7 +1929,7 @@ function Step2() {
         },
       },
     };
-    var temp_optimizer = {
+    temp_optimizer = {
       SGD: {
         name: "SGD",
         type: "optimizer",
@@ -2139,7 +2120,7 @@ function Step2() {
         },
       },
     };
-    var temp_pre_meta = {
+    temp_pre_meta = {
       dataset: {
         name: "dataset",
         type: {
@@ -2160,7 +2141,7 @@ function Step2() {
         // },
       },
     };
-    var temp_pre = {
+    temp_pre = {
       image: {
         augment: {
           name: "augment",
@@ -2338,18 +2319,15 @@ function Step2() {
       },
     };
   }
-  // console.log(temp_json);
-  // setall_optimizer(temp_optimizer);
-  const [all_optimizer, setall_optimizer] = React.useState(temp_optimizer);
-  const [all_loss, setall_loss] = React.useState(temp_loss);
+
+  const all_optimizer = temp_optimizer;
+  const all_loss = temp_loss;
+  const render_prepro_meta = temp_pre_meta;
+  const render_prepro = temp_pre;
+  const jsondata = temp_json;
+
   const [all_prepro, setall_prepro] = React.useState({});
-  const [render_prepro_meta, setrender_prepro_meta] = React.useState(
-    temp_pre_meta
-  );
-  const [render_prepro, setrender_prepro] = React.useState(temp_pre);
   const [show_pre, setshow_pre] = React.useState(false);
-  const [jsondata, setjsondata] = React.useState(temp_json);
-  // console.log(all_prepro);
 
   useEffect(() => {
     async function fetchData() {
@@ -2402,7 +2380,7 @@ function Step2() {
       }
     }
     fetchDataHyper();
-  }, []);
+  }, [project_details, token, username]);
 
   const handleDragEnd = ({ destination, source }) => {
     if (!destination) {
@@ -2441,7 +2419,7 @@ function Step2() {
       );
       for (var i = 0; i < components.length; i++) {
         components[i]["id"] = components[i]["id"] + i;
-        if (i == 0) {
+        if (i === 0) {
           if (!("input_size" in components[i])) {
             components[i]["input_size"] = {
               Example: [200, 200, 3],
@@ -2482,23 +2460,12 @@ function Step2() {
         destination.index
       }`;
       dic["name"] = list_names_of_source[source.index];
-      const layer_name = list_names_of_source[source.index];
-
-      // filters: {
-      //   Example: 32,
-      //   Default: "NA",
-      //   Required: 1,
-      //   Datatype: "number",
-      //   Options: [],
-      //   Description:
-      //     "the dimensionality of the output space [i.e.the number of output filters in the convolution]",
-      // },
 
       components.splice(destination.index, 0, dic);
 
-      for (var i = 0; i < components.length; i++) {
+      for (i = 0; i < components.length; i++) {
         components[i]["id"] = components[i]["id"] + i;
-        if (i == 0) {
+        if (i === 0) {
           if (!("input_size" in components[i])) {
             components[i]["input_size"] = {
               Example: [200, 200, 3],
@@ -2547,7 +2514,6 @@ function Step2() {
     var i = 0;
     if (project_details.lib === new String("Pytorch").valueOf()) {
       for (let [key0, value0] of Object.entries(dic)) {
-        // console.log(key0, value0);
         i = i + 1;
         for (var key1 in value0) {
           // console.log(key1);
@@ -2559,11 +2525,6 @@ function Step2() {
             } else {
               for (var key2 in dic[key0][key1]) {
                 if (key2 === new String("value").valueOf()) {
-                  // console.log(i);
-                  // console.log(dic[key0].name);
-                  // console.log(key1);
-                  // console.log(dic[key0][key1][key2]);
-
                   if (
                     dic[key0][key1].Datatype === new String("number").valueOf()
                   ) {
@@ -2573,19 +2534,10 @@ function Step2() {
                   } else if (
                     dic[key0][key1].Datatype === new String("tuple").valueOf()
                   ) {
-                    const temp = dic[key0][key1][key2].split(",");
-                    // console.log(temp);
-                    // console.log(temp[0]);
-                    // console.log(temp[1]);
-
-                    final_dict[`Layer-${i}-${dic[key0].name}-${key1}`] = [
-                      // parseInt(temp[0]),
-                      // parseInt(temp[1]),
-                    ];
+                    final_dict[`Layer-${i}-${dic[key0].name}-${key1}`] = [];
                   } else {
                     final_dict[`Layer-${i}-${dic[key0].name}-${key1}`] =
                       dic[key0][key1][key2];
-                    // console.log(dic[key0][key1][key2]);
                   }
                 }
               }
@@ -2597,10 +2549,10 @@ function Step2() {
       for (let [key0, value0] of Object.entries(dic)) {
         // console.log(key0, value0);
         i = i + 1;
-        for (var key1 in value0) {
+        for (key1 in value0) {
           // console.log(key1);
           if (!(key1 === "name" || key1 === "id")) {
-            for (var key2 in dic[key0][key1]) {
+            for (key2 in dic[key0][key1]) {
               if (key2 === new String("value").valueOf()) {
                 // console.log(i);
                 // console.log(dic[key0].name);
@@ -2665,7 +2617,6 @@ function Step2() {
 
   // true means it is complete
   const layer_validation = () => {
-    var final_dict = {};
     const temp = components;
     var dic = _.cloneDeep(temp);
     var i = 0;
@@ -2750,11 +2701,11 @@ function Step2() {
           }
         }
       }
-      var i = 0;
+      i = 0;
       for (let [key0, value0] of Object.entries(selected_loss)) {
         // console.log(key0, value0);
         i = i + 1;
-        for (var key1 in value0) {
+        for (key1 in value0) {
           // console.log(key1);
           if (!(key1 === "name" || key1 === "id")) {
             if (key1 === new String("value").valueOf()) {
@@ -2803,7 +2754,7 @@ function Step2() {
       };
       var temp = Object.assign({}, final_dict, dict);
     } else {
-      var temp = {
+      temp = {
         metrics: state_hyperparam.metrics,
         epochs: parseFloat(state_hyperparam.epochs),
         verbose: state_hyperparam.verbose,
@@ -2841,85 +2792,7 @@ function Step2() {
       alert("please fill all the required fileds in layers");
     }
   };
-  const generate_code_1 = () => {
-    var final_dict = genrate_layers();
 
-    // here
-    // console.log(final_dict);
-
-    if (project_details.lib === new String("Pytorch").valueOf()) {
-      // console.log("pytorch");
-    } else if (project_details.lib === new String("Keras").valueOf()) {
-      var _dict = {
-        // "Layer-1-Conv2D-filters": 32,
-        // "Layer-1-Conv2D-kernel_size": [
-        //     3, 3
-        // ],
-        // "Layer-1-Conv2D-activation": "relu",
-        // "Layer-1-Conv2D-padding": "same",
-        // "Layer-1-Conv2D-input_shape": [
-        //     200, 200, 3
-        // ],
-
-        // "Layer-2-MaxPooling2D-pool_size": [
-        //     2, 2
-        // ],
-
-        // "Layer-3-Flatten-": {},
-
-        // "Layer-4-Dense-units": 128,
-        // "Layer-4-Dense-activation": "relu",
-        // "Layer-4-Dense-kernel_initializer": "he_uniform",
-
-        // "Layer-5-Dense-units": 1,
-        // "Layer-5-Dense-activation": "sigmoid",
-
-        "dataset-type": "image",
-        "dataset-path": "../data/dogs_and_cats",
-
-        "image-augment-rotation_range": 40,
-        "image-augment-width_shift_range": 0.2,
-        "image-augment-height_shift_range": 0.2,
-        "image-augment-horizontal_flip": "True",
-        "image-augment-rescale": 0.0039215,
-
-        "image-params-target_size": [200, 200],
-        "image-params-batch_size": 64,
-        "image-params-class_mode": "binary",
-
-        optimizer: "sgd",
-        loss: "binary_crossentropy",
-        metrics: ["accuracy"],
-        epochs: 5,
-        verbose: 1,
-        plot: "True",
-        save_plots: "True",
-      };
-      // var dict_call = Object.assign({}, final_dict, _dict);
-      var dict_call = _dict;
-    }
-    // api call
-    // console.log(dict_call);
-    const test_data = {
-      username: username,
-      project_name: project_details.project_name,
-      training_params: dict_call,
-    };
-    // console.log(test_data);
-    axios
-      .post(`v1/generate/`, test_data, {
-        headers: {
-          "Content-Type": "application/json",
-          token: `${token}`,
-        },
-      })
-      .then((response) => {
-        // console.log(response);
-      });
-  };
-  const go_to_file_path = () => {
-    window.open(generated_file_path, "_blank");
-  };
   const download_code = async () => {
     const data = {
       username: username,
@@ -3007,7 +2880,7 @@ function Step2() {
       // console.log(event.target.value);
       setselected_optimizer(pervstate);
     } else {
-      var param = prop;
+      param = prop;
       const pervstate = Object.assign([], selected_loss);
       pervstate[param]["value"] = event.target.value;
       // console.log(event.target.value);
@@ -3363,7 +3236,7 @@ function Step2() {
                                   >
                                     <div
                                       className={
-                                        selected_layer ==
+                                        selected_layer ===
                                         el.id.charAt(el.id.length - 1)
                                           ? classes.item1selected
                                           : classes.item1
@@ -3442,7 +3315,7 @@ function Step2() {
                                 >
                                   <HelpOutlineIcon />
                                 </div>
-                                {components[selected_layer][key]["Datatype"] ==
+                                {components[selected_layer][key]["Datatype"] ===
                                 "select" ? (
                                   <div className={classes.value}>
                                     <FormControl
@@ -3581,7 +3454,7 @@ function Step2() {
                                 >
                                   <HelpOutlineIcon />
                                 </div>
-                                {selected_optimizer[key]["Datatype"] ==
+                                {selected_optimizer[key]["Datatype"] ===
                                 "select" ? (
                                   <div className={classes.value}>
                                     <FormControl
@@ -3699,7 +3572,7 @@ function Step2() {
                                 >
                                   <HelpOutlineIcon />
                                 </div>
-                                {selected_loss[key]["Datatype"] == "select" ? (
+                                {selected_loss[key]["Datatype"] === "select" ? (
                                   <div className={classes.value}>
                                     <FormControl
                                       fullWidth

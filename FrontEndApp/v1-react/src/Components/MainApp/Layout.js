@@ -15,21 +15,9 @@ import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
-import InboxIcon from "@material-ui/icons/MoveToInbox";
-import MailIcon from "@material-ui/icons/Mail";
 import PowerSettingsNewIcon from "@material-ui/icons/PowerSettingsNew";
 import HomeIcon from "@material-ui/icons/Home";
-import {
-  BrowserRouter,
-  Switch,
-  useLocation,
-  IndexRoute,
-  Route,
-  Link,
-  Redirect,
-  useParams,
-  useHistory,
-} from "react-router-dom";
+import { useHistory } from "react-router-dom";
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
@@ -119,7 +107,6 @@ function Layout() {
 
   const logout = () => {
     localStorage.clear();
-    // history.push("/login");
     window.location.reload();
   };
 

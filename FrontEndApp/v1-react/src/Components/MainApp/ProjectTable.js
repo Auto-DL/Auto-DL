@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { withStyles, makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -59,16 +59,12 @@ const useStyles = makeStyles({
   },
 });
 
-export default function Project_table(props) {
+export default function ProjectTable(props) {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
   const [current_project, setcurrent_project] = React.useState("");
   var username = JSON.parse(localStorage.getItem("username"));
   var token = JSON.parse(localStorage.getItem("token"));
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
 
   const handleClose = () => {
     setOpen(false);
