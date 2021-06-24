@@ -136,7 +136,7 @@ function Home() {
       const data = {
         username: username,
       };
-      // console.log(token, data);
+
       handleToggle_backdrop(true);
       const res = await HomeService.get_all(token, data);
 

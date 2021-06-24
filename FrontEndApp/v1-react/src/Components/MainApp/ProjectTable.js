@@ -80,7 +80,6 @@ export default function ProjectTable(props) {
     const res = await HomeService.delete_project(token, data);
     console.log(res);
     props.parent_call_on_delete();
-    // window.location.reload();
   };
 
   const handleEdit = (project) => {

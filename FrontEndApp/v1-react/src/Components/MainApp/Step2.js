@@ -105,18 +105,14 @@ function a11yProps(index) {
 
 const useStyles = makeStyles((theme) => ({
   App: {
-    // padding: "10px",
     marginLeft: "5.5%",
     marginRight: "10px",
-    // backgroundColor:'grey',
   },
   column1: {
     padding: "0px",
-    // backgroundColor:'grey',
   },
   column2: {
     padding: "0px",
-    // backgroundColor:'blue',
   },
   column3: {
     width: "95%",
@@ -129,9 +125,7 @@ const useStyles = makeStyles((theme) => ({
   grid3: {},
   droppableColsource: {
     width: "95%",
-    // backgroundColor: "yellow",
-    // backgroundColor: "#7fa0b1",
-    // backgroundColor: "#8e8e8e",
+
     backgroundColor: "#c5e4ed",
     padding: "10px 10px 0 10px",
     borderRadius: "7px",
@@ -144,9 +138,6 @@ const useStyles = makeStyles((theme) => ({
   },
   droppableColtarget: {
     width: "95%",
-    // backgroundColor: "orange",
-    // backgroundColor: "#7fa0b1",
-    // backgroundColor: "#8e8e8e",
     backgroundColor: "#c5e4ed",
     padding: "10px 10px 10px 10px",
     borderRadius: "7px",
@@ -161,56 +152,45 @@ const useStyles = makeStyles((theme) => ({
   body3: {
     width: "100%",
     backgroundColor: "#D8D8D8",
-    // backgroundColor: "#cfe7ff",
     padding: "10px",
     borderRadius: "7px",
     display: "flex",
     flexDirection: "column",
     minHeight: "500px",
     maxHeight: "500px",
-    // marginTop: "55px",
     overflowY: "auto",
   },
   item: {
     textAlign: "center",
     marginBottom: "10px",
-    // backgroundColor: "#FFC270",
-    // backgroundColor: "#e2c3a7",
+
     backgroundColor: "#adbce6",
     color: "black",
     border: "1px solid black",
     padding: "5px",
     borderRadius: "7px",
-    // boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)',
-    // opacity: '0.7',
   },
   item1selected: {
     textAlign: "center",
     marginBottom: "10px",
-    // backgroundColor: "#FFC270",
-    // backgroundColor: "#e2c3a7",
+
     backgroundColor: "rgb(115,194,251)",
     color: "black",
     border: "1px solid black",
     padding: "5px",
     borderRadius: "7px 7px 7px 7px",
     width: "85%",
-    // boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)',
-    // float: "right",
   },
   item1: {
     textAlign: "center",
     marginBottom: "10px",
-    // backgroundColor: "#FFC270",
-    // backgroundColor: "#e2c3a7",
+
     backgroundColor: "#adbce6",
     color: "black",
     border: "1px solid black",
     padding: "5px",
     borderRadius: "7px 7px 7px 7px",
     width: "85%",
-    // boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)',
-    // float: "right",
   },
   styleclose: {
     float: "right",
@@ -306,7 +286,6 @@ function Step2() {
   const [components, setcomponents] = React.useState([]);
   const [selected_layer_type, setselected_layer_type] = React.useState("");
   const [selected_layer, setselected_layer] = React.useState(-1);
-  const [selected_layer_name, setselected_layer_name] = React.useState("");
   const [value, setValue] = React.useState(0);
   const [state_hyperparam, setstate_hyperparam] = React.useState({
     metrics: "",
@@ -319,12 +298,9 @@ function Step2() {
   });
   const [showoptimizer, setshowoptimizer] = React.useState(false);
   const [selected_optimizer, setselected_optimizer] = React.useState({});
-
   const [showloss, setshowloss] = React.useState(false);
   const [selected_loss, setselected_loss] = React.useState({});
-
   const [openModal, setOpenModal] = React.useState(false);
-  const [generated_file_path, setgenerated_file_path] = React.useState("");
 
   const handleCloseModal = () => {
     setOpenModal(false);
@@ -357,37 +333,28 @@ function Step2() {
       layer_json: genrate_layers(),
       component_array: components,
     };
-    // console.log(token, data);
-    // handleToggle_backdrop(true);
+
     const res = await HomeService.save_layers(token, data);
 
     if (res.status === 200) {
-      // handleToggle_backdrop(false);
-      // setAllProjects([...res.data.projects]);
-      // console.log(res);
     } else {
-      // localStorage.clear();
-      // history.push("/login");
     }
   }
   async function savepre() {
     const all_prepro_dub = await typecast_pre();
-    // console.log(all_prepro_dub);
 
     const data = {
       username: username,
       project_id: project_details.project_id,
       preprocessing_params: all_prepro_dub,
     };
-    // console.log(token, data);
-    // handleToggle_backdrop(true);
+
     const res = await HomeService.save_pre(token, data);
 
     if (res.status === 200) {
       // handleToggle_backdrop(false);
       // setAllProjects([...res.data.projects]);
       // setall_prepro(res.data.preprocessing);
-      // console.log(res);
     } else {
       // localStorage.clear();
       // history.push("/login");
@@ -412,10 +379,8 @@ function Step2() {
   const handleChangetabs = (event, newValue) => {
     if (newValue !== 1 && value === 1) {
       saveData();
-      // console.log(genrate_layers());
     }
     if (newValue !== 0 && value === 0) {
-      // typecast_pre();
       savepre();
     }
     if (newValue !== 2 && value === 2) {
@@ -425,8 +390,8 @@ function Step2() {
   };
 
   if (
-    project_details.lib === new String("Pytorch").valueOf() ||
-    project_details.library === new String("Pytorch").valueOf()
+    project_details.lib === "Pytorch" ||
+    project_details.library === "Pytorch"
   ) {
     var temp_pre_meta = {
       dataset: {
@@ -549,11 +514,6 @@ function Step2() {
             Description: "Desired interpolation enum defined by filters",
           },
         },
-        // ToTensor: {
-        //   name: "augment",
-        //   input_type: "image",
-
-        // },
       },
       csv: {},
       text: {},
@@ -1269,8 +1229,8 @@ function Step2() {
       },
     };
   } else if (
-    project_details.lib === new String("Keras").valueOf() ||
-    project_details.library === new String("Keras").valueOf()
+    project_details.lib === "Keras" ||
+    project_details.library === "Keras"
   ) {
     temp_json = {
       Conv2D: {
@@ -2335,12 +2295,11 @@ function Step2() {
         username: username,
         project_id: project_details.project_id,
       };
-      // console.log(token, data);
+
       const res = await HomeService.get_layers(token, data);
 
       if (res.status === 200) {
         setcomponents(res.data.components);
-        // console.log(res.data.components);
       } else {
       }
     }
@@ -2350,12 +2309,12 @@ function Step2() {
         username: username,
         project_id: project_details.project_id,
       };
-      // console.log(token, data);
+
       const res = await HomeService.get_pre(token, data);
 
       if (res.status === 200) {
         setall_prepro(res.data.preprocessing);
-        // console.log(all_prepro);
+
         if ("dataset-type" in res.data.preprocessing) {
           setshow_pre(true);
         }
@@ -2369,13 +2328,12 @@ function Step2() {
         username: username,
         project_id: project_details.project_id,
       };
-      // console.log(token, data);
+
       const res = await HomeService.get_hyperparams(token, data);
 
       if (res.status === 200) {
         var temp = res.data.hyperparams;
         setstate_hyperparam(temp);
-        // console.log(res.data.hyperparams);
       } else {
       }
     }
@@ -2394,23 +2352,21 @@ function Step2() {
       return;
     }
 
-    if (destination.droppableId === new String("source").valueOf()) {
+    if (destination.droppableId === "source") {
       return;
     }
     if (
-      destination.droppableId === new String("delete").valueOf() &&
-      source.droppableId === new String("target").valueOf()
+      destination.droppableId === "delete" &&
+      source.droppableId === "target"
     ) {
       const element = components[source.index];
       var temp = components.filter((item) => item !== element);
       setcomponents(temp);
       setselected_layer(-1);
-      setselected_layer_name("");
-      setselected_layer_type("");
     }
     if (
-      destination.droppableId === new String("target").valueOf() &&
-      source.droppableId === new String("target").valueOf()
+      destination.droppableId === "target" &&
+      source.droppableId === "target"
     ) {
       components.splice(
         destination.index,
@@ -2439,8 +2395,8 @@ function Step2() {
       setcomponents(components);
     }
     if (
-      destination.droppableId === new String("target").valueOf() &&
-      source.droppableId === new String("source").valueOf()
+      destination.droppableId === "target" &&
+      source.droppableId === "source"
     ) {
       const list_names_of_source = Object.keys(jsondata);
       const temp = jsondata[list_names_of_source[source.index]];
@@ -2482,27 +2438,23 @@ function Step2() {
           } catch (err) {}
         }
       }
-      // console.log(components);
+
       setcomponents(components);
     }
   };
   const showdetails = (element) => {
-    // console.log(element);
-
     setselected_layer_type(element);
 
     var ele = components;
     var index = ele.lastIndexOf(element);
-    // console.log(index, element.name);
+
     setselected_layer(index);
-    setselected_layer_name(element.name);
   };
   const save_value = (prop) => (event) => {
     var param = prop;
     var index = selected_layer;
     const pervstate = Object.assign([], components);
     pervstate[index][param]["value"] = event.target.value;
-    // console.log(event.target.value);
 
     setcomponents(pervstate);
   };
@@ -2512,28 +2464,23 @@ function Step2() {
     const temp = components;
     var dic = _.cloneDeep(temp);
     var i = 0;
-    if (project_details.lib === new String("Pytorch").valueOf()) {
+    if (project_details.lib === "Pytorch") {
       for (let [key0, value0] of Object.entries(dic)) {
         i = i + 1;
         for (var key1 in value0) {
-          // console.log(key1);
           if (!(key1 === "name" || key1 === "id")) {
             if (key1 === "type") {
               final_dict[
-                `activation_function-${i}-${dic[key0].name}` + "-selected"
+                `activation_function-${i}-${dic[key0].name}-selected`
               ] = true;
             } else {
               for (var key2 in dic[key0][key1]) {
-                if (key2 === new String("value").valueOf()) {
-                  if (
-                    dic[key0][key1].Datatype === new String("number").valueOf()
-                  ) {
+                if (key2 === "value") {
+                  if (dic[key0][key1].Datatype === "number") {
                     final_dict[
                       `Layer-${i}-${dic[key0].name}-${key1}`
                     ] = parseInt(dic[key0][key1][key2]);
-                  } else if (
-                    dic[key0][key1].Datatype === new String("tuple").valueOf()
-                  ) {
+                  } else if (dic[key0][key1].Datatype === "tuple") {
                     final_dict[`Layer-${i}-${dic[key0].name}-${key1}`] = [];
                   } else {
                     final_dict[`Layer-${i}-${dic[key0].name}-${key1}`] =
@@ -2545,65 +2492,43 @@ function Step2() {
           }
         }
       }
-    } else if (project_details.lib === new String("Keras").valueOf()) {
+    } else if (project_details.lib === "Keras") {
       for (let [key0, value0] of Object.entries(dic)) {
-        // console.log(key0, value0);
         i = i + 1;
         for (key1 in value0) {
-          // console.log(key1);
           if (!(key1 === "name" || key1 === "id")) {
             for (key2 in dic[key0][key1]) {
-              if (key2 === new String("value").valueOf()) {
-                // console.log(i);
-                // console.log(dic[key0].name);
-                // console.log(key1);
-                // console.log(dic[key0][key1][key2]);
-
-                if (
-                  dic[key0][key1].Datatype === new String("number").valueOf()
-                ) {
+              if (key2 === "value") {
+                if (dic[key0][key1].Datatype === "number") {
                   final_dict[`Layer-${i}-${dic[key0].name}-${key1}`] = parseInt(
                     dic[key0][key1][key2]
                   );
-                } else if (
-                  dic[key0][key1].Datatype === new String("float").valueOf()
-                ) {
+                } else if (dic[key0][key1].Datatype === "float") {
                   final_dict[
                     `Layer-${i}-${dic[key0].name}-${key1}`
                   ] = parseFloat(dic[key0][key1][key2]);
-                } else if (
-                  dic[key0][key1].Datatype === new String("Tuple").valueOf()
-                ) {
+                } else if (dic[key0][key1].Datatype === "Tuple") {
                   // const temp = dic[key0][key1][key2].split(",");
                   const temp = dic[key0][key1][key2]
                     .split(",")
                     .map(function (item) {
                       return parseInt(item, 10);
                     });
-                  // console.log(temp);
+
                   if (temp.length === 4) {
                     final_dict[`Layer-${i}-${dic[key0].name}-${key1}`] = [
                       [parseInt(temp[0]), parseInt(temp[1])],
                       [parseInt(temp[2]), parseInt(temp[3])],
                     ];
-                  }
-                  // else if (temp.length === 4) {
-                  //   final_dict[`Layer-${i}-${dic[key0].name}-${key1}`] = [
-                  //     [parseInt(temp[0]), parseInt(temp[1])],
-                  //     [parseInt(temp[2]), parseInt(temp[3])],
-                  //   ];
-                  // }
-                  else {
+                  } else {
                     final_dict[`Layer-${i}-${dic[key0].name}-${key1}`] = temp;
                   }
                 } else {
                   final_dict[`Layer-${i}-${dic[key0].name}-${key1}`] =
                     dic[key0][key1][key2];
-                  // console.log(dic[key0][key1][key2]);
                 }
-              } else if (dic[key0].name === new String("Flatten").valueOf()) {
-                // console.log("Flatten");
-                final_dict[`Layer-${i}-${dic[key0].name}` + "-data_format"] =
+              } else if (dic[key0].name === "Flatten") {
+                final_dict[`Layer-${i}-${dic[key0].name}-data_format`] =
                   dic[key0][key1]["Default"];
               }
             }
@@ -2622,16 +2547,14 @@ function Step2() {
     var i = 0;
     var flag = true;
 
-    if (project_details.lib === new String("Keras").valueOf()) {
+    if (project_details.lib === "Keras") {
       for (let [key0, value0] of Object.entries(dic)) {
-        // console.log(key0, value0);
         i = i + 1;
         for (var key1 in value0) {
-          // console.log(key1);
           if (!(key1 === "name" || key1 === "id")) {
             if (
               dic[key0][key1]["Required"] &&
-              dic[key0][key1]["Datatype"] !== new String("select").valueOf()
+              dic[key0][key1]["Datatype"] !== "select"
             ) {
               if (
                 "value" in dic[key0][key1] &&
@@ -2657,36 +2580,20 @@ function Step2() {
   };
 
   const generate_hyper = () => {
-    if (project_details.lib === new String("Pytorch").valueOf()) {
+    if (project_details.lib === "Pytorch") {
       const final_dict = {};
       var i = 0;
       for (let [key0, value0] of Object.entries(selected_optimizer)) {
-        // console.log(key0, value0);
         i = i + 1;
         for (var key1 in value0) {
-          // console.log(key1);
           if (!(key1 === "name" || key1 === "id")) {
-            if (key1 === new String("value").valueOf()) {
-              // console.log(i);
-              // console.log(dic[key0].name);
-              // console.log(key1);
-              // console.log(dic[key0][key1][key2]);
-
-              if (
-                selected_optimizer[key0][key1].Datatype ===
-                new String("number").valueOf()
-              ) {
+            if (key1 === "value") {
+              if (selected_optimizer[key0][key1].Datatype === "number") {
                 final_dict[
                   `${selected_optimizer.type}-${selected_optimizer.name}-${key0}`
                 ] = parseInt(selected_optimizer[key0][key1]);
-              } else if (
-                selected_optimizer[key0][key1].Datatype ===
-                new String("tuple").valueOf()
-              ) {
+              } else if (selected_optimizer[key0][key1].Datatype === "tuple") {
                 const temp = selected_optimizer[key0][key1].split(",");
-                // console.log(temp);
-                // console.log(temp[0]);
-                // console.log(temp[1]);
 
                 final_dict[
                   `${selected_optimizer.type}-${selected_optimizer.name}-${key0}`
@@ -2695,7 +2602,6 @@ function Step2() {
                 final_dict[
                   `${selected_optimizer.type}-${selected_optimizer.name}-${key0}`
                 ] = selected_optimizer[key0][key1];
-                // console.log(selected_optimizer[key0][key1]);
               }
             }
           }
@@ -2703,32 +2609,16 @@ function Step2() {
       }
       i = 0;
       for (let [key0, value0] of Object.entries(selected_loss)) {
-        // console.log(key0, value0);
         i = i + 1;
         for (key1 in value0) {
-          // console.log(key1);
           if (!(key1 === "name" || key1 === "id")) {
-            if (key1 === new String("value").valueOf()) {
-              // console.log(i);
-              // console.log(dic[key0].name);
-              // console.log(key1);
-              // console.log(dic[key0][key1][key2]);
-
-              if (
-                selected_loss[key0][key1].Datatype ===
-                new String("number").valueOf()
-              ) {
+            if (key1 === "value") {
+              if (selected_loss[key0][key1].Datatype === "number") {
                 final_dict[
                   `${selected_loss.type}-${selected_loss.name}-${key0}`
                 ] = parseInt(selected_loss[key0][key1]);
-              } else if (
-                selected_loss[key0][key1].Datatype ===
-                new String("tuple").valueOf()
-              ) {
+              } else if (selected_loss[key0][key1].Datatype === "tuple") {
                 const temp = selected_loss[key0][key1].split(",");
-                // console.log(temp);
-                // console.log(temp[0]);
-                // console.log(temp[1]);
 
                 final_dict[
                   `${selected_loss.type}-${selected_loss.name}-${key0}`
@@ -2737,13 +2627,11 @@ function Step2() {
                 final_dict[
                   `${selected_loss.type}-${selected_loss.name}-${key0}`
                 ] = selected_loss[key0][key1];
-                // console.log(selected_loss[key0][key1]);
               }
             }
           }
         }
       }
-      // console.log(final_dict);
 
       const dict = {
         metrics: state_hyperparam.metrics,
@@ -2783,7 +2671,6 @@ function Step2() {
         // handleToggle_backdrop(false);
         // setAllProjects([...res.data.projects]);
         setOpenModal(true);
-        setgenerated_file_path(res.data.path);
       } else {
         // localStorage.clear();
         // history.push("/login");
@@ -2817,7 +2704,6 @@ function Step2() {
     if (res.status === 200) {
       // handleToggle_backdrop(false);
       // setAllProjects([...res.data.projects]);
-      // console.log(res);
     } else {
       // localStorage.clear();
       // history.push("/login");
@@ -2848,13 +2734,11 @@ function Step2() {
         [prop]: event.target.value,
       });
     }
-    // console.log(prop, event.target.value, state_hyperparam.plot);
   };
 
   const handleChange_hyperparameter_l_o = (prop) => (event) => {
     if (prop === "optimizer") {
       if (event.target.value !== "") {
-        // console.log(all_optimizer[event.target.value]);
         setselected_optimizer(all_optimizer[event.target.value]);
         setstate_hyperparam({
           ...state_hyperparam,
@@ -2864,7 +2748,6 @@ function Step2() {
       }
     } else {
       if (event.target.value !== "") {
-        // console.log(all_loss[event.target.value]);
         setselected_loss(all_loss[event.target.value]);
         setstate_hyperparam({ ...state_hyperparam, loss: event.target.value });
         setshowloss(true);
@@ -2877,13 +2760,13 @@ function Step2() {
       var param = prop;
       const pervstate = Object.assign([], selected_optimizer);
       pervstate[param]["value"] = event.target.value;
-      // console.log(event.target.value);
+
       setselected_optimizer(pervstate);
     } else {
       param = prop;
       const pervstate = Object.assign([], selected_loss);
       pervstate[param]["value"] = event.target.value;
-      // console.log(event.target.value);
+
       setselected_loss(pervstate);
     }
   };
@@ -2923,7 +2806,7 @@ function Step2() {
       }
     }
     setall_prepro(temp_dic);
-    // console.log(event.target.value);
+
     all_prepro[`dataset-type`] = event.target.value;
     setall_prepro(all_prepro);
     setshow_pre(!show_pre);
@@ -2969,9 +2852,6 @@ function Step2() {
           <Button variant="contained" onClick={download_code} color="primary">
             Download Code
           </Button>
-          {/* <Button onClick={handleCloseModal} color="default">
-            Close
-          </Button> */}
         </DialogActions>
       </Dialog>
 
@@ -2983,7 +2863,6 @@ function Step2() {
           textColor="primary"
           variant="fullWidth"
           aria-label="full width tabs example"
-          // style={{ background: '#6f53ca' }}
         >
           <Tab label="Preprocessing" {...a11yProps(0)} />
           <Tab label="Model" {...a11yProps(1)} />
@@ -3183,7 +3062,6 @@ function Step2() {
                           return (
                             <Draggable key={el} index={index} draggableId={el}>
                               {(provided, snapshot) => {
-                                // console.log(snapshot)
                                 return (
                                   <div
                                     className={classes.item}
@@ -3226,7 +3104,6 @@ function Step2() {
                               draggableId={el.id}
                             >
                               {(provided, snapshot) => {
-                                // console.log(snapshot)
                                 return (
                                   <div
                                     className={classes.container}
@@ -3245,13 +3122,6 @@ function Step2() {
                                     >
                                       {el.name}
                                     </div>
-
-                                    {/* <div
-                                          className={classes.styleclose}
-                                          onClick={() => handledelete(el)}
-                                        >
-                                          <CloseIcon />
-                                        </div> */}
                                   </div>
                                 );
                               }}
@@ -3281,11 +3151,6 @@ function Step2() {
                     <h3>please select some layer first</h3>
                   ) : (
                     <div className={classes.innerpad}>
-                      {/* <div className={classes.heading}>
-                        {"name" in components[selected_layer]
-                          ? components[selected_layer].name
-                          : null}
-                      </div> */}
                       {Object.keys(components[selected_layer]).map(
                         (key, index) => (
                           <>
@@ -3386,11 +3251,7 @@ function Step2() {
               <Droppable droppableId="delete">
                 {(provided, snapshot) => {
                   return (
-                    <div
-                      ref={provided.innerRef}
-                      {...provided.droppableProps}
-                      // className={classes.droppableColtarget}
-                    >
+                    <div ref={provided.innerRef} {...provided.droppableProps}>
                       <h3>Drag here to delete the layer</h3>
 
                       {provided.placeholder}
@@ -3408,7 +3269,7 @@ function Step2() {
           <Grid item lg={1} md={1} sm={1} xs={1}></Grid>
           <Grid item lg={10} md={10} sm={10} xs={10}>
             <Grid container>
-              {project_details.lib === new String("Pytorch").valueOf() ? (
+              {project_details.lib === "Pytorch" ? (
                 <>
                   <Grid item lg={12} md={12} sm={12} xs={12}>
                     <FormControl variant="outlined" className={classes._hyper}>
@@ -3732,7 +3593,7 @@ function Step2() {
                   </Select>
                 </FormControl>
 
-                {project_details.lib === new String("Pytorch").valueOf() ? (
+                {project_details.lib === "Pytorch" ? (
                   <FormControl variant="outlined" className={classes.sel}>
                     <InputLabel>metrics</InputLabel>
                     <Select
@@ -3798,9 +3659,7 @@ function Step2() {
                   control={
                     <Checkbox
                       checked={state_hyperparam.plot}
-                      // onChange={handleChange}
                       onChange={handleChange_hyperparameter("plot")}
-                      // value={state_hyperparam.plot}
                       color="primary"
                     />
                   }
@@ -3823,8 +3682,7 @@ function Step2() {
               Generate Code
             </Button>
           </Grid>
-          {/* <Grid item lg={1} md={1}>
-                    </Grid> */}
+
           <Grid item lg={2} md={2}>
             <Button variant="contained" color="primary" onClick={() => Train()}>
               Train the Model
