@@ -94,7 +94,7 @@ Generator has DLMML as a submodule.
 - For more detailed instructions to run the Generator module, Read our [User guidelines](https://github.com/Auto-DL/Generator/blob/master/docs/userguide.md)
 
 ## Contributing
-Please take a look at our [contributing guidelines](https://github.com/Auto-DL/Generator/blob/master/docs/contributing.md) if you're interested in helping!
+Please take a look at our [contributing guidelines](CONTRIBUTING.md) if you're interested in helping!
 
 #### Features/Enhancements Planned
 
