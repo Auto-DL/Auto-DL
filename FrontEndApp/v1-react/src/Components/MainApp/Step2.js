@@ -2337,7 +2337,7 @@ function Step2() {
       }
     }
     fetchDataHyper();
-  }, [project_details, token, username]);
+  }, [project_details.project_id, token, username]);
 
   const handleDragEnd = ({ destination, source }) => {
     if (!destination) {
