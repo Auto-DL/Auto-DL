@@ -88,8 +88,7 @@ def train(request):
         elif user_os == "win32":
             os.system("start cmd /k call train.bat")
         else:
-            raise NotImplementedError(
-                "Training not supported on your platform")
+            raise NotImplementedError("Training not supported on your platform")
 
         msg = "Training started successfully"
 
