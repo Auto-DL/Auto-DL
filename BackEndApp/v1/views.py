@@ -66,7 +66,8 @@ def generate(request):
     status, error = parser.generate_code(inputs)
     if status:
         print("Error", error)
-        msg = error
+        # changing below message to a more generic one
+        msg = "Internal server error"
         path = ""
     else:
         print("File generated")
@@ -93,7 +94,8 @@ def train(request):
         msg = "Training started successfully"
 
     except Exception as e:
-        msg = e
+        # changing below message to a more generic one
+        msg = "Internal server error"
     return JsonResponse({"message": msg})
 
 
@@ -117,7 +119,8 @@ def compile(request):
         status, error = test_model.test_compile_model(inputs)
         print(status, error)
     except Exception as e:
-        status, error = 1, e
+        # changing below message to a more generic one
+        status, error = 1, "Internal server error"
     return JsonResponse({"status": status, "error": error})
 
 
@@ -142,7 +145,8 @@ def get_all_projects(request):
 
         status, success, message = 200, True, "Projects Fetched"
     except Exception as e:
-        status, success, message, projects = 500, False, str(e), ""
+        # changing below message to a more generic one
+        status, success, message, projects = 500, False, "Internal server error", ""
     return JsonResponse(
         {"success": success, "message": message, "projects": projects}, status=status
     )
@@ -169,7 +173,8 @@ def get_project(request):
         status, success, message = 200, True, "Layers Fetched"
 
     except Exception as e:
-        status, success, message, b2f_json = 500, False, str(e), {}
+        # changing below message to a more generic one
+        status, success, message, b2f_json = 500, False, "Internal server error", {}
     return JsonResponse(
         {"success": success, "message": message, "b2f_json": b2f_json}, status=status
     )
@@ -212,7 +217,8 @@ def edit_project(request):
             json.dump(metadata, f)
         status, success, message = 200, True, "Project Updated Successfully"
     except Exception as e:
-        status, success, message = 500, False, str(e)
+        # changing below message to a more generic one
+        status, success, message = 500, False, "Internal server error"
     return JsonResponse({"success": success, "message": message}, status=status)
 
 
@@ -234,7 +240,8 @@ def delete_project(request):
 
         status, success, message = 200, True, "Project Deleted Successfully"
     except Exception as e:
-        status, success, message = 500, False, str(e)
+        # changing below message to a more generic one
+        status, success, message = 500, False, "Internal server error"
     return JsonResponse({"success": success, "message": message}, status=status)
 
 
@@ -275,7 +282,8 @@ def create_project(request):
 
         status, success, message = 200, True, "Project Created Successfully"
     except Exception as e:
-        status, success, message = 500, False, str(e)
+        # changing below message to a more generic one
+        status, success, message = 500, False, "Internal service error"
     return JsonResponse({"success": success, "message": message}, status=status)
 
 
@@ -304,7 +312,8 @@ def save_layers(request):
 
         status, success, message = 200, True, "Layers saved successfully"
     except Exception as e:
-        status, success, message = 500, False, str(e)
+        # changing below message to a more generic one
+        status, success, message = 500, False, "Internal service error"
     return JsonResponse({"success": success, "message": message}, status=status)
 
 
@@ -328,7 +337,8 @@ def get_layers(request):
         status, success, message = 200, True, "Components Array Fetched"
 
     except Exception as e:
-        status, success, message, components = 500, False, str(e), {}
+        # changing below message to a more generic one
+        status, success, message, components = 500, False, "Internal service error", {}
     return JsonResponse(
         {"success": success, "message": message, "components": components},
         status=status,
@@ -357,7 +367,8 @@ def save_preprocessing_params(request):
         status, success, message = 200, True, "Preprocessing params saved successfully"
 
     except Exception as e:
-        status, success, message = 500, False, str(e)
+        # changing below message to a more generic one
+        status, success, message = 500, False, "Internal service error"
     return JsonResponse({"success": success, "message": message}, status=status)
 
 
@@ -381,7 +392,8 @@ def get_preprocessing_params(request):
         status, success, message = 200, True, "preprocessing params fetched"
 
     except Exception as e:
-        status, success, message, preprocessing = 500, False, str(e), {}
+        # changing below message to a more generic one
+        status, success, message, preprocessing = 500, False, "Internal service error", {}
     return JsonResponse(
         {"success": success, "message": message, "preprocessing": preprocessing},
         status=status,
@@ -410,7 +422,8 @@ def save_hyperparams(request):
         status, success, message = 200, True, "Hyperparams saved successfully"
 
     except Exception as e:
-        status, success, message = 500, False, str(e)
+        # changing below message to a more generic one
+        status, success, message = 500, False, "Internal service error"
     return JsonResponse({"success": success, "message": message}, status=status)
 
 
@@ -434,7 +447,8 @@ def get_hyperparams(request):
         status, success, message = 200, True, "hyperparams fetched"
 
     except Exception as e:
-        status, success, message, hyperparams = 500, False, str(e), {}
+        # changing below message to a more generic one
+        status, success, message, hyperparams = 500, False, "Internal service error", {}
     return JsonResponse(
         {"success": success, "message": message, "hyperparams": hyperparams},
         status=status,
