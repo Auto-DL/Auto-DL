@@ -31,27 +31,99 @@ var layer_dims = {
   },
 
   AveragePooling2D: {
-    expected_dim: 2,
-    returned_dim: 2,
+    expected_dim: 3,
+    returned_dim: 3,
   },
 
   MaxPooling2D: {
-    expected_dim: 2,
-    returned_dim: 2,
+    expected_dim: 3,
+    returned_dim: 3,
   },
 };
 
 export const validate_layers = (source, destination, components) => {
+  const temp = 2;
   const src_dic = source.droppableId;
   const des_dic = destination.droppableId;
   const des_idx = destination.index;
   const src_idx = source.index;
-  if (src_dic === "source") {
+  if (src_dic === "source" || src_dic === "target") {
+    const curr_layer = components[des_idx].name;
     if (des_idx !== 0) {
-      const above_layer = components[des_idx - 1];
-      console.log(above_layer.name);
+      const above_layer = components[des_idx - 1].name;
+      if (
+        layer_dims[curr_layer].expected_dim !== "all" &&
+        layer_dims[above_layer].returned_dim !==
+          layer_dims[curr_layer].expected_dim
+      ) {
+        return 1;
+      }
+    }
+    if (des_idx !== components.length - 1) {
+      const below_layer = components[des_idx + 1].name;
+      if (
+        layer_dims[below_layer].expected_dim !== "all" &&
+        layer_dims[curr_layer].returned_dim !==
+          layer_dims[below_layer].expected_dim
+      ) {
+        return 1;
+      }
+      return 0;
+    }
+  } else if (des_dic === "delete") {
+    if (src_idx !== components.length - 1) {
+      const below_layer = components[src_idx].name;
+      if (src_idx !== 0) {
+        var above_layer = components[src_idx - 1].name;
+        var i = 0;
+        while (layer_dims[above_layer].returned_dim === "same") {
+          i++;
+          if (src_idx - 1 - i !== 0) {
+            above_layer = components[src_idx - 1 - i].name;
+          } else {
+            return 0;
+          }
+        }
+
+        if (
+          layer_dims[below_layer].expected_dim !== "all" &&
+          layer_dims[above_layer].returned_dim !==
+            layer_dims[below_layer].expected_dim
+        ) {
+          console.log("err by delete");
+          return 1;
+        }
+      } else {
+        return 0;
+      }
+    } else {
+      return 0;
     }
   }
+  if (src_dic === "target") {
+    const curr_layer = components[des_idx].name;
+    if (src_idx !== 0 && src_idx !== components.length - 1) {
+      var above_layer = components[src_idx];
+      const below_layer = components[src_idx + 1];
+      const below_layer_expected_dim = layer_dims[below_layer].expected_dim;
+      var above_layer_return_dim = layer_dims[above_layer].returned_dim;
+      i = 0;
+      while (layer_dims[above_layer].returned_dim === "same") {
+        i++;
+        var new_idx = src_idx - i;
+        if (new_idx < 0) {
+          above_layer_return_dim = temp;
+        }
+        above_layer = components[new_idx];
+        above_layer_return_dim = layer_dims[above_layer].returned_dim;
+      }
+      if (
+        below_layer_expected_dim !== "all" &&
+        above_layer_return_dim !== below_layer_expected_dim
+      ) {
+        return 1;
+      }
+    }
+    return 0;
+  }
 };
-
-// {droppableId: "target", index: 4}

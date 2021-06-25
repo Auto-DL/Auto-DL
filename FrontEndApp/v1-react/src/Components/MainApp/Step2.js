@@ -2521,7 +2521,8 @@ function Step2() {
     }
     console.log(source);
     console.log(destination);
-    validate_layers(source, destination, components);
+    const validate_res = validate_layers(source, destination, components);
+    console.log(validate_res);
   };
   const showdetails = (element) => {
     // console.log(element);
