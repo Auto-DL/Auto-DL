@@ -47,7 +47,7 @@ export const validate_layers = (source, destination, components) => {
   const des_dic = destination.droppableId;
   const des_idx = destination.index;
   const src_idx = source.index;
-  if (src_dic === "source" || src_dic === "target") {
+  if (src_dic === "source") {
     const curr_layer = components[des_idx].name;
     if (des_idx !== 0) {
       const above_layer = components[des_idx - 1].name;
@@ -68,11 +68,11 @@ export const validate_layers = (source, destination, components) => {
       ) {
         return 1;
       }
-      return 0;
     }
+    return 0;
   } else if (des_dic === "delete") {
     if (src_idx !== components.length - 1) {
-      const below_layer = components[src_idx].name;
+      const below_layer = components[src_idx + 1].name;
       if (src_idx !== 0) {
         var above_layer = components[src_idx - 1].name;
         var i = 0;
@@ -99,9 +99,30 @@ export const validate_layers = (source, destination, components) => {
     } else {
       return 0;
     }
+    return 0;
   }
-  if (src_dic === "target") {
+  if (src_dic === "target" && des_dic !== "delete") {
     const curr_layer = components[des_idx].name;
+    if (des_idx !== 0) {
+      const above_layer = components[des_idx - 1].name;
+      if (
+        layer_dims[curr_layer].expected_dim !== "all" &&
+        layer_dims[above_layer].returned_dim !==
+          layer_dims[curr_layer].expected_dim
+      ) {
+        return 1;
+      }
+    }
+    if (des_idx !== components.length - 1) {
+      const below_layer = components[des_idx + 1].name;
+      if (
+        layer_dims[below_layer].expected_dim !== "all" &&
+        layer_dims[curr_layer].returned_dim !==
+          layer_dims[below_layer].expected_dim
+      ) {
+        return 1;
+      }
+    }
     if (src_idx !== 0 && src_idx !== components.length - 1) {
       var above_layer = components[src_idx];
       const below_layer = components[src_idx + 1];
