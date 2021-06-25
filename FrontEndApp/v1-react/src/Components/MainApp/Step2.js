@@ -2518,6 +2518,8 @@ function Step2() {
       // console.log(components);
       setcomponents(components);
     }
+    console.log(source)
+    console.log(destination)
   };
   const showdetails = (element) => {
     // console.log(element);
