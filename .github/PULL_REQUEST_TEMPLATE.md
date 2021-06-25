@@ -7,7 +7,7 @@ fixes #
 <!-- A line or two explaining what this patch does -->
 
 ### Checklist:
-- [ ] Followed the guidelines mentioned in our [Contributing document](/CONTRIBUTING.md)
+- [ ] Followed the guidelines mentioned in our [Contributing document](../CONTRIBUTING.md)
 - [ ] Ensured that there aren't other open [Pull Requests](https://www.github.com/Auto-DL/Generator/pulls) for the same update/change
 - [ ] This PR is linked to an [Issue](https://www.github.com/Auto-DL/Generator/issues) and the issue number has been mentioned in the title and body of the PR
 - [ ] The code is clean and docstrings have been added or updated as required
