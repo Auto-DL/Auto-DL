@@ -66,7 +66,6 @@ def generate(request):
     status, error = parser.generate_code(inputs)
     if status:
         print("Error", error)
-        # changing below message to a more generic one
         msg = "Could not generate code"
         path = ""
     else:
@@ -89,7 +88,8 @@ def train(request):
         elif user_os == "win32":
             os.system("start cmd /k call train.bat")
         else:
-            raise NotImplementedError("Training not supported on your platform")
+            raise NotImplementedError(
+                "Training not supported on your platform")
 
         msg = "Training started successfully"
 
@@ -321,7 +321,6 @@ def save_layers(request):
 
         status, success, message = 200, True, "Layers saved successfully"
     except Exception as e:
-        # changing below message to a more generic one
         status, success, message = 500, False, "Could not save layers"
     return JsonResponse({"success": success, "message": message}, status=status)
 
