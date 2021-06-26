@@ -10,6 +10,7 @@
 [![GitHub closed pull requests](https://img.shields.io/github/issues-pr-closed-raw/Auto-DL/Generator?color=green)](https://github.com/Auto-DL/Generator/pulls?q=is%3Apr+is%3Aclosed)
 [![Slack](https://img.shields.io/badge/Join%20Our%20Community-Slack-blue)](https://join.slack.com/t/autodl/shared_invite/zt-qagxiwub-ywRM_oBvvF~F7YNtlBqy_Q)
 [![Documentation Status](https://readthedocs.org/projects/auto-dl/badge/?version=latest)](https://auto-dl.readthedocs.io/en/latest/?badge=latest)
+[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.0-4baaaa.svg)](code_of_conduct.md)
 
 </center>
 
@@ -93,7 +94,7 @@ Generator has DLMML as a submodule.
 - For more detailed instructions to run the Generator module, Read our [User guidelines](https://github.com/Auto-DL/Generator/blob/master/docs/userguide.md)
 
 ## Contributing
-Please take a look at our [contributing guidelines](https://github.com/Auto-DL/Generator/blob/master/docs/contributing.md) if you're interested in helping!
+Please take a look at our [contributing guidelines](CONTRIBUTING.md) if you're interested in helping!
 
 #### Features/Enhancements Planned
 
