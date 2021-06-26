@@ -16,9 +16,6 @@ def login(request):
     user = User(username, password)
     user = user.find()
 
-    session = Session(user)
-    token = session.create()
-
     if user is None or not bcrypt.checkpw(
         password.encode("utf-8"), user.get("password")
     ):
@@ -26,6 +23,8 @@ def login(request):
         message = "Invalid credentials"
         token = None
     else:
+        session = Session(user)
+        token = session.create()
         status = 200
         message = "Login Successful"
 
@@ -80,7 +79,7 @@ def logout(request):
         user = User(username=username, password=None)
         user = user.find()
         session_obj = Session(user)
-        token = request.META.get('HTTP_TOKEN')
+        token = request.META.get("HTTP_TOKEN")
         flag = session_obj.delete(token)
 
         if not flag:
@@ -93,6 +92,4 @@ def logout(request):
         message = str(e)
         status = 500
 
-    return JsonResponse(
-        {"message": message}, status=status
-    )
+    return JsonResponse({"message": message}, status=status)
