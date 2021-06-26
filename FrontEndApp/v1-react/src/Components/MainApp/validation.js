@@ -40,7 +40,14 @@ var layer_dims = {
     returned_dim: 3,
   },
 };
-
+/**
+ * Validate order of layers such that dimensions of consecutive layers are same
+ * @function validate_layers
+ * @param {Object} source source object in the handleDragEnd function
+ * @param {Object} destination destination object in the handleDragEnd function
+ * @param {List} components List of json objects representing the model layers
+ * @returns {int} 0 if errors, 1 if no errors
+ */
 export const validate_layers = (source, destination, components) => {
   const temp = 2;
   const src_dic = source.droppableId;
@@ -49,6 +56,9 @@ export const validate_layers = (source, destination, components) => {
   const src_idx = source.index;
   if (src_dic === "source") {
     const curr_layer = components[des_idx].name;
+    if (layer_dims[curr_layer].returned_dim === "same") {
+      return 0;
+    }
     if (des_idx !== 0) {
       const above_layer = components[des_idx - 1].name;
       if (
@@ -71,18 +81,22 @@ export const validate_layers = (source, destination, components) => {
     }
     return 0;
   } else if (des_dic === "delete") {
+    const curr_layer = components[src_idx].name;
+    if (layer_dims[curr_layer].returned_dim === "same") {
+      return 0;
+    }
     if (src_idx !== components.length - 1) {
       const below_layer = components[src_idx + 1].name;
       if (src_idx !== 0) {
         var above_layer = components[src_idx - 1].name;
-        var i = 0;
-        while (layer_dims[above_layer].returned_dim === "same") {
-          i++;
-          if (src_idx - 1 - i !== 0) {
-            above_layer = components[src_idx - 1 - i].name;
-          }
-          return 0;
-        }
+        // var i = 0;
+        // while (layer_dims[above_layer].returned_dim === "same") {
+        //   i++;
+        //   if (src_idx - 1 - i !== 0) {
+        //     above_layer = components[src_idx - 1 - i].name;
+        //   }
+        //   return 0;
+        // }
         if (
           layer_dims[below_layer].expected_dim !== "all" &&
           layer_dims[above_layer].returned_dim !==
@@ -108,6 +122,7 @@ export const validate_layers = (source, destination, components) => {
         layer_dims[above_layer].returned_dim !==
           layer_dims[curr_layer].expected_dim
       ) {
+        console.log("err src layer non 0");
         return 1;
       }
     }
@@ -118,6 +133,7 @@ export const validate_layers = (source, destination, components) => {
         layer_dims[curr_layer].returned_dim !==
           layer_dims[below_layer].expected_dim
       ) {
+        console.log("err src layer non -1");
         return 1;
       }
     }
@@ -135,7 +151,7 @@ export const validate_layers = (source, destination, components) => {
       var above_above_return_dim = layer_dims[above_above_layer].returned_dim;
       console.log(below_layer);
       console.log(above_layer);
-      i = 0;
+      // i = 0;
       // while (layer_dims[above_layer].returned_dim === "same") {
       //   i++;
       //   var new_idx = src_idx - i;
@@ -156,12 +172,14 @@ export const validate_layers = (source, destination, components) => {
         below_layer_expected_dim !== "all" &&
         above_layer_return_dim !== below_layer_expected_dim
       ) {
+        console.log("err below and above check");
         return 1;
       }
       if (
         above_layer_expect_dim !== "all" &&
         above_above_return_dim !== above_layer_expect_dim
       ) {
+        console.log("err above above and curr");
         return 1;
       }
     }
@@ -182,6 +200,7 @@ export const validate_layers = (source, destination, components) => {
         layer_dims[curr_layer].expected_dim !== "all" &&
         above_layer_return_dim !== layer_dims[curr_layer].expected_dim
       ) {
+        console.log("err if moved to last idx");
         return 1;
       }
     }
