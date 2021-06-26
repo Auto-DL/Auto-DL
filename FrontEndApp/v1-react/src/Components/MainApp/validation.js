@@ -123,24 +123,42 @@ export const validate_layers = (source, destination, components) => {
         return 1;
       }
     }
-    if (src_idx !== 0 && src_idx !== components.length - 1) {
-      var above_layer = components[src_idx];
-      const below_layer = components[src_idx + 1];
+
+    if (
+      src_idx !== 0 &&
+      src_idx !== components.length - 1 &&
+      des_idx !== components.length
+    ) {
+      var above_layer = components[src_idx].name;
+      const above_above_layer = components[src_idx - 1].name;
+      const below_layer = components[des_idx + 1].name;
       const below_layer_expected_dim = layer_dims[below_layer].expected_dim;
+      console.log(below_layer);
+      console.log(above_layer);
       var above_layer_return_dim = layer_dims[above_layer].returned_dim;
+      var above_layer_expect_dim = layer_dims[above_layer].expected_dim;
       i = 0;
       while (layer_dims[above_layer].returned_dim === "same") {
         i++;
         var new_idx = src_idx - i;
         if (new_idx < 0) {
           above_layer_return_dim = temp;
+          above_layer_expect_dim = temp;
+          break;
         }
         above_layer = components[new_idx];
         above_layer_return_dim = layer_dims[above_layer].returned_dim;
+        above_layer_expect_dim = layer_dims[above_layer].excepted_dim;
       }
       if (
         below_layer_expected_dim !== "all" &&
         above_layer_return_dim !== below_layer_expected_dim
+      ) {
+        return 1;
+      }
+      if (
+        layer_dims[above_above_layer].returned_dim !== "all" &&
+        layer_dims[above_above_layer].returned_dim !== above_layer_expect_dim
       ) {
         return 1;
       }
