@@ -13,3 +13,5 @@ dlmml
 sphinx-markdown-tables==0.0.15
 pydata-sphinx-theme==0.5.0
 recommonmark==0.7.1
+black
+autoflake

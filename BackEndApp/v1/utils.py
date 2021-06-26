@@ -1,5 +1,6 @@
 from uuid import uuid4 as uid
 import os
+import subprocess
 
 
 def generate_uid():
@@ -23,6 +24,19 @@ def copy_file(dest, filename="test.py"):
     if not filename.endswith(".py"):
         filename += ".py"
     os.system('cp -f {} "{}"/{}'.format(filename, dest, filename))
+
+
+def format_code(file):
+    """
+    Takes in the parser generated file and cleans the code.
+    """
+    subprocess.run(
+        "autoflake --in-place --remove-unused-variables --remove-all-unused-imports {}".format(
+            file
+        ),
+        shell=True,
+    )
+    subprocess.run("black {}".format(file), shell=True)
 
 
 if __name__ == "__main__":
