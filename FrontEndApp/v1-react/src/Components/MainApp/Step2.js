@@ -285,6 +285,7 @@ function Step2() {
   const [components, setcomponents] = React.useState([]);
   const [selected_layer_type, setselected_layer_type] = React.useState("");
   const [selected_layer, setselected_layer] = React.useState(-1);
+  const [selected_layer_name, setselected_layer_name] = React.useState("");
   const [value, setValue] = React.useState(0);
   const [state_hyperparam, setstate_hyperparam] = React.useState({
     metrics: "",
@@ -300,6 +301,7 @@ function Step2() {
   const [showloss, setshowloss] = React.useState(false);
   const [selected_loss, setselected_loss] = React.useState({});
   const [openModal, setOpenModal] = React.useState(false);
+  const [generated_file_path, setgenerated_file_path] = React.useState("");
 
   const handleCloseModal = () => {
     setOpenModal(false);
@@ -2362,6 +2364,8 @@ function Step2() {
       var temp = components.filter((item) => item !== element);
       setcomponents(temp);
       setselected_layer(-1);
+      setselected_layer_name("");
+      setselected_layer_type("");
     }
     if (
       destination.droppableId === "target" &&
@@ -2448,6 +2452,7 @@ function Step2() {
     var index = ele.lastIndexOf(element);
 
     setselected_layer(index);
+    // setselected_layer_name(element.name);
   };
   const save_value = (prop) => (event) => {
     var param = prop;
@@ -2670,6 +2675,7 @@ function Step2() {
         // handleToggle_backdrop(false);
         // setAllProjects([...res.data.projects]);
         setOpenModal(true);
+        setgenerated_file_path(res.data.path);
       } else {
         // localStorage.clear();
         // history.push("/login");
