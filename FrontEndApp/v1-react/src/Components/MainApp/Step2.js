@@ -2519,10 +2519,7 @@ function Step2() {
       // console.log(components);
       setcomponents(components);
     }
-    console.log(source);
-    console.log(destination);
-    const validate_res = validate_layers(source, destination, components);
-    console.log(validate_res);
+    // const validate_res = validate_layers(source, destination, components);
   };
   const showdetails = (element) => {
     // console.log(element);
