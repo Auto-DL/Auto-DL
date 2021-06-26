@@ -112,10 +112,15 @@ export const validate_layers = (source, destination, components) => {
   }
   if (src_dic === "target" && des_dic !== "delete") {
     const curr_layer = components[des_idx].name;
+    //for dropout layer
+    if (layer_dims[curr_layer].returned_dim === "same") {
+      return 0;
+    }
     //for src layer
     if (des_idx !== 0) {
       const above_layer = components[des_idx - 1].name;
       if (
+        layer_dims[above_layer].returned_dim !== "same" &&
         layer_dims[curr_layer].expected_dim !== "all" &&
         layer_dims[above_layer].returned_dim !==
           layer_dims[curr_layer].expected_dim
