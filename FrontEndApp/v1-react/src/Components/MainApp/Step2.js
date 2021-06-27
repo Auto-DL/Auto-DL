@@ -2816,6 +2816,11 @@ function Step2() {
 
     return temp;
   };
+
+  //states for dialog box which is triggered if necessary details are blank 
+  //before generating code.
+  const [openErrorDialog,setOpenErrorDialog] = useState(false);
+
   const generate_code = async () => {
     if (layer_validation()) {
       const hyper_data = generate_hyper();
@@ -2838,7 +2843,10 @@ function Step2() {
         // history.push("/login");
       }
     } else {
-      alert("please fill all the required fileds in layers");
+      // alert("please fill all the required fileds in layers");
+      //states for dialog box which is triggered if necessary details are blank 
+      //before generating code.
+      setOpenErrorDialog(true);
     }
   };
   const generate_code_1 = () => {
@@ -3699,7 +3707,7 @@ function Step2() {
                                 >
                                   <HelpOutlineIcon />
                                 </div>
-                                {selected_loss[key]["Datatype"] == "select" ? (
+                                {selected_loss[key]["Datatype"] === "select" ? (
                                   <div className={classes.value}>
                                     <FormControl
                                       fullWidth
@@ -3959,6 +3967,26 @@ function Step2() {
           </Grid>
           <Grid item lg={4} md={4}></Grid>
         </Grid>
+
+        {/*Dialog if necessary details are not    */}
+        {openErrorDialog && 
+          <Dialog open={openErrorDialog} >
+            <DialogTitle id="error-dialog-title">
+                HYPERPARAMETERS ERROR !!<hr/>
+            </DialogTitle>
+            <DialogContent>
+              Please enter values in all the necessary fields.
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={() => setOpenErrorDialog(false)} variant="contained" color="secondary">
+                OK
+              </Button>
+            </DialogActions>
+          </Dialog>
+        }
+
+
+
       </TabPanel>
     </div>
   );
