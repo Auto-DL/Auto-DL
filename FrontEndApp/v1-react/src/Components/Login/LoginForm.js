@@ -130,7 +130,6 @@ function LoginForm() {
 
         localStorage.setItem("username", JSON.stringify(res.data.user));
         localStorage.setItem("token", JSON.stringify(res.data.token));
-
         window.location.reload();
       } else {
         setalert({ ...values, msg: res.data.message, severity: "error" });
@@ -388,7 +387,6 @@ function LoginForm() {
             </TabPanel>
           </div>
         </Grid>
-
         <Grid item lg={4} md={4} sm={1} xs={1}></Grid>
       </Grid>
 

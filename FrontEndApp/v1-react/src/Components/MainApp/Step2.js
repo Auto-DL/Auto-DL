@@ -2281,14 +2281,15 @@ function Step2() {
     };
   }
 
-  const all_optimizer = temp_optimizer;
-  const all_loss = temp_loss;
-  const render_prepro_meta = temp_pre_meta;
-  const render_prepro = temp_pre;
-  const jsondata = temp_json;
-
+  const [all_optimizer, setall_optimizer] = React.useState(temp_optimizer);
+  const [all_loss, setall_loss] = React.useState(temp_loss);
   const [all_prepro, setall_prepro] = React.useState({});
+  const [render_prepro_meta, setrender_prepro_meta] = React.useState(
+    temp_pre_meta
+  );
+  const [render_prepro, setrender_prepro] = React.useState(temp_pre);
   const [show_pre, setshow_pre] = React.useState(false);
+  const [jsondata, setjsondata] = React.useState(temp_json);
 
   useEffect(() => {
     async function fetchData() {
