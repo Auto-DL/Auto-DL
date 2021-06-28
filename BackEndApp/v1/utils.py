@@ -1,6 +1,5 @@
 from uuid import uuid4 as uid
 import os
-import subprocess
 
 
 def generate_uid():
@@ -30,13 +29,12 @@ def format_code(file):
     """
     Takes in the parser generated file and cleans the code.
     """
-    subprocess.run(
+    os.system(
         "autoflake --in-place --remove-unused-variables --remove-all-unused-imports {}".format(
             file
-        ),
-        shell=True,
+        )
     )
-    subprocess.run("black {}".format(file), shell=True)
+    os.system("black {}".format(file))
 
 
 if __name__ == "__main__":
