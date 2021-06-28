@@ -2343,9 +2343,8 @@ function Step2() {
   const [all_optimizer, setall_optimizer] = React.useState(temp_optimizer);
   const [all_loss, setall_loss] = React.useState(temp_loss);
   const [all_prepro, setall_prepro] = React.useState({});
-  const [render_prepro_meta, setrender_prepro_meta] = React.useState(
-    temp_pre_meta
-  );
+  const [render_prepro_meta, setrender_prepro_meta] =
+    React.useState(temp_pre_meta);
   const [render_prepro, setrender_prepro] = React.useState(temp_pre);
   const [show_pre, setshow_pre] = React.useState(false);
   const [jsondata, setjsondata] = React.useState(temp_json);
@@ -2567,9 +2566,8 @@ function Step2() {
                   if (
                     dic[key0][key1].Datatype === new String("number").valueOf()
                   ) {
-                    final_dict[
-                      `Layer-${i}-${dic[key0].name}-${key1}`
-                    ] = parseInt(dic[key0][key1][key2]);
+                    final_dict[`Layer-${i}-${dic[key0].name}-${key1}`] =
+                      parseInt(dic[key0][key1][key2]);
                   } else if (
                     dic[key0][key1].Datatype === new String("tuple").valueOf()
                   ) {
@@ -2616,9 +2614,8 @@ function Step2() {
                 } else if (
                   dic[key0][key1].Datatype === new String("float").valueOf()
                 ) {
-                  final_dict[
-                    `Layer-${i}-${dic[key0].name}-${key1}`
-                  ] = parseFloat(dic[key0][key1][key2]);
+                  final_dict[`Layer-${i}-${dic[key0].name}-${key1}`] =
+                    parseFloat(dic[key0][key1][key2]);
                 } else if (
                   dic[key0][key1].Datatype === new String("Tuple").valueOf()
                 ) {
@@ -2927,7 +2924,10 @@ function Step2() {
     };
     const res = await HomeService.download_code(token, data);
     if (res.status === 200) {
-      fileDownload(res.data, "test.py");
+      //check if a valid name exists else give the default name as "output"
+      const filename_of_download =
+        project_details.output_file_name.trim() || "output";
+      fileDownload(res.data, `${filename_of_download}.py`);
     }
   };
   const Train = async () => {
