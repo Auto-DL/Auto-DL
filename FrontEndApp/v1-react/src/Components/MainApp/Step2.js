@@ -2924,7 +2924,6 @@ function Step2() {
     };
     const res = await HomeService.download_code(token, data);
     if (res.status === 200) {
-      //check if a valid name exists else give the default name as "output"
       const filename_of_download =
         project_details.output_file_name.trim() || "output";
       fileDownload(res.data, `${filename_of_download}.py`);
