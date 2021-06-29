@@ -13,7 +13,7 @@ var layer_dims = {
 
   LSTM: {
     expected_dim: 2,
-    returned_dim: 2,
+    returned_dim: 1,
   },
 
   SimpleRNN: {
