@@ -22,12 +22,12 @@ var layer_dims = {
 	},
 
 	Dropout: {
-		expected_dim: 'all',
-		returned_dim: 'same',
+		expected_dim: "all",
+		returned_dim: "same",
 	},
 
 	Flatten: {
-		expected_dim: 'all',
+		expected_dim: "all",
 		returned_dim: 1,
 	},
 
@@ -58,20 +58,20 @@ export const validate_layers = (source, destination, components) => {
 	const des_idx = destination.index
 	const src_idx = source.index
 	// adding new layers
-	if (src_dic === 'source') {
+	if (src_dic === "source") {
 		const curr_layer = components[des_idx].name
-		if (layer_dims[curr_layer].returned_dim === 'same') {
+		if (layer_dims[curr_layer].returned_dim === "same") {
 			console.log(errors)
 		}
 		if (des_idx !== 0) {
 			const above_layer = components[des_idx - 1].name
 			if (
-				layer_dims[curr_layer].expected_dim !== 'all' &&
+				layer_dims[curr_layer].expected_dim !== "all" &&
 				layer_dims[above_layer].returned_dim !== layer_dims[curr_layer].expected_dim
 			) {
 				var obj = {
 					indices: [des_idx - 1, des_idx],
-					error: 'Wrong layer placement',
+					error: "Wrong layer placement",
 				}
 				errors.push(obj)
 				console.log(errors)
@@ -80,12 +80,12 @@ export const validate_layers = (source, destination, components) => {
 		if (des_idx !== components.length - 1) {
 			const below_layer = components[des_idx + 1].name
 			if (
-				layer_dims[below_layer].expected_dim !== 'all' &&
+				layer_dims[below_layer].expected_dim !== "all" &&
 				layer_dims[curr_layer].returned_dim !== layer_dims[below_layer].expected_dim
 			) {
 				var obj = {
 					indices: [des_idx, des_idx + 1],
-					error: 'Wrong layer placement',
+					error: "Wrong layer placement",
 				}
 				errors.push(obj)
 				console.log(errors)
@@ -94,9 +94,9 @@ export const validate_layers = (source, destination, components) => {
 		console.log(errors)
 	}
 	//deleting layers
-	else if (des_dic === 'delete') {
+	else if (des_dic === "delete") {
 		const curr_layer = components[src_idx].name
-		if (layer_dims[curr_layer].returned_dim === 'same') {
+		if (layer_dims[curr_layer].returned_dim === "same") {
 			return 0
 		}
 		if (src_idx !== components.length - 1) {
@@ -104,14 +104,14 @@ export const validate_layers = (source, destination, components) => {
 			if (src_idx !== 0) {
 				var above_layer = components[src_idx - 1].name
 				if (
-					layer_dims[below_layer].expected_dim !== 'all' &&
+					layer_dims[below_layer].expected_dim !== "all" &&
 					layer_dims[above_layer].returned_dim !==
 						layer_dims[below_layer].expected_dim
 				) {
-					console.log('err by delete')
+					console.log("err by delete")
 					var obj = {
 						indices: [src_idx - 1, src_idx],
-						error: 'Wrong layer placement',
+						error: "Wrong layer placement",
 					}
 					errors.push(obj)
 					console.log(errors)
@@ -120,23 +120,23 @@ export const validate_layers = (source, destination, components) => {
 		}
 	}
 	//for moving layers up and down (target to target)
-	if (src_dic === 'target' && des_dic !== 'delete') {
+	if (src_dic === "target" && des_dic !== "delete") {
 		const curr_layer = components[des_idx].name
 		//for dropout layer
-		if (layer_dims[curr_layer].returned_dim === 'same') {
+		if (layer_dims[curr_layer].returned_dim === "same") {
 			console.log(errors)
 		}
 		//for src layer
 		if (des_idx !== 0) {
 			const above_layer = components[des_idx - 1].name
 			if (
-				layer_dims[above_layer].returned_dim !== 'same' &&
-				layer_dims[curr_layer].expected_dim !== 'all' &&
+				layer_dims[above_layer].returned_dim !== "same" &&
+				layer_dims[curr_layer].expected_dim !== "all" &&
 				layer_dims[above_layer].returned_dim !== layer_dims[curr_layer].expected_dim
 			) {
 				var obj = {
 					indices: [des_idx - 1, des_idx],
-					error: 'Wrong layer placement',
+					error: "Wrong layer placement",
 				}
 				errors.push(obj)
 				console.log(errors)
@@ -145,12 +145,12 @@ export const validate_layers = (source, destination, components) => {
 		if (des_idx !== components.length - 1) {
 			const below_layer = components[des_idx + 1].name
 			if (
-				layer_dims[below_layer].expected_dim !== 'all' &&
+				layer_dims[below_layer].expected_dim !== "all" &&
 				layer_dims[curr_layer].returned_dim !== layer_dims[below_layer].expected_dim
 			) {
 				var obj = {
 					indices: [des_idx, des_idx + 1],
-					error: 'Wrong layer placement using des',
+					error: "Wrong layer placement using des",
 				}
 				errors.push(obj)
 			}
@@ -160,13 +160,20 @@ export const validate_layers = (source, destination, components) => {
 			const above_layer = components[src_idx - 1].name
 			const below_layer = components[src_idx].name
 			if (
-				layer_dims[below_layer].expected_dim !== 'all' &&
+				layer_dims[below_layer].expected_dim !== "all" &&
 				layer_dims[above_layer].returned_dim !==
 					layer_dims[below_layer].expected_dim
 			) {
-				var obj = {
-					indices: [src_idx - 1, src_idx],
-					error: 'Wrong layer placement',
+				if (des_idx > src_idx) {
+					var obj = {
+						indices: [src_idx - 1, src_idx],
+						error: "Wrong layer placement",
+					}
+				} else {
+					var obj = {
+						indices: [src_idx, src_idx + 1],
+						error: "Wrong layer placement",
+					}
 				}
 				errors.push(obj)
 				console.log(errors)
