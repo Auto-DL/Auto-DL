@@ -56,7 +56,7 @@ __Running the Project__
 * To start the backend server traverse to the path in cmd: ```\Auto-DL\Auto-DL\BackEndApp\```
 
 * Type 
-```python manage.py server``` This will start the backend server
+```python manage.py runserver``` This will start the backend server
 
 * Go to: ```\Auto-DL\Auto-DL\FrontEndApp\v1-react```
 
