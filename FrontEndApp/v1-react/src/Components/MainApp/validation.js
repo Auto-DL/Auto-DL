@@ -42,12 +42,12 @@ var layer_dims = {
 	},
 }
 /**
- * Validate order of layers such that dimensions of consecutive layers are same
+ * Validate order of layers such that dimensions of consecutive layers are not conflicting
  * @function validate_layers
  * @param {Object} source source object in the handleDragEnd function
  * @param {Object} destination destination object in the handleDragEnd function
  * @param {List} components List of json objects representing the model layers
- * @returns {Array of objects} 1 if errors, 0 if no errors
+ * @returns {Array of objects} [] if no errors, [ {indices: [int,int], error: 'error message'}, {..}, .. ] if error
  */
 export const validate_layers = (source, destination, components) => {
 	//variables
