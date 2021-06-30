@@ -64,7 +64,7 @@ def generate(request):
     user_data = UserData(metadata, components, layers, inputs, preprocessing)
 
     status, error = parser.generate_code(inputs)
-    format_code("test.py")
+
     if status:
         print("Error", error)
         msg = error
@@ -73,6 +73,7 @@ def generate(request):
         print("File generated")
         msg = "File Generated Successfully"
         path = "file:///" + os.getcwd() + os.sep + "test.py"
+        format_code("test.py")
         copy_file(project_dir)
 
     return JsonResponse({"message": msg, "path": path})
