@@ -494,3 +494,33 @@ def download_code(request):
     except Exception as e:
         response = HttpResponse("<h1>File not found</h1>")
     return response
+
+
+@api_view(["POST"])
+@is_authenticated
+def get_users(request):
+    try:
+        username = request.data.get("username")
+        user = User(username=username, password=None)
+        user = user.find()
+
+        users = os.listdir(user.rootpath)
+
+        status, success, message, data = 200, True, "hyperparams fetched", users
+
+    except Exception as e:
+        status, success, message, hyperparams = (
+            500,
+            False,
+            "Could not fetch users ",
+            {},
+        )
+    return JsonResponse(
+        {
+            "success": success,
+            "message": message,
+            "hyperparams": hyperparams,
+            "users": users,
+        },
+        status=status,
+    )
