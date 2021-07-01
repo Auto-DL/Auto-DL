@@ -497,19 +497,18 @@ def download_code(request):
 
 
 @api_view(["POST"])
-@is_authenticated
 def get_users(request):
     try:
         username = request.data.get("username")
         user = User(username=username, password=None)
         user = user.find()
 
-        users = os.listdir(user.rootpath)
+        users = os.listdir(os.path.expanduser('~') + "\.autodl")
 
-        status, success, message, data = 200, True, "hyperparams fetched", users
+        status, success, message, data = 200, True, "Users fetched", users
 
     except Exception as e:
-        status, success, message, hyperparams = (
+        status, success, message, user = (
             500,
             False,
             "Could not fetch users ",
@@ -519,8 +518,7 @@ def get_users(request):
         {
             "success": success,
             "message": message,
-            "hyperparams": hyperparams,
-            "users": users,
+            "users": data,
         },
         status=status,
     )
