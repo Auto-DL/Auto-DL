@@ -195,6 +195,7 @@ def edit_project(request):
 
         project_id = request.data.get("project_id")
         project_name = request.data.get("project_name")
+        project_description = request.data.get("project_description")
         data_dir = request.data.get("data_dir")
         output_file_name = request.data.get("output_file_name")
 
@@ -208,6 +209,9 @@ def edit_project(request):
 
         metadata["project_name"] = (
             project_name if project_name is not None else metadata["project_name"]
+        )
+        metadata["project_description"] = (
+            project_description if project_description is not None else metadata["project_description"]
         )
         metadata["data_dir"] = (
             data_dir if data_dir is not None else metadata["data_dir"]
@@ -258,6 +262,7 @@ def create_project(request):
 
         project_id = generate_uid()
         project_name = request.data.get("project_name")
+        project_description = request.data.get("project_description")
         lang = request.data.get("language")
         lib = request.data.get("library")
         task = request.data.get("task")
@@ -272,6 +277,7 @@ def create_project(request):
         metadata = {
             "project_id": project_id,
             "project_name": project_name,
+            "project_description": project_description,
             "lib": lib,
             "lang": lang,
             "task": task,
