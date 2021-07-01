@@ -497,13 +497,14 @@ def download_code(request):
 
 
 @api_view(["POST"])
+@is_authenticated
 def get_users(request):
     try:
         username = request.data.get("username")
         user = User(username=username, password=None)
         user = user.find()
 
-        users = os.listdir(os.path.expanduser('~') + "\.autodl")
+        users = os.listdir(os.path.expanduser("~") + "\.autodl")
 
         status, success, message, data = 200, True, "Users fetched", users
 
