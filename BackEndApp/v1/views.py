@@ -14,7 +14,7 @@ from v1.models import UserData
 from dlmml.utils import json_to_dict
 from dlmml.parser import *
 
-from .utils import generate_uid, copy_file
+from .utils import generate_uid, copy_file, format_code
 
 
 @api_view(["POST"])
@@ -64,6 +64,7 @@ def generate(request):
     user_data = UserData(metadata, components, layers, inputs, preprocessing)
 
     status, error = parser.generate_code(inputs)
+
     if status:
         print("Error", error)
         msg = "Could not generate code"
@@ -72,6 +73,7 @@ def generate(request):
         print("File generated")
         msg = "File Generated Successfully"
         path = "file:///" + os.getcwd() + os.sep + "test.py"
+        format_code("test.py")
         copy_file(project_dir)
 
     return JsonResponse({"message": msg, "path": path})
