@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, Fragment } from "react";
 import _ from "lodash";
 import TextField from "@material-ui/core/TextField";
 import FormControl from "@material-ui/core/FormControl";
@@ -44,7 +44,9 @@ const DialogTitle = withStyles(styles)((props) => {
   const { children, classes, onClose, ...other } = props;
   return (
     <MuiDialogTitle disableTypography className={classes.root} {...other}>
-      <Typography variant="h6">{children}</Typography>
+      <Typography component={"span"} variant="h6">
+        {children}
+      </Typography>
       {onClose ? (
         <IconButton
           aria-label="close"
@@ -84,7 +86,7 @@ function TabPanel(props) {
     >
       {value === index && (
         <Box p={2}>
-          <Typography>{children}</Typography>
+          <Typography component={"span"}>{children}</Typography>
         </Box>
       )}
     </div>
@@ -2888,13 +2890,13 @@ function Step2() {
                 <Grid item lg={12} md={12} sm={12} xs={12}>
                   {/* meta */}
                   {Object.keys(render_prepro_meta).map((key, index) => (
-                    <>
+                    <Fragment key={index}>
                       <div className={classes.heading}>{key}</div>
                       <Grid container>
                         {Object.keys(render_prepro_meta[key]).map(
                           (key1, index1) =>
                             key1 === "name" ? null : (
-                              <>
+                              <Fragment key={index1}>
                                 <Grid
                                   item
                                   lg={3}
@@ -2928,16 +2930,18 @@ function Step2() {
                                       {render_prepro_meta[key][key1][
                                         "Options"
                                       ].map((op, i) => (
-                                        <option value={op}>{op}</option>
+                                        <option key={i} value={op}>
+                                          {op}
+                                        </option>
                                       ))}
                                     </Select>
                                   </FormControl>
                                 </Grid>
-                              </>
+                              </Fragment>
                             )
                         )}
                       </Grid>
-                    </>
+                    </Fragment>
                   ))}
                   {/* pre */}
 
@@ -2946,7 +2950,7 @@ function Step2() {
                       {Object.keys(
                         render_prepro[all_prepro["dataset-type"]]
                       ).map((key, index) => (
-                        <>
+                        <span key={index}>
                           <div className={classes.heading}>{key}</div>
                           <Grid container>
                             {Object.keys(
@@ -2954,7 +2958,7 @@ function Step2() {
                             ).map((key1, index1) =>
                               key1 === "name" ||
                               key1 === "input_type" ? null : (
-                                <>
+                                <Fragment key={index1}>
                                   <Grid
                                     item
                                     lg={3}
@@ -2995,6 +2999,7 @@ function Step2() {
                                           ][key][key1]["Options"].map(
                                             (op, i) => (
                                               <option
+                                                key={i}
                                                 value={
                                                   op === "True"
                                                     ? true
@@ -3036,11 +3041,11 @@ function Step2() {
                                       />
                                     )}
                                   </Grid>
-                                </>
+                                </Fragment>
                               )
                             )}
                           </Grid>
-                        </>
+                        </span>
                       ))}
                     </>
                   ) : null}
@@ -3162,7 +3167,7 @@ function Step2() {
                     <div className={classes.innerpad}>
                       {Object.keys(components[selected_layer]).map(
                         (key, index) => (
-                          <>
+                          <Fragment key={index}>
                             {key === "name" ||
                             key === "id" ||
                             key === "type" ? null : (
@@ -3214,8 +3219,10 @@ function Step2() {
                                       >
                                         {components[selected_layer][key][
                                           "Options"
-                                        ].map((arr) => (
-                                          <option value={arr}>{arr}</option>
+                                        ].map((arr, index) => (
+                                          <option key={index} value={arr}>
+                                            {arr}
+                                          </option>
                                         ))}{" "}
                                       </Select>
                                     </FormControl>
@@ -3225,7 +3232,6 @@ function Step2() {
                                     <TextField
                                       required
                                       size="small"
-                                      id="outlined-required"
                                       value={
                                         components[selected_layer][key]["value"]
                                           ? components[selected_layer][key][
@@ -3247,7 +3253,7 @@ function Step2() {
                                 )}
                               </div>
                             )}
-                          </>
+                          </Fragment>
                         )
                       )}
                     </div>
@@ -3294,7 +3300,11 @@ function Step2() {
                       >
                         <option aria-label="None" value="" />
                         {Object.keys(all_optimizer).map((name, index) => {
-                          return <option value={name}>{name}</option>;
+                          return (
+                            <option key={index} value={name}>
+                              {name}
+                            </option>
+                          );
                         })}
                       </Select>
                     </FormControl>
@@ -3302,7 +3312,7 @@ function Step2() {
                     {showoptimizer ? (
                       <div className={classes.card}>
                         {Object.keys(selected_optimizer).map((key, index) => (
-                          <>
+                          <Fragment key={index}>
                             {key === "name" ||
                             key === "id" ||
                             key === "type" ? null : (
@@ -3345,8 +3355,10 @@ function Step2() {
                                         )}
                                       >
                                         {selected_optimizer[key]["Options"].map(
-                                          (arr) => (
-                                            <option value={arr}>{arr}</option>
+                                          (arr, index) => (
+                                            <option key={index} value={arr}>
+                                              {arr}
+                                            </option>
                                           )
                                         )}{" "}
                                       </Select>
@@ -3357,7 +3369,6 @@ function Step2() {
                                     <TextField
                                       required
                                       size="small"
-                                      id="outlined-required"
                                       value={
                                         selected_optimizer[key]["value"]
                                           ? selected_optimizer[key]["value"]
@@ -3374,7 +3385,7 @@ function Step2() {
                                 )}
                               </div>
                             )}
-                          </>
+                          </Fragment>
                         ))}
 
                         <Button
@@ -3412,7 +3423,11 @@ function Step2() {
                       >
                         <option aria-label="None" value="" />
                         {Object.keys(all_loss).map((name, index) => {
-                          return <option value={name}>{name}</option>;
+                          return (
+                            <option key={index} value={name}>
+                              {name}
+                            </option>
+                          );
                         })}
                       </Select>
                     </FormControl>
@@ -3420,7 +3435,7 @@ function Step2() {
                     {showloss ? (
                       <div className={classes.card}>
                         {Object.keys(selected_loss).map((key, index) => (
-                          <>
+                          <Fragment key={index}>
                             {key === "name" ||
                             key === "id" ||
                             key === "type" ? null : (
@@ -3459,8 +3474,10 @@ function Step2() {
                                         onChange={save_value_hyper(key, "loss")}
                                       >
                                         {selected_loss[key]["Options"].map(
-                                          (arr) => (
-                                            <option value={arr}>{arr}</option>
+                                          (arr, index) => (
+                                            <option key={index} value={arr}>
+                                              {arr}
+                                            </option>
                                           )
                                         )}{" "}
                                       </Select>
@@ -3485,7 +3502,7 @@ function Step2() {
                                 )}
                               </div>
                             )}
-                          </>
+                          </Fragment>
                         ))}
 
                         <Button

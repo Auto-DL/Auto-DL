@@ -63,6 +63,7 @@ export const validate_layers = (source, destination, components) => {
   const des_idx = destination.index;
   const src_idx = source.index;
   // adding new layers
+  var obj;
   if (src_dic === "source") {
     const curr_layer = components[des_idx].name;
     if (layer_dims[curr_layer].returned_dim === "same") {
@@ -74,7 +75,7 @@ export const validate_layers = (source, destination, components) => {
           layer_dims[above_layer].returned_dim !==
             layer_dims[curr_layer].expected_dim
         ) {
-          var obj = {
+          obj = {
             indices: [des_idx - 1, des_idx],
             error_description:
               "Wrong layer placement (current layer and the layer above)",
@@ -90,7 +91,7 @@ export const validate_layers = (source, destination, components) => {
           layer_dims[curr_layer].returned_dim !==
             layer_dims[below_layer].expected_dim
         ) {
-          var obj = {
+          obj = {
             indices: [des_idx, des_idx + 1],
             error_description:
               "Wrong layer placement (current layer and the layer below)",
@@ -114,7 +115,7 @@ export const validate_layers = (source, destination, components) => {
           layer_dims[above_layer].returned_dim !==
             layer_dims[below_layer].expected_dim
         ) {
-          var obj = {
+          obj = {
             indices: [src_idx - 1, src_idx],
             error_description: "Wrong layer placement (delete)",
             error: "Wrong layer placement.",
@@ -139,7 +140,7 @@ export const validate_layers = (source, destination, components) => {
           layer_dims[above_layer].returned_dim !==
             layer_dims[curr_layer].expected_dim
         ) {
-          var obj = {
+          obj = {
             indices: [des_idx - 1, des_idx],
             error_description:
               "Wrong layer placement (current layer and the layer above)",
@@ -155,7 +156,7 @@ export const validate_layers = (source, destination, components) => {
           layer_dims[curr_layer].returned_dim !==
             layer_dims[below_layer].expected_dim
         ) {
-          var obj = {
+          obj = {
             indices: [des_idx, des_idx + 1],
             error_description:
               "Wrong layer placement (current layer and the layer above)",
@@ -174,14 +175,14 @@ export const validate_layers = (source, destination, components) => {
             layer_dims[below_layer].expected_dim
         ) {
           if (des_idx > src_idx) {
-            var obj = {
+            obj = {
               indices: [src_idx - 1, src_idx],
               error_description:
                 "Wrong layer placement (current layer moves up to down)",
               error: "Wrong layer placement.",
             };
           } else {
-            var obj = {
+            obj = {
               indices: [src_idx, src_idx + 1],
               error_description:
                 "Wrong layer placement (current layer moves down to up)",

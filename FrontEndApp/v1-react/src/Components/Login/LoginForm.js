@@ -36,7 +36,7 @@ function TabPanel(props) {
     >
       {value === index && (
         <Box p={5}>
-          <Typography>{children}</Typography>
+          <Typography component={"span"}>{children}</Typography>
         </Box>
       )}
     </div>
@@ -130,6 +130,7 @@ function LoginForm() {
 
         localStorage.setItem("username", JSON.stringify(res.data.user));
         localStorage.setItem("token", JSON.stringify(res.data.token));
+        // history.push("/home");
         window.location.reload();
       } else {
         setalert({ ...values, msg: res.data.message, severity: "error" });
@@ -152,7 +153,7 @@ function LoginForm() {
       email: values.email,
       password: values.password,
     };
-    // validation
+    // vallidation
     if (
       values.username !== "" &&
       values.password !== "" &&
@@ -167,7 +168,7 @@ function LoginForm() {
 
         localStorage.setItem("username", JSON.stringify(res.data.username));
         localStorage.setItem("token", JSON.stringify(res.data.token));
-
+        // history.push("/home");
         window.location.reload();
       } else {
         setalert({ ...values, msg: res.data.message, severity: "error" });
@@ -227,7 +228,6 @@ function LoginForm() {
                       Password *
                     </InputLabel>
                     <OutlinedInput
-                      id="outlined-adornment-password"
                       type={values.showPassword ? "text" : "password"}
                       value={values.password}
                       onChange={handleChange("password")}
@@ -316,7 +316,6 @@ function LoginForm() {
                       Password *
                     </InputLabel>
                     <OutlinedInput
-                      id="outlined-adornment-password"
                       type={values.showPassword ? "text" : "password"}
                       value={values.password}
                       onChange={handleChange("password")}
@@ -344,7 +343,6 @@ function LoginForm() {
                       Confirm Password *
                     </InputLabel>
                     <OutlinedInput
-                      id="outlined-adornment-password"
                       type={values.showPassword ? "text" : "password"}
                       value={values.confirmpassword}
                       onChange={handleChange("confirmpassword")}
