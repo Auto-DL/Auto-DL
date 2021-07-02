@@ -501,25 +501,23 @@ def download_code(request):
 def get_users(request):
     try:
         username = request.data.get("username")
-        user = User(username="asd", password=None)
+        user = User(username=username, password=None)
         user = user.find()
-        users = Store(user)
-        users = os.listdir(users.rootpath)
-
-        status, success, message, data = 200, True, "Users fetched", users
-
+        store = Store(user)
+        users = os.listdir(store.rootpath)
+        status, success, message, users = 200, True, "Users fetched", users
     except Exception as e:
-        status, success, message, data = (
+        status, success, message, users = (
             500,
             False,
             "Could not fetch users ",
-            {},
+            [],
         )
     return JsonResponse(
         {
             "success": success,
             "message": message,
-            "users": data,
+            "users": users,
         },
         status=status,
     )
