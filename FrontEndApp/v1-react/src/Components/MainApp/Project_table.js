@@ -5,6 +5,7 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import AddCircleIcon from "@material-ui/icons/AddCircle";
+import FileCopyIcon from '@material-ui/icons/FileCopy';
 import HomeService from "./HomeService";
 
 const StyledTableCell = withStyles((theme) => ({
@@ -81,6 +82,12 @@ export default function Project_table(props) {
     console.log(project.project_id);
     handleActionsClose();
     props.editproject(project);
+  };
+
+  const handleClone = (project) => {
+    console.log(project.project_id);
+    handleActionsClose();
+    props.cloneProject(project);
   };
   
   const handleDelete = (project) => {
@@ -190,6 +197,9 @@ export default function Project_table(props) {
                             >
                               <MenuItem onClick={() => handleEdit(currentProject)}>
                                 <EditIcon /> &nbsp; Edit
+                              </MenuItem>
+                              <MenuItem onClick={() => handleClone(currentProject)}>
+                                <FileCopyIcon /> &nbsp; Clone
                               </MenuItem>
                               <MenuItem onClick={() => handleDelete(currentProject)}>
                                 <DeleteIcon /> &nbsp; Delete

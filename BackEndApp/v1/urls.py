@@ -12,6 +12,7 @@ urlpatterns = [
     path('project/get/', views.get_project, name='get-project'),
     path('project/edit/', views.edit_project, name='edit-project'),
     path('project/delete/', views.delete_project, name='delete-project'),
+    path('project/clone/', views.clone_project, name='clone-project'),
     # step-1 routes
     path('project/new/', views.create_project, name='create-project'),
     # pre-step-2 routes
