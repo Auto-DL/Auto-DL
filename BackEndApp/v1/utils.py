@@ -25,5 +25,17 @@ def copy_file(dest, filename="test.py"):
     os.system('cp -f {} "{}"/{}'.format(filename, dest, filename))
 
 
+def format_code(file):
+    """
+    Takes in the parser generated file and cleans the code.
+    """
+    os.system(
+        "autoflake --in-place --remove-unused-variables --remove-all-unused-imports {}".format(
+            file
+        )
+    )
+    os.system("black {}".format(file))
+
+
 if __name__ == "__main__":
     print(generate_uid())

@@ -26,6 +26,7 @@ import MuiDialogContent from "@material-ui/core/DialogContent";
 import MuiDialogActions from "@material-ui/core/DialogActions";
 import CloseIcon from "@material-ui/icons/Close";
 import { Tooltip } from "@material-ui/core";
+import { validate_layers } from "./validation.js";
 
 const styles = (theme) => ({
   root: {
@@ -2445,6 +2446,8 @@ function Step2() {
 
       setcomponents(components);
     }
+    const validate_res = validate_layers(source, destination, components);
+    console.log(validate_res);
   };
   const showdetails = (element) => {
     setselected_layer_type(element);
