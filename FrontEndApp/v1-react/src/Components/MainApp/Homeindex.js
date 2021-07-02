@@ -107,6 +107,7 @@ function Home() {
   const classes = useStyles();
   const [values, setValues] = React.useState({
     project_name: "",
+    project_description: "",
     data_dir: "",
     language: "Python",
     task: "Classification",
@@ -191,6 +192,7 @@ function Home() {
     setValues({
       ...values,
       project_name: "",
+      project_description: "",
       data_dir: "",
       language: "python",
       task: "Classification",
@@ -207,6 +209,7 @@ function Home() {
     setValues({
       ...values,
       project_name: proj.project_name,
+      project_description: proj.project_description,
       data_dir: proj.data_dir,
       language: proj.lang,
       task: proj.task,
@@ -222,6 +225,7 @@ function Home() {
     // vallidation
     if (
       values.project_name !== "" &&
+      values.project_description !== "" &&
       values.path !== "" &&
       values.output_file_name !== ""
     ) {
@@ -230,6 +234,7 @@ function Home() {
           // 'language':values.language,
           // 'library':values.library,
           project_name: values.project_name,
+          project_description: values.project_description,
           project_id: SelectedProject.project_id,
           data_dir: values.data_dir,
           output_file_name: values.output_file_name,
@@ -242,6 +247,7 @@ function Home() {
           language: values.language,
           library: values.library,
           project_name: values.project_name,
+          project_description: values.project_description,
           task: values.task,
           path: values.data_dir,
           output_file_name: values.output_file_name,
@@ -310,6 +316,31 @@ function Home() {
               autoComplete="Project Name"
               autoFocus
               onChange={handleChange("project_name")}
+            />
+          )}
+
+          {IsEdit ? (
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              defaultValue={values.project_description}
+              label="Project Description"
+              size="small"
+              autoComplete="Project Description"
+              onChange={handleChange("project_description")}
+            />
+          ) : (
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              label="Project Description"
+              size="small"
+              autoComplete="Project Description"
+              onChange={handleChange("project_description")}
             />
           )}
 

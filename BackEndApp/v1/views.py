@@ -14,7 +14,7 @@ from v1.models import UserData
 from dlmml.utils import json_to_dict
 from dlmml.parser import *
 
-from .utils import generate_uid, copy_file
+from .utils import generate_uid, copy_file, format_code
 
 
 @api_view(["POST"])
@@ -64,14 +64,16 @@ def generate(request):
     user_data = UserData(metadata, components, layers, inputs, preprocessing)
 
     status, error = parser.generate_code(inputs)
+
     if status:
         print("Error", error)
-        msg = error
+        msg = "Could not generate code"
         path = ""
     else:
         print("File generated")
         msg = "File Generated Successfully"
         path = "file:///" + os.getcwd() + os.sep + "test.py"
+        format_code("test.py")
         copy_file(project_dir)
 
     return JsonResponse({"message": msg, "path": path})
@@ -93,7 +95,7 @@ def train(request):
         msg = "Training started successfully"
 
     except Exception as e:
-        msg = e
+        msg = "Could not start training"
     return JsonResponse({"message": msg})
 
 
@@ -117,7 +119,7 @@ def compile(request):
         status, error = test_model.test_compile_model(inputs)
         print(status, error)
     except Exception as e:
-        status, error = 1, e
+        status, error = 1, "Compile error"
     return JsonResponse({"status": status, "error": error})
 
 
@@ -142,7 +144,12 @@ def get_all_projects(request):
 
         status, success, message = 200, True, "Projects Fetched"
     except Exception as e:
-        status, success, message, projects = 500, False, str(e), ""
+        status, success, message, projects = (
+            500,
+            False,
+            "Projects could not be fetched",
+            "",
+        )
     return JsonResponse(
         {"success": success, "message": message, "projects": projects}, status=status
     )
@@ -169,7 +176,12 @@ def get_project(request):
         status, success, message = 200, True, "Layers Fetched"
 
     except Exception as e:
-        status, success, message, b2f_json = 500, False, str(e), {}
+        status, success, message, b2f_json = (
+            500,
+            False,
+            "Layers could not be fetched",
+            {},
+        )
     return JsonResponse(
         {"success": success, "message": message, "b2f_json": b2f_json}, status=status
     )
@@ -185,6 +197,7 @@ def edit_project(request):
 
         project_id = request.data.get("project_id")
         project_name = request.data.get("project_name")
+        project_description = request.data.get("project_description")
         data_dir = request.data.get("data_dir")
         output_file_name = request.data.get("output_file_name")
 
@@ -199,6 +212,9 @@ def edit_project(request):
         metadata["project_name"] = (
             project_name if project_name is not None else metadata["project_name"]
         )
+        metadata["project_description"] = (
+            project_description if project_description is not None else metadata["project_description"]
+        )
         metadata["data_dir"] = (
             data_dir if data_dir is not None else metadata["data_dir"]
         )
@@ -212,7 +228,7 @@ def edit_project(request):
             json.dump(metadata, f)
         status, success, message = 200, True, "Project Updated Successfully"
     except Exception as e:
-        status, success, message = 500, False, str(e)
+        status, success, message = 500, False, "Could not update the Project"
     return JsonResponse({"success": success, "message": message}, status=status)
 
 
@@ -234,7 +250,7 @@ def delete_project(request):
 
         status, success, message = 200, True, "Project Deleted Successfully"
     except Exception as e:
-        status, success, message = 500, False, str(e)
+        status, success, message = 500, False, "Project could not be deleted"
     return JsonResponse({"success": success, "message": message}, status=status)
 
 
@@ -248,6 +264,7 @@ def create_project(request):
 
         project_id = generate_uid()
         project_name = request.data.get("project_name")
+        project_description = request.data.get("project_description")
         lang = request.data.get("language")
         lib = request.data.get("library")
         task = request.data.get("task")
@@ -262,6 +279,7 @@ def create_project(request):
         metadata = {
             "project_id": project_id,
             "project_name": project_name,
+            "project_description": project_description,
             "lib": lib,
             "lang": lang,
             "task": task,
@@ -275,7 +293,7 @@ def create_project(request):
 
         status, success, message = 200, True, "Project Created Successfully"
     except Exception as e:
-        status, success, message = 500, False, str(e)
+        status, success, message = 500, False, "Project could not be created"
     return JsonResponse({"success": success, "message": message}, status=status)
 
 
@@ -304,7 +322,7 @@ def save_layers(request):
 
         status, success, message = 200, True, "Layers saved successfully"
     except Exception as e:
-        status, success, message = 500, False, str(e)
+        status, success, message = 500, False, "Could not save layers"
     return JsonResponse({"success": success, "message": message}, status=status)
 
 
@@ -328,7 +346,7 @@ def get_layers(request):
         status, success, message = 200, True, "Components Array Fetched"
 
     except Exception as e:
-        status, success, message, components = 500, False, str(e), {}
+        status, success, message, components = 500, False, "Could not fetch Layers", {}
     return JsonResponse(
         {"success": success, "message": message, "components": components},
         status=status,
@@ -357,7 +375,7 @@ def save_preprocessing_params(request):
         status, success, message = 200, True, "Preprocessing params saved successfully"
 
     except Exception as e:
-        status, success, message = 500, False, str(e)
+        status, success, message = 500, False, "Could not save preprocessing params"
     return JsonResponse({"success": success, "message": message}, status=status)
 
 
@@ -381,7 +399,12 @@ def get_preprocessing_params(request):
         status, success, message = 200, True, "preprocessing params fetched"
 
     except Exception as e:
-        status, success, message, preprocessing = 500, False, str(e), {}
+        status, success, message, preprocessing = (
+            500,
+            False,
+            "Could not fetch preprocessing params",
+            {},
+        )
     return JsonResponse(
         {"success": success, "message": message, "preprocessing": preprocessing},
         status=status,
@@ -410,7 +433,7 @@ def save_hyperparams(request):
         status, success, message = 200, True, "Hyperparams saved successfully"
 
     except Exception as e:
-        status, success, message = 500, False, str(e)
+        status, success, message = 500, False, "Could not save hyperparams"
     return JsonResponse({"success": success, "message": message}, status=status)
 
 
@@ -434,7 +457,12 @@ def get_hyperparams(request):
         status, success, message = 200, True, "hyperparams fetched"
 
     except Exception as e:
-        status, success, message, hyperparams = 500, False, str(e), {}
+        status, success, message, hyperparams = (
+            500,
+            False,
+            "Could not fetch hyperparams ",
+            {},
+        )
     return JsonResponse(
         {"success": success, "message": message, "hyperparams": hyperparams},
         status=status,

@@ -28,6 +28,7 @@ import MuiDialogActions from "@material-ui/core/DialogActions";
 import CloseIcon from "@material-ui/icons/Close";
 import { CollectionsBookmarkOutlined, OpacitySharp } from "@material-ui/icons";
 import { Tooltip } from "@material-ui/core";
+import { validate_layers } from "./validation.js";
 
 const styles = (theme) => ({
   root: {
@@ -2517,6 +2518,8 @@ function Step2() {
       // console.log(components);
       setcomponents(components);
     }
+    const validate_res = validate_layers(source, destination, components);
+    console.log(validate_res);
   };
   const showdetails = (element) => {
     // console.log(element);
