@@ -2449,7 +2449,6 @@ function Step2() {
       setcomponents(components);
     }
     const validate_res = validate_layers(source, destination, components);
-    console.log(validate_res);
   };
   const showdetails = (element) => {
     setselected_layer_type(element);

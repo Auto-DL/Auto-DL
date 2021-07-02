@@ -107,6 +107,7 @@ function Layout() {
 
   const logout = () => {
     localStorage.clear();
+    history.push("/login");
     window.location.reload();
   };
 
