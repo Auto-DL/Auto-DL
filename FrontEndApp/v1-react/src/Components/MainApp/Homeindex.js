@@ -1,36 +1,14 @@
 import React, { useState, useEffect } from "react";
-import {
-  BrowserRouter,
-  Switch,
-  useLocation,
-  IndexRoute,
-  Route,
-  Link,
-  Redirect,
-  useParams,
-  useHistory,
-} from "react-router-dom";
-import HomeService from "./HomeService";
-import Project_table from "./Project_table";
-import Grid from "@material-ui/core/Grid";
+import { BrowserRouter, Switch, useLocation, IndexRoute, Route, Link, Redirect, useParams, useHistory } from "react-router-dom";
+import { Grid, CircularProgress, Backdrop, Select, MenuItem, Snackbar, Button, TextField, FormControlLabel, FormLabel, Input, FormGroup, Checkbox, FormHelperText, InputLabel, FormControl, Dialog, Typography, IconButton } from "@material-ui/core";
 import { makeStyles, withStyles, useTheme } from "@material-ui/core/styles";
-import Select from "@material-ui/core/Select";
-import MenuItem from "@material-ui/core/MenuItem";
-import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
-import Button from "@material-ui/core/Button";
-import TextField from "@material-ui/core/TextField";
-import InputLabel from "@material-ui/core/InputLabel";
-import FormControl from "@material-ui/core/FormControl";
-import Dialog from "@material-ui/core/Dialog";
 import MuiDialogTitle from "@material-ui/core/DialogTitle";
 import MuiDialogContent from "@material-ui/core/DialogContent";
 import MuiDialogActions from "@material-ui/core/DialogActions";
 import CloseIcon from "@material-ui/icons/Close";
-import Typography from "@material-ui/core/Typography";
-import IconButton from "@material-ui/core/IconButton";
-import Backdrop from "@material-ui/core/Backdrop";
-import CircularProgress from "@material-ui/core/CircularProgress";
+import HomeService from "./HomeService";
+import Project_table from "./Project_table";
 
 const styles = (theme) => ({
   root: {
@@ -86,6 +64,12 @@ const useStyles = makeStyles((theme) => ({
     minWidth: "100%",
     marginTop: "20px",
   },
+  cloneFormControl: {
+    margin: theme.spacing(0),
+    minWidth: "100%",
+    marginTop: "20px",
+    marginBottom: "20px",
+  },
   backdrop: {
     zIndex: theme.zIndex.drawer + 1,
     color: "#fff",
@@ -118,6 +102,20 @@ function Home() {
   const [IsEdit, setIsEdit] = React.useState(false);
   const [openModal, setOpenModal] = React.useState(false);
 
+  const [cloneStep, setCloneStep] = useState(0);
+  const [openCloneModal, setOpenCloneModal] = useState(false);
+  const [cloneOptions, setCloneOptions] = useState({
+    modelLayers: false,
+    preprocessingParameters: false,
+    hyperParameters: false,
+  });
+
+  const { modelLayers, preprocessingParameters, hyperParameters } = cloneOptions;
+  
+  const handleCloneChange = (event) => {
+    setCloneOptions({ ...cloneOptions, [event.target.name]: event.target.checked });
+  };
+
   const handleClickOpenModal = () => {
     setOpenModal(true);
   };
@@ -126,6 +124,7 @@ function Home() {
   };
 
   const [open, setOpen] = React.useState(false);
+
   const [alert, setalert] = React.useState({
     msg: "This is alert msg",
     severity: "warning",
@@ -142,10 +141,13 @@ function Home() {
   const handleChange = (prop) => (event) => {
     setValues({ ...values, [prop]: event.target.value });
   };
+
   const [open_backdrop, setOpen_backdrop] = React.useState(false);
+
   const handleClose_backdrop = () => {
     setOpen_backdrop(false);
   };
+
   const handleToggle_backdrop = (state) => {
     setOpen_backdrop(state);
   };
@@ -166,9 +168,9 @@ function Home() {
         localStorage.clear();
         history.push("/login");
       }
-    }
+    } 
     fetchData();
-  }, [openModal]);
+  }, [openModal, openCloneModal]);
 
   const handlestep = async (proj) => {
     var data = {
@@ -220,6 +222,46 @@ function Home() {
     // console.log(values);
     setOpenModal(true);
   };
+
+  const cloneProject = (proj) => {
+    setSelectedProject(proj);
+    setValues({
+      ...values,
+      project_name: proj.project_name,
+      data_dir: proj.data_dir,
+      language: proj.lang,
+      task: proj.task,
+      library: proj.lib,
+      output_file_name: proj.output_file_name,
+    });
+    setOpenCloneModal(true);
+  };
+
+  const handleSaveClone = async () => {
+    console.log(values);
+    console.log(cloneOptions);
+    
+    var data = {
+      language: values.language,
+      library: values.library,
+      project_name: values.project_name,
+      task: values.task,
+      path: values.data_dir,
+      output_file_name: values.output_file_name,
+      username: username,
+    };
+
+    var res = await HomeService.clone_project(token, data);
+    
+    if (res.status === 200) {
+      setalert({ ...values, msg: res.data.message, severity: "success" });
+      localStorage.setItem("project_details", JSON.stringify(data));
+    } else {
+      setalert({ ...values, msg: res.data.message, severity: "error" });
+    }
+    
+    setOpenCloneModal(false);
+  }
 
   const handleCloseModalSave = async () => {
     // vallidation
@@ -283,6 +325,98 @@ function Home() {
       >
         <CircularProgress color="inherit" />
       </Backdrop>
+
+      {/* Clone existing Projects */}
+      
+      <Dialog
+        onClose={() => setOpenCloneModal(false)}
+        aria-labelledby="project-cloning-dialog"
+        open={openCloneModal}
+      >
+        {cloneStep === 0 &&
+          <div>
+            <DialogTitle id="project-cloning-dialog" onClose={() => setOpenCloneModal(false)}>
+              Clone Project - Step 1
+            </DialogTitle>
+            <DialogContent dividers>
+              <Typography variant="body1" gutterBottom>Enter a few details for the new project to be cloned &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</Typography>
+              <TextField
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                label="Project Name"
+                size="small"
+                autoComplete="Project Name"
+                autoFocus
+                onChange={handleChange("project_name")}
+                />
+              <TextField
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                label="Output File Name"
+                size="small"
+                autoComplete="Output File Name"
+                onChange={handleChange("output_file_name")}
+                />
+              <TextField
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                label="Project Description"
+                size="small"
+                autoComplete="Project Description"
+                onChange={handleChange("project_description")}
+                />
+            </DialogContent>
+            <DialogActions style={{ justifyContent: 'center' }}>
+              <Button variant="contained" onClick={() => setCloneStep(1)} color="primary">
+                Proceed to Step 2
+              </Button>
+            </DialogActions>
+          </div>
+        }
+        {cloneStep === 1 &&
+          <div>
+            <DialogTitle id="project-cloning-dialog" onClose={() => setOpenCloneModal(false)}>
+              Clone Project - Step 2
+            </DialogTitle>
+            <DialogContent dividers>
+              <Typography variant="body1" gutterBottom>Select the required items to be cloned into the new project &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</Typography>
+              <FormControl component="fieldset" className={classes.cloneFormControl}>
+                <FormGroup>
+                  <FormControlLabel
+                    control={<Checkbox checked={modelLayers} color="primary" onChange={handleCloneChange} name="modelLayers" />}
+                    label="Model Layers"
+                    />
+                  <FormControlLabel
+                    control={<Checkbox checked={preprocessingParameters} color="primary" onChange={handleCloneChange} name="preprocessingParameters" />}
+                    label="Preprocessing Parameters"
+                  />
+                  <FormControlLabel
+                    control={<Checkbox checked={hyperParameters} color="primary" onChange={handleCloneChange} name="hyperParameters" />}
+                    label="Hyperparameters"
+                  />
+                </FormGroup>
+              </FormControl>
+            </DialogContent>
+            <DialogActions style={{ justifyContent: 'space-evenly' }} gutterBottom>
+              <Button variant="contained" onClick={() => setCloneStep(0)} color="secondary">
+                Previous Step
+              </Button>
+              <Button variant="contained" onClick={handleSaveClone} color="primary">
+                Create Clone
+              </Button>
+            </DialogActions>
+          </div>
+        }
+      </Dialog>
+
+      {/* Create and Edit Projects */}
+      
       <Dialog
         onClose={handleCloseModal}
         aria-labelledby="customized-dialog-title"
@@ -500,6 +634,7 @@ function Home() {
             parent_call_on_delete={parent_call_on_delete}
             handlestep={handlestep}
             create_new_project={create_new_project}
+            cloneProject={cloneProject}
           />
         </Grid>
 

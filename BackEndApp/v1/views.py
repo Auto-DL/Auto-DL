@@ -296,6 +296,46 @@ def create_project(request):
         status, success, message = 500, False, "Project could not be created"
     return JsonResponse({"success": success, "message": message}, status=status)
 
+@api_view(["POST"])
+@is_authenticated
+def clone_project(request):
+    try:
+        username = request.data.get("username")
+        user = User(username=username, password=None)
+        user = user.find()
+
+        project_id = generate_uid()
+        project_name = request.data.get("project_name")
+        lang = request.data.get("language")
+        lib = request.data.get("library")
+        task = request.data.get("task")
+        data_dir = request.data.get("path")
+        output_file_name = request.data.get("output_file_name")
+
+        store_obj = Store(user)
+        if store_obj.exist(project_id):
+            raise Exception("Project Already Exists!")
+
+        project_dir = store_obj.create(project_id)
+        metadata = {
+            "project_id": project_id,
+            "project_name": project_name,
+            "lib": lib,
+            "lang": lang,
+            "task": task,
+            "data_dir": data_dir,
+            "output_file_name": output_file_name,
+            "username": username,
+        }
+
+        with open(project_dir + os.sep + "meta.json", "w") as f:
+            json.dump(metadata, f)
+
+        status, success, message = 200, True, "Project Created Successfully"
+    except Exception as e:
+        status, success, message = 500, False, "Project could not be created"
+    return JsonResponse({"success": success, "message": message}, status=status)
+
 
 @api_view(["POST"])
 @is_authenticated
