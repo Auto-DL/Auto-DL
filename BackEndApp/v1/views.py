@@ -501,15 +501,15 @@ def download_code(request):
 def get_users(request):
     try:
         username = request.data.get("username")
-        user = User(username=username, password=None)
+        user = User(username="asd", password=None)
         user = user.find()
-
-        users = os.listdir(os.path.expanduser("~") + "\.autodl")
+        users = Store(user)
+        users = os.listdir(users.rootpath)
 
         status, success, message, data = 200, True, "Users fetched", users
 
     except Exception as e:
-        status, success, message, user = (
+        status, success, message, data = (
             500,
             False,
             "Could not fetch users ",
