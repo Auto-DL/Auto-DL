@@ -31,7 +31,7 @@ Example: './install.sh'
 Options:
     -h, --help         Show help docs with detials of command argument options
     ";
-    
+
     exit 0
 }
 
@@ -40,7 +40,7 @@ sudo_check() {
     str="Root user check"
     printf "\\n"
 
-    if [[ "${EUID}" -eq 0 ]] 
+    if [[ "${EUID}" -eq 0 ]]
     then
         # they are root and all is good
         printf "%b %s\\n" "${TICK}" "${str}"
