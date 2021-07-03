@@ -107,7 +107,7 @@ export default function Project_table(props) {
           <Button onClick={handleClose} color="primary">
             No
           </Button>
-          <Button onClick={handleDeleteYes} color="secondary">
+          <Button onClick={() => {handleDeleteYes(currentProject)}} color="secondary">
             Yes
           </Button>
         </DialogActions>
