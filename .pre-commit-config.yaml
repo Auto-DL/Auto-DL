@@ -5,8 +5,24 @@ repos:
       - id: trailing-whitespace
       - id: end-of-file-fixer
       - id: check-yaml
+      - id: check-merge-conflict
+      - id: check-json
       - id: check-added-large-files
+      - id: detect-private-key
+      - id: mixed-line-ending
   - repo: https://github.com/psf/black
     rev: 21.6b0
     hooks:
       - id: black
+        types:
+          - "python"
+  - repo: https://github.com/pre-commit/mirrors-eslint
+    rev: v7.30.0
+    hooks:
+      - id: eslint
+        args:
+          - "--fix"
+          - "-c FrontEndApp/v1-react/.eslintrc.json"
+          - "."
+        types:
+          - "javascript"
