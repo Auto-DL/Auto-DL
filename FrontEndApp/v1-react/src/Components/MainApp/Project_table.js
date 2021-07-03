@@ -101,7 +101,10 @@ export default function Project_table(props) {
   };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> 2622eff11afbc6b41d2c9f03373f0c72c30ae3ff
   const handleClone = (project) => {
     console.log(project.project_id);
     handleActionsClose();
@@ -261,10 +264,13 @@ export default function Project_table(props) {
                                 <EditIcon /> &nbsp; Edit
                               </MenuItem>
 <<<<<<< HEAD
+<<<<<<< HEAD
                               <MenuItem
                                 onClick={() => handleDelete(currentProject)}
                               >
 =======
+=======
+>>>>>>> 2622eff11afbc6b41d2c9f03373f0c72c30ae3ff
                               <MenuItem onClick={() => handleClone(currentProject)}>
                                 <FileCopyIcon /> &nbsp; Clone
                               </MenuItem>
