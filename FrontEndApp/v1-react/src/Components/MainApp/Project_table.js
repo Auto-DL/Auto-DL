@@ -100,18 +100,12 @@ export default function Project_table(props) {
     props.editproject(project);
   };
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> 2622eff11afbc6b41d2c9f03373f0c72c30ae3ff
   const handleClone = (project) => {
     console.log(project.project_id);
     handleActionsClose();
     props.cloneProject(project);
   };
   
->>>>>>> 4080d87 (feat: clone projects setup (client-side))
   const handleDelete = (project) => {
     console.log(project.project_id);
     handleActionsClose();
@@ -263,19 +257,10 @@ export default function Project_table(props) {
                               >
                                 <EditIcon /> &nbsp; Edit
                               </MenuItem>
-<<<<<<< HEAD
-<<<<<<< HEAD
-                              <MenuItem
-                                onClick={() => handleDelete(currentProject)}
-                              >
-=======
-=======
->>>>>>> 2622eff11afbc6b41d2c9f03373f0c72c30ae3ff
                               <MenuItem onClick={() => handleClone(currentProject)}>
                                 <FileCopyIcon /> &nbsp; Clone
                               </MenuItem>
                               <MenuItem onClick={() => handleDelete(currentProject)}>
->>>>>>> 4080d87 (feat: clone projects setup (client-side))
                                 <DeleteIcon /> &nbsp; Delete
                               </MenuItem>
                             </Menu>
