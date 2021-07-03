@@ -228,6 +228,7 @@ function Home() {
     setValues({
       ...values,
       project_name: proj.project_name,
+      project_description: proj.project_description,
       data_dir: proj.data_dir,
       language: proj.lang,
       task: proj.task,
@@ -237,18 +238,20 @@ function Home() {
     setOpenCloneModal(true);
   };
 
-  const handleSaveClone = async () => {
-    console.log(values);
-    console.log(cloneOptions);
-    
+  const handleSaveClone = async () => {    
     var data = {
       language: values.language,
       library: values.library,
       project_name: values.project_name,
+      project_id: SelectedProject.project_id,
+      project_description: values.project_description,
       task: values.task,
       path: values.data_dir,
       output_file_name: values.output_file_name,
       username: username,
+      modelLayers: cloneOptions.modelLayers,
+      preprocessingParameters: cloneOptions.preprocessingParameters,
+      hyperParameters: cloneOptions.hyperParameters,
     };
 
     var res = await HomeService.clone_project(token, data);
@@ -260,7 +263,9 @@ function Home() {
       setalert({ ...values, msg: res.data.message, severity: "error" });
     }
     
+    setCloneStep(0);
     setOpenCloneModal(false);
+    setOpen(true);
   }
 
   const handleCloseModalSave = async () => {
@@ -329,7 +334,7 @@ function Home() {
       {/* Clone existing Projects */}
       
       <Dialog
-        onClose={() => setOpenCloneModal(false)}
+        onClose={() => {setCloneStep(0); setOpenCloneModal(false); hyperParameters = false; preprocessingParameters=false; modelLayers=false}}
         aria-labelledby="project-cloning-dialog"
         open={openCloneModal}
       >
@@ -403,7 +408,7 @@ function Home() {
                 </FormGroup>
               </FormControl>
             </DialogContent>
-            <DialogActions style={{ justifyContent: 'space-evenly' }} gutterBottom>
+            <DialogActions style={{ justifyContent: 'space-evenly' }}>
               <Button variant="contained" onClick={() => setCloneStep(0)} color="secondary">
                 Previous Step
               </Button>
