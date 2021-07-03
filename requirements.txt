@@ -11,6 +11,7 @@ dnspython==2.0.0
 dlmml
 # requirements-dev
 sphinx-markdown-tables==0.0.15
+pre-commit==2.13.0
 pydata-sphinx-theme==0.5.0
 recommonmark==0.7.1
 black
