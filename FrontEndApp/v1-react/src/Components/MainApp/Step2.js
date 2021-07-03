@@ -2930,7 +2930,9 @@ function Step2() {
     };
     const res = await HomeService.download_code(token, data);
     if (res.status === 200) {
-      fileDownload(res.data, "test.py");
+      var filename_of_download = project_details.output_file_name.trim();
+      filename_of_download = filename_of_download.split(".")[0] || "output";
+      fileDownload(res.data, `${filename_of_download}.py`);
     }
   };
   const Train = async () => {
