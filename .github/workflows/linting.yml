@@ -25,11 +25,13 @@ jobs:
         node-version: [14.x]
     steps:
       - uses: actions/checkout@v2
-      - name: Set up Node ${ matrix.node-version }}
+      - name: Set up Node ${{ matrix.node-version }}
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
       - name: Install modules
+        working-directory: FrontEndApp/v1-react/
         run: npm i
       - name: Run eslint
-        run: npx eslint FrontEndApp/v1-react/src/
+        working-directory: FrontEndApp/v1-react/
+        run: npx eslint .
