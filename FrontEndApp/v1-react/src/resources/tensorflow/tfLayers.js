@@ -15,7 +15,7 @@
 //   }
 // }
 
-var temp_json = {
+export const keras_layers = {
 	Conv2D: {
 		parameters: {
 			filters: {
