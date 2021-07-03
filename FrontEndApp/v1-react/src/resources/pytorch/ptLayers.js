@@ -1,4 +1,4 @@
-var temp_json = {
+export const temp_json = {
   Linear: {
     parameters: {
       in_features: {
