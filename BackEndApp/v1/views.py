@@ -213,7 +213,9 @@ def edit_project(request):
             project_name if project_name is not None else metadata["project_name"]
         )
         metadata["project_description"] = (
-            project_description if project_description is not None else metadata["project_description"]
+            project_description
+            if project_description is not None
+            else metadata["project_description"]
         )
         metadata["data_dir"] = (
             data_dir if data_dir is not None else metadata["data_dir"]
