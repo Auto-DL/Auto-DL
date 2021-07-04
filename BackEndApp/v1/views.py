@@ -298,6 +298,7 @@ def create_project(request):
         status, success, message = 500, False, "Project could not be created"
     return JsonResponse({"success": success, "message": message}, status=status)
 
+
 @api_view(["POST"])
 @is_authenticated
 def clone_project(request):
@@ -306,7 +307,7 @@ def clone_project(request):
         modelLayers = request.data.get("modelLayers")
         preprocessingParameters = request.data.get("preprocessingParameters")
         hyperParameters = request.data.get("hyperParameters")
-        
+
         user = User(username=username, password=None)
         user = user.find()
 
@@ -339,7 +340,7 @@ def clone_project(request):
 
         with open(clone_dir + os.sep + "meta.json", "w") as f:
             json.dump(metadata, f)
-        
+
         project_dir = store_obj.path + os.sep + project_id
 
         if modelLayers:
@@ -352,7 +353,7 @@ def clone_project(request):
                 components = json.load(f)
                 with open(clone_dir + os.sep + "components.json", "w") as f:
                     json.dump(components, f)
-        
+
         if preprocessingParameters:
             with open(project_dir + os.sep + "preprocessing.json", "r") as f:
                 preprocessing = json.load(f)
@@ -364,11 +365,12 @@ def clone_project(request):
                 hyperparams = json.load(f)
                 with open(clone_dir + os.sep + "hyperparams.json", "w") as f:
                     json.dump(hyperparams, f)
-            
+
         status, success, message = 200, True, "Project Cloned Successfully"
     except Exception as e:
         status, success, message = 500, False, "Project could not be cloned"
     return JsonResponse({"success": success, "message": message}, status=status)
+
 
 @api_view(["POST"])
 @is_authenticated
