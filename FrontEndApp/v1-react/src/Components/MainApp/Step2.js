@@ -2382,8 +2382,11 @@ function Step2() {
       );
       for (var i = 0; i < components.length; i++) {
         components[i]["id"] = components[i]["id"] + i;
-        if (i == 0) {
-          if (!("input_size" in components[i]) || !("input_shape" in components[i])) {
+        if (i === 0) {
+          if (
+            !("input_size" in components[i]) ||
+            !("input_shape" in components[i])
+          ) {
             components[i]["input_shape"] = {
               Example: [200, 200, 3],
               Default: "NA",
@@ -2428,8 +2431,11 @@ function Step2() {
 
       for (i = 0; i < components.length; i++) {
         components[i]["id"] = components[i]["id"] + i;
-        if (i == 0) {
-          if (!("input_size" in components[i]) || !("input_shape" in components[i])) {
+        if (i === 0) {
+          if (
+            !("input_size" in components[i]) ||
+            !("input_shape" in components[i])
+          ) {
             components[i]["input_shape"] = {
               Example: [200, 200, 3],
               Default: "NA",
