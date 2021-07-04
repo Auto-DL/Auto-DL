@@ -8,7 +8,7 @@ import MuiDialogContent from "@material-ui/core/DialogContent";
 import MuiDialogActions from "@material-ui/core/DialogActions";
 import CloseIcon from "@material-ui/icons/Close";
 import HomeService from "./HomeService";
-import Project_table from "./Project_table";
+import ProjectTable from "./ProjectTable";
 
 const styles = (theme) => ({
   root: {
@@ -83,11 +83,6 @@ function Home() {
 
   const [AllProjects, setAllProjects] = useState([]);
 
-  const Logout = () => {
-    localStorage.clear();
-    history.push("/login");
-  };
-
   const classes = useStyles();
   const [values, setValues] = React.useState({
     project_name: "",
@@ -157,7 +152,7 @@ function Home() {
       const data = {
         username: username,
       };
-      // console.log(token, data);
+
       handleToggle_backdrop(true);
       const res = await HomeService.get_all(token, data);
 
@@ -170,16 +165,9 @@ function Home() {
       }
     } 
     fetchData();
-  }, [openModal, openCloneModal]);
+  }, [openModal, openCloneModal, history, token, username]);
 
   const handlestep = async (proj) => {
-    var data = {
-      project_id: proj.project_id,
-      username: username,
-    };
-    var res = await HomeService.get_project(token, data);
-    // console.log(res);
-    // localStorage.setItem("json_data", JSON.stringify(res.data.b2f_json));
     localStorage.setItem("project_details", JSON.stringify(proj));
     history.push("/step-2");
   };
@@ -203,10 +191,6 @@ function Home() {
     });
   };
   const editproject = (proj) => {
-    // console.log(proj);
-    // console.log(proj.lang);
-    // console.log(proj.lib);
-
     setSelectedProject(proj);
     setValues({
       ...values,
@@ -219,7 +203,7 @@ function Home() {
       output_file_name: proj.output_file_name,
     });
     setIsEdit(true);
-    // console.log(values);
+
     setOpenModal(true);
   };
 
@@ -278,8 +262,6 @@ function Home() {
     ) {
       if (IsEdit) {
         var data = {
-          // 'language':values.language,
-          // 'library':values.library,
           project_name: values.project_name,
           project_description: values.project_description,
           project_id: SelectedProject.project_id,
@@ -287,10 +269,10 @@ function Home() {
           output_file_name: values.output_file_name,
           username: username,
         };
-        // console.log(data);
+
         var res = await HomeService.edit_project(token, data);
       } else {
-        var data = {
+        data = {
           language: values.language,
           library: values.library,
           project_name: values.project_name,
@@ -300,13 +282,11 @@ function Home() {
           output_file_name: values.output_file_name,
           username: username,
         };
-        var res = await HomeService.create_project(token, data);
+        res = await HomeService.create_project(token, data);
       }
       if (res.status === 200) {
         setalert({ ...values, msg: res.data.message, severity: "success" });
         localStorage.setItem("project_details", JSON.stringify(data));
-        // history.push("/step-2");
-        // history.push("/home");
       } else {
         setalert({ ...values, msg: res.data.message, severity: "error" });
       }
@@ -524,7 +504,6 @@ function Home() {
                 label="Library"
               >
                 <MenuItem value={"Keras"}>Keras</MenuItem>
-                {/* <MenuItem value={"Pytorch"}>Pytorch</MenuItem> */}
               </Select>
             </FormControl>
           ) : (
@@ -633,7 +612,7 @@ function Home() {
         <Grid item lg={1} md={1} sm={1} xs={1}></Grid>
 
         <Grid item lg={10} md={10} sm={10} xs={10}>
-          <Project_table
+          <ProjectTable
             projects={AllProjects}
             editproject={editproject}
             parent_call_on_delete={parent_call_on_delete}
