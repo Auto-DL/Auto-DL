@@ -3970,18 +3970,19 @@ function Step2() {
 
         {/*Dialog if necessary details are not    */}
         {openErrorDialog && 
-          <Dialog open={openErrorDialog} >
-            <DialogTitle id="error-dialog-title">
-                HYPERPARAMETERS ERROR !!<hr/>
-            </DialogTitle>
-            <DialogContent>
-              Please enter values in all the necessary fields.
+          <Dialog open={openErrorDialog} onClose={() => setOpenErrorDialog(false)} >
+            <DialogTitle id="error-dialog-title">Required Parameters Missing!! </DialogTitle>
+            <DialogContent dividers>
+              <div>
+                <h3>Please enter required values in all layers in Model</h3>
+              </div>
             </DialogContent>
-            <DialogActions>
-              <Button onClick={() => setOpenErrorDialog(false)} variant="contained" color="secondary">
+            <DialogActions style={{ justifyContent: "center" }}>
+              <Button variant="contained" onClick={() => setOpenErrorDialog(false)} color="primary">
                 OK
               </Button>
             </DialogActions>
+
           </Dialog>
         }
 
