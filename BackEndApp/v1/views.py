@@ -213,7 +213,9 @@ def edit_project(request):
             project_name if project_name is not None else metadata["project_name"]
         )
         metadata["project_description"] = (
-            project_description if project_description is not None else metadata["project_description"]
+            project_description
+            if project_description is not None
+            else metadata["project_description"]
         )
         metadata["data_dir"] = (
             data_dir if data_dir is not None else metadata["data_dir"]
@@ -502,3 +504,30 @@ def download_code(request):
     except Exception as e:
         response = HttpResponse("<h1>File not found</h1>")
     return response
+
+
+@api_view(["POST"])
+@is_authenticated
+def get_users(request):
+    try:
+        username = request.data.get("username")
+        user = User(username=username, password=None)
+        user = user.find()
+        store = Store(user)
+        users = os.listdir(store.rootpath)
+        status, success, message, users = 200, True, "Users fetched", users
+    except Exception as e:
+        status, success, message, users = (
+            500,
+            False,
+            "Could not fetch users ",
+            [],
+        )
+    return JsonResponse(
+        {
+            "success": success,
+            "message": message,
+            "users": users,
+        },
+        status=status,
+    )
