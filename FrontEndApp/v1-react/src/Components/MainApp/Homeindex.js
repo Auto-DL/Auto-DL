@@ -314,7 +314,7 @@ function Home() {
       {/* Clone existing Projects */}
       
       <Dialog
-        onClose={() => {setCloneStep(0); setOpenCloneModal(false); hyperParameters = false; preprocessingParameters=false; modelLayers=false}}
+        onClose={() => {setCloneStep(0); setOpenCloneModal(false); setCloneOptions({hyperParameters: false, preprocessingParameters: false, modelLayers: false})}}
         aria-labelledby="project-cloning-dialog"
         open={openCloneModal}
       >
