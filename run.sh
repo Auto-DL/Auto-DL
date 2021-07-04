@@ -72,13 +72,6 @@ pyvenv_create() {
     echo -e "${TICK} Virtualenv ${VENV_PATH} loaded"
 }
 
-submodule_init() {
-    echo -e "${INFO} Initializing DLMML submodule https://github.com/Auto-DL/DLMML"
-    git submodule init
-    git submodule update
-}
-
-
 frontend_setup() {
     echo -e "${INFO} Setting up frontend"
     cd $FRONTEND_PATH
@@ -115,14 +108,6 @@ run() {
 }
 
 main() {
-    echo ""
-    submodule_init
-    if [ $? -eq 0 ]
-    then
-        echo -e "${TICK} Submodule initialization complete"
-    else
-        echo -e "${CROSS} Submodule initialization failed"
-    fi
     echo ""
 
     frontend_setup
