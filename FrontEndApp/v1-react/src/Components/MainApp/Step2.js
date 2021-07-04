@@ -28,6 +28,7 @@ import MuiDialogActions from "@material-ui/core/DialogActions";
 import CloseIcon from "@material-ui/icons/Close";
 import { CollectionsBookmarkOutlined, OpacitySharp } from "@material-ui/icons";
 import { Tooltip } from "@material-ui/core";
+import { validate_layers } from "./validation.js";
 
 const styles = (theme) => ({
   root: {
@@ -2442,8 +2443,8 @@ function Step2() {
       for (var i = 0; i < components.length; i++) {
         components[i]["id"] = components[i]["id"] + i;
         if (i == 0) {
-          if (!("input_size" in components[i])) {
-            components[i]["input_size"] = {
+          if (!("input_size" in components[i]) || !("input_shape" in components[i])) {
+            components[i]["input_shape"] = {
               Example: [200, 200, 3],
               Default: "NA",
               Required: 1,
@@ -2454,7 +2455,7 @@ function Step2() {
           }
         } else {
           try {
-            delete components[i]["input_size"];
+            delete components[i]["input_shape"];
           } catch (err) {}
         }
       }
@@ -2499,8 +2500,8 @@ function Step2() {
       for (var i = 0; i < components.length; i++) {
         components[i]["id"] = components[i]["id"] + i;
         if (i == 0) {
-          if (!("input_size" in components[i])) {
-            components[i]["input_size"] = {
+          if (!("input_size" in components[i]) || !("input_shape" in components[i])) {
+            components[i]["input_shape"] = {
               Example: [200, 200, 3],
               Default: "NA",
               Required: 1,
@@ -2511,13 +2512,15 @@ function Step2() {
           }
         } else {
           try {
-            delete components[i]["input_size"];
+            delete components[i]["input_shape"];
           } catch (err) {}
         }
       }
       // console.log(components);
       setcomponents(components);
     }
+    const validate_res = validate_layers(source, destination, components);
+    console.log(validate_res);
   };
   const showdetails = (element) => {
     // console.log(element);
@@ -2935,7 +2938,9 @@ function Step2() {
     };
     const res = await HomeService.download_code(token, data);
     if (res.status === 200) {
-      fileDownload(res.data, "test.py");
+      var filename_of_download = project_details.output_file_name.trim();
+      filename_of_download = filename_of_download.split(".")[0] || "output";
+      fileDownload(res.data, `${filename_of_download}.py`);
     }
   };
   const Train = async () => {

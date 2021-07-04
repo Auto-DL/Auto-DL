@@ -2,4 +2,4 @@ from django.apps import AppConfig
 
 
 class Authv1Config(AppConfig):
-    name = 'authv1'
+    name = "authv1"

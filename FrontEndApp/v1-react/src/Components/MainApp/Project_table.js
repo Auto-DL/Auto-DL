@@ -1,22 +1,27 @@
 import React, { useState, useEffect } from "react";
 import { withStyles, makeStyles } from "@material-ui/core/styles";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableContainer from "@material-ui/core/TableContainer";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import Paper from "@material-ui/core/Paper";
+import {
+  Typography,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Dialog,
+  DialogActions,
+  DialogTitle,
+  Button,
+  IconButton,
+  Menu,
+  MenuItem,
+} from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import Button from "@material-ui/core/Button";
-import HomeService from "./HomeService";
-import Typography from "@material-ui/core/Typography";
-import ArrowForwardIcon from "@material-ui/icons/ArrowForward";
+import MoreVertIcon from "@material-ui/icons/MoreVert";
 import AddCircleIcon from "@material-ui/icons/AddCircle";
+import HomeService from "./HomeService";
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
@@ -26,16 +31,7 @@ const StyledTableCell = withStyles((theme) => ({
   body: {
     fontSize: 14,
   },
-  title: {},
 }))(TableCell);
-
-const StyledTableRow = withStyles((theme) => ({
-  root: {
-    "&:nth-of-type(odd)": {
-      backgroundColor: theme.palette.action.hover,
-    },
-  },
-}))(TableRow);
 
 const useStyles = makeStyles({
   table: {
@@ -61,8 +57,9 @@ const useStyles = makeStyles({
 
 export default function Project_table(props) {
   const classes = useStyles();
-  const [open, setOpen] = React.useState(false);
-  const [current_project, setcurrent_project] = React.useState("");
+  const [open, setOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [currentProject, setCurrentProject] = useState(null);
   var username = JSON.parse(localStorage.getItem("username"));
   var token = JSON.parse(localStorage.getItem("token"));
 
@@ -78,8 +75,9 @@ export default function Project_table(props) {
     setOpen(false);
     const data = {
       username: username,
-      project_id: current_project.project_id,
-      project_name: current_project.project_name,
+      project_id: currentProject.project_id,
+      project_name: currentProject.project_name,
+      project_description: currentProject.project_description,
     };
     const res = await HomeService.delete_project(token, data);
     console.log(res);
@@ -87,14 +85,24 @@ export default function Project_table(props) {
     // window.location.reload();
   };
 
+  const handleActionsOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleActionsClose = () => {
+    setAnchorEl(null);
+  };
+
   const handleEdit = (project) => {
     console.log(project.project_id);
+    handleActionsClose();
     props.editproject(project);
   };
 
   const handleDelete = (project) => {
     console.log(project.project_id);
-    setcurrent_project(project);
+    handleActionsClose();
+    setCurrentProject(project);
     setOpen(true);
   };
 
@@ -147,7 +155,7 @@ export default function Project_table(props) {
             <Table className={classes.table} aria-label="customized table">
               <TableHead>
                 <TableRow>
-                  <StyledTableCell>Name</StyledTableCell>
+                  <StyledTableCell align="center">Name</StyledTableCell>
                   <StyledTableCell align="center">Language</StyledTableCell>
                   <StyledTableCell align="center">Library</StyledTableCell>
                   <StyledTableCell align="center">
@@ -157,9 +165,10 @@ export default function Project_table(props) {
                   <StyledTableCell align="center">
                     Output File Name
                   </StyledTableCell>
-                  <StyledTableCell align="center"></StyledTableCell>
-                  <StyledTableCell align="center"></StyledTableCell>
-                  <StyledTableCell align="center"></StyledTableCell>
+                  <StyledTableCell align="center">
+                    Project Description
+                  </StyledTableCell>
+                  <StyledTableCell align="center">Actions</StyledTableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -167,47 +176,88 @@ export default function Project_table(props) {
                   <>
                     {Object.keys(project).map((p, index) => (
                       <>
-                        <StyledTableRow key={project[p].project_id}>
-                          <StyledTableCell component="th" scope="row">
+                        <TableRow
+                          hover
+                          className={classes.hover}
+                          key={project[p].project_id}
+                        >
+                          <StyledTableCell
+                            align="center"
+                            component="th"
+                            scope="row"
+                            onClick={() => props.handlestep(project[p])}
+                          >
                             {project[p].project_name}
                           </StyledTableCell>
-                          <StyledTableCell align="center">
+                          <StyledTableCell
+                            align="center"
+                            onClick={() => props.handlestep(project[p])}
+                          >
                             {project[p].lang}
                           </StyledTableCell>
-                          <StyledTableCell align="center">
+                          <StyledTableCell
+                            align="center"
+                            onClick={() => props.handlestep(project[p])}
+                          >
                             {project[p].lib}
                           </StyledTableCell>
-                          <StyledTableCell align="center">
+                          <StyledTableCell
+                            align="center"
+                            onClick={() => props.handlestep(project[p])}
+                          >
                             {project[p].data_dir}
                           </StyledTableCell>
-                          <StyledTableCell align="center">
+                          <StyledTableCell
+                            align="center"
+                            onClick={() => props.handlestep(project[p])}
+                          >
                             {project[p].task}
                           </StyledTableCell>
-                          <StyledTableCell align="center">
+                          <StyledTableCell
+                            align="center"
+                            onClick={() => props.handlestep(project[p])}
+                          >
                             {project[p].output_file_name}
                           </StyledTableCell>
                           <StyledTableCell
                             align="center"
-                            className={classes.hover}
-                            onClick={() => handleEdit(project[p])}
-                          >
-                            <EditIcon />
-                          </StyledTableCell>
-                          <StyledTableCell
-                            align="center"
-                            className={classes.hover}
-                            onClick={() => handleDelete(project[p])}
-                          >
-                            <DeleteIcon />
-                          </StyledTableCell>
-                          <StyledTableCell
-                            align="center"
-                            className={classes.hover}
                             onClick={() => props.handlestep(project[p])}
                           >
-                            <ArrowForwardIcon />
+                            {project[p].project_description}
                           </StyledTableCell>
-                        </StyledTableRow>
+                          <StyledTableCell
+                            align="center"
+                            onClick={() => setCurrentProject(project[p])}
+                          >
+                            <IconButton
+                              aria-controls="customized-menu"
+                              aria-label="options"
+                              aria-haspopup="true"
+                              onClick={handleActionsOpen}
+                            >
+                              <MoreVertIcon />
+                            </IconButton>
+                            <Menu
+                              id="customized-menu"
+                              anchorEl={anchorEl}
+                              elevation={1}
+                              keepMounted
+                              open={Boolean(anchorEl)}
+                              onClose={handleActionsClose}
+                            >
+                              <MenuItem
+                                onClick={() => handleEdit(currentProject)}
+                              >
+                                <EditIcon /> &nbsp; Edit
+                              </MenuItem>
+                              <MenuItem
+                                onClick={() => handleDelete(currentProject)}
+                              >
+                                <DeleteIcon /> &nbsp; Delete
+                              </MenuItem>
+                            </Menu>
+                          </StyledTableCell>
+                        </TableRow>
                       </>
                     ))}
                   </>

@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-def connect(db_name='auth_db'):
+def connect(db_name="auth_db"):
     """
     Connect to mongodb instance (url) in .env file.
 
