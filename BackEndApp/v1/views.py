@@ -543,22 +543,63 @@ def get_users(request):
 @is_authenticated
 def update_sharing_details(request):
     try:
+        # print("inside")
+        print(request.data)
         share_with = request.data.get("share_with")
-        username = request.data.get("username")
-        user = User(username=username, password=None)
+        shared_by = request.data.get("shared_by")
+        print("second", share_with, shared_by)
+        user = User(username=shared_by, password=None)
         user = user.find()
-        project_id = user.project_id
+        # print("user is ", user)
+        project_id = request.data.get("project_id")
+        # print("project is", project_id)
         store_obj = Store(user)
         project_dir = store_obj.path + os.sep + project_id
+        print(store_obj.path, "       ", store_obj.rootpath)
+        print("dir is", project_dir)
         with open(project_dir + os.sep + "meta.json", "r") as f:
             metadata = json.load(f)
-        metadata["shared_by"] = username
-        metadata["shared_with"] = metadata["share_with"].append(share_with)
-        print(metadata)
-        with open(project_dir + os.sep + "meta.json", "w") as f:
-            json.dump(metadata, f)
-        status, success, message = 200, True, "Shared Successfully step1"
+        # print(metadata)
+        # print(type(metadata))
+
+        # print("share with is", type(metadata["shared_with"]))
+        # metadata["shared_by"] = shared_by
+        # metadata["shared_with"].append(share_with)
+        # print(metadata["shared_with"])
+        # print("data is", metadata)
+
+        # creating symlink
+        # print(
+        #     "path is",
+        # )
+        if not (os.path.exists(os.path.join(store_obj.rootpath, share_with, "shared"))):
+            os.makedirs(os.path.join(store_obj.rootpath, share_with, "shared"))
+
+        print("hereeeeeeeeeee")
+        try:
+            src = os.path.join(project_dir)
+            print("src is", src)
+            dst = os.path.join(
+                store_obj.rootpath, share_with, "shared", str(project_id) + "_shared"
+            )
+            print("dest is", dst)
+            try:
+                os.symlink(src, dst)
+                metadata["shared_by"] = shared_by
+                metadata["shared_with"].append(share_with)
+                with open(project_dir + os.sep + "meta.json", "w") as f:
+                    json.dump(metadata, f)
+                status, success, message = 200, True, "Shared Successfully"
+            except:
+                status, success, message = (
+                    500,
+                    False,
+                    "Project is already being shared :)",
+                )
+
+        except:
+            status, success, message = 500, False, "Something went wrong"
 
     except:
-        status, success, message = 500, False, "Failed unsuccessfully step1"
+        status, success, message = 500, False, "Failed"
     return JsonResponse({"success": success, "message": message}, status=status)

@@ -33,4 +33,5 @@ urlpatterns = [
     path("code/download/", views.download_code, name="dowload-code"),
     # Get users
     path("users/get", views.get_users, name="get-users"),
+    path("project/share/", views.update_sharing_details, name="share-project"),
 ]

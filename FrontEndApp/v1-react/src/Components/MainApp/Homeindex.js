@@ -241,6 +241,20 @@ function Home() {
     setOpen(true);
   };
 
+  const shareProject = async (shared_by, project_id, share_with) => {
+    const data = { shared_by, project_id, share_with };
+    const res = await HomeService.share_project(token, data);
+    console.log(res);
+    if (res.status === 200) {
+      console.log("doneeeeeeeeeeeees");
+      setalert({ ...values, msg: res.data.message, severity: "success" });
+      // localStorage.setItem("project_details", JSON.stringify(data));
+    } else {
+      console.log("not doneeeeeeeeeeeees");
+      setalert({ ...values, msg: res.data.message, severity: "error" });
+    }
+    setOpen(true);
+  };
   return (
     <>
       <Backdrop
@@ -466,6 +480,7 @@ function Home() {
             parent_call_on_delete={parent_call_on_delete}
             handlestep={handlestep}
             create_new_project={create_new_project}
+            shareProject={shareProject}
           />
         </Grid>
 
