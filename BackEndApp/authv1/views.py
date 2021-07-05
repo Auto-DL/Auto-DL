@@ -108,17 +108,9 @@ def forgot_password(request):
             message = "User does not exist"
 
         email = user["email"]
-        # subject = "Auto-DL Request for Password Reset "
-        # domain=get_current_site(request).domain
-        # link="http://"+ domain+"/auth/password_reset/"
-        # msg = (
-        #     "You ("
-        #     + username
-        #     + ") requested a password reset. Click here to reset your password "+link+username+"/"
-        # )
-        # send_mail(subject, msg, EMAIL_HOST_USER, [email])
+
         email_template = Email_Templates(user, request)
-        print(email_template)
+
         message = email_template.forgot_password(username, email)
         status = 200
 
@@ -132,7 +124,6 @@ def forgot_password(request):
 @api_view(["POST"])
 def password_reset(request, username):
     try:
-        # username = request.data.get("username")
         user = User(username=username, password=None)
         this_user = user.find()
 

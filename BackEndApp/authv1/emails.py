@@ -9,7 +9,6 @@ class Email_Templates:
         self.request = request
 
     def forgot_password(self, username, email):
-        print("called")
         subject = "Auto-DL Request for Password Reset "
         domain = get_current_site(self.request).domain
         link = "http://" + domain + "/auth/password_reset/"
