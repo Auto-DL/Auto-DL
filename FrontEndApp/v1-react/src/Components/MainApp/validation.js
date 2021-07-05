@@ -1,5 +1,5 @@
 // we are assuming that batch_size is not included in the shape
-import { keras_layers } from "../../resources/tensorflow/tfLayers"
+import { keras_layers } from "../../resources/keras"
 
 /**
  * Validate order of layers such that dimensions of consecutive layers are not conflicting
