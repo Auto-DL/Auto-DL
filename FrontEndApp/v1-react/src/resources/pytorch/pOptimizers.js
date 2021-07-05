@@ -1,4 +1,4 @@
-export const pytorxh_optimizers = {
+export const pytorch_optimizers = {
   SGD: {
     parameters: {
       lr: {
