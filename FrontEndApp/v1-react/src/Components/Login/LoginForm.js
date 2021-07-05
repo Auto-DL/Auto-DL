@@ -21,17 +21,7 @@ import Tab from "@material-ui/core/Tab";
 import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
 
-import {
-  BrowserRouter as Router,
-  Switch,
-  useLocation,
-  IndexRoute,
-  Route,
-  Link,
-  Redirect,
-  useParams,
-  useHistory,
-} from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -46,7 +36,7 @@ function TabPanel(props) {
     >
       {value === index && (
         <Box p={5}>
-          <Typography>{children}</Typography>
+          <Typography component={"span"}>{children}</Typography>
         </Box>
       )}
     </div>
@@ -238,7 +228,6 @@ function LoginForm() {
                       Password *
                     </InputLabel>
                     <OutlinedInput
-                      id="outlined-adornment-password"
                       type={values.showPassword ? "text" : "password"}
                       value={values.password}
                       onChange={handleChange("password")}
@@ -327,7 +316,6 @@ function LoginForm() {
                       Password *
                     </InputLabel>
                     <OutlinedInput
-                      id="outlined-adornment-password"
                       type={values.showPassword ? "text" : "password"}
                       value={values.password}
                       onChange={handleChange("password")}
@@ -355,7 +343,6 @@ function LoginForm() {
                       Confirm Password *
                     </InputLabel>
                     <OutlinedInput
-                      id="outlined-adornment-password"
                       type={values.showPassword ? "text" : "password"}
                       value={values.confirmpassword}
                       onChange={handleChange("confirmpassword")}
@@ -398,7 +385,6 @@ function LoginForm() {
             </TabPanel>
           </div>
         </Grid>
-
         <Grid item lg={4} md={4} sm={1} xs={1}></Grid>
       </Grid>
 

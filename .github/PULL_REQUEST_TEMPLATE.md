@@ -1,6 +1,6 @@
 ## Pull Request
 
-fixes #  
+fixes #
 <!-- Please add the issue number you're trying to fix with this PR, if none then please create an issue first, also, please prefix your PR title with "[Fixes #<issue-number>] " (without quotes) -->
 
 ### Description
@@ -14,4 +14,3 @@ fixes #
 - [ ] Code is linted/formatted locally prior to submission (using `black`)
 
 <!-- In case you have signed-off you're commits, please cut and paste the signed-off by line here at the end -->
-
