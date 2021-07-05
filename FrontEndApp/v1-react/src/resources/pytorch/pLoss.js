@@ -1,4 +1,4 @@
-export const temp_loss = {
+export const pytorch_loss = {
   L1Loss: {
     parameters: {
       reduction: {
