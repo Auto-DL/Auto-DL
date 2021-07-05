@@ -1,7 +1,7 @@
 export const keras_hyperparams = {
 	params: {
-		name: "params",
-		input_type: "all",
+		config: { name: "params", input_type: "all" },
+
 		optimizer: {
 			Example: "sgd",
 			Default: "rmsprop",
