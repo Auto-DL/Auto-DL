@@ -1,10 +1,10 @@
 from django.http import JsonResponse
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+
 import json
 import bcrypt
-from BackEndApp.settings import EMAIL_HOST_USER
-from django.core.mail import send_mail
+from .emails import Email_Templates
 from .models import User, Session
 from .store import Store
 
@@ -64,7 +64,7 @@ def register(request):
         status = 200
 
     except Exception as e:
-        message = "Some error occurred!! Please try again."
+        message = "Some error occurred! Please try again."
         status = 401
         token = None
     return JsonResponse(
@@ -90,14 +90,14 @@ def logout(request):
         status = 200
 
     except Exception as e:
-        message = "Some error occurred!! Please try again."
+        message = "Some error occurred! Please try again."
         status = 500
 
     return JsonResponse({"message": message}, status=status)
 
 
 @api_view(["POST"])
-def ForgotPassword(request):
+def forgot_password(request):
     try:
         username = request.data.get("username")
         user = User(username=username, password=None)
@@ -108,28 +108,31 @@ def ForgotPassword(request):
             message = "User does not exist"
 
         email = user["email"]
-        subject = "Auto-DL Request for Reset password"
-        msg = (
-            "You ("
-            + username
-            + ") requested a password reset. Click here to reset your password http://127.0.0.1:8000/auth/password-reset/"
-        )
-        send_mail(subject, msg, EMAIL_HOST_USER, [email])
-
-        message = "Email Sent!!"
+        # subject = "Auto-DL Request for Password Reset "
+        # domain=get_current_site(request).domain
+        # link="http://"+ domain+"/auth/password_reset/"
+        # msg = (
+        #     "You ("
+        #     + username
+        #     + ") requested a password reset. Click here to reset your password "+link+username+"/"
+        # )
+        # send_mail(subject, msg, EMAIL_HOST_USER, [email])
+        email_template = Email_Templates(user, request)
+        print(email_template)
+        message = email_template.forgot_password(username, email)
         status = 200
 
     except Exception as e:
-        message = "Some error occurred!! Please try again."
+        message = "Some error occurred! Please try again."
         status = 500
 
     return JsonResponse({"message": message}, status=status)
 
 
 @api_view(["POST"])
-def PasswordReset(request):
+def password_reset(request, username):
     try:
-        username = request.data.get("username")
+        # username = request.data.get("username")
         user = User(username=username, password=None)
         this_user = user.find()
 
@@ -139,20 +142,20 @@ def PasswordReset(request):
 
         new_password = request.data.get("password")
         hashed_password = bcrypt.hashpw(new_password.encode("utf-8"), bcrypt.gensalt())
-        old_password = this_user["password"]
+        old_password = this_user.get("password", "")
 
         if str(old_password) == str(hashed_password):
-            message = "Your new password is invalid, try a new one!!! "
+            message = "Please enter a new password!"
             status = 401
         else:
             status, error = user.update("password", hashed_password)
             this_user = user.find()
 
-            message = "Password Reset successful!!"
+            message = "Password Reset successful!"
             status = 200
 
     except Exception as e:
-        message = "Some error occurred!! Please try again."
+        message = "Some error occurred! Please try again."
         status = 500
 
     return JsonResponse({"message": message}, status=status)

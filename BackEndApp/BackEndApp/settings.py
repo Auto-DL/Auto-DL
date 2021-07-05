@@ -122,5 +122,7 @@ EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 # activate less secure apps of Gmail Account
-EMAIL_HOST_USER = "you gmail id"
-EMAIL_HOST_PASSWORD = "your gmail password"
+EMAIL_HOST_USER = "lorgm2021@gmail.com"
+EMAIL_HOST_PASSWORD = "lor_rory_gilmore_21"
+# EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
+# EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
