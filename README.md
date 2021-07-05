@@ -44,8 +44,8 @@ Generator has DLMML as a submodule.
     ```
 
 4.  ```sh
-    # If you think your machine can handle a simulatenous installation of node modules, open another terminal    
-    
+    # If you think your machine can handle a simulatenous installation of node modules, open another terminal
+
     cd FrontEndApp
     npm install
 
@@ -66,7 +66,7 @@ Generator has DLMML as a submodule.
     ```
 
 6.  ```sh
-    # run the backend 
+    # run the backend
     # only after all requriements from requirements.txt are installed
     cd BackEndApp
     python manage.py runserver
@@ -104,4 +104,4 @@ Please take a look at our [contributing guidelines](CONTRIBUTING.md) if you're i
 
 - Visualization and data preprocessing steps.
 
-- Model Explainability. 
+- Model Explainability.

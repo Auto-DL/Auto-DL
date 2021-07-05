@@ -69,8 +69,9 @@ html_theme = "pydata_sphinx_theme"
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ["_static"]
 
-master_doc = 'index'
-github_doc_root = 'https://github.com/rtfd/recommonmark/tree/master/doc/'
+master_doc = "index"
+github_doc_root = "https://github.com/rtfd/recommonmark/tree/master/doc/"
+
 
 def setup(app):
     app.add_config_value(
