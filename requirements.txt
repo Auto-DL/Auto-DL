@@ -2,7 +2,7 @@ Django>=3.0.7
 django-cors-headers==3.5.0
 djangorestframework==3.11.2
 djangorestframework-jwt==1.11.0
-tensorflow==2.4.2
+tensorflow==2.5.0
 Keras==2.4.3
 python-dotenv==0.15.0
 pymongo==3.11.2
@@ -11,6 +11,7 @@ dnspython==2.0.0
 dlmml
 # requirements-dev
 sphinx-markdown-tables==0.0.15
+pre-commit==2.13.0
 pydata-sphinx-theme==0.5.0
 recommonmark==0.7.1
 black
