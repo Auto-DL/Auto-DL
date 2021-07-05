@@ -213,7 +213,9 @@ def edit_project(request):
             project_name if project_name is not None else metadata["project_name"]
         )
         metadata["project_description"] = (
-            project_description if project_description is not None else metadata["project_description"]
+            project_description
+            if project_description is not None
+            else metadata["project_description"]
         )
         metadata["data_dir"] = (
             data_dir if data_dir is not None else metadata["data_dir"]
@@ -223,7 +225,7 @@ def edit_project(request):
             if output_file_name is not None
             else metadata["output_file_name"]
         )
-
+        print("metadata is", metadata)
         with open(project_dir + os.sep + "meta.json", "w") as f:
             json.dump(metadata, f)
         status, success, message = 200, True, "Project Updated Successfully"
@@ -286,6 +288,8 @@ def create_project(request):
             "data_dir": data_dir,
             "output_file_name": output_file_name,
             "username": username,
+            "shared_by": "",
+            "shared_with": [],
         }
 
         with open(project_dir + os.sep + "meta.json", "w") as f:
@@ -510,8 +514,12 @@ def get_users(request):
     try:
         username = request.data.get("username")
         user = User(username=username, password=None)
+        # print("type1", type(user))
         user = user.find()
+        # print("type2", (user))
+        # print("tyoe of store", (Store))
         store = Store(user)
+        print("root path is", store.rootpath)
         users = os.listdir(store.rootpath)
         status, success, message, users = 200, True, "Users fetched", users
     except Exception as e:
@@ -529,3 +537,28 @@ def get_users(request):
         },
         status=status,
     )
+
+
+@api_view(["POST"])
+@is_authenticated
+def update_sharing_details(request):
+    try:
+        share_with = request.data.get("share_with")
+        username = request.data.get("username")
+        user = User(username=username, password=None)
+        user = user.find()
+        project_id = user.project_id
+        store_obj = Store(user)
+        project_dir = store_obj.path + os.sep + project_id
+        with open(project_dir + os.sep + "meta.json", "r") as f:
+            metadata = json.load(f)
+        metadata["shared_by"] = username
+        metadata["shared_with"] = metadata["share_with"].append(share_with)
+        print(metadata)
+        with open(project_dir + os.sep + "meta.json", "w") as f:
+            json.dump(metadata, f)
+        status, success, message = 200, True, "Shared Successfully step1"
+
+    except:
+        status, success, message = 500, False, "Failed unsuccessfully step1"
+    return JsonResponse({"success": success, "message": message}, status=status)
