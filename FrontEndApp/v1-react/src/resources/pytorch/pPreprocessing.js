@@ -1,4 +1,4 @@
-export const temp_pre = {
+export const pytorch_preprocessing = {
   // is param in image processing?
   image: {
     params: {

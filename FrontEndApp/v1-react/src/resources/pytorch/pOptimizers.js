@@ -1,4 +1,4 @@
-export const temp_optimizer = {
+export const pytorch_optimizers = {
   SGD: {
     parameters: {
       lr: {

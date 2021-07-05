@@ -1,4 +1,4 @@
-export const temp_json = {
+export const pytorch_layers = {
   Linear: {
     parameters: {
       in_features: {
