@@ -67,7 +67,7 @@ export default function Project_table(props) {
   const [open, setOpen] = useState(false);
   const [openShare, setOpenShare] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
-  const [currentProject, setCurrentProject] = useState(null);
+  const [currentProject, setCurrentProject] = useState({});
   const [currentProjectTemp, setCurrentProjectTemp] = useState(null);
   const [usernameToShareWith, setUsernameToShareWith] = useState("");
   var username = JSON.parse(localStorage.getItem("username"));
@@ -118,9 +118,8 @@ export default function Project_table(props) {
   };
 
   //share handlers
-  const handleShare = async (project) => {
+  const handleShare = async () => {
     const res = await HomeService.get_all_users(token);
-
     setAllUsers(res.data.users.filter((user) => user !== username));
 
     handleActionsClose();
@@ -130,16 +129,13 @@ export default function Project_table(props) {
   };
 
   const handleShareUsernameChange = (event, value) => {
-    // console.log("in username proj name is", currentProject.project_name);
     setUsernameToShareWith(value);
-    // console.log("username is", usernameToShareWith);
   };
 
   const handleShareClick = () => {
     console.log("usernameshare is", usernameToShareWith);
     console.log("proj is", currentProject);
 
-    // console.log("current pro is", currentProject.project_id);
     if (allUsers.includes(usernameToShareWith)) {
       props.shareProject(
         username,
@@ -150,7 +146,9 @@ export default function Project_table(props) {
     }
     // setUsernameToShareWith("");
   };
-  // console.log(props.projects);
+  if (props.projects[0]) {
+    console.log(Object.keys(props.projects[0]));
+  }
   // console.log("all projects are", Object.keys(props.projects[0]));
   return (
     <>
@@ -200,8 +198,7 @@ export default function Project_table(props) {
         </DialogContent>
       </Dialog>
 
-      {props.projects.length === 0 ||
-      (props.projects.length === 1 && props.projects[0] === "shared") ? (
+      {props.projects.length === 0 ? (
         <>
           <div>
             <div className={classes.title}>No projects to show</div>
@@ -309,11 +306,11 @@ export default function Project_table(props) {
                           <StyledTableCell
                             align="center"
                             onClick={() => {
-                              console.log("clicked");
-                              console.log(
-                                "culprit is",
-                                project[p].project_name
-                              );
+                              // console.log("clicked");
+                              // console.log(
+                              //   "culprit is",
+                              //   project[p].project_name
+                              // );
 
                               setCurrentProjectTemp(project[p]);
                             }}
@@ -345,7 +342,7 @@ export default function Project_table(props) {
                               </MenuItem>
                               <MenuItem
                                 onClick={() => {
-                                  handleShare(project[p]);
+                                  handleShare();
                                 }}
                               >
                                 <ShareIcon /> &nbsp; Share
