@@ -1,4 +1,4 @@
-import React, { useState, Fragment } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import { withStyles, makeStyles } from "@material-ui/core/styles";
 import {
   Typography,
@@ -21,6 +21,7 @@ import {
   Box,
 } from "@material-ui/core";
 
+import Autocomplete from "@material-ui/lab/Autocomplete";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
 import ShareIcon from "@material-ui/icons/Share";
@@ -61,6 +62,7 @@ const useStyles = makeStyles({
 });
 
 export default function Project_table(props) {
+  const [allUsers, setAllUsers] = useState([]);
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const [openShare, setOpenShare] = useState(false);
@@ -115,18 +117,26 @@ export default function Project_table(props) {
   };
 
   //share handlers
-  const handleShare = (project) => {
-    console.log(project);
+  const handleShare = async (project) => {
+    const res = await HomeService.get_all_users(token);
+    // console.log(res);
+
+    console.log("all users unfiltered are", allUsers);
+    setAllUsers(res.data.users.filter((user) => user !== username));
+    // setAllUsers(allUsers || []);
+    console.log("all users are", allUsers);
+    // console.log(project);
     handleActionsClose();
     setOpenShare(true);
   };
 
-  const handleShareUsernameChange = (event) => {
-    setUsernameToShareWith(event.target.value);
-    console.log(usernameToShareWith);
+  const handleShareUsernameChange = (event, value) => {
+    setUsernameToShareWith(value);
+    console.log("username is", usernameToShareWith);
   };
   const handleShareClick = () => {
-    if (usernameToShareWith.trim() != "") {
+    console.log("username is", usernameToShareWith);
+    if (allUsers.includes(usernameToShareWith)) {
       console.log("sharing");
       props.shareProject(
         username,
@@ -134,8 +144,10 @@ export default function Project_table(props) {
         usernameToShareWith
       );
     }
+
     // setUsernameToShareWith("");
   };
+  // console.log("all projects are", Object.keys(props.projects[0]));
   return (
     <>
       <Dialog open={open} onClose={handleClose}>
@@ -160,7 +172,7 @@ export default function Project_table(props) {
             Enter the username of the user to share the project with:
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
           </Typography>
-          <TextField
+          {/* <TextField
             variant="outlined"
             margin="normal"
             required
@@ -170,7 +182,19 @@ export default function Project_table(props) {
             autoComplete="username"
             autoFocus
             onChange={handleShareUsernameChange}
-          />
+          /> */}
+          <Box my={2}>
+            <Autocomplete
+              id="combo-box-demo"
+              options={allUsers}
+              getOptionLabel={(option) => option}
+              style={{ width: 250 }}
+              onInputChange={handleShareUsernameChange}
+              renderInput={(params) => (
+                <TextField {...params} label="Username" variant="outlined" />
+              )}
+            />
+          </Box>
           <Box my={1}>
             <Button
               variant="contained"
@@ -183,7 +207,8 @@ export default function Project_table(props) {
         </DialogContent>
       </Dialog>
 
-      {props.projects.length === 0 ? (
+      {props.projects.length === 0 ||
+      (props.projects.length === 1 && props.projects[0] === "shared") ? (
         <>
           <div>
             <div className={classes.title}>No projects to show</div>

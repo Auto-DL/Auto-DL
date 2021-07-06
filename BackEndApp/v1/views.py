@@ -539,6 +539,31 @@ def get_users(request):
     )
 
 
+@api_view(["GET"])
+@is_authenticated
+def get_all_users(request):
+    try:
+        rootpath = os.path.expanduser("~/.autodl/")
+        # print("root path is", rootpath)
+        users = os.listdir(rootpath)
+        status, success, message, users = 200, True, "Users fetched", users
+    except Exception as e:
+        status, success, message, users = (
+            500,
+            False,
+            "Could not fetch users ",
+            [],
+        )
+    return JsonResponse(
+        {
+            "success": success,
+            "message": message,
+            "users": users,
+        },
+        status=status,
+    )
+
+
 @api_view(["POST"])
 @is_authenticated
 def update_sharing_details(request):
