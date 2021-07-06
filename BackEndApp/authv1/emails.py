@@ -12,7 +12,7 @@ class Email_Templates:
         msg = (
             "You ("
             + username
-            + ") requested to update your password. Click here to reset your password "
+            + ") requested to update your password. "
             + "Your OTP is: "
             + otp
         )
