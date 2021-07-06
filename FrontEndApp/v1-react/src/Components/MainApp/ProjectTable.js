@@ -68,6 +68,7 @@ export default function Project_table(props) {
   const [openShare, setOpenShare] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [currentProject, setCurrentProject] = useState(null);
+  const [currentProjectTemp, setCurrentProjectTemp] = useState(null);
   const [usernameToShareWith, setUsernameToShareWith] = useState("");
   var username = JSON.parse(localStorage.getItem("username"));
   var token = JSON.parse(localStorage.getItem("token"));
@@ -124,7 +125,7 @@ export default function Project_table(props) {
 
     handleActionsClose();
     setOpenShare(true);
-    // setCurrentProject(project.project_id);
+    setCurrentProject(currentProjectTemp);
     console.log("proj now is", currentProject);
   };
 
@@ -145,6 +146,7 @@ export default function Project_table(props) {
         currentProject.project_id,
         usernameToShareWith
       );
+      setUsernameToShareWith("");
     }
     // setUsernameToShareWith("");
   };
@@ -306,16 +308,22 @@ export default function Project_table(props) {
                           </StyledTableCell>
                           <StyledTableCell
                             align="center"
-                            onClick={() => setCurrentProject(project[p])}
-                            onC
+                            onClick={() => {
+                              console.log("clicked");
+                              console.log(
+                                "culprit is",
+                                project[p].project_name
+                              );
+
+                              setCurrentProjectTemp(project[p]);
+                            }}
                           >
                             <IconButton
                               aria-controls="customized-menu"
                               aria-label="options"
                               aria-haspopup="true"
-                              onClick={handleActionsOpen}
                             >
-                              <MoreVertIcon />
+                              <MoreVertIcon onClick={handleActionsOpen} />
                             </IconButton>
                             <Menu
                               id="customized-menu"
@@ -337,11 +345,6 @@ export default function Project_table(props) {
                               </MenuItem>
                               <MenuItem
                                 onClick={() => {
-                                  setCurrentProject(project[p]);
-                                  console.log(
-                                    "final curr proj is",
-                                    currentProject
-                                  );
                                   handleShare(project[p]);
                                 }}
                               >
@@ -349,25 +352,11 @@ export default function Project_table(props) {
                               </MenuItem>
                             </Menu>
                           </StyledTableCell>
-                          <StyledTableCell
-                            align="center"
-                            // onClick={() => {
-                            //   console.log("p is", p);
-                            //   setCurrentProject(project[p]);
-                            // }}
-                          >
+                          <StyledTableCell align="center">
                             <IconButton
                               aria-controls="customized-menu"
                               aria-label="options"
                               aria-haspopup="true"
-                              // onClick={() => console.log("sharing")}
-                              // onClick={() => {
-                              //   console.log("p from share icon is", p);
-                              //   setCurrentProject(project[p]);
-                              // }}
-                              // onClick={() => {
-                              //   handleShare(currentProject);
-                              // }}
                             >
                               <FolderSharedIcon />
                             </IconButton>
