@@ -144,9 +144,11 @@ function Home() {
       if (res.status === 200) {
         handleToggle_backdrop(false);
         setAllProjects([...res.data.projects]);
+        // console.log("all are", AllProjects);
       } else {
         localStorage.clear();
-        history.push("/login");
+        console.log("something went wrong");
+        // history.push("/login");
       }
     }
     fetchData();

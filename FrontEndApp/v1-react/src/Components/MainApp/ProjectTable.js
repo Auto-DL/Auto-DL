@@ -90,7 +90,7 @@ export default function Project_table(props) {
       project_description: currentProject.project_description,
     };
     const res = await HomeService.delete_project(token, data);
-    console.log(res);
+    // console.log(res);
     props.parent_call_on_delete();
     // window.location.reload();
   };
@@ -104,13 +104,13 @@ export default function Project_table(props) {
   };
 
   const handleEdit = (project) => {
-    console.log(project.project_id);
+    // console.log(project.project_id);
     handleActionsClose();
     props.editproject(project);
   };
 
   const handleDelete = (project) => {
-    console.log(project.project_id);
+    // console.log(project.project_id);
     handleActionsClose();
     setCurrentProject(project);
     setOpen(true);
@@ -119,34 +119,36 @@ export default function Project_table(props) {
   //share handlers
   const handleShare = async (project) => {
     const res = await HomeService.get_all_users(token);
-    // console.log(res);
 
-    console.log("all users unfiltered are", allUsers);
     setAllUsers(res.data.users.filter((user) => user !== username));
-    // setAllUsers(allUsers || []);
-    console.log("all users are", allUsers);
-    // console.log(project);
+
     handleActionsClose();
     setOpenShare(true);
+    // setCurrentProject(project.project_id);
+    console.log("proj now is", currentProject);
   };
 
   const handleShareUsernameChange = (event, value) => {
+    // console.log("in username proj name is", currentProject.project_name);
     setUsernameToShareWith(value);
-    console.log("username is", usernameToShareWith);
+    // console.log("username is", usernameToShareWith);
   };
+
   const handleShareClick = () => {
-    console.log("username is", usernameToShareWith);
+    console.log("usernameshare is", usernameToShareWith);
+    console.log("proj is", currentProject);
+
+    // console.log("current pro is", currentProject.project_id);
     if (allUsers.includes(usernameToShareWith)) {
-      console.log("sharing");
       props.shareProject(
         username,
         currentProject.project_id,
         usernameToShareWith
       );
     }
-
     // setUsernameToShareWith("");
   };
+  // console.log(props.projects);
   // console.log("all projects are", Object.keys(props.projects[0]));
   return (
     <>
@@ -172,17 +174,6 @@ export default function Project_table(props) {
             Enter the username of the user to share the project with:
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
           </Typography>
-          {/* <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            label="username"
-            size="small"
-            autoComplete="username"
-            autoFocus
-            onChange={handleShareUsernameChange}
-          /> */}
           <Box my={2}>
             <Autocomplete
               id="combo-box-demo"
@@ -259,116 +250,132 @@ export default function Project_table(props) {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {props.projects.map((project, index) => (
-                  <Fragment key={index}>
-                    {Object.keys(project).map((p, index) => (
-                      <TableRow
-                        hover
-                        className={classes.hover}
-                        key={project[p].project_id}
-                      >
-                        <StyledTableCell
-                          align="center"
-                          component="th"
-                          scope="row"
-                          onClick={() => props.handlestep(project[p])}
+                {props.projects
+                  .filter((project) => project !== "shared")
+                  .map((project, index) => (
+                    <Fragment key={index}>
+                      {Object.keys(project).map((p, index) => (
+                        <TableRow
+                          hover
+                          className={classes.hover}
+                          key={project[p].project_id}
                         >
-                          {project[p].project_name}
-                        </StyledTableCell>
-                        <StyledTableCell
-                          align="center"
-                          onClick={() => props.handlestep(project[p])}
-                        >
-                          {project[p].lang}
-                        </StyledTableCell>
-                        <StyledTableCell
-                          align="center"
-                          onClick={() => props.handlestep(project[p])}
-                        >
-                          {project[p].lib}
-                        </StyledTableCell>
-                        <StyledTableCell
-                          align="center"
-                          onClick={() => props.handlestep(project[p])}
-                        >
-                          {project[p].data_dir}
-                        </StyledTableCell>
-                        <StyledTableCell
-                          align="center"
-                          onClick={() => props.handlestep(project[p])}
-                        >
-                          {project[p].task}
-                        </StyledTableCell>
-                        <StyledTableCell
-                          align="center"
-                          onClick={() => props.handlestep(project[p])}
-                        >
-                          {project[p].output_file_name}
-                        </StyledTableCell>
-                        <StyledTableCell
-                          align="center"
-                          onClick={() => props.handlestep(project[p])}
-                        >
-                          {project[p].project_description}
-                        </StyledTableCell>
-                        <StyledTableCell
-                          align="center"
-                          onClick={() => setCurrentProject(project[p])}
-                        >
-                          <IconButton
-                            aria-controls="customized-menu"
-                            aria-label="options"
-                            aria-haspopup="true"
-                            onClick={handleActionsOpen}
+                          <StyledTableCell
+                            align="center"
+                            component="th"
+                            scope="row"
+                            onClick={() => props.handlestep(project[p])}
                           >
-                            <MoreVertIcon />
-                          </IconButton>
-                          <Menu
-                            id="customized-menu"
-                            anchorEl={anchorEl}
-                            elevation={1}
-                            keepMounted
-                            open={Boolean(anchorEl)}
-                            onClose={handleActionsClose}
+                            {project[p].project_name}
+                          </StyledTableCell>
+                          <StyledTableCell
+                            align="center"
+                            onClick={() => props.handlestep(project[p])}
                           >
-                            <MenuItem
-                              onClick={() => handleEdit(currentProject)}
-                            >
-                              <EditIcon /> &nbsp; Edit
-                            </MenuItem>
-                            <MenuItem
-                              onClick={() => handleDelete(currentProject)}
-                            >
-                              <DeleteIcon /> &nbsp; Delete
-                            </MenuItem>
-                            <MenuItem
-                              onClick={() => handleShare(currentProject)}
-                            >
-                              <ShareIcon /> &nbsp; Share
-                            </MenuItem>
-                          </Menu>
-                        </StyledTableCell>
-                        <StyledTableCell
-                          align="center"
-                          onClick={() => setCurrentProject(project[p])}
-                        >
-                          <IconButton
-                            aria-controls="customized-menu"
-                            aria-label="options"
-                            aria-haspopup="true"
-                            // onClick={() => console.log("sharing")}
-
-                            onClick={() => {
-                              handleShare(currentProject);
-                            }}
+                            {project[p].lang}
+                          </StyledTableCell>
+                          <StyledTableCell
+                            align="center"
+                            onClick={() => props.handlestep(project[p])}
                           >
-                            <FolderSharedIcon />
-                          </IconButton>
-                        </StyledTableCell>
-                      </TableRow>
-                    ))}
-                  </Fragment>
-                ))}
+                            {project[p].lib}
+                          </StyledTableCell>
+                          <StyledTableCell
+                            align="center"
+                            onClick={() => props.handlestep(project[p])}
+                          >
+                            {project[p].data_dir}
+                          </StyledTableCell>
+                          <StyledTableCell
+                            align="center"
+                            onClick={() => props.handlestep(project[p])}
+                          >
+                            {project[p].task}
+                          </StyledTableCell>
+                          <StyledTableCell
+                            align="center"
+                            onClick={() => props.handlestep(project[p])}
+                          >
+                            {project[p].output_file_name}
+                          </StyledTableCell>
+                          <StyledTableCell
+                            align="center"
+                            onClick={() => props.handlestep(project[p])}
+                          >
+                            {project[p].project_description}
+                          </StyledTableCell>
+                          <StyledTableCell
+                            align="center"
+                            onClick={() => setCurrentProject(project[p])}
+                            onC
+                          >
+                            <IconButton
+                              aria-controls="customized-menu"
+                              aria-label="options"
+                              aria-haspopup="true"
+                              onClick={handleActionsOpen}
+                            >
+                              <MoreVertIcon />
+                            </IconButton>
+                            <Menu
+                              id="customized-menu"
+                              anchorEl={anchorEl}
+                              elevation={1}
+                              keepMounted
+                              open={Boolean(anchorEl)}
+                              onClose={handleActionsClose}
+                            >
+                              <MenuItem
+                                onClick={() => handleEdit(currentProject)}
+                              >
+                                <EditIcon /> &nbsp; Edit
+                              </MenuItem>
+                              <MenuItem
+                                onClick={() => handleDelete(currentProject)}
+                              >
+                                <DeleteIcon /> &nbsp; Delete
+                              </MenuItem>
+                              <MenuItem
+                                onClick={() => {
+                                  setCurrentProject(project[p]);
+                                  console.log(
+                                    "final curr proj is",
+                                    currentProject
+                                  );
+                                  handleShare(project[p]);
+                                }}
+                              >
+                                <ShareIcon /> &nbsp; Share
+                              </MenuItem>
+                            </Menu>
+                          </StyledTableCell>
+                          <StyledTableCell
+                            align="center"
+                            // onClick={() => {
+                            //   console.log("p is", p);
+                            //   setCurrentProject(project[p]);
+                            // }}
+                          >
+                            <IconButton
+                              aria-controls="customized-menu"
+                              aria-label="options"
+                              aria-haspopup="true"
+                              // onClick={() => console.log("sharing")}
+                              // onClick={() => {
+                              //   console.log("p from share icon is", p);
+                              //   setCurrentProject(project[p]);
+                              // }}
+                              // onClick={() => {
+                              //   handleShare(currentProject);
+                              // }}
+                            >
+                              <FolderSharedIcon />
+                            </IconButton>
+                          </StyledTableCell>
+                        </TableRow>
+                      ))}
+                    </Fragment>
+                  ))}
               </TableBody>
             </Table>
           </TableContainer>

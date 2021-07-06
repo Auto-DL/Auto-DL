@@ -133,14 +133,54 @@ def get_all_projects(request):
 
         store_obj = Store(user)
         project_ids = store_obj.enlist()
+        # print("store obj is", store_obj.enlist())
         projects = []
 
         for id in project_ids:
-            with open(store_obj.path + os.sep + id + os.sep + "meta.json", "r") as f:
-                metadata = json.load(f)
+            if id != "shared":
+                with open(
+                    store_obj.path + os.sep + id + os.sep + "meta.json", "r"
+                ) as f:
+                    metadata = json.load(f)
+                list_item = {id: metadata}
+                projects.append(list_item)
+            else:
 
-            list_item = {id: metadata}
-            projects.append(list_item)
+                all_shared_projects = [
+                    f.name
+                    for f in os.scandir(
+                        os.path.join(store_obj.rootpath, username, "shared")
+                    )
+                ]
+                print("all shared are", all_shared_projects)
+
+                for shared_project_id in all_shared_projects:
+                    print("hereeeeeeeeeeeee", store_obj.rootpath)
+                    print(
+                        store_obj.rootpath
+                        + username
+                        + os.sep
+                        + "shared"
+                        + os.sep
+                        + shared_project_id
+                        + os.sep
+                        + "meta.json",
+                    )
+                    with open(
+                        store_obj.rootpath
+                        + username
+                        + os.sep
+                        + "shared"
+                        + os.sep
+                        + shared_project_id
+                        + os.sep
+                        + "meta.json",
+                        "r",
+                    ) as f:
+                        print("writing")
+                        metadata = json.load(f)
+                    list_item = {"shared_" + shared_project_id: metadata}
+                    projects.append(list_item)
 
         status, success, message = 200, True, "Projects Fetched"
     except Exception as e:
@@ -577,7 +617,7 @@ def update_sharing_details(request):
         user = user.find()
         # print("user is ", user)
         project_id = request.data.get("project_id")
-        # print("project is", project_id)
+        print("project is", project_id)
         store_obj = Store(user)
         project_dir = store_obj.path + os.sep + project_id
         print(store_obj.path, "       ", store_obj.rootpath)
