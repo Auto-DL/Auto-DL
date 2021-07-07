@@ -52,9 +52,8 @@ export default function ProjectTable(props) {
     setOpen(false);
   };
 
-  const handleActionsOpen = (project, event) => {
+  const handleActionsOpen = (event) => {
     setAnchorEl(event.currentTarget);
-    setCurrentProject(project);
   };
 
   const handleActionsClose = () => {
@@ -206,12 +205,15 @@ export default function ProjectTable(props) {
                         >
                           {project[p].project_description}
                         </StyledTableCell>
-                        <StyledTableCell align="center">
+                        <StyledTableCell
+                          align="center"
+                          onClick={() => setCurrentProject(project[p])}
+                        >
                           <IconButton
                             aria-controls="customized-menu"
                             aria-label="options"
                             aria-haspopup="true"
-                            onClick={(e) => handleActionsOpen(project[p], e)}
+                            onClick={handleActionsOpen}
                           >
                             <MoreVertIcon />
                           </IconButton>

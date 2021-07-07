@@ -233,9 +233,9 @@ function Home() {
       path: values.data_dir,
       output_file_name: values.output_file_name,
       username: username,
-      modelLayers: cloneOptions.modelLayers,
-      preprocessingParameters: cloneOptions.preprocessingParameters,
-      hyperParameters: cloneOptions.hyperParameters,
+      model_layers: cloneOptions.modelLayers,
+      preprocessing_parameters: cloneOptions.preprocessingParameters,
+      hyper_parameters: cloneOptions.hyperParameters,
     };
 
     var res = await HomeService.clone_project(token, data);

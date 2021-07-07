@@ -304,9 +304,9 @@ def create_project(request):
 def clone_project(request):
     try:
         username = request.data.get("username")
-        modelLayers = request.data.get("modelLayers")
-        preprocessingParameters = request.data.get("preprocessingParameters")
-        hyperParameters = request.data.get("hyperParameters")
+        model_layers = request.data.get("model_layers")
+        preprocessing_parameters = request.data.get("preprocessing_parameters")
+        hyper_parameters = request.data.get("hyper_parameters")
 
         user = User(username=username, password=None)
         user = user.find()
@@ -343,7 +343,7 @@ def clone_project(request):
 
         project_dir = store_obj.path + os.sep + project_id
 
-        if modelLayers:
+        if model_layers:
             with open(project_dir + os.sep + "layers.json", "r") as f:
                 layers = json.load(f)
                 with open(clone_dir + os.sep + "layers.json", "w") as f:
@@ -354,13 +354,13 @@ def clone_project(request):
                 with open(clone_dir + os.sep + "components.json", "w") as f:
                     json.dump(components, f)
 
-        if preprocessingParameters:
+        if preprocessing_parameters:
             with open(project_dir + os.sep + "preprocessing.json", "r") as f:
                 preprocessing = json.load(f)
                 with open(clone_dir + os.sep + "preprocessing.json", "w") as f:
                     json.dump(preprocessing, f)
 
-        if hyperParameters:
+        if hyper_parameters:
             with open(project_dir + os.sep + "hyperparams.json", "r") as f:
                 hyperparams = json.load(f)
                 with open(clone_dir + os.sep + "hyperparams.json", "w") as f:
