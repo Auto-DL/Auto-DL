@@ -1,10 +1,10 @@
 import axios from "axios";
-// const BACKEND_API_URL = process.env.REACT_APP_BACKEND_API_URL
+const BACKEND_API_URL = process.env.REACT_APP_BACKEND_API_URL || "";
 
 class HomeService {
   async get_hyperparams(token, data) {
     try {
-      const response = await axios.post(`v1/hyperparams/get/`, data, {
+      const response = await axios.post(`${BACKEND_API_URL}/v1/hyperparams/get/`, data, {
         headers: {
           "Content-Type": "application/json",
           token: `${token}`,
@@ -17,7 +17,7 @@ class HomeService {
   }
   async save_hyperparams(token, data) {
     try {
-      const response = await axios.post(`v1/hyperparams/save/`, data, {
+      const response = await axios.post(`${BACKEND_API_URL}/v1/hyperparams/save/`, data, {
         headers: {
           "Content-Type": "application/json",
           token: `${token}`,
@@ -30,7 +30,7 @@ class HomeService {
   }
   async download_code(token, data) {
     try {
-      const response = await axios.post(`v1/code/download/`, data, {
+      const response = await axios.post(`${BACKEND_API_URL}/v1/code/download/`, data, {
         headers: {
           "Content-Type": "application/json",
           token: `${token}`,
@@ -43,7 +43,7 @@ class HomeService {
   }
   async generate_code(token, data) {
     try {
-      const response = await axios.post(`v1/generate/`, data, {
+      const response = await axios.post(`${BACKEND_API_URL}/v1/generate/`, data, {
         headers: {
           "Content-Type": "application/json",
           token: `${token}`,
@@ -56,7 +56,7 @@ class HomeService {
   }
   async save_pre(token, data) {
     try {
-      const response = await axios.post(`v1/preprocessing/save/`, data, {
+      const response = await axios.post(`${BACKEND_API_URL}/v1/preprocessing/save/`, data, {
         headers: {
           "Content-Type": "application/json",
           token: `${token}`,
@@ -69,7 +69,7 @@ class HomeService {
   }
   async get_pre(token, data) {
     try {
-      const response = await axios.post(`v1/preprocessing/get/`, data, {
+      const response = await axios.post(`${BACKEND_API_URL}/v1/preprocessing/get/`, data, {
         headers: {
           "Content-Type": "application/json",
           token: `${token}`,
@@ -82,7 +82,7 @@ class HomeService {
   }
   async train_model(token, data) {
     try {
-      const response = await axios.post(`v1/train/`, data, {
+      const response = await axios.post(`${BACKEND_API_URL}/v1/train/`, data, {
         headers: {
           "Content-Type": "application/json",
           token: `${token}`,
@@ -96,7 +96,7 @@ class HomeService {
 
   async get_layers(token, data) {
     try {
-      const response = await axios.post(`v1/layers/get/`, data, {
+      const response = await axios.post(`${BACKEND_API_URL}/v1/layers/get/`, data, {
         headers: {
           "Content-Type": "application/json",
           token: `${token}`,
@@ -110,7 +110,7 @@ class HomeService {
 
   async save_layers(token, data) {
     try {
-      const response = await axios.post(`v1/layers/save/`, data, {
+      const response = await axios.post(`${BACKEND_API_URL}/v1/layers/save/`, data, {
         headers: {
           "Content-Type": "application/json",
           token: `${token}`,
@@ -124,7 +124,7 @@ class HomeService {
 
   async delete_project(token, data) {
     try {
-      const response = await axios.post(`v1/project/delete/`, data, {
+      const response = await axios.post(`${BACKEND_API_URL}/v1/project/delete/`, data, {
         headers: {
           "Content-Type": "application/json",
           token: `${token}`,
@@ -138,7 +138,7 @@ class HomeService {
 
   async get_all(token, data) {
     try {
-      const response = await axios.post(`v1/projects/all/`, data, {
+      const response = await axios.post(`${BACKEND_API_URL}/v1/projects/all/`, data, {
         headers: {
           "Content-Type": "application/json",
           token: `${token}`,
@@ -152,7 +152,7 @@ class HomeService {
 
   async create_project(token, data) {
     try {
-      const response = await axios.post(`v1/project/new/`, data, {
+      const response = await axios.post(`${BACKEND_API_URL}/v1/project/new/`, data, {
         headers: {
           "Content-Type": "application/json",
           token: `${token}`,
@@ -165,7 +165,7 @@ class HomeService {
   }
   async edit_project(token, data) {
     try {
-      const response = await axios.post(`v1/project/edit/`, data, {
+      const response = await axios.post(`${BACKEND_API_URL}/v1/project/edit/`, data, {
         headers: {
           "Content-Type": "application/json",
           token: `${token}`,
@@ -178,7 +178,7 @@ class HomeService {
   }
   async get_project(token, data) {
     try {
-      const response = await axios.post(`v1/project/get/`, data, {
+      const response = await axios.post(`${BACKEND_API_URL}/v1/project/get/`, data, {
         headers: {
           "Content-Type": "application/json",
           token: `${token}`,

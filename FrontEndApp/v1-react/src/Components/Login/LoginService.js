@@ -1,10 +1,10 @@
 import axios from "axios";
-// const BACKEND_API_URL = process.env.REACT_APP_BACKEND_API_URL
+const BACKEND_API_URL = process.env.REACT_APP_BACKEND_API_URL || "";
 
 class LoginService {
   async login(data) {
     try {
-      const response = await axios.post(`auth/login/`, data);
+      const response = await axios.post(`${BACKEND_API_URL}/auth/login/`, data);
       return response;
     } catch (error) {
       return error.response;
@@ -13,7 +13,7 @@ class LoginService {
 
   async register(data) {
     try {
-      const response = await axios.post(`auth/register/`, data);
+      const response = await axios.post(`${BACKEND_API_URL}/auth/register/`, data);
       return response;
     } catch (error) {
       return error.response;

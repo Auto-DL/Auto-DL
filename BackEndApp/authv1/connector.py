@@ -19,7 +19,7 @@ def connect(db_name="auth_db"):
     db : object
         database client connection object
     """
-    client = pymongo.MongoClient(os.getenv("HOST"))
+    client = pymongo.MongoClient(os.getenv("MONGODB_URI"))
     db = client[db_name]
     print("MongoDB connected")
     return db
