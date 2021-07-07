@@ -1,28 +1,34 @@
-from django.core.mail import send_mail
-from BackEndApp.settings import EMAIL_HOST_USER
-
-
-class Email_Templates:
-    def __init__(self, user, request):
+class EmailTemplates:
+    def __init__(self, user):
         self.user = user
-        self.request = request
 
-    def update_password(self, username, email, otp):
-        subject = "Auto-DL Request to Update Password"
-        msg = (
-            "You ("
-            + username
-            + ") requested to update your password. "
-            + "Your OTP is: "
-            + otp
-        )
-        send_mail(subject, msg, EMAIL_HOST_USER, [email])
-        message = "Email Sent."
-        return message
-
-    def verify_email(self, username, email, otp):
+    def verify_email(self, username, otp):
         subject = "Auto-DL Email Verification"
-        msg = "Hello " + username + "." + "Your OTP for Email Verification is: " + otp
-        send_mail(subject, msg, EMAIL_HOST_USER, [email])
-        message = "Email Sent."
-        return message
+        msg = (
+            "Welcome "
+            + username
+            + ",\n"
+            + "\nWe are excited to have you get started at Auto-DL. Please verify your email address using the OTP provided below.\n"
+            + "OTP for Email Verification: "
+            + otp
+            + ".\n"
+            + "If you do have any futher queries, kindly contact us via email (info.autodl@gmail.com).\n"
+            + "\nIf you did not initiate this verification, please ignore this email.\n"
+            + "\nRegards,\nThe Auto-DL Team."
+        )
+        return subject, msg
+
+    def forgot_password(self, username, otp):
+        subject = "Auto-DL Forgot Password"
+        msg = (
+            "Hello "
+            + username
+            + ",\n"
+            + "\nWe have received a request to update the password of your Auto-DL account. \n"
+            + "OTP for updating your password: "
+            + otp
+            + ".\n"
+            + "If you did not request this update, please let us know via email (info.autodl@gmail.com)."
+            + "\nRegards,\nThe Auto-DL Team."
+        )
+        return subject, msg
