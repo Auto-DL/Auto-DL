@@ -144,11 +144,11 @@ function Home() {
       if (res.status === 200) {
         handleToggle_backdrop(false);
         setAllProjects([...res.data.projects]);
-        // console.log("all are", AllProjects);
+        // console.log("all projects are", AllProjects);
       } else {
         localStorage.clear();
         console.log("something went wrong");
-        // history.push("/login");
+        history.push("/login");
       }
     }
     fetchData();
@@ -243,8 +243,8 @@ function Home() {
     setOpen(true);
   };
 
-  const shareProject = async (shared_by, project_id, share_with) => {
-    const data = { shared_by, project_id, share_with };
+  const shareProject = async (shared_by, owner, project_id, share_with) => {
+    const data = { shared_by, owner, project_id, share_with };
     const res = await HomeService.share_project(token, data);
     console.log(res);
     if (res.status === 200) {

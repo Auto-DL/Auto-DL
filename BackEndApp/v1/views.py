@@ -144,43 +144,43 @@ def get_all_projects(request):
                     metadata = json.load(f)
                 list_item = {id: metadata}
                 projects.append(list_item)
-            else:
-
-                all_shared_projects = [
-                    f.name
-                    for f in os.scandir(
-                        os.path.join(store_obj.rootpath, username, "shared")
-                    )
-                ]
-                print("all shared are", all_shared_projects)
-
-                for shared_project_id in all_shared_projects:
-                    print("hereeeeeeeeeeeee", store_obj.rootpath)
-                    print(
-                        store_obj.rootpath
-                        + username
-                        + os.sep
-                        + "shared"
-                        + os.sep
-                        + shared_project_id
-                        + os.sep
-                        + "meta.json",
-                    )
-                    with open(
-                        store_obj.rootpath
-                        + username
-                        + os.sep
-                        + "shared"
-                        + os.sep
-                        + shared_project_id
-                        + os.sep
-                        + "meta.json",
-                        "r",
-                    ) as f:
-                        print("writing")
-                        metadata = json.load(f)
-                    list_item = {"shared_" + shared_project_id: metadata}
-                    projects.append(list_item)
+            # else:
+            #     all_shared_projects = [
+            #         f.name
+            #         for f in os.scandir(
+            #             os.path.join(store_obj.rootpath, username, "shared")
+            #         )
+            #     ]
+            #     for shared_project_id in all_shared_projects:
+            #         # print("hereeeeeeeeeeeee", store_obj.rootpath)
+            #         reference_path = (
+            #             (store_obj.rootpath)
+            #             + username
+            #             + os.sep
+            #             + "shared"
+            #             + os.sep
+            #             + shared_project_id
+            #             + os.sep
+            #             + "meta.json"
+            #         )
+            #         if not os.path.exists(reference_path):
+            #             os.remove(
+            #                 (store_obj.rootpath)
+            #                 + username
+            #                 + os.sep
+            #                 + "shared"
+            #                 + os.sep
+            #                 + shared_project_id
+            #             )
+            #             continue
+            #         with open(
+            #             reference_path,
+            #             "r",
+            #         ) as f:
+            #             print("writing")
+            #             metadata = json.load(f)
+            #         list_item = {"shared_" + shared_project_id: metadata}
+            #         projects.append(list_item)
 
         status, success, message = 200, True, "Projects Fetched"
     except Exception as e:
@@ -610,12 +610,17 @@ def update_sharing_details(request):
     try:
         # print("inside")
         print(request.data)
+        owner = request.data.get("owner")
         share_with = request.data.get("share_with")
         shared_by = request.data.get("shared_by")
         print("second", share_with, shared_by)
-        user = User(username=shared_by, password=None)
+        # if owner != "":
+        #     username = owner
+        # else:
+        #     username = shared_by
+        # print("username is", username)
+        user = User(username=owner or shared_by, password=None)
         user = user.find()
-        # print("user is ", user)
         project_id = request.data.get("project_id")
         print("project is", project_id)
         store_obj = Store(user)
@@ -624,33 +629,24 @@ def update_sharing_details(request):
         print("dir is", project_dir)
         with open(project_dir + os.sep + "meta.json", "r") as f:
             metadata = json.load(f)
-        # print(metadata)
-        # print(type(metadata))
-
-        # print("share with is", type(metadata["shared_with"]))
-        # metadata["shared_by"] = shared_by
-        # metadata["shared_with"].append(share_with)
-        # print(metadata["shared_with"])
-        # print("data is", metadata)
-
-        # creating symlink
-        # print(
-        #     "path is",
-        # )
-        if not (os.path.exists(os.path.join(store_obj.rootpath, share_with, "shared"))):
-            os.makedirs(os.path.join(store_obj.rootpath, share_with, "shared"))
+        # if not (os.path.exists(os.path.join(store_obj.rootpath, share_with, "shared"))):
+        #     os.makedirs(os.path.join(store_obj.rootpath, share_with, "shared"))
 
         print("hereeeeeeeeeee")
         try:
             src = os.path.join(project_dir)
             print("src is", src)
             dst = os.path.join(
-                store_obj.rootpath, share_with, "shared", str(project_id) + "_shared"
+                # store_obj.rootpath, share_with, "shared", +"shared_" + str(project_id)
+                store_obj.rootpath,
+                share_with,
+                "shared_" + str(project_id),
             )
             print("dest is", dst)
             try:
                 os.symlink(src, dst)
-                metadata["shared_by"] = shared_by
+                if not metadata["shared_by"]:
+                    metadata["shared_by"] = shared_by
                 metadata["shared_with"].append(share_with)
                 with open(project_dir + os.sep + "meta.json", "w") as f:
                     json.dump(metadata, f)
