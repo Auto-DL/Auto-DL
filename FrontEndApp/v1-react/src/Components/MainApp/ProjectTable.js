@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment } from "react";
+import React, { useState, Fragment } from "react";
 import { withStyles, makeStyles } from "@material-ui/core/styles";
 import {
   Typography,
@@ -76,6 +76,8 @@ export default function Project_table(props) {
   const [currentProjectTemp, setCurrentProjectTemp] = useState(null);
   const [usernameToShareWith, setUsernameToShareWith] = useState("");
   const [currentSharedUsers, setCurrentSharedUsers] = useState([]);
+  const [anchorElPop, setAnchorElPop] = React.useState(null);
+
   var username = JSON.parse(localStorage.getItem("username"));
   var token = JSON.parse(localStorage.getItem("token"));
 
@@ -146,13 +148,10 @@ export default function Project_table(props) {
         currentProject2.project_id,
         usernameToShareWith
       );
-      currentProject2.shared_with.push(usernameToShareWith);
-      setUsernameToShareWith("");
+      if (!currentProject2.shared_with.includes(usernameToShareWith))
+        currentProject2.shared_with.push(usernameToShareWith);
     }
   };
-
-  // pop over
-  const [anchorElPop, setAnchorElPop] = React.useState(null);
 
   const handleClickPop = (event) => {
     setAnchorElPop(event.currentTarget);
@@ -286,20 +285,31 @@ export default function Project_table(props) {
             <Table className={classes.table} aria-label="customized table">
               <TableHead>
                 <TableRow>
-                  <StyledTableCell align="center">Name</StyledTableCell>
-                  <StyledTableCell align="center">Language</StyledTableCell>
-                  <StyledTableCell align="center">Library</StyledTableCell>
-                  <StyledTableCell align="center">
+                  <StyledTableCell width="2%" align="center"></StyledTableCell>
+                  <StyledTableCell width="10%" align="center">
+                    Name
+                  </StyledTableCell>
+                  <StyledTableCell width="12%" align="center">
+                    Language
+                  </StyledTableCell>
+                  <StyledTableCell width="12%" align="center">
+                    Library
+                  </StyledTableCell>
+                  <StyledTableCell width="12%" align="center">
                     Data Directory
                   </StyledTableCell>
-                  <StyledTableCell align="center">Task</StyledTableCell>
-                  <StyledTableCell align="center">
+                  <StyledTableCell width="12%" align="center">
+                    Task
+                  </StyledTableCell>
+                  <StyledTableCell width="12%" align="center">
                     Output File Name
                   </StyledTableCell>
-                  <StyledTableCell align="center">
+                  <StyledTableCell width="16%" align="center">
                     Project Description
                   </StyledTableCell>
-                  <StyledTableCell align="center">Actions</StyledTableCell>
+                  <StyledTableCell width="12%" align="center">
+                    Actions
+                  </StyledTableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -317,10 +327,7 @@ export default function Project_table(props) {
                         >
                           <StyledTableCell
                             align="center"
-                            component="th"
-                            scope="row"
-                            // onClick={() => props.handlestep(project[p])}
-                            // style={{ display: "flex", alignItems: "center" }}
+                            onClick={() => props.handlestep(project[p])}
                           >
                             <Grid
                               container
@@ -342,16 +349,21 @@ export default function Project_table(props) {
                                   disableFocusRipple={true}
                                   disableRipple={true}
                                 >
-                                  <PeopleAltIcon
-                                    style={{ marginRight: "10px" }}
-                                  />
+                                  <PeopleAltIcon />
                                 </IconButton>
                               ) : (
                                 ""
                               )}
-
-                              <> {project[p].project_name}</>
                             </Grid>
+                          </StyledTableCell>
+                          <StyledTableCell
+                            align="center"
+                            component="th"
+                            scope="row"
+                            // onClick={() => props.handlestep(project[p])}
+                            // style={{ display: "flex", alignItems: "center" }}
+                          >
+                            <> {project[p].project_name}</>
                           </StyledTableCell>
                           <StyledTableCell
                             align="center"
@@ -457,189 +469,41 @@ export default function Project_table(props) {
             </Typography>
           </Box>
 
-          {/* <TableContainer component={Paper}>
-            <Table className={classes.table} aria-label="customized table">
-              <TableBody>
-                {props.projects
-                  .filter((project) =>
-                    Object.keys(project)[0].startsWith("shared_")
-                  )
-                  .map((project, index) => (
-                    <Fragment key={index}>
-                      {Object.keys(project).map((p, index) => (
-                        <TableRow
-                          hover
-                          className={classes.hover}
-                          key={project[p].project_id}
-                          {project[p].lang}
-                        </StyledTableCell>
-                        <StyledTableCell
-                          align="center"
-                          onClick={() => props.handlestep(project[p])}
-                        >
-                          {project[p].lib}
-                        </StyledTableCell>
-                        <StyledTableCell
-                          align="center"
-                          onClick={() => props.handlestep(project[p])}
-                        >
-                          {project[p].data_dir}
-                        </StyledTableCell>
-                        <StyledTableCell
-                          align="center"
-                          onClick={() => props.handlestep(project[p])}
-                        >
-                          {project[p].task}
-                        </StyledTableCell>
-                        <StyledTableCell
-                          align="center"
-                          onClick={() => props.handlestep(project[p])}
-                        >
-                          {project[p].output_file_name}
-                        </StyledTableCell>
-                        <StyledTableCell
-                          align="center"
-                          onClick={() => props.handlestep(project[p])}
-                        >
-                          {project[p].project_description.length <= 40 ? project[p].project_description : project[p].project_description.slice(0, 40)+"..."}
-                        </StyledTableCell>
-                        <StyledTableCell
-                          align="center"
-                          onClick={() => setCurrentProject(project[p])}
-                        >
-                          <StyledTableCell
-                            align="center"
-                            component="th"
-                            scope="row"
-                            onClick={() => props.handlestep(project[p])}
-                          >
-                            {project[p].project_name}
-                          </StyledTableCell>
-                          <StyledTableCell
-                            align="center"
-                            onClick={() => props.handlestep(project[p])}
-                          >
-                            {project[p].lang}
-                          </StyledTableCell>
-                          <StyledTableCell
-                            align="center"
-                            onClick={() => props.handlestep(project[p])}
-                          >
-                            {project[p].lib}
-                          </StyledTableCell>
-                          <StyledTableCell
-                            align="center"
-                            onClick={() => props.handlestep(project[p])}
-                          >
-                            {project[p].data_dir}
-                          </StyledTableCell>
-                          <StyledTableCell
-                            align="center"
-                            onClick={() => props.handlestep(project[p])}
-                          >
-                            {project[p].task}
-                          </StyledTableCell>
-                          <StyledTableCell
-                            align="center"
-                            onClick={() => props.handlestep(project[p])}
-                          >
-                            {project[p].output_file_name}
-                          </StyledTableCell>
-                          <StyledTableCell
-                            align="center"
-                            onClick={() => props.handlestep(project[p])}
-                          >
-                            {project[p].project_description}
-                          </StyledTableCell>
-                          <StyledTableCell
-                            align="center"
-                            onClick={() => {
-                              setCurrentProject(project[p]);
-                              setCurrentProjectTemp(project[p]);
-                            }}
-                          >
-                            <IconButton
-                              aria-controls="customized-menu"
-                              aria-label="options"
-                              aria-haspopup="true"
-                              onClick={handleActionsOpen}
-                            >
-                              <MoreVertIcon />
-                            </IconButton>
-                            <Menu
-                              id="customized-menu"
-                              anchorEl={anchorEl}
-                              elevation={1}
-                              keepMounted
-                              open={Boolean(anchorEl)}
-                              onClose={handleActionsClose}
-                            >
-                              <MenuItem
-                                onClick={() => handleEdit(currentProject)}
-                              >
-                                <EditIcon /> &nbsp; Edit
-                              </MenuItem>
-                              <MenuItem
-                                onClick={() => handleDelete(currentProject)}
-                              >
-                                <DeleteIcon /> &nbsp; Delete
-                              </MenuItem>
-                              <MenuItem
-                                onClick={() => {
-                                  handleShare();
-                                }}
-                              >
-                                <ShareIcon /> &nbsp; Share
-                              </MenuItem>
-                            </Menu>
-                          </StyledTableCell>
-                        </TableRow>
-                      ))}
-                    </Fragment>
-                  ))}
-                            <MenuItem onClick={handleEdit}>
-                              <EditIcon /> &nbsp; Edit
-                            </MenuItem>
-                            <MenuItem onClick={handleClone}>
-                              <FileCopyIcon /> &nbsp; Clone
-                            </MenuItem>
-                            <MenuItem onClick={handleDelete}>
-                              <DeleteIcon /> &nbsp; Delete
-                            </MenuItem>
-                          </Menu>
-                        </StyledTableCell>
-                      </TableRow>
-                    ))}
-                  </Fragment>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer> */}
-
           <TableContainer component={Paper}>
             <Table className={classes.table} aria-label="customized table">
               <TableHead>
                 <TableRow>
-                  <StyledTableCell align="center">Name</StyledTableCell>
-                  <StyledTableCell align="center">Language</StyledTableCell>
-                  <StyledTableCell align="center">Library</StyledTableCell>
-                  <StyledTableCell align="center">
+                  <StyledTableCell width="2%" align="center"></StyledTableCell>
+                  <StyledTableCell width="10%" align="center">
+                    Name
+                  </StyledTableCell>
+                  <StyledTableCell width="12%" align="center">
+                    Language
+                  </StyledTableCell>
+                  <StyledTableCell width="12%" align="center">
+                    Library
+                  </StyledTableCell>
+                  <StyledTableCell width="12%" align="center">
                     Data Directory
                   </StyledTableCell>
-                  <StyledTableCell align="center">Task</StyledTableCell>
-                  <StyledTableCell align="center">
+                  <StyledTableCell width="12%" align="center">
+                    Task
+                  </StyledTableCell>
+                  <StyledTableCell width="12%" align="center">
                     Output File Name
                   </StyledTableCell>
-                  <StyledTableCell align="center">
+                  <StyledTableCell width="16%" align="center">
                     Project Description
-                  </StyledTableCell>{" "}
-                  <StyledTableCell align="center">Actions</StyledTableCell>
+                  </StyledTableCell>
+                  <StyledTableCell width="12%" align="center">
+                    Actions
+                  </StyledTableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {props.projects
-                  .filter(
-                    (project) => !Object.keys(project)[0].startsWith("shared_")
+                  .filter((project) =>
+                    Object.keys(project)[0].startsWith("shared_")
                   )
                   .map((project, index) => (
                     <Fragment key={index}>
@@ -651,41 +515,14 @@ export default function Project_table(props) {
                         >
                           <StyledTableCell
                             align="center"
+                            onClick={() => props.handlestep(project[p])}
+                          ></StyledTableCell>
+                          <StyledTableCell
+                            align="center"
                             component="th"
                             scope="row"
-                            // onClick={() => props.handlestep(project[p])}
-                            // style={{ display: "flex", alignItems: "center" }}
                           >
-                            <Grid
-                              container
-                              direction="row"
-                              alignItems="center"
-                              justify="center"
-                              onClick={() => props.handlestep(project[p])}
-                            >
-                              {project[p].shared_with &&
-                              project[p].shared_with.length > 0 ? (
-                                <IconButton
-                                  onMouseEnter={() =>
-                                    setCurrentSharedUsers(
-                                      project[p].shared_with
-                                    )
-                                  }
-                                  onMouseOver={handleClickPop}
-                                  style={{ backgroundColor: "transparent" }}
-                                  disableFocusRipple={true}
-                                  disableRipple={true}
-                                >
-                                  <PeopleAltIcon
-                                    style={{ marginRight: "10px" }}
-                                  />
-                                </IconButton>
-                              ) : (
-                                ""
-                              )}
-
-                              {project[p].project_name}
-                            </Grid>
+                            {project[p].project_name}
                           </StyledTableCell>
                           <StyledTableCell
                             align="center"
