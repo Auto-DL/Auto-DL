@@ -4,11 +4,11 @@
 # We do not want users to end up with a partially working install, so we exit the script
 # instead of continuing the installation with something broken
 set -e
-trap : SIGTERM SIGINT
+trap terminate SIGTERM SIGINT
 
 WORKDIR=$PWD
-BACKEND_PATH="$PWD/BackEndApp"
-FRONTEND_PATH="$PWD/FrontEndApp/v1-react"
+BACKEND_PATH="$PWD/../BackEndApp"
+FRONTEND_PATH="$PWD/../FrontEndApp/v1-react"
 
 
 set_cols(){
@@ -26,10 +26,12 @@ set_cols(){
 set_cols
 
 help_func() {
-    echo "Usage: ./install.sh [options]
-Example: './install.sh'
+    echo "Usage: ./run.sh [options]
+Example: './run.sh --venv virtualenv/'
 Options:
-    -h, --help         Show help docs with detials of command argument options
+    -h, --help          Show help docs with detials of command argument options
+    --venv              Path of python virtualenv
+    --install           Run the installation scripts to install the necessary binaries and libraries
     ";
 
     exit 0
@@ -72,6 +74,11 @@ pyvenv_create() {
     echo -e "${TICK} Virtualenv ${VENV_PATH} loaded"
 }
 
+run_install() {
+    # run install.sh
+    sudo ./install.sh
+}
+
 frontend_setup() {
     echo -e "${INFO} Setting up frontend"
     cd $FRONTEND_PATH
@@ -97,19 +104,31 @@ run() {
     FRONTEND_PID=$!
     echo -e "${TICK} Frontend server running"
 
+    # Since we now expect to receive SIGINT
+    # process terminations might return non-zero status
+    set +e
     wait $BACKEND_PID
     wait $FRONTEND_PID
-    if [[ $? -gt 128 ]]
-    then
-        kill -9 $FRONTEND_PID
-        kill -9 $BACKEND_PID
-        echo -e "Killing both frontend and backend"
-    fi
+
 }
 
-main() {
-    echo ""
+# Terminate processes
+terminate(){
+    if [[ -v BACKEND_PID ]];
+    then
+        kill $BACKEND_PID
+        printf "Backend stopped\n"
+    fi
+    if [[ -v FRONTEND_PID ]];
+    then
+        kill $FRONTEND_PID
+        printf "Frontend stopped\n"
+    fi
+    exit
+}
 
+setup() {
+    echo -e "${INFO} Setting up..."
     frontend_setup
     if [ $? -eq 0 ]
     then
@@ -129,7 +148,10 @@ main() {
     fi
     cd $WORKDIR
     echo ""
+}
 
+main() {
+    setup
     run
 }
 
@@ -137,6 +159,7 @@ while [[ "$#" -gt 0 ]]; do
     case $1 in
         "-h" | "help" | "--help")       help_func;;
         "--venv")                       pyvenv_create $2; shift;;
+        "--install")                    run_install;;
         *)                              help_func;;
     esac
     shift
