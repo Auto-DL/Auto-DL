@@ -1,4 +1,4 @@
-import React, { useEffect, Fragment } from "react";
+import React, { useEffect, Fragment,useState } from "react";
 import _ from "lodash";
 import TextField from "@material-ui/core/TextField";
 import FormControl from "@material-ui/core/FormControl";
@@ -2835,6 +2835,16 @@ function Step2() {
     setall_prepro(dic);
   };
 
+  const handleClone = (e) => {
+    e.preventDefault();
+    if(selected_layer !== -1)
+    {
+      components.push(selected_layer_type);
+      setcomponents(components);
+    }
+
+  };
+
   return (
     <div className={classes.App}>
       <Dialog onClose={handleCloseModal} open={openModal}>
@@ -3117,6 +3127,7 @@ function Step2() {
                         {...provided.droppableProps}
                         className={classes.droppableColtarget}
                       >
+                      <button onClick={handleClone}>Clone Me</button>
                         {components.map((el, index) => {
                           return (
                             <Draggable
@@ -3124,14 +3135,17 @@ function Step2() {
                               index={index}
                               draggableId={el.id}
                             >
+                            
                               {(provided, snapshot) => {
                                 return (
+
                                   <div
                                     className={classes.container}
                                     ref={provided.innerRef}
                                     {...provided.draggableProps}
                                     {...provided.dragHandleProps}
                                   >
+                                  
                                     <div
                                       className={
                                         selected_layer ===
@@ -3142,6 +3156,7 @@ function Step2() {
                                       onClick={() => showdetails(el)}
                                     >
                                       {el.name}
+                                      
                                     </div>
                                   </div>
                                 );
