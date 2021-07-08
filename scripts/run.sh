@@ -7,8 +7,8 @@ set -e
 trap terminate SIGTERM SIGINT
 
 WORKDIR=$PWD
-BACKEND_PATH="$PWD/../BackEndApp"
-FRONTEND_PATH="$PWD/../FrontEndApp/v1-react"
+BACKEND_PATH="$PWD/BackEndApp"
+FRONTEND_PATH="$PWD/FrontEndApp/v1-react"
 
 
 set_cols(){
@@ -76,7 +76,7 @@ pyvenv_create() {
 
 run_install() {
     # run install.sh
-    sudo ./install.sh
+    sudo $WORKDIR/scripts/install.sh
 }
 
 frontend_setup() {
