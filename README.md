@@ -28,6 +28,18 @@ Generator has DLMML as a submodule.
 <br>
 <br>
 
+## Setup
+
+1. Install all the necessary libraries and binaries
+```sh
+sudo ./scripts/install.sh
+```
+
+2. Follow the [instructions](#how-to-run) to run `BackEndApp` and `FrontEndApp` locally or Let it RIP!
+```sh
+./scripts/run.sh
+```
+
 ## How to run
 
 1.  ```sh
