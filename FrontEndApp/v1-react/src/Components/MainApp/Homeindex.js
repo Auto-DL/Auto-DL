@@ -346,6 +346,7 @@ function Home() {
                 autoComplete="Project Name"
                 autoFocus
                 onChange={handleChange("project_name")}
+                onFocus={handleChange("project_name")}
                 />
               <TextField
                 variant="outlined"
