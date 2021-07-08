@@ -343,6 +343,79 @@ def create_project(request):
 
 @api_view(["POST"])
 @is_authenticated
+def clone_project(request):
+    try:
+        username = request.data.get("username")
+        model_layers = request.data.get("model_layers")
+        preprocessing_parameters = request.data.get("preprocessing_parameters")
+        hyper_parameters = request.data.get("hyper_parameters")
+
+        user = User(username=username, password=None)
+        user = user.find()
+
+        project_id = request.data.get("project_id")
+        clone_id = generate_uid()
+        project_name = request.data.get("project_name")
+        project_description = request.data.get("project_description")
+        lang = request.data.get("language")
+        lib = request.data.get("library")
+        task = request.data.get("task")
+        data_dir = request.data.get("path")
+        output_file_name = request.data.get("output_file_name")
+
+        store_obj = Store(user)
+        if store_obj.exist(clone_id):
+            raise Exception("Project Already Exists!")
+
+        clone_dir = store_obj.create(clone_id)
+        metadata = {
+            "project_id": clone_id,
+            "project_name": project_name,
+            "project_description": project_description,
+            "lib": lib,
+            "lang": lang,
+            "task": task,
+            "data_dir": data_dir,
+            "output_file_name": output_file_name,
+            "username": username,
+        }
+
+        with open(clone_dir + os.sep + "meta.json", "w") as f:
+            json.dump(metadata, f)
+
+        project_dir = store_obj.path + os.sep + project_id
+
+        if model_layers:
+            with open(project_dir + os.sep + "layers.json", "r") as f:
+                layers = json.load(f)
+                with open(clone_dir + os.sep + "layers.json", "w") as f:
+                    json.dump(layers, f)
+
+            with open(project_dir + os.sep + "components.json", "r") as f:
+                components = json.load(f)
+                with open(clone_dir + os.sep + "components.json", "w") as f:
+                    json.dump(components, f)
+
+        if preprocessing_parameters:
+            with open(project_dir + os.sep + "preprocessing.json", "r") as f:
+                preprocessing = json.load(f)
+                with open(clone_dir + os.sep + "preprocessing.json", "w") as f:
+                    json.dump(preprocessing, f)
+
+        if hyper_parameters:
+            with open(project_dir + os.sep + "hyperparams.json", "r") as f:
+                hyperparams = json.load(f)
+                with open(clone_dir + os.sep + "hyperparams.json", "w") as f:
+                    json.dump(hyperparams, f)
+
+        status, success, message = 200, True, "Project Cloned Successfully"
+    except Exception as e:
+        status, success, message = 500, False, "Project could not be cloned"
+    return JsonResponse({"success": success, "message": message}, status=status)
+
+
+@api_view(["POST"])
+@is_authenticated
 def save_layers(request):
     try:
         username = request.data.get("username")

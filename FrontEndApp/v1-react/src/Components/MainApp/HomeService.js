@@ -176,6 +176,21 @@ class HomeService {
       return error.response;
     }
   }
+
+  async clone_project(token, data) {
+    try {
+      const response = await axios.post(`v1/project/clone/`, data, {
+        headers: {
+          "Content-Type": "application/json",
+          token: `${token}`,
+        },
+      });
+      return response;
+    } catch (error) {
+      return error.response;
+    }
+  }
+
   async get_project(token, data) {
     try {
       const response = await axios.post(`v1/project/get/`, data, {
