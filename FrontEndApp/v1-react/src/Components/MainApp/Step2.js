@@ -2670,6 +2670,11 @@ function Step2() {
 
     return temp;
   };
+
+  //states for dialog box which is triggered if necessary details are blank 
+  //before generating code.
+  const [openErrorDialog,setOpenErrorDialog] = useState(false);
+
   const generate_code = async () => {
     if (layer_validation()) {
       const hyper_data = generate_hyper();
@@ -2692,7 +2697,10 @@ function Step2() {
         // history.push("/login");
       }
     } else {
-      alert("please fill all the required fileds in layers");
+      // alert("please fill all the required fileds in layers");
+      //states for dialog box which is triggered if necessary details are blank 
+      //before generating code.
+      setOpenErrorDialog(true);
     }
   };
 
@@ -3723,6 +3731,27 @@ function Step2() {
           </Grid>
           <Grid item lg={4} md={4}></Grid>
         </Grid>
+
+        {/*Dialog if necessary details are not    */}
+        {openErrorDialog && 
+          <Dialog open={openErrorDialog} onClose={() => setOpenErrorDialog(false)} >
+            <DialogTitle id="error-dialog-title">Required Parameters Missing!! </DialogTitle>
+            <DialogContent dividers>
+              <div>
+                <h3>Please enter required values in all layers in Model</h3>
+              </div>
+            </DialogContent>
+            <DialogActions style={{ justifyContent: "center" }}>
+              <Button variant="contained" onClick={() => setOpenErrorDialog(false)} color="primary">
+                OK
+              </Button>
+            </DialogActions>
+
+          </Dialog>
+        }
+
+
+
       </TabPanel>
     </div>
   );
