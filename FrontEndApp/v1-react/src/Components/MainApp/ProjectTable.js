@@ -203,7 +203,7 @@ export default function ProjectTable(props) {
                           align="center"
                           onClick={() => props.handlestep(project[p])}
                         >
-                          {project[p].project_description}
+                          {project[p].project_description.length <= 40 ? project[p].project_description : project[p].project_description.slice(0, 40)+"..."}
                         </StyledTableCell>
                         <StyledTableCell
                           align="center"
