@@ -29,8 +29,9 @@ help_func() {
     echo "Usage: ./run.sh [options]
 Example: './run.sh --venv virtualenv/'
 Options:
-    -h, --help         Show help docs with detials of command argument options
-    --venv         Path of python virtualenv
+    -h, --help          Show help docs with detials of command argument options
+    --venv              Path of python virtualenv
+    --install           Run the installation scripts to install the necessary binaries and libraries
     ";
 
     exit 0
@@ -71,6 +72,11 @@ pyvenv_create() {
     fi
     source $VENV_PATH/bin/activate
     echo -e "${TICK} Virtualenv ${VENV_PATH} loaded"
+}
+
+run_install() {
+    # run install.sh
+    sudo ./install.sh
 }
 
 frontend_setup() {
@@ -121,9 +127,8 @@ terminate(){
     exit
 }
 
-main() {
-    echo ""
-
+setup() {
+    echo -e "${INFO} Setting up..."
     frontend_setup
     if [ $? -eq 0 ]
     then
@@ -143,7 +148,10 @@ main() {
     fi
     cd $WORKDIR
     echo ""
+}
 
+main() {
+    setup
     run
 }
 
@@ -151,6 +159,7 @@ while [[ "$#" -gt 0 ]]; do
     case $1 in
         "-h" | "help" | "--help")       help_func;;
         "--venv")                       pyvenv_create $2; shift;;
+        "--install")                    run_install;;
         *)                              help_func;;
     esac
     shift

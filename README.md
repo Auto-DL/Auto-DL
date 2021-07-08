@@ -38,6 +38,8 @@ sudo ./scripts/install.sh
 2. Follow the [instructions](#how-to-run) to run `BackEndApp` and `FrontEndApp` locally or Let it RIP!
 ```sh
 ./scripts/run.sh
+# or you can pass --install to perform both step 1 and 2
+./scripts/run.sh --install
 ```
 
 ## How to run

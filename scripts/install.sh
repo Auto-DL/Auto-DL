@@ -48,7 +48,7 @@ sudo_check() {
 }
 
 install_binaries() {
-    echo -e "${INFO} Installing"
+    echo -e "${INFO} Installing..."
 
     if command -v python3 > /dev/null 2>&1
     then
