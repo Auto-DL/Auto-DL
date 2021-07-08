@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { Button, AppBar, Tabs, Tab, Box, Typography, Dialog, Tooltip } from "@material-ui/core";
 import { useStyles, DialogTitle, DialogActions, DialogContent } from "./step-2/styles.js";
-import PropTypes from "prop-types";
 import _ from "lodash";
+import PropTypes from "prop-types";
 import fileDownload from "js-file-download";
-import HomeService from "./HomeService";
 import { validate_layers } from "./validation.js";
-import PreprocessingTab from "./step-2/PreprocessingTab.js";
-import LayerTab from "./step-2/LayerTab.js";
-import HyperparameterTab from "./step-2/HyperparameterTab.js";
+import HomeService from "./HomeService";
+import PreprocessingTab from "./step-2/PreprocessingTab";
+import LayerTab from "./step-2/LayerTab";
+import HyperparameterTab from "./step-2/HyperparameterTab";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -157,11 +157,10 @@ function Step2() {
     setValue(newValue);
   };
 
-  if (
-    project_details.lib === "Pytorch" ||
-    project_details.library === "Pytorch"
-  ) {
-    var temp_pre_meta = {
+  let temp_optimizer, temp_pre_meta, temp_pre, temp_loss, temp_json, hyper;
+
+  if ( project_details.lib === "Pytorch" || project_details.library === "Pytorch" ) {
+    temp_pre_meta = {
       dataset: {
         name: "dataset",
         type: {
@@ -182,7 +181,8 @@ function Step2() {
         // },
       },
     };
-    var temp_pre = {
+
+    temp_pre = {
       // is param in image processing?
       image: {
         params: {
@@ -286,7 +286,8 @@ function Step2() {
       csv: {},
       text: {},
     };
-    var temp_loss = {
+
+    temp_loss = {
       L1Loss: {
         name: "l1loss",
         type: "loss-function",
@@ -457,9 +458,10 @@ function Step2() {
           Description:
             "Specifies the threshold at which to change between L1 and L2 loss. This value defaults to 1.0.",
         },
-      },
+      }
     };
-    var temp_optimizer = {
+    
+    temp_optimizer = {
       SGD: {
         name: "SGD",
         type: "optimizer",
@@ -650,7 +652,8 @@ function Step2() {
         },
       },
     };
-    var temp_json = {
+
+    temp_json = {
       Linear: {
         in_features: {
           Example: "3",
@@ -995,11 +998,8 @@ function Step2() {
             "A dimension along which Softmax will be computed (so every slice along dim will sum to 1).",
         },
       },
-    };
-  } else if (
-    project_details.lib === "Keras" ||
-    project_details.library === "Keras"
-  ) {
+    }
+  } else if ( project_details.lib === "Keras" || project_details.library === "Keras" ) {
     temp_json = {
       Conv2D: {
         filters: {
@@ -1484,6 +1484,7 @@ function Step2() {
         },
       },
     };
+
     temp_loss = {
       L1Loss: {
         name: "l1loss",
@@ -1657,6 +1658,7 @@ function Step2() {
         },
       },
     };
+
     temp_optimizer = {
       SGD: {
         name: "SGD",
@@ -1848,6 +1850,7 @@ function Step2() {
         },
       },
     };
+
     temp_pre_meta = {
       dataset: {
         name: "dataset",
@@ -1869,6 +1872,7 @@ function Step2() {
         // },
       },
     };
+
     temp_pre = {
       image: {
         augment: {
@@ -1962,7 +1966,8 @@ function Step2() {
       csv: {},
       text: {},
     };
-    var hyper = {
+
+    hyper = {
       params: {
         name: "params",
         input_type: "all",
@@ -2072,7 +2077,9 @@ function Step2() {
       } else {
       }
     }
+
     fetchData();
+
     async function fetchDataPre() {
       const data = {
         username: username,
@@ -2090,6 +2097,7 @@ function Step2() {
       } else {
       }
     }
+
     fetchDataPre();
 
     async function fetchDataHyper() {
@@ -2106,6 +2114,7 @@ function Step2() {
       } else {
       }
     }
+
     fetchDataHyper();
   }, [project_details.project_id, token, username]);
 
@@ -2220,6 +2229,7 @@ function Step2() {
     }
     const validate_res = validate_layers(source, destination, components);
   };
+
   const showdetails = (element) => {
     setselected_layer_type(element);
 
@@ -2229,6 +2239,7 @@ function Step2() {
     setselected_layer(index);
     // setselected_layer_name(element.name);
   };
+
   const save_value = (prop) => (event) => {
     var param = prop;
     var index = selected_layer;
@@ -2434,6 +2445,7 @@ function Step2() {
 
     return temp;
   };
+
   const generate_code = async () => {
     if (layer_validation()) {
       const hyper_data = generate_hyper();
@@ -2472,6 +2484,7 @@ function Step2() {
       fileDownload(res.data, `${filename_of_download}.py`);
     }
   };
+
   const Train = async () => {
     const hyper_data = generate_hyper();
     const layers_data = genrate_layers();
@@ -2594,6 +2607,7 @@ function Step2() {
     setall_prepro(all_prepro);
     setshow_pre(!show_pre);
   };
+
   const handle_pre = (key, key1, datatype) => (event) => {
     var dic = _.cloneDeep(all_prepro);
     dic[`${all_prepro["dataset-type"]}-${key}-${key1}`] = event.target.value;
