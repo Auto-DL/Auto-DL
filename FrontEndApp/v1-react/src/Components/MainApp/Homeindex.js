@@ -222,6 +222,16 @@ function Home() {
     setOpenCloneModal(true);
   };
 
+  const handleCloseCloneModal = () => {
+    setOpenCloneModal(false);
+    setCloneStep(0);
+    setCloneOptions({
+      hyperParameters: false,
+      preprocessingParameters: false,
+      modelLayers: false
+    });
+  }
+
   const handleSaveClone = async () => {    
     var data = {
       language: values.language,
@@ -314,13 +324,13 @@ function Home() {
       {/* Clone existing Projects */}
       
       <Dialog
-        onClose={() => {setCloneStep(0); setOpenCloneModal(false); setCloneOptions({hyperParameters: false, preprocessingParameters: false, modelLayers: false})}}
+        onClose={handleCloseCloneModal}
         aria-labelledby="project-cloning-dialog"
         open={openCloneModal}
       >
         {cloneStep === 0 &&
           <div>
-            <DialogTitle id="project-cloning-dialog" onClose={() => setOpenCloneModal(false)}>
+            <DialogTitle id="project-cloning-dialog" onClose={handleCloseCloneModal}>
               Clone Project - Step 1
             </DialogTitle>
             <DialogContent dividers>
@@ -331,6 +341,7 @@ function Home() {
                 required
                 fullWidth
                 label="Project Name"
+                defaultValue={values.project_name + " Clone"}
                 size="small"
                 autoComplete="Project Name"
                 autoFocus
@@ -342,6 +353,7 @@ function Home() {
                 required
                 fullWidth
                 label="Output File Name"
+                defaultValue={values.output_file_name}
                 size="small"
                 autoComplete="Output File Name"
                 onChange={handleChange("output_file_name")}
@@ -352,6 +364,7 @@ function Home() {
                 required
                 fullWidth
                 label="Project Description"
+                defaultValue={values.project_description}
                 size="small"
                 autoComplete="Project Description"
                 onChange={handleChange("project_description")}
@@ -366,7 +379,7 @@ function Home() {
         }
         {cloneStep === 1 &&
           <div>
-            <DialogTitle id="project-cloning-dialog" onClose={() => setOpenCloneModal(false)}>
+            <DialogTitle id="project-cloning-dialog" onClose={handleCloseCloneModal}>
               Clone Project - Step 2
             </DialogTitle>
             <DialogContent dividers>
@@ -392,9 +405,11 @@ function Home() {
               <Button variant="contained" onClick={() => setCloneStep(0)} color="secondary">
                 Previous Step
               </Button>
-              <Button variant="contained" onClick={handleSaveClone} color="primary">
-                Create Clone
-              </Button>
+              {(modelLayers || preprocessingParameters || hyperParameters) &&
+                <Button variant="contained" onClick={handleSaveClone} color="primary">
+                  Create Clone
+                </Button>
+              }
             </DialogActions>
           </div>
         }
