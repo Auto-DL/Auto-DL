@@ -175,7 +175,6 @@ const useStyles = makeStyles((theme) => ({
   item1selected: {
     textAlign: "center",
     marginBottom: "10px",
-
     backgroundColor: "rgb(115,194,251)",
     color: "black",
     border: "1px solid black",
@@ -187,7 +186,8 @@ const useStyles = makeStyles((theme) => ({
     textAlign: "center",
     marginBottom: "10px",
 
-    backgroundColor: "#adbce6",
+     backgroundColor: "#adbce6",
+    
     color: "black",
     border: "1px solid black",
     padding: "5px",
@@ -286,10 +286,15 @@ function Step2() {
   var token = JSON.parse(localStorage.getItem("token"));
 
   const [components, setcomponents] = React.useState([]);
+  const [selected_layer_class,setSelected_layer_class]=useState(classes.item1);
+  const [clonedLayerErrorDialog,setClonedLayerErrorDialog]=useState(false);
   const [selected_layer_type, setselected_layer_type] = React.useState("");
   const [selected_layer, setselected_layer] = React.useState(-1);
   const [selected_layer_name, setselected_layer_name] = React.useState("");
   const [value, setValue] = React.useState(0);
+  console.log("selected layer is :",selected_layer);
+  console.log("selected layer type  is :",selected_layer_type);
+
   const [state_hyperparam, setstate_hyperparam] = React.useState({
     metrics: "",
     epochs: 0,
@@ -2404,55 +2409,71 @@ function Step2() {
       }
       setcomponents(components);
     }
-    if (
-      destination.droppableId === "target" &&
-      source.droppableId === "source"
-    ) {
-      const list_names_of_source = Object.keys(jsondata);
-      const temp = jsondata[list_names_of_source[source.index]];
-      var dic = _.cloneDeep(temp);
+    if (destination.droppableId === "target" && source.droppableId === "source") 
+      {
+        const list_names_of_source = Object.keys(jsondata);
+        console.log("list of keys is and source index :",list_names_of_source,source.index);
+        const temp = jsondata[list_names_of_source[source.index]];
+        console.log("temp is ",temp);
+        
+        var dic = _.cloneDeep(temp);
+        console.log("dictionary after ",dic);
 
-      if (Array.isArray(components) && components.length === 0) {
-      }
+        // if (Array.isArray(components) && components.length === 0) {
+        // }
 
-      for (var key1 in dic) {
-        for (var key2 in dic[key1]) {
-          if (key2 === "value") {
-            delete dic[key1][key2];
+
+        // for (var key1 in dic) {
+        //   console.log("key 1 is  ",key1);
+        //   for (var key2 in dic[key1]) {
+        //     if (key2 === "value") {
+        //       console.log("key 2 is  ",key2);
+        //       console.log("dic is  ",dic[key1][key2]);
+
+        //       delete dic[key1][key2];
+
+        //     }
+        //   }
+        // }
+
+        //getting the id 
+        dic["id"] = `${list_names_of_source[source.index]}-${source.index}-${
+          destination.index
+        }`;
+        // console.log("we are getting the id ",dic["id"]);
+        dic["name"] = list_names_of_source[source.index];
+
+        console.log("components before",components);
+        
+        components.splice(destination.index, 0, dic);
+
+        console.log("components after",components);
+
+        for (i = 0; i < components.length; i++) {
+          components[i]["id"] = components[i]["id"] + i;
+          console.log("inside loop id",components[i]["id"]);
+          if (i === 0) {
+            if (
+              !("input_size" in components[i]) ||
+              !("input_shape" in components[i])
+            ) {
+              components[i]["input_shape"] = {
+                Example: [200, 200, 3],
+                Default: "NA",
+                Required: 1,
+                Datatype: "Tuple",
+                Options: [],
+                Description: "Input shape for the first layer",
+              };
+            }
+          } else {
+            try {
+              delete components[i]["input_shape"];
+            } catch (err) {}
           }
         }
-      }
-      dic["id"] = `${list_names_of_source[source.index]}-${source.index}-${
-        destination.index
-      }`;
-      dic["name"] = list_names_of_source[source.index];
 
-      components.splice(destination.index, 0, dic);
-
-      for (i = 0; i < components.length; i++) {
-        components[i]["id"] = components[i]["id"] + i;
-        if (i === 0) {
-          if (
-            !("input_size" in components[i]) ||
-            !("input_shape" in components[i])
-          ) {
-            components[i]["input_shape"] = {
-              Example: [200, 200, 3],
-              Default: "NA",
-              Required: 1,
-              Datatype: "Tuple",
-              Options: [],
-              Description: "Input shape for the first layer",
-            };
-          }
-        } else {
-          try {
-            delete components[i]["input_shape"];
-          } catch (err) {}
-        }
-      }
-
-      setcomponents(components);
+        setcomponents(components);
     }
     const validate_res = validate_layers(source, destination, components);
   };
@@ -2470,7 +2491,9 @@ function Step2() {
     var index = selected_layer;
     const pervstate = Object.assign([], components);
     pervstate[index][param]["value"] = event.target.value;
-
+    console.log("prop is ",prop);
+    console.log(event.target.value);
+    console.log(components);
     setcomponents(pervstate);
   };
 
@@ -2843,13 +2866,47 @@ function Step2() {
     setall_prepro(dic);
   };
 
-  const handleClone = (e) => {
-    e.preventDefault();
+  const handleCloneLayer = (e) => {
     if(selected_layer !== -1)
     {
-      components.push(selected_layer_type);
-      setcomponents(components);
+      //getting names of all layers 
+        const list_names_of_source=Object.keys(jsondata);
+        let source_index;
+        let destination_index=components.length;
+        // setselected_layer_name(components[selected_layer].name);
+        for(let i=0;i<list_names_of_source.length;i++)
+        {
+          if(components[selected_layer].name === list_names_of_source[i] )
+          {
+            console.log(components[selected_layer].name ,list_names_of_source[i]);
+            source_index=i;
+            break;
+          }
+        }
+
+        //cloning the layer w.r.t currently selected layer 
+        let clonedLayer= _.cloneDeep(selected_layer_type);
+        // console.log("clonedLayer layer is ",clonedLayer);
+        clonedLayer["id"]=`${components[selected_layer].name}-${source_index}-${destination_index}`;
+        clonedLayer["name"] = list_names_of_source[source_index];
+        //console.log("clonedLayer id is ",clonedLayer["id"]);
+        console.log("components before hc",components);
+        components.splice(destination_index,0,clonedLayer);
+        console.log("components after hc",components);
+
+        for (let i = 0; i < components.length; i++) {
+          components[i]["id"] = components[i]["id"] + i;
+          // console.log("inside loop id",components[i]["id"]);
+        }
+
+        setcomponents(components);
+
     }
+    else
+    {
+      setClonedLayerErrorDialog(true);
+    }
+
 
   };
 
@@ -3135,7 +3192,7 @@ function Step2() {
                         {...provided.droppableProps}
                         className={classes.droppableColtarget}
                       >
-                      <button onClick={handleClone}>Clone Me</button>
+                      <button onClick={handleCloneLayer}>Clone Me</button>
                         {components.map((el, index) => {
                           return (
                             <Draggable
@@ -3155,13 +3212,16 @@ function Step2() {
                                   >
                                   
                                     <div
-                                      className={
-                                        selected_layer ===
-                                        el.id.charAt(el.id.length - 1)
-                                          ? classes.item1selected
-                                          : classes.item1
+                                      className=
+                                      {
+                                        selected_layer_class
+                                      //   // selected_layer ===
+                                      //   // el.id.charAt(el.id.length - 1)? classes.item1selected: classes.item1
+
                                       }
-                                      onClick={() => showdetails(el)}
+                                      onClick={() => {
+                                        showdetails(el)
+                                        }}
                                     >
                                       {el.name}
                                       
@@ -3305,6 +3365,22 @@ function Step2() {
                 }}
               </Droppable>
             </div>
+            {clonedLayerErrorDialog && 
+          <Dialog open={clonedLayerErrorDialog} onClose={() => setClonedLayerErrorDialog(false)} >
+            <DialogTitle id="error-dialog-title">Layer not selected !! </DialogTitle>
+            <DialogContent dividers>
+              <div>
+                <h3>Please select a layer to clone.</h3>
+              </div>
+            </DialogContent>
+            <DialogActions style={{ justifyContent: "center" }}>
+              <Button variant="contained" onClick={() => setClonedLayerErrorDialog(false)} color="primary">
+                OK
+              </Button>
+            </DialogActions>
+
+          </Dialog>
+        }
           </Grid>
         </DragDropContext>
       </TabPanel>
