@@ -234,14 +234,16 @@ def edit_project(request):
         username = request.data.get("username")
         user = User(username=username, password=None)
         user = user.find()
-
         project_id = request.data.get("project_id")
         project_name = request.data.get("project_name")
         project_description = request.data.get("project_description")
         data_dir = request.data.get("data_dir")
         output_file_name = request.data.get("output_file_name")
-
+        shared_by = (request.data.get("shared_by"),)
         store_obj = Store(user)
+        if shared_by and not shared_by[0] == username:
+            project_id = "shared_" + project_id
+
         if not store_obj.exist(project_id):
             raise Exception("No such project exists")
         project_dir = store_obj.path + os.sep + project_id
@@ -422,7 +424,9 @@ def save_layers(request):
         user = User(username=username, password=None)
         user = user.find()
 
-        store_obj = Store(user)
+        store_obj = Store(user)  # if not (os.path.exists(os.path.join(store_obj.rootpath, share_with, "shared"))):
+        #     os.makedirs(os.path.join(store_obj.rootpath, share_with, "shared"))
+
         project_id = request.data.get("project_id")
         layers = request.data.get("layer_json")
         components = request.data.get("component_array")
@@ -621,43 +625,42 @@ def download_code(request):
     return response
 
 
-@api_view(["POST"])
-@is_authenticated
-def get_users(request):
-    try:
-        username = request.data.get("username")
-        user = User(username=username, password=None)
-        # print("type1", type(user))
-        user = user.find()
-        # print("type2", (user))
-        # print("tyoe of store", (Store))
-        store = Store(user)
-        print("root path is", store.rootpath)
-        users = os.listdir(store.rootpath)
-        status, success, message, users = 200, True, "Users fetched", users
-    except Exception as e:
-        status, success, message, users = (
-            500,
-            False,
-            "Could not fetch users ",
-            [],
-        )
-    return JsonResponse(
-        {
-            "success": success,
-            "message": message,
-            "users": users,
-        },
-        status=status,
-    )
+# @api_view(["POST"])
+# @is_authenticated
+# def get_users(request):
+#     try:
+#         username = request.data.get("username")
+#         user = User(username=username, password=None)
+#         # print("type1", type(user))
+#         user = user.find()
+#         # print("type2", (user))
+#         # print("tyoe of store", (Store))
+#         store = Store(user)
+#         print("root path is", store.rootpath)
+#         users = os.listdir(store.rootpath)
+#         status, success, message, users = 200, True, "Users fetched", users
+#     except Exception as e:
+#         status, success, message, users = (
+#             500,
+#             False,
+#             "Could not fetch users ",
+#             [],
+#         )
+#     return JsonResponse(
+#         {
+#             "success": success,
+#             "message": message,
+#             "users": users,
+#         },
+#         status=status,
+#     )
 
 
 @api_view(["GET"])
 @is_authenticated
-def get_all_users(request):
+def get_all_users():
     try:
         rootpath = os.path.expanduser("~/.autodl/")
-        # print("root path is", rootpath)
         users = os.listdir(rootpath)
         status, success, message, users = 200, True, "Users fetched", users
     except Exception as e:
@@ -681,31 +684,26 @@ def get_all_users(request):
 @is_authenticated
 def update_sharing_details(request):
     try:
-        # print("inside")
+
         print(request.data)
         owner = request.data.get("owner")
         share_with = request.data.get("share_with")
         shared_by = request.data.get("shared_by")
-        print("second", share_with, shared_by)
-        # if owner != "":
-        #     username = owner
-        # else:
-        #     username = shared_by
-        # print("username is", username)
+        # print("second", share_with, shared_by)
         user = User(username=owner or shared_by, password=None)
         user = user.find()
         project_id = request.data.get("project_id")
-        print("project is", project_id)
+        # print("project is", project_id)
         store_obj = Store(user)
         project_dir = store_obj.path + os.sep + project_id
-        print(store_obj.path, "       ", store_obj.rootpath)
-        print("dir is", project_dir)
+        # print(store_obj.path, "       ", store_obj.rootpath)
+        # print("dir is", project_dir)
         with open(project_dir + os.sep + "meta.json", "r") as f:
             metadata = json.load(f)
         # if not (os.path.exists(os.path.join(store_obj.rootpath, share_with, "shared"))):
         #     os.makedirs(os.path.join(store_obj.rootpath, share_with, "shared"))
 
-        print("hereeeeeeeeeee")
+        # print("hereeeeeeeeeee")
         try:
             src = os.path.join(project_dir)
             print("src is", src)
@@ -715,7 +713,7 @@ def update_sharing_details(request):
                 share_with,
                 "shared_" + str(project_id),
             )
-            print("dest is", dst)
+            # print("dest is", dst)
             try:
                 os.symlink(src, dst)
                 if not metadata["shared_by"]:
@@ -728,7 +726,7 @@ def update_sharing_details(request):
                 status, success, message = (
                     500,
                     False,
-                    "Project is already being shared :)",
+                    "Project is already being shared",
                 )
 
         except:

@@ -307,6 +307,7 @@ function Home() {
           data_dir: values.data_dir,
           output_file_name: values.output_file_name,
           username: username,
+          shared_by: SelectedProject.shared_by,
         };
 
         var res = await HomeService.edit_project(token, data);
