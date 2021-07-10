@@ -1,4 +1,3 @@
-
 from flask import Flask, request, url_for, redirect, render_template
 from werkzeug.utils import secure_filename
 import numpy as np
@@ -16,15 +15,16 @@ app = Flask(__name__)
 
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
+
 def predResult(result):
     """
-    Takes the 'result' array obtained from model's predict method as input and 
+    Takes the 'result' array obtained from model's predict method as input and
     returns the predicted output class.
     """
     categories = []
     if result.size > 1:
         index = np.argmax(result)
-        
+
     else:
         if result[0][0] < 0.5:
             index = 0
@@ -51,7 +51,7 @@ def predict():
         return "Bad upload!", 400
 
     model = tensorflow.keras.models.load_model(MODEL_PATH)
-    
+
     inputImage.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
     path = "uploads/" + filename
     kwargs = {}
