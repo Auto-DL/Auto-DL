@@ -56,6 +56,7 @@ export default function ProjectTable(props) {
     setAnchorEl(event.currentTarget);
   };
 
+  
   const handleActionsClose = () => {
     setAnchorEl(null);
   };

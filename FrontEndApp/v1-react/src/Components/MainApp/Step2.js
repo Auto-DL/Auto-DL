@@ -1,5 +1,6 @@
 import React, { useEffect, Fragment,useState } from "react";
 import _ from "lodash";
+import FileCopySharpIcon from '@material-ui/icons/FileCopySharp';
 import TextField from "@material-ui/core/TextField";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
@@ -107,6 +108,9 @@ function a11yProps(index) {
 }
 
 const useStyles = makeStyles((theme) => ({
+  margin: {
+    margin: theme.spacing(1),
+  },
   App: {
     marginLeft: "5.5%",
     marginRight: "10px",
@@ -206,8 +210,14 @@ const useStyles = makeStyles((theme) => ({
   },
   container: {
     position: "relative",
-    paddingLeft: "10%",
+     paddingLeft: "10%",
+     marginLeft:"10%",
+     marginRight:"10%",
+
+    display:"flex",
+    justifyContent:"space-between",
   },
+
   heading: {
     textAlign: "center",
     fontSize: "120%",
@@ -286,14 +296,13 @@ function Step2() {
   var token = JSON.parse(localStorage.getItem("token"));
 
   const [components, setcomponents] = React.useState([]);
-  const [selected_layer_class,setSelected_layer_class]=useState(classes.item1);
-  const [clonedLayerErrorDialog,setClonedLayerErrorDialog]=useState(false);
   const [selected_layer_type, setselected_layer_type] = React.useState("");
   const [selected_layer, setselected_layer] = React.useState(-1);
   const [selected_layer_name, setselected_layer_name] = React.useState("");
   const [value, setValue] = React.useState(0);
   console.log("selected layer is :",selected_layer);
   console.log("selected layer type  is :",selected_layer_type);
+  
 
   const [state_hyperparam, setstate_hyperparam] = React.useState({
     metrics: "",
@@ -310,6 +319,7 @@ function Step2() {
   const [selected_loss, setselected_loss] = React.useState({});
   const [openModal, setOpenModal] = React.useState(false);
   const [generated_file_path, setgenerated_file_path] = React.useState("");
+  const [openErrorDialog,setOpenErrorDialog] = useState(false);
 
   const handleCloseModal = () => {
     setOpenModal(false);
@@ -388,6 +398,7 @@ function Step2() {
   const handleChangetabs = (event, newValue) => {
     if (newValue !== 1 && value === 1) {
       saveData();
+
     }
     if (newValue !== 0 && value === 0) {
       savepre();
@@ -1273,8 +1284,8 @@ function Step2() {
             "Specifies the height and width of the 2D convolution window",
         },
         strides: {
-          Example: [1, 1],
-          Default: "1, 1",
+          Example: [, 1],
+          Default: "2, 1",
           Required: 0,
           Datatype: "Tuple",
           Options: [],
@@ -2283,7 +2294,7 @@ function Step2() {
           Required: 0,
           DataType: "select",
           Options: ["True", "False"],
-          Description: "Whether to save training graphs",
+          Description: " to save training Whethergraphs",
         },
       },
     };
@@ -2298,6 +2309,8 @@ function Step2() {
   const [render_prepro, setrender_prepro] = React.useState(temp_pre);
   const [show_pre, setshow_pre] = React.useState(false);
   const [jsondata, setjsondata] = React.useState(temp_json);
+  
+
 
   useEffect(() => {
     async function fetchData() {
@@ -2324,6 +2337,7 @@ function Step2() {
 
       if (res.status === 200) {
         setall_prepro(res.data.preprocessing);
+        // console.log("all_prepro1",all_prepro);
 
         if ("dataset-type" in res.data.preprocessing) {
           setshow_pre(true);
@@ -2350,6 +2364,9 @@ function Step2() {
     fetchDataHyper();
   }, [project_details.project_id, token, username]);
 
+
+
+
   const handleDragEnd = ({ destination, source }) => {
     if (!destination) {
       return;
@@ -2359,6 +2376,7 @@ function Step2() {
       destination.index === source.index &&
       destination.droppableId === source.droppableId
     ) {
+     
       return;
     }
 
@@ -2484,7 +2502,6 @@ function Step2() {
     var index = ele.lastIndexOf(element);
 
     setselected_layer(index);
-    // setselected_layer_name(element.name);
   };
   const save_value = (prop) => (event) => {
     var param = prop;
@@ -2694,9 +2711,7 @@ function Step2() {
     return temp;
   };
 
-  //states for dialog box which is triggered if necessary details are blank 
-  //before generating code.
-  const [openErrorDialog,setOpenErrorDialog] = useState(false);
+ 
 
   const generate_code = async () => {
     if (layer_validation()) {
@@ -2856,6 +2871,7 @@ function Step2() {
     }
     setall_prepro(temp_dic);
 
+
     all_prepro[`dataset-type`] = event.target.value;
     setall_prepro(all_prepro);
     setshow_pre(!show_pre);
@@ -2866,49 +2882,68 @@ function Step2() {
     setall_prepro(dic);
   };
 
-  const handleCloneLayer = (e) => {
-    if(selected_layer !== -1)
-    {
-      //getting names of all layers 
+  const handleCloneLayer = (layer) => {
+    // handleChangetabs();
+    
+      //getting source names of all layers 
         const list_names_of_source=Object.keys(jsondata);
         let source_index;
-        let destination_index=components.length;
-        // setselected_layer_name(components[selected_layer].name);
+
+        //where to place layer in UI
+        let destination_index=Number(layer.id[layer.id.length-1])+1;
+        console.log("destination index  is ",destination_index);
+        
+
+    
+        //finding layer in source array for id framing
         for(let i=0;i<list_names_of_source.length;i++)
         {
-          if(components[selected_layer].name === list_names_of_source[i] )
+          if(layer.name === list_names_of_source[i] )
           {
-            console.log(components[selected_layer].name ,list_names_of_source[i]);
             source_index=i;
             break;
           }
         }
 
-        //cloning the layer w.r.t currently selected layer 
-        let clonedLayer= _.cloneDeep(selected_layer_type);
-        // console.log("clonedLayer layer is ",clonedLayer);
-        clonedLayer["id"]=`${components[selected_layer].name}-${source_index}-${destination_index}`;
+        //cloning the layer 
+        let clonedLayer= _.cloneDeep(layer);
+        
+        //assigning new id and name
+        clonedLayer["id"]=`${layer.name}-${source_index}-${destination_index}`;
         clonedLayer["name"] = list_names_of_source[source_index];
-        //console.log("clonedLayer id is ",clonedLayer["id"]);
-        console.log("components before hc",components);
+        
+
+        //inserting layer just below the layer to be cloned 
         components.splice(destination_index,0,clonedLayer);
-        console.log("components after hc",components);
+        
 
         for (let i = 0; i < components.length; i++) {
           components[i]["id"] = components[i]["id"] + i;
+          if (i === 0) {
+            if (
+              !("input_size" in components[i]) ||
+              !("input_shape" in components[i])
+            ) {
+              components[i]["input_shape"] = {
+                Example: [200, 200, 3],
+                Default: "NA",
+                Required: 1,
+                Datatype: "Tuple",
+                Options: [],
+                Description: "Input shape for the first layer",
+              };
+            }
+          } else {
+            try {
+              delete components[i]["input_shape"];
+            } catch (err) {}
+          }
           // console.log("inside loop id",components[i]["id"]);
         }
 
         setcomponents(components);
-
-    }
-    else
-    {
-      setClonedLayerErrorDialog(true);
-    }
-
-
   };
+
 
   return (
     <div className={classes.App}>
@@ -3090,7 +3125,7 @@ function Step2() {
                                                     : op
                                                 }
                                               >
-                                                {op}
+                                                {op} 
                                               </option>
                                             )
                                           )}
@@ -3123,6 +3158,18 @@ function Step2() {
                                       />
                                     )}
                                   </Grid>
+                                  <div
+                                  style={{marginTop:"1%",display:"flex",justifyContent:"space-between"}}
+                                  title={
+                                    `${
+                                          render_prepro[
+                                            all_prepro["dataset-type"]
+                                          ][key][key1]["Description"]
+                                        }`
+                                  }
+                                >
+                                  <HelpOutlineIcon />
+                                </div>
                                 </Fragment>
                               )
                             )}
@@ -3183,16 +3230,17 @@ function Step2() {
             <Grid item lg={5} md={5} sm={4} xs={4} className={classes.grid2}>
               <div key="target" className={classes.column2}>
                 <span className={classes.spancss}>Model</span>
-
+                
                 <Droppable droppableId="target">
+                
                   {(provided, snapshot) => {
                     return (
+                      
                       <div
                         ref={provided.innerRef}
                         {...provided.droppableProps}
                         className={classes.droppableColtarget}
                       >
-                      <button onClick={handleCloneLayer}>Clone Me</button>
                         {components.map((el, index) => {
                           return (
                             <Draggable
@@ -3205,28 +3253,40 @@ function Step2() {
                                 return (
 
                                   <div
-                                    className={classes.container}
+                                    className={classes.container }
                                     ref={provided.innerRef}
                                     {...provided.draggableProps}
                                     {...provided.dragHandleProps}
                                   >
                                   
                                     <div
-                                      className=
-                                      {
-                                        selected_layer_class
-                                      //   // selected_layer ===
-                                      //   // el.id.charAt(el.id.length - 1)? classes.item1selected: classes.item1
-
-                                      }
+                                    className={classes.item1}
+                                    
                                       onClick={() => {
-                                        showdetails(el)
+                                        
+                                        showdetails(el);
                                         }}
                                     >
                                       {el.name}
+                                      <Button 
+                                      size="small" 
+                                      variant="outlined" 
+                                      color="primary" 
+                                      onClick={() =>handleCloneLayer(el) }
+                                      style={{float:"right",position:"relative"}}
+                                      >
+                                      <FileCopySharpIcon/>
+                                    </Button>
                                       
-                                    </div>
+                                      
+                      
                                   </div>
+                                  
+                                  {/* <Button size="small" variant="outlined">Clone</Button> */}
+                                  
+                                    
+                                  </div>
+
                                 );
                               }}
                             </Draggable>
@@ -3365,22 +3425,7 @@ function Step2() {
                 }}
               </Droppable>
             </div>
-            {clonedLayerErrorDialog && 
-          <Dialog open={clonedLayerErrorDialog} onClose={() => setClonedLayerErrorDialog(false)} >
-            <DialogTitle id="error-dialog-title">Layer not selected !! </DialogTitle>
-            <DialogContent dividers>
-              <div>
-                <h3>Please select a layer to clone.</h3>
-              </div>
-            </DialogContent>
-            <DialogActions style={{ justifyContent: "center" }}>
-              <Button variant="contained" onClick={() => setClonedLayerErrorDialog(false)} color="primary">
-                OK
-              </Button>
-            </DialogActions>
 
-          </Dialog>
-        }
           </Grid>
         </DragDropContext>
       </TabPanel>
