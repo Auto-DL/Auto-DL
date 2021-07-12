@@ -130,58 +130,19 @@ def get_all_projects(request):
         username = request.data.get("username")
         user = User(username=username, password=None)
         user = user.find()
-
         store_obj = Store(user)
+        for f in os.scandir(store_obj.path):
+            if os.path.islink(f) and not os.path.exists(f):
+                os.remove(os.path.join(store_obj.path, f.name))
         project_ids = store_obj.enlist()
-        # print("store obj is", store_obj.enlist())
+
         projects = []
-
         for id in project_ids:
-            if id != "shared":
-                with open(
-                    store_obj.path + os.sep + id + os.sep + "meta.json", "r"
-                ) as f:
-                    metadata = json.load(f)
-                list_item = {id: metadata}
-                projects.append(list_item)
-            # else:
-            #     all_shared_projects = [
-            #         f.name
-            #         for f in os.scandir(
-            #             os.path.join(store_obj.rootpath, username, "shared")
-            #         )
-            #     ]
-            #     for shared_project_id in all_shared_projects:
-            #         # print("hereeeeeeeeeeeee", store_obj.rootpath)
-            #         reference_path = (
-            #             (store_obj.rootpath)
-            #             + username
-            #             + os.sep
-            #             + "shared"
-            #             + os.sep
-            #             + shared_project_id
-            #             + os.sep
-            #             + "meta.json"
-            #         )
-            #         if not os.path.exists(reference_path):
-            #             os.remove(
-            #                 (store_obj.rootpath)
-            #                 + username
-            #                 + os.sep
-            #                 + "shared"
-            #                 + os.sep
-            #                 + shared_project_id
-            #             )
-            #             continue
-            #         with open(
-            #             reference_path,
-            #             "r",
-            #         ) as f:
-            #             print("writing")
-            #             metadata = json.load(f)
-            #         list_item = {"shared_" + shared_project_id: metadata}
-            #         projects.append(list_item)
-
+            path = store_obj.path + os.sep + id + os.sep + "meta.json"
+            with open(path, "r") as f:
+                metadata = json.load(f)
+            list_item = {id: metadata}
+            projects.append(list_item)
         status, success, message = 200, True, "Projects Fetched"
     except Exception as e:
         status, success, message, projects = (
@@ -267,7 +228,6 @@ def edit_project(request):
             if output_file_name is not None
             else metadata["output_file_name"]
         )
-        print("metadata is", metadata)
         with open(project_dir + os.sep + "meta.json", "w") as f:
             json.dump(metadata, f)
         status, success, message = 200, True, "Project Updated Successfully"
@@ -280,10 +240,10 @@ def edit_project(request):
 @is_authenticated
 def delete_project(request):
     try:
+
         username = request.data.get("username")
         user = User(username=username, password=None)
         user = user.find()
-
         project_id = request.data.get("project_id")
 
         store_obj = Store(user)
@@ -291,6 +251,18 @@ def delete_project(request):
 
         if err:
             raise Exception(exception)
+
+        project_dir = os.path.join(
+            store_obj.rootpath,
+            request.data.get("shared_by"),
+            project_id.replace("shared_", ""),
+        )
+
+        with open(project_dir + os.sep + "meta.json", "r") as f:
+            metadata = json.load(f)
+        metadata["shared_with"].remove(username)
+        with open(project_dir + os.sep + "meta.json", "w") as f:
+            json.dump(metadata, f)
 
         status, success, message = 200, True, "Project Deleted Successfully"
     except Exception as e:
@@ -424,7 +396,9 @@ def save_layers(request):
         user = User(username=username, password=None)
         user = user.find()
 
-        store_obj = Store(user)  # if not (os.path.exists(os.path.join(store_obj.rootpath, share_with, "shared"))):
+        store_obj = Store(
+            user
+        )  # if not (os.path.exists(os.path.join(store_obj.rootpath, share_with, "shared"))):
         #     os.makedirs(os.path.join(store_obj.rootpath, share_with, "shared"))
 
         project_id = request.data.get("project_id")
@@ -658,7 +632,17 @@ def download_code(request):
 
 @api_view(["GET"])
 @is_authenticated
-def get_all_users():
+def get_all_users(request):
+    """
+    Endpoint for getting all the users
+    Inputs:
+    -------
+    request:
+        Requires: token in request header
+    Returns:
+    --------
+    response: JsonResponse returning list of all the users
+    """
     try:
         rootpath = os.path.expanduser("~/.autodl/")
         users = os.listdir(rootpath)
@@ -683,37 +667,43 @@ def get_all_users():
 @api_view(["POST"])
 @is_authenticated
 def update_sharing_details(request):
+    """
+    Endpoint for dowloading generated code.
+    Inputs:
+    -------
+    request:
+        Requires: owner of the project, user to share with, user sharing the project,  project_id in request data
+                  token in request header
+    Returns:
+    --------
+    response: JsonResponse describing failure or success
+    """
+
     try:
 
-        print(request.data)
         owner = request.data.get("owner")
         share_with = request.data.get("share_with")
         shared_by = request.data.get("shared_by")
-        # print("second", share_with, shared_by)
+
         user = User(username=owner or shared_by, password=None)
         user = user.find()
         project_id = request.data.get("project_id")
-        # print("project is", project_id)
+
         store_obj = Store(user)
         project_dir = store_obj.path + os.sep + project_id
-        # print(store_obj.path, "       ", store_obj.rootpath)
-        # print("dir is", project_dir)
+
         with open(project_dir + os.sep + "meta.json", "r") as f:
             metadata = json.load(f)
-        # if not (os.path.exists(os.path.join(store_obj.rootpath, share_with, "shared"))):
-        #     os.makedirs(os.path.join(store_obj.rootpath, share_with, "shared"))
 
-        # print("hereeeeeeeeeee")
         try:
             src = os.path.join(project_dir)
-            print("src is", src)
+
             dst = os.path.join(
-                # store_obj.rootpath, share_with, "shared", +"shared_" + str(project_id)
                 store_obj.rootpath,
                 share_with,
                 "shared_" + str(project_id),
             )
-            # print("dest is", dst)
+
             try:
                 os.symlink(src, dst)
                 if not metadata["shared_by"]:
