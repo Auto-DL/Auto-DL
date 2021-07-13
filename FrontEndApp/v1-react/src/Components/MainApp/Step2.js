@@ -203,12 +203,10 @@ const useStyles = makeStyles((theme) => ({
     position:"relative",
     // height:"20%",
     // width:"20%",
-    // marginTop:"12px",
     maxWidth:"30px",
     minWidth:"30px",
     maxHeight:"30px",
     minHeight:"30px",
-    // border:"1px solid black",
     
     
 
