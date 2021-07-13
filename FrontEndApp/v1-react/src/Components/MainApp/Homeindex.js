@@ -341,7 +341,7 @@ function Home() {
                 required
                 fullWidth
                 label="Project Name"
-                defaultValue={values.project_name + " Clone"}
+                defaultValue={values.project_name.slice(-5) === "Clone" ? values.project_name : values.project_name + " Clone"}
                 size="small"
                 autoComplete="Project Name"
                 autoFocus
