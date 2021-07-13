@@ -200,8 +200,9 @@ def edit_project(request):
         project_description = request.data.get("project_description")
         data_dir = request.data.get("data_dir")
         output_file_name = request.data.get("output_file_name")
-        shared_by = (request.data.get("shared_by"),)
+        shared_by = request.data.get("shared_by")
         store_obj = Store(user)
+        print(store_obj.path)
         if shared_by and not shared_by[0] == username:
             project_id = "shared_" + project_id
 
@@ -597,37 +598,6 @@ def download_code(request):
     except Exception as e:
         response = HttpResponse("<h1>File not found</h1>")
     return response
-
-
-# @api_view(["POST"])
-# @is_authenticated
-# def get_users(request):
-#     try:
-#         username = request.data.get("username")
-#         user = User(username=username, password=None)
-#         # print("type1", type(user))
-#         user = user.find()
-#         # print("type2", (user))
-#         # print("tyoe of store", (Store))
-#         store = Store(user)
-#         print("root path is", store.rootpath)
-#         users = os.listdir(store.rootpath)
-#         status, success, message, users = 200, True, "Users fetched", users
-#     except Exception as e:
-#         status, success, message, users = (
-#             500,
-#             False,
-#             "Could not fetch users ",
-#             [],
-#         )
-#     return JsonResponse(
-#         {
-#             "success": success,
-#             "message": message,
-#             "users": users,
-#         },
-#         status=status,
-#     )
 
 
 @api_view(["GET"])
