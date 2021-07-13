@@ -189,14 +189,29 @@ const useStyles = makeStyles((theme) => ({
   item1: {
     textAlign: "center",
     marginBottom: "10px",
-
-     backgroundColor: "#adbce6",
+    padding:"2px",
+    backgroundColor: "#adbce6",
     
     color: "black",
     border: "1px solid black",
-    padding: "5px",
     borderRadius: "7px 7px 7px 7px",
     width: "85%",
+    
+  },
+  cloneBtn :{
+    float:"right",
+    position:"relative",
+    // height:"20%",
+    // width:"20%",
+    // marginTop:"12px",
+    maxWidth:"30px",
+    minWidth:"30px",
+    maxHeight:"30px",
+    minHeight:"30px",
+    // border:"1px solid black",
+    
+    
+
   },
   styleclose: {
     float: "right",
@@ -1284,8 +1299,8 @@ function Step2() {
             "Specifies the height and width of the 2D convolution window",
         },
         strides: {
-          Example: [, 1],
-          Default: "2, 1",
+          Example: [1, 1],
+          Default: "1, 1",
           Required: 0,
           Datatype: "Tuple",
           Options: [],
@@ -2882,6 +2897,7 @@ function Step2() {
     setall_prepro(dic);
   };
 
+
   const handleCloneLayer = (layer) => {
     // handleChangetabs();
     
@@ -3138,9 +3154,9 @@ function Step2() {
                                         value={
                                           all_prepro
                                             ? all_prepro[
-                                                `${all_prepro["dataset-type"]}-${key}-${key1}`
+                                                `${all_prepro["dataset-type"]}-${key}-${key1} `
                                               ]
-                                            : ""
+                                            : " "
                                         }
                                         onChange={handle_pre(
                                           key,
@@ -3270,12 +3286,11 @@ function Step2() {
                                       {el.name}
                                       <Button 
                                       size="small" 
-                                      variant="outlined" 
                                       color="primary" 
                                       onClick={() =>handleCloneLayer(el) }
-                                      style={{float:"right",position:"relative"}}
+                                      className={classes.cloneBtn}
                                       >
-                                      <FileCopySharpIcon/>
+                                      <FileCopySharpIcon fontSize="small" />
                                     </Button>
                                       
                                       
@@ -3390,7 +3405,7 @@ function Step2() {
                                           : components[selected_layer][key][
                                               "Default"
                                             ] === "NA"
-                                          ? ""
+                                          ? " "
                                           : components[selected_layer][key][
                                               "Default"
                                             ]
