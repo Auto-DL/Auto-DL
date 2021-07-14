@@ -1,10 +1,10 @@
 import { Fragment } from "react";
-import { Grid, FormControl, FormControlLabel, InputLabel, Select, TextField, Button, Checkbox } from "@material-ui/core";
+import { Grid, FormControl, FormControlLabel, InputLabel, Select, TextField, Button, Dialog, Checkbox } from "@material-ui/core";
 import { useTheme } from "@material-ui/core/styles";
-import { useStyles } from "./styles.js";
+import { useStyles, DialogTitle, DialogActions, DialogContent } from "./styles.js";
 import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
 
-const HyperparameterTab = ({ TabPanel, value, project_details, state_hyperparam, handleChange_hyperparameter, handleChange_hyperparameter_l_o, all_optimizer, all_loss, showoptimizer, selected_optimizer, selected_loss, _hyper, save_value_hyper, showloss, generate_code, Train }) => {
+const HyperparameterTab = ({ TabPanel, value, project_details, state_hyperparam, handleChange_hyperparameter, handleChange_hyperparameter_l_o, all_optimizer, all_loss, showoptimizer, selected_optimizer, selected_loss, _hyper, save_value_hyper, showloss, generate_code, Train, openErrorDialog, setOpenErrorDialog }) => {
   const theme = useTheme();
   const classes = useStyles();
 
@@ -446,6 +446,25 @@ const HyperparameterTab = ({ TabPanel, value, project_details, state_hyperparam,
         </Grid>
         <Grid item lg={4} md={4}></Grid>
       </Grid>
+
+      {/*Dialog if necessary details are not    */}
+      {openErrorDialog &&
+        <Dialog open={openErrorDialog} onClose={() => setOpenErrorDialog(false)} >
+          <DialogTitle id="error-dialog-title">Required Parameters Missing!! </DialogTitle>
+          <DialogContent dividers>
+            <div>
+              <h3>Please enter required values in all layers in Model</h3>
+            </div>
+          </DialogContent>
+          <DialogActions style={{ justifyContent: "center" }}>
+            <Button variant="contained" onClick={() => setOpenErrorDialog(false)} color="primary">
+              OK
+            </Button>
+          </DialogActions>
+
+        </Dialog>
+      }
+
     </TabPanel>
   );
 }

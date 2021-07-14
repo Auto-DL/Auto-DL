@@ -1,26 +1,11 @@
 import React, { useState, Fragment } from "react";
 import { withStyles, makeStyles } from "@material-ui/core/styles";
-import {
-  Typography,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  Dialog,
-  DialogActions,
-  DialogTitle,
-  Button,
-  IconButton,
-  Menu,
-  MenuItem,
-} from "@material-ui/core";
+import { Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Dialog, DialogActions, DialogTitle, Button, IconButton, Menu, MenuItem } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import AddCircleIcon from "@material-ui/icons/AddCircle";
+import FileCopyIcon from '@material-ui/icons/FileCopy';
 import HomeService from "./HomeService";
 
 const StyledTableCell = withStyles((theme) => ({
@@ -59,7 +44,7 @@ export default function ProjectTable(props) {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
-  const [currentProject, setCurrentProject] = useState(null);
+  const [currentProject, setCurrentProject] = useState({});
   var username = JSON.parse(localStorage.getItem("username"));
   var token = JSON.parse(localStorage.getItem("token"));
 
@@ -67,8 +52,37 @@ export default function ProjectTable(props) {
     setOpen(false);
   };
 
+  const handleActionsOpen = (project, event) => {
+    setAnchorEl(event.currentTarget);
+    setCurrentProject(project);
+  };
+
+  const handleActionsClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleEdit = () => {
+    console.log(currentProject.project_id);
+    handleActionsClose();
+    props.editproject(currentProject);
+  };
+
+  const handleClone = () => {
+    console.log(currentProject.project_id);
+    handleActionsClose();
+    props.cloneProject(currentProject);
+  };
+  
+  const handleDelete = () => {
+    console.log(currentProject.project_id);
+    handleActionsClose();
+    setCurrentProject(currentProject);
+    setOpen(true);
+  };
+
   const handleDeleteYes = async () => {
     setOpen(false);
+    console.log(currentProject.project_id);
     const data = {
       username: username,
       project_id: currentProject.project_id,
@@ -78,27 +92,6 @@ export default function ProjectTable(props) {
     const res = await HomeService.delete_project(token, data);
     console.log(res);
     props.parent_call_on_delete();
-  };
-
-  const handleActionsOpen = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleActionsClose = () => {
-    setAnchorEl(null);
-  };
-
-  const handleEdit = (project) => {
-    console.log(project.project_id);
-    handleActionsClose();
-    props.editproject(project);
-  };
-
-  const handleDelete = (project) => {
-    console.log(project.project_id);
-    handleActionsClose();
-    setCurrentProject(project);
-    setOpen(true);
   };
 
   return (
@@ -153,16 +146,10 @@ export default function ProjectTable(props) {
                   <StyledTableCell align="center">Name</StyledTableCell>
                   <StyledTableCell align="center">Language</StyledTableCell>
                   <StyledTableCell align="center">Library</StyledTableCell>
-                  <StyledTableCell align="center">
-                    Data Directory
-                  </StyledTableCell>
+                  <StyledTableCell align="center">Data Directory</StyledTableCell>
                   <StyledTableCell align="center">Task</StyledTableCell>
-                  <StyledTableCell align="center">
-                    Output File Name
-                  </StyledTableCell>
-                  <StyledTableCell align="center">
-                    Project Description
-                  </StyledTableCell>
+                  <StyledTableCell align="center">Output File Name</StyledTableCell>
+                  <StyledTableCell align="center">Project Description</StyledTableCell>
                   <StyledTableCell align="center">Actions</StyledTableCell>
                 </TableRow>
               </TableHead>
@@ -217,17 +204,14 @@ export default function ProjectTable(props) {
                           align="center"
                           onClick={() => props.handlestep(project[p])}
                         >
-                          {project[p].project_description}
+                          {project[p].project_description.length <= 40 ? project[p].project_description : project[p].project_description.slice(0, 40)+"..."}
                         </StyledTableCell>
-                        <StyledTableCell
-                          align="center"
-                          onClick={() => setCurrentProject(project[p])}
-                        >
+                        <StyledTableCell align="center">
                           <IconButton
                             aria-controls="customized-menu"
                             aria-label="options"
                             aria-haspopup="true"
-                            onClick={handleActionsOpen}
+                            onClick={(e) => handleActionsOpen(project[p], e)}
                           >
                             <MoreVertIcon />
                           </IconButton>
@@ -239,14 +223,13 @@ export default function ProjectTable(props) {
                             open={Boolean(anchorEl)}
                             onClose={handleActionsClose}
                           >
-                            <MenuItem
-                              onClick={() => handleEdit(currentProject)}
-                            >
+                            <MenuItem onClick={handleEdit}>
                               <EditIcon /> &nbsp; Edit
                             </MenuItem>
-                            <MenuItem
-                              onClick={() => handleDelete(currentProject)}
-                            >
+                            <MenuItem onClick={handleClone}>
+                              <FileCopyIcon /> &nbsp; Clone
+                            </MenuItem>
+                            <MenuItem onClick={handleDelete}>
                               <DeleteIcon /> &nbsp; Delete
                             </MenuItem>
                           </Menu>

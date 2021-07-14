@@ -2446,6 +2446,10 @@ function Step2() {
     return temp;
   };
 
+  //states for dialog box which is triggered if necessary details are blank 
+  //before generating code.
+  const [openErrorDialog,setOpenErrorDialog] = useState(false);
+
   const generate_code = async () => {
     if (layer_validation()) {
       const hyper_data = generate_hyper();
@@ -2468,7 +2472,10 @@ function Step2() {
         // history.push("/login");
       }
     } else {
-      alert("please fill all the required fileds in layers");
+      // alert("please fill all the required fileds in layers");
+      //states for dialog box which is triggered if necessary details are blank 
+      //before generating code.
+      setOpenErrorDialog(true);
     }
   };
 
@@ -2707,6 +2714,8 @@ function Step2() {
         showloss={showloss}
         generate_code={generate_code}
         Train={Train}
+        openErrorDialog={openErrorDialog}
+        setOpenErrorDialog={setOpenErrorDialog}
       />
 
     </div>
