@@ -1,8 +1,12 @@
 import os
 import jwt
 import bcrypt
+import random
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
+import string
+
+from .connector import connect
 
 load_dotenv()
 
@@ -53,3 +57,46 @@ class Token:
             return True
 
         return False
+
+
+class Otp:
+    def __init__(self, user, otp=None, expire=None, **kwargs):
+        self.user = user
+        self.username = user.get("username")
+        self.otp = otp
+        self.expire = expire
+        self.db = connect()
+        self.collection_name = kwargs.get("collection", "otp")
+        self.collection = self.db[self.collection_name]
+        self.attributes = kwargs
+
+    def create(self, time_delta=5):
+        try:
+            """
+            time_delta: (int) In minutes
+            """
+            print("creating otp")
+            self.expire = datetime.now() + timedelta(minutes=time_delta)
+            self.otp = "".join(
+                random.SystemRandom().choice(string.ascii_uppercase + string.digits)
+                for _ in range(6)
+            )
+            doc_otp = {"user": self.user, "otp": self.otp, "expire": self.expire, "username": self.user["username"]}
+            self.collection.insert_one(doc_otp)
+            return self.otp
+        except Exception as e:
+            return None
+
+    def find(self):
+        return self.collection.find_one({"username": self.username})
+
+    def verify(self):
+        self.expire = datetime.strptime(self.expire)
+        print("working")
+        if self.otp is None or self.expire > datetime.now():
+            return False
+        return True
+
+    def delete(self):
+        self.otp = None
+        self.expire = None
