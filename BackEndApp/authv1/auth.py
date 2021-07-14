@@ -81,7 +81,12 @@ class Otp:
                 random.SystemRandom().choice(string.ascii_uppercase + string.digits)
                 for _ in range(6)
             )
-            doc_otp = {"user": self.user, "otp": self.otp, "expire": self.expire, "username": self.user["username"]}
+            doc_otp = {
+                "user": self.user,
+                "otp": self.otp,
+                "expire": self.expire,
+                "username": self.user["username"],
+            }
             self.collection.insert_one(doc_otp)
             return self.otp
         except Exception as e:
@@ -92,7 +97,6 @@ class Otp:
 
     def verify(self):
         self.expire = datetime.strptime(self.expire)
-        print("working")
         if self.otp is None or self.expire > datetime.now():
             return False
         return True
