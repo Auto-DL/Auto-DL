@@ -2782,6 +2782,7 @@ function Step2() {
         selected_layer_type={selected_layer_type}
         showdetails={showdetails}
         save_value={save_value}
+        handleCloneLayer={handleCloneLayer}
       />
 
       <HyperparameterTab
