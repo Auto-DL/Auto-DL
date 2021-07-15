@@ -11,6 +11,10 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+from urllib.parse import urlparse
+from corsheaders.defaults import default_headers
+
+FRONTEND_HOST = os.getenv("FRONTEND_HOST", "http://localhost:3000")
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -25,7 +29,7 @@ SECRET_KEY = "q$2lre_hyydi(w7hb!*03()$y*q#rzy#ny^9hitqjb^q1_a6q="
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", urlparse(FRONTEND_HOST).hostname]
 
 
 # Application definition
@@ -80,7 +84,14 @@ WSGI_APPLICATION = "BackEndApp.wsgi.application"
 DATABASES = {"default": {"ENGINE": "django.db.backends.dummy"}}
 
 CORS_ORIGIN_ALLOW_ALL = False
-CORS_ORIGIN_WHITELIST = (os.getenv("FRONTEND_HOST"), "http://localhost:8000")
+CORS_ALLOWED_ORIGINS = [FRONTEND_HOST]
+CORS_ALLOW_HEADERS = list(default_headers) + [
+    "token",
+]
+CORS_ORIGIN_WHITELIST = (
+    FRONTEND_HOST,
+    "http://localhost:8000",
+)
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
