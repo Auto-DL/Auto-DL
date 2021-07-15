@@ -344,13 +344,11 @@ function Home() {
   const shareProject = async (shared_by, owner, project_id, share_with) => {
     const data = { shared_by, owner, project_id, share_with };
     const res = await HomeService.share_project(token, data);
-    console.log(res);
+
     if (res.status === 200) {
-      console.log("doneeeeeeeeeeeees");
       setalert({ ...values, msg: res.data.message, severity: "success" });
       // localStorage.setItem("project_details", JSON.stringify(data));
     } else {
-      console.log("not doneeeeeeeeeeeees");
       setalert({ ...values, msg: res.data.message, severity: "error" });
     }
     setOpen(true);
@@ -392,6 +390,7 @@ function Home() {
                 fullWidth
                 label="Project Name"
                 defaultValue={
+                  values.project_name &&
                   values.project_name.slice(-5) === "Clone"
                     ? values.project_name
                     : values.project_name + " Clone"

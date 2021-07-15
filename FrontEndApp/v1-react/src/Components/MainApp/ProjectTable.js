@@ -66,26 +66,19 @@ const useStyles = makeStyles({
 });
 
 export default function Project_table(props) {
-  const [allUsers, setAllUsers] = useState([]);
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const [openShare, setOpenShare] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [anchorElShared, setAnchorElShared] = useState(null);
+  const [allUsers, setAllUsers] = useState([]);
   const [currentProject, setCurrentProject] = useState({});
-  const [currentProject2, setCurrentProject2] = useState({});
-  const [currentProjectTemp, setCurrentProjectTemp] = useState(null);
   const [usernameToShareWith, setUsernameToShareWith] = useState("");
   const [currentSharedUsers, setCurrentSharedUsers] = useState([]);
   const [anchorElPop, setAnchorElPop] = React.useState(null);
 
   var username = JSON.parse(localStorage.getItem("username"));
   var token = JSON.parse(localStorage.getItem("token"));
-
-  // console.log("all are", props.projects);
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
 
   const handleClose = () => {
     setOpen(false);
@@ -102,86 +95,29 @@ export default function Project_table(props) {
   };
 
   const handleEdit = () => {
-    console.log(currentProject.project_id);
     handleActionsClose();
     handleShareActionsClose();
     props.editproject(currentProject);
   };
 
   const handleClone = () => {
-    console.log(currentProject.project_id);
+    // console.log(currentProject.project_id);
     handleActionsClose();
     props.cloneProject(currentProject);
   };
 
   const handleDelete = () => {
-    // console.log(currentProject.project_id);
+    // console.log("current proj is", currentProject);
     handleActionsClose();
     handleShareActionsClose();
     setCurrentProject(currentProject);
     setOpen(true);
   };
 
-  //share handlers
-  const handleShareActionsOpen = (event) => {
-    setAnchorElShared(event.currentTarget);
-  };
-
-  const handleShareActionsClose = () => {
-    setAnchorElShared(null);
-  };
-
-  const handleShare = async () => {
-    const res = await HomeService.get_all_users(token);
-    setAllUsers(
-      res.data.users.filter(
-        (user) => user !== username && user !== currentProjectTemp.shared_by
-      )
-    );
-    handleShareActionsClose();
-    setOpenShare(true);
-    handleActionsClose();
-    setCurrentProject2(currentProjectTemp);
-  };
-
-  const handleShareUsernameChange = (event, value) => {
-    setUsernameToShareWith(value);
-  };
-
-  const handleShareClick = () => {
-    var owner = "";
-    if (currentProject2.shared_by) {
-      owner = currentProject2.shared_by;
-    }
-
-    if (allUsers.includes(usernameToShareWith)) {
-      props.shareProject(
-        username,
-        owner,
-        currentProject2.project_id,
-        usernameToShareWith
-      );
-      if (
-        currentProject2.shared_with &&
-        !currentProject2.shared_with.includes(usernameToShareWith)
-      )
-        currentProject2.shared_with.push(usernameToShareWith);
-    }
-  };
-
-  const handleClickPop = (event) => {
-    setAnchorElPop(event.currentTarget);
-  };
-
-  const handleClosePop = () => {
-    setAnchorElPop(null);
-  };
-  const openPop = Boolean(anchorElPop);
-  const id = openPop ? "simple-popover" : undefined;
   const handleDeleteYes = async () => {
     setOpen(false);
-    console.log(username);
-    console.log(currentProject);
+    // console.log(username);
+    // console.log(currentProject);
     const project_id =
       currentProject.shared_by && currentProject.shared_by !== username
         ? "shared_" + currentProject.project_id
@@ -194,9 +130,68 @@ export default function Project_table(props) {
       shared_by: currentProject.shared_by,
     };
     const res = await HomeService.delete_project(token, data);
-    console.log(res);
+    // console.log(res);
     props.parent_call_on_delete();
   };
+
+  //share handlers
+  const handleShareActionsOpen = (project, event) => {
+    setAnchorElShared(event.currentTarget);
+    setCurrentProject(project);
+  };
+
+  const handleShareActionsClose = () => {
+    setAnchorElShared(null);
+  };
+
+  const handleShare = async () => {
+    const res = await HomeService.get_all_users(token);
+    setAllUsers(
+      res.data.users.filter(
+        (user) => user !== username && user !== currentProject.shared_by
+      )
+    );
+    handleShareActionsClose();
+    setOpenShare(true);
+    handleActionsClose();
+    setCurrentProject(currentProject);
+  };
+
+  const handleShareUsernameChange = (event, value) => {
+    setUsernameToShareWith(value);
+  };
+
+  const handleShareClick = () => {
+    var owner = "";
+    if (currentProject.shared_by) {
+      owner = currentProject.shared_by;
+    }
+
+    if (allUsers.includes(usernameToShareWith)) {
+      props.shareProject(
+        username,
+        owner,
+        currentProject.project_id,
+        usernameToShareWith
+      );
+      if (
+        currentProject.shared_with &&
+        !currentProject.shared_with.includes(usernameToShareWith)
+      )
+        currentProject.shared_with.push(usernameToShareWith);
+    }
+  };
+
+  const handleClickPop = (event) => {
+    setAnchorElPop(event.currentTarget);
+  };
+
+  const handleClosePop = () => {
+    setAnchorElPop(null);
+  };
+
+  const openPop = Boolean(anchorElPop);
+  const id = openPop ? "simple-popover" : undefined;
 
   return (
     <>
@@ -215,7 +210,7 @@ export default function Project_table(props) {
       </Dialog>
       <Dialog open={openShare} onClose={handleClose}>
         <DialogTitle id="alert-dialog-title">
-          Share Project ({currentProject2 ? currentProject2.project_name : ""})
+          Share Project ({currentProject ? currentProject.project_name : ""})
         </DialogTitle>
         <DialogContent dividers>
           <Typography variant="body1" gutterBottom>
@@ -426,18 +421,14 @@ export default function Project_table(props) {
                                       40
                                     ) + "..."}
                               </StyledTableCell>
-                              <StyledTableCell
-                                align="center"
-                                onClick={() => {
-                                  setCurrentProject(project[p]);
-                                  setCurrentProjectTemp(project[p]);
-                                }}
-                              >
+                              <StyledTableCell align="center">
                                 <IconButton
                                   aria-controls="customized-menu"
                                   aria-label="options"
                                   aria-haspopup="true"
-                                  onClick={handleActionsOpen}
+                                  onClick={(e) =>
+                                    handleActionsOpen(project[p], e)
+                                  }
                                 >
                                   <MoreVertIcon />
                                 </IconButton>
@@ -449,24 +440,16 @@ export default function Project_table(props) {
                                   open={Boolean(anchorEl)}
                                   onClose={handleActionsClose}
                                 >
-                                  <MenuItem
-                                    onClick={() => handleEdit(currentProject)}
-                                  >
+                                  <MenuItem onClick={handleEdit}>
                                     <EditIcon /> &nbsp; Edit
                                   </MenuItem>
                                   <MenuItem onClick={handleClone}>
                                     <FileCopyIcon /> &nbsp; Clone
                                   </MenuItem>
-                                  <MenuItem
-                                    onClick={() => handleDelete(currentProject)}
-                                  >
+                                  <MenuItem onClick={handleDelete}>
                                     <DeleteIcon /> &nbsp; Delete
                                   </MenuItem>
-                                  <MenuItem
-                                    onClick={() => {
-                                      handleShare();
-                                    }}
-                                  >
+                                  <MenuItem onClick={handleShare}>
                                     <ShareIcon /> &nbsp; Share
                                   </MenuItem>
                                 </Menu>
@@ -611,18 +594,14 @@ export default function Project_table(props) {
                                       40
                                     ) + "..."}
                               </StyledTableCell>
-                              <StyledTableCell
-                                align="center"
-                                onClick={() => {
-                                  setCurrentProject(project[p]);
-                                  setCurrentProjectTemp(project[p]);
-                                }}
-                              >
+                              <StyledTableCell align="center">
                                 <IconButton
                                   aria-controls="customized-menu2"
                                   aria-label="options"
                                   aria-haspopup="true"
-                                  onClick={handleShareActionsOpen}
+                                  onClick={(e) =>
+                                    handleShareActionsOpen(project[p], e)
+                                  }
                                 >
                                   <MoreVertIcon />
                                 </IconButton>
@@ -634,17 +613,13 @@ export default function Project_table(props) {
                                   open={Boolean(anchorElShared)}
                                   onClose={handleShareActionsClose}
                                 >
-                                  <MenuItem
-                                    onClick={() => handleEdit(currentProject)}
-                                  >
+                                  <MenuItem onClick={handleEdit}>
                                     <EditIcon /> &nbsp; Edit
                                   </MenuItem>
                                   {/* <MenuItem onClick={handleClone}>
                                     <FileCopyIcon /> &nbsp; Clone
                                   </MenuItem> */}
-                                  <MenuItem
-                                    onClick={() => handleDelete(currentProject)}
-                                  >
+                                  <MenuItem onClick={handleDelete}>
                                     <DeleteIcon /> &nbsp; Delete
                                   </MenuItem>
                                   {/* <MenuItem

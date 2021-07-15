@@ -1,6 +1,20 @@
 import React, { useState, useEffect } from "react";
-import { Button, AppBar, Tabs, Tab, Box, Typography, Dialog, Tooltip } from "@material-ui/core";
-import { useStyles, DialogTitle, DialogActions, DialogContent } from "./step-2/styles.js";
+import {
+  Button,
+  AppBar,
+  Tabs,
+  Tab,
+  Box,
+  Typography,
+  Dialog,
+  Tooltip,
+} from "@material-ui/core";
+import {
+  useStyles,
+  DialogTitle,
+  DialogActions,
+  DialogContent,
+} from "./step-2/styles.js";
 import _ from "lodash";
 import PropTypes from "prop-types";
 import fileDownload from "js-file-download";
@@ -70,6 +84,14 @@ function Step2() {
   const [openModal, setOpenModal] = useState(false);
   const [generated_file_path, setgenerated_file_path] = useState("");
 
+  const getProjectId = () => {
+    const project_id =
+      project_details.shared_by && project_details.shared_by !== username
+        ? "shared_" + project_details.project_id
+        : project_details.project_id;
+    return project_id;
+  };
+
   const handleCloseModal = () => {
     setOpenModal(false);
   };
@@ -97,7 +119,7 @@ function Step2() {
   async function saveData() {
     const data = {
       username: username,
-      project_id: project_details.project_id,
+      project_id: getProjectId(),
       layer_json: genrate_layers(),
       component_array: components,
     };
@@ -113,7 +135,7 @@ function Step2() {
 
     const data = {
       username: username,
-      project_id: project_details.project_id,
+      project_id: getProjectId(),
       preprocessing_params: all_prepro_dub,
     };
 
@@ -134,7 +156,7 @@ function Step2() {
 
     const data = {
       username: username,
-      project_id: project_details.project_id,
+      project_id: getProjectId(),
       hyperparams: hyper_data,
     };
     const res = await HomeService.save_hyperparams(token, data);
@@ -159,7 +181,10 @@ function Step2() {
 
   let temp_optimizer, temp_pre_meta, temp_pre, temp_loss, temp_json, hyper;
 
-  if ( project_details.lib === "Pytorch" || project_details.library === "Pytorch" ) {
+  if (
+    project_details.lib === "Pytorch" ||
+    project_details.library === "Pytorch"
+  ) {
     temp_pre_meta = {
       dataset: {
         name: "dataset",
@@ -458,9 +483,9 @@ function Step2() {
           Description:
             "Specifies the threshold at which to change between L1 and L2 loss. This value defaults to 1.0.",
         },
-      }
+      },
     };
-    
+
     temp_optimizer = {
       SGD: {
         name: "SGD",
@@ -998,8 +1023,11 @@ function Step2() {
             "A dimension along which Softmax will be computed (so every slice along dim will sum to 1).",
         },
       },
-    }
-  } else if ( project_details.lib === "Keras" || project_details.library === "Keras" ) {
+    };
+  } else if (
+    project_details.lib === "Keras" ||
+    project_details.library === "Keras"
+  ) {
     temp_json = {
       Conv2D: {
         filters: {
@@ -2056,9 +2084,7 @@ function Step2() {
   const [all_optimizer, setall_optimizer] = useState(temp_optimizer);
   const [all_loss, setall_loss] = useState(temp_loss);
   const [all_prepro, setall_prepro] = useState({});
-  const [render_prepro_meta, setrender_prepro_meta] = useState(
-    temp_pre_meta
-  );
+  const [render_prepro_meta, setrender_prepro_meta] = useState(temp_pre_meta);
   const [render_prepro, setrender_prepro] = useState(temp_pre);
   const [show_pre, setshow_pre] = useState(false);
   const [jsondata, setjsondata] = useState(temp_json);
@@ -2067,7 +2093,7 @@ function Step2() {
     async function fetchData() {
       const data = {
         username: username,
-        project_id: project_details.project_id,
+        project_id: getProjectId(),
       };
 
       const res = await HomeService.get_layers(token, data);
@@ -2083,7 +2109,7 @@ function Step2() {
     async function fetchDataPre() {
       const data = {
         username: username,
-        project_id: project_details.project_id,
+        project_id: getProjectId(),
       };
 
       const res = await HomeService.get_pre(token, data);
@@ -2103,7 +2129,7 @@ function Step2() {
     async function fetchDataHyper() {
       const data = {
         username: username,
-        project_id: project_details.project_id,
+        project_id: getProjectId(),
       };
 
       const res = await HomeService.get_hyperparams(token, data);
@@ -2116,7 +2142,7 @@ function Step2() {
     }
 
     fetchDataHyper();
-  }, [project_details.project_id, token, username]);
+  }, [getProjectId(), token, username]);
 
   const handleDragEnd = ({ destination, source }) => {
     if (!destination) {
@@ -2455,9 +2481,10 @@ function Step2() {
       const hyper_data = generate_hyper();
       const layers_data = genrate_layers();
       var _data = Object.assign({}, hyper_data, layers_data);
+
       const data = {
         username: username,
-        project_id: project_details.project_id,
+        project_id: getProjectId(),
         training_params: _data,
       };
       const res = await HomeService.generate_code(token, data);
@@ -2482,7 +2509,7 @@ function Step2() {
   const download_code = async () => {
     const data = {
       username: username,
-      project_id: project_details.project_id,
+      project_id: getProjectId(),
     };
     const res = await HomeService.download_code(token, data);
     if (res.status === 200) {
@@ -2498,7 +2525,7 @@ function Step2() {
     var _data = Object.assign({}, hyper_data, layers_data);
     const data = {
       username: username,
-      project_id: project_details.project_id,
+      project_id: getProjectId(),
       training_params: _data,
     };
     const res = await HomeService.train_model(token, data);
@@ -2717,7 +2744,6 @@ function Step2() {
         openErrorDialog={openErrorDialog}
         setOpenErrorDialog={setOpenErrorDialog}
       />
-
     </div>
   );
 }
