@@ -1,78 +1,14 @@
-import React, { useEffect, Fragment,useState } from "react";
+import React, { useState, useEffect } from "react";
+import { Button, AppBar, Tabs, Tab, Box, Typography, Dialog, Tooltip } from "@material-ui/core";
+import { useStyles, DialogTitle, DialogActions, DialogContent } from "./step-2/styles.js";
 import _ from "lodash";
-import FileCopySharpIcon from '@material-ui/icons/FileCopySharp';
-import TextField from "@material-ui/core/TextField";
-import FormControl from "@material-ui/core/FormControl";
-import Select from "@material-ui/core/Select";
-import Button from "@material-ui/core/Button";
-import fileDownload from "js-file-download";
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import { makeStyles, withStyles, useTheme } from "@material-ui/core/styles";
-import Grid from "@material-ui/core/Grid";
-import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
-import AppBar from "@material-ui/core/AppBar";
-import Tabs from "@material-ui/core/Tabs";
-import Tab from "@material-ui/core/Tab";
-import Box from "@material-ui/core/Box";
-import Typography from "@material-ui/core/Typography";
-import IconButton from "@material-ui/core/IconButton";
-import InputLabel from "@material-ui/core/InputLabel";
 import PropTypes from "prop-types";
-import HomeService from "./HomeService";
-import Checkbox from "@material-ui/core/Checkbox";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Dialog from "@material-ui/core/Dialog";
-import MuiDialogTitle from "@material-ui/core/DialogTitle";
-import MuiDialogContent from "@material-ui/core/DialogContent";
-import MuiDialogActions from "@material-ui/core/DialogActions";
-import CloseIcon from "@material-ui/icons/Close";
-import { Tooltip } from "@material-ui/core";
+import fileDownload from "js-file-download";
 import { validate_layers } from "./validation.js";
-
-const styles = (theme) => ({
-  root: {
-    margin: 0,
-    padding: theme.spacing(2),
-  },
-  closeButton: {
-    position: "absolute",
-    right: theme.spacing(1),
-    top: theme.spacing(1),
-    color: theme.palette.grey[500],
-  },
-});
-const DialogTitle = withStyles(styles)((props) => {
-  const { children, classes, onClose, ...other } = props;
-  return (
-    <MuiDialogTitle disableTypography className={classes.root} {...other}>
-      <Typography component={"span"} variant="h6">
-        {children}
-      </Typography>
-      {onClose ? (
-        <IconButton
-          aria-label="close"
-          className={classes.closeButton}
-          onClick={onClose}
-        >
-          <CloseIcon />
-        </IconButton>
-      ) : null}
-    </MuiDialogTitle>
-  );
-});
-
-const DialogContent = withStyles((theme) => ({
-  root: {
-    padding: theme.spacing(2),
-  },
-}))(MuiDialogContent);
-
-const DialogActions = withStyles((theme) => ({
-  root: {
-    margin: 0,
-    padding: theme.spacing(1),
-  },
-}))(MuiDialogActions);
+import HomeService from "./HomeService";
+import PreprocessingTab from "./step-2/PreprocessingTab";
+import LayerTab from "./step-2/LayerTab";
+import HyperparameterTab from "./step-2/HyperparameterTab";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -107,217 +43,19 @@ function a11yProps(index) {
   };
 }
 
-const useStyles = makeStyles((theme) => ({
-  margin: {
-    margin: theme.spacing(1),
-  },
-  App: {
-    marginLeft: "5.5%",
-    marginRight: "10px",
-  },
-  column1: {
-    padding: "0px",
-  },
-  column2: {
-    padding: "0px",
-  },
-  column3: {
-    width: "95%",
-    padding: "0px",
-    overflow: "hidden",
-  },
-
-  grid1: {},
-  grid2: {},
-  grid3: {},
-  droppableColsource: {
-    width: "95%",
-    backgroundColor: "#c5e4ed",
-    padding: "10px 10px 0 10px",
-    borderRadius: "7px",
-    display: "flex",
-    flexDirection: "column",
-    minHeight: "500px",
-    maxHeight: "500px",
-    overflowY: "auto",
-    border: "1px solid black",
-  },
-  droppableColtarget: {
-    width: "95%",
-    backgroundColor: "#c5e4ed",
-    padding: "10px 10px 10px 10px",
-    borderRadius: "7px",
-    display: "flex",
-    flexDirection: "column",
-    minHeight: "500px",
-    maxHeight: "500px",
-    maxWidth: "100%",
-    overflowY: "auto",
-    border: "1px solid black",
-  },
-  body3: {
-    width: "100%",
-    backgroundColor: "#D8D8D8",
-    padding: "10px",
-    borderRadius: "7px",
-    display: "flex",
-    flexDirection: "column",
-    minHeight: "500px",
-    maxHeight: "500px",
-    overflowY: "auto",
-  },
-  item: {
-    textAlign: "center",
-    marginBottom: "10px",
-
-    backgroundColor: "#adbce6",
-    color: "black",
-    border: "1px solid black",
-    padding: "5px",
-    borderRadius: "7px",
-  },
-  item1selected: {
-    textAlign: "center",
-    marginBottom: "10px",
-    backgroundColor: "rgb(115,194,251)",
-    color: "black",
-    border: "1px solid black",
-    padding: "5px",
-    borderRadius: "7px 7px 7px 7px",
-    width: "85%",
-  },
-  item1: {
-    textAlign: "center",
-    marginBottom: "10px",
-    padding:"2px",
-    backgroundColor: "#adbce6",
-    
-    color: "black",
-    border: "1px solid black",
-    borderRadius: "7px 7px 7px 7px",
-    width: "85%",
-    
-  },
-  cloneBtn :{
-    float:"right",
-    position:"relative",
-    // height:"20%",
-    // width:"20%",
-    maxWidth:"30px",
-    minWidth:"30px",
-    maxHeight:"30px",
-    minHeight:"30px",
-    
-    
-
-  },
-  styleclose: {
-    float: "right",
-    height: "100%",
-    cursor: "pointer",
-    backgroundColor: "#FFC270",
-    borderRadius: "0px 7px 7px 0px",
-    border: "1px solid white",
-    padding: "1px",
-    marginBottom: "10px",
-  },
-  container: {
-    position: "relative",
-     paddingLeft: "10%",
-     marginLeft:"10%",
-     marginRight:"10%",
-
-    display:"flex",
-    justifyContent:"space-between",
-  },
-
-  heading: {
-    textAlign: "center",
-    fontSize: "120%",
-    fontWeigth: "900",
-    paddingBottom: "4px",
-  },
-  batch: {
-    marginBottom: "10px",
-    backgroundColor: "#f2f2f2",
-    color: "black",
-    border: "1px solid white",
-    padding: "5px",
-    borderRadius: "7px",
-    position: "relative",
-    minHeight: "80px",
-  },
-  title: {
-    float: "left",
-    width: "45%",
-    minHeight: "70px",
-    textAlign: "center",
-    transform: "translateY(30%)",
-  },
-  spancss: {
-    marginLeft: "40%",
-  },
-  value: {
-    float: "right",
-    width: "45%",
-    minHeight: "70px",
-    transform: "translateY(15%)",
-  },
-  infoicon: {
-    float: "right",
-    width: "10%",
-    textAlign: "center",
-    transform: "translateY(50%)",
-    cursor: "pointer",
-  },
-  delete: {
-    width: "97%",
-    backgroundColor: "#D8D8D8",
-    padding: "10px",
-    borderRadius: "7px",
-    minHeight: "80px",
-    minWeight: "60px",
-    margin: "10px",
-    textAlign: "center",
-  },
-  sel: {
-    width: "200px",
-    margin: "20px",
-  },
-  _hyper: {
-    width: "400px",
-    margin: "20px",
-    marginLeft: "30%",
-  },
-  save_plot: {
-    marginTop: "25px",
-  },
-  action_btn: {
-    float: "right",
-    margin: "5px",
-  },
-  pad: {
-    padding: "7px",
-  },
-}));
-
 function Step2() {
   const classes = useStyles();
-  const theme = useTheme();
   var project_details = JSON.parse(localStorage.getItem("project_details"));
   var username = JSON.parse(localStorage.getItem("username"));
   var token = JSON.parse(localStorage.getItem("token"));
 
-  const [components, setcomponents] = React.useState([]);
-  const [selected_layer_type, setselected_layer_type] = React.useState("");
-  const [selected_layer, setselected_layer] = React.useState(-1);
-  const [selected_layer_name, setselected_layer_name] = React.useState("");
-  const [value, setValue] = React.useState(0);
-  console.log("selected layer is :",selected_layer);
-  console.log("selected layer type  is :",selected_layer_type);
-  
-
-  const [state_hyperparam, setstate_hyperparam] = React.useState({
+  const [components, setcomponents] = useState([]);
+  const [selected_layer_type, setselected_layer_type] = useState("");
+  const [selected_layer, setselected_layer] = useState(-1);
+  const [selected_layer_name, setselected_layer_name] = useState("");
+  const [value, setValue] = useState(0);
+  const [openErrorDialog,setOpenErrorDialog]=useState(false);
+  const [state_hyperparam, setstate_hyperparam] = useState({
     metrics: "",
     epochs: 0,
     verbose: "",
@@ -326,13 +64,12 @@ function Step2() {
     loss: "",
     learning_rate: 0,
   });
-  const [showoptimizer, setshowoptimizer] = React.useState(false);
-  const [selected_optimizer, setselected_optimizer] = React.useState({});
-  const [showloss, setshowloss] = React.useState(false);
-  const [selected_loss, setselected_loss] = React.useState({});
-  const [openModal, setOpenModal] = React.useState(false);
-  const [generated_file_path, setgenerated_file_path] = React.useState("");
-  const [openErrorDialog,setOpenErrorDialog] = useState(false);
+  const [showoptimizer, setshowoptimizer] = useState(false);
+  const [selected_optimizer, setselected_optimizer] = useState({});
+  const [showloss, setshowloss] = useState(false);
+  const [selected_loss, setselected_loss] = useState({});
+  const [openModal, setOpenModal] = useState(false);
+  const [generated_file_path, setgenerated_file_path] = useState("");
 
   const handleCloseModal = () => {
     setOpenModal(false);
@@ -422,11 +159,10 @@ function Step2() {
     setValue(newValue);
   };
 
-  if (
-    project_details.lib === "Pytorch" ||
-    project_details.library === "Pytorch"
-  ) {
-    var temp_pre_meta = {
+  let temp_optimizer, temp_pre_meta, temp_pre, temp_loss, temp_json, hyper;
+
+  if ( project_details.lib === "Pytorch" || project_details.library === "Pytorch" ) {
+    temp_pre_meta = {
       dataset: {
         name: "dataset",
         type: {
@@ -447,7 +183,8 @@ function Step2() {
         // },
       },
     };
-    var temp_pre = {
+
+    temp_pre = {
       // is param in image processing?
       image: {
         params: {
@@ -551,7 +288,8 @@ function Step2() {
       csv: {},
       text: {},
     };
-    var temp_loss = {
+
+    temp_loss = {
       L1Loss: {
         name: "l1loss",
         type: "loss-function",
@@ -722,9 +460,10 @@ function Step2() {
           Description:
             "Specifies the threshold at which to change between L1 and L2 loss. This value defaults to 1.0.",
         },
-      },
+      }
     };
-    var temp_optimizer = {
+    
+    temp_optimizer = {
       SGD: {
         name: "SGD",
         type: "optimizer",
@@ -915,7 +654,8 @@ function Step2() {
         },
       },
     };
-    var temp_json = {
+
+    temp_json = {
       Linear: {
         in_features: {
           Example: "3",
@@ -1260,11 +1000,8 @@ function Step2() {
             "A dimension along which Softmax will be computed (so every slice along dim will sum to 1).",
         },
       },
-    };
-  } else if (
-    project_details.lib === "Keras" ||
-    project_details.library === "Keras"
-  ) {
+    }
+  } else if ( project_details.lib === "Keras" || project_details.library === "Keras" ) {
     temp_json = {
       Conv2D: {
         filters: {
@@ -1749,6 +1486,7 @@ function Step2() {
         },
       },
     };
+
     temp_loss = {
       L1Loss: {
         name: "l1loss",
@@ -1922,6 +1660,7 @@ function Step2() {
         },
       },
     };
+
     temp_optimizer = {
       SGD: {
         name: "SGD",
@@ -2113,6 +1852,7 @@ function Step2() {
         },
       },
     };
+
     temp_pre_meta = {
       dataset: {
         name: "dataset",
@@ -2134,6 +1874,7 @@ function Step2() {
         // },
       },
     };
+
     temp_pre = {
       image: {
         augment: {
@@ -2227,7 +1968,8 @@ function Step2() {
       csv: {},
       text: {},
     };
-    var hyper = {
+
+    hyper = {
       params: {
         name: "params",
         input_type: "all",
@@ -2313,17 +2055,15 @@ function Step2() {
     };
   }
 
-  const [all_optimizer, setall_optimizer] = React.useState(temp_optimizer);
-  const [all_loss, setall_loss] = React.useState(temp_loss);
-  const [all_prepro, setall_prepro] = React.useState({});
-  const [render_prepro_meta, setrender_prepro_meta] = React.useState(
+  const [all_optimizer, setall_optimizer] = useState(temp_optimizer);
+  const [all_loss, setall_loss] = useState(temp_loss);
+  const [all_prepro, setall_prepro] = useState({});
+  const [render_prepro_meta, setrender_prepro_meta] = useState(
     temp_pre_meta
   );
-  const [render_prepro, setrender_prepro] = React.useState(temp_pre);
-  const [show_pre, setshow_pre] = React.useState(false);
-  const [jsondata, setjsondata] = React.useState(temp_json);
-  
-
+  const [render_prepro, setrender_prepro] = useState(temp_pre);
+  const [show_pre, setshow_pre] = useState(false);
+  const [jsondata, setjsondata] = useState(temp_json);
 
   useEffect(() => {
     async function fetchData() {
@@ -2339,7 +2079,9 @@ function Step2() {
       } else {
       }
     }
+
     fetchData();
+
     async function fetchDataPre() {
       const data = {
         username: username,
@@ -2358,6 +2100,7 @@ function Step2() {
       } else {
       }
     }
+
     fetchDataPre();
 
     async function fetchDataHyper() {
@@ -2374,6 +2117,7 @@ function Step2() {
       } else {
       }
     }
+
     fetchDataHyper();
   }, [project_details.project_id, token, username]);
 
@@ -2508,6 +2252,7 @@ function Step2() {
     }
     const validate_res = validate_layers(source, destination, components);
   };
+
   const showdetails = (element) => {
     setselected_layer_type(element);
 
@@ -2516,6 +2261,7 @@ function Step2() {
 
     setselected_layer(index);
   };
+
   const save_value = (prop) => (event) => {
     var param = prop;
     var index = selected_layer;
@@ -2767,6 +2513,7 @@ function Step2() {
       fileDownload(res.data, `${filename_of_download}.py`);
     }
   };
+
   const Train = async () => {
     const hyper_data = generate_hyper();
     const layers_data = genrate_layers();
@@ -2867,6 +2614,7 @@ function Step2() {
       }
     }
   };
+
   const handle_pre_meta = (key, key1, datatype) => (event) => {
     var temp_dic = {};
     for (var key of Object.keys(temp_pre)) {
@@ -2889,6 +2637,7 @@ function Step2() {
     setall_prepro(all_prepro);
     setshow_pre(!show_pre);
   };
+
   const handle_pre = (key, key1, datatype) => (event) => {
     var dic = _.cloneDeep(all_prepro);
     dic[`${all_prepro["dataset-type"]}-${key}-${key1}`] = event.target.value;
@@ -3012,896 +2761,50 @@ function Step2() {
         </Tabs>
       </AppBar>
 
-      <TabPanel value={value} index={0} dir={theme.direction}>
-        {value === 0 ? (
-          <Grid container>
-            <Grid item lg={1} md={1} sm={1} xs={1}></Grid>
-            <Grid item lg={10} md={10} sm={10} xs={10}>
-              <Grid container>
-                <Grid item lg={12} md={12} sm={12} xs={12}>
-                  {/* meta */}
-                  {Object.keys(render_prepro_meta).map((key, index) => (
-                    <Fragment key={index}>
-                      <div className={classes.heading}>{key}</div>
-                      <Grid container>
-                        {Object.keys(render_prepro_meta[key]).map(
-                          (key1, index1) =>
-                            key1 === "name" ? null : (
-                              <Fragment key={index1}>
-                                <Grid
-                                  item
-                                  lg={3}
-                                  md={3}
-                                  sm={3}
-                                  xs={3}
-                                  className={classes.pad}
-                                >
-                                  <FormControl fullWidth variant="outlined">
-                                    <InputLabel>{key1}</InputLabel>
-                                    <Select
-                                      native
-                                      value={
-                                        `dataset-type` in all_prepro
-                                          ? all_prepro[`dataset-type`]
-                                          : ""
-                                      }
-                                      onChange={handle_pre_meta(
-                                        key,
-                                        key1,
-                                        render_prepro_meta[key][key1][
-                                          "DataType"
-                                        ]
-                                      )}
-                                      label={key1}
-                                      inputProps={{
-                                        name: { key1 },
-                                      }}
-                                    >
-                                      <option aria-label="None" value="" />
-                                      {render_prepro_meta[key][key1][
-                                        "Options"
-                                      ].map((op, i) => (
-                                        <option key={i} value={op}>
-                                          {op}
-                                        </option>
-                                      ))}
-                                    </Select>
-                                  </FormControl>
-                                </Grid>
-                              </Fragment>
-                            )
-                        )}
-                      </Grid>
-                    </Fragment>
-                  ))}
-                  {/* pre */}
+      <PreprocessingTab
+        TabPanel={TabPanel}
+        value={value}
+        render_prepro={render_prepro}
+        render_prepro_meta={render_prepro_meta}
+        all_prepro={all_prepro}
+        handle_pre={handle_pre}
+        handle_pre_meta={handle_pre_meta}
+        show_pre={show_pre}
+      />
 
-                  {show_pre ? (
-                    <>
-                      {Object.keys(
-                        render_prepro[all_prepro["dataset-type"]]
-                      ).map((key, index) => (
-                        <span key={index}>
-                          <div className={classes.heading}>{key}</div>
-                          <Grid container>
-                            {Object.keys(
-                              render_prepro[all_prepro["dataset-type"]][key]
-                            ).map((key1, index1) =>
-                              key1 === "name" ||
-                              key1 === "input_type" ? null : (
-                                <Fragment key={index1}>
-                                  <Grid
-                                    item
-                                    lg={3}
-                                    md={3}
-                                    sm={3}
-                                    xs={3}
-                                    className={classes.pad}
-                                  >
-                                    {render_prepro[all_prepro["dataset-type"]][
-                                      key
-                                    ][key1]["DataType"] === "select" ? (
-                                      <FormControl fullWidth variant="outlined">
-                                        <InputLabel>{key1}</InputLabel>
-                                        <Select
-                                          native
-                                          value={
-                                            all_prepro
-                                              ? all_prepro[
-                                                  `${all_prepro["dataset-type"]}-${key}-${key1}`
-                                                ]
-                                              : ""
-                                          }
-                                          onChange={handle_pre(
-                                            key,
-                                            key1,
-                                            render_prepro[
-                                              all_prepro["dataset-type"]
-                                            ][key][key1]["DataType"]
-                                          )}
-                                          label={key1}
-                                          inputProps={{
-                                            name: { key1 },
-                                          }}
-                                        >
-                                          <option aria-label="None" value="" />
-                                          {render_prepro[
-                                            all_prepro["dataset-type"]
-                                          ][key][key1]["Options"].map(
-                                            (op, i) => (
-                                              <option
-                                                key={i}
-                                                value={
-                                                  op === "True"
-                                                    ? true
-                                                    : op === "False"
-                                                    ? false
-                                                    : op
-                                                }
-                                              >
-                                                {op} 
-                                              </option>
-                                            )
-                                          )}
-                                        </Select>
-                                      </FormControl>
-                                    ) : (
-                                      <TextField
-                                        fullWidth
-                                        label={key1}
-                                        value={
-                                          all_prepro
-                                            ? all_prepro[
-                                                `${all_prepro["dataset-type"]}-${key}-${key1} `
-                                              ]
-                                            : " "
-                                        }
-                                        onChange={handle_pre(
-                                          key,
-                                          key1,
-                                          render_prepro[
-                                            all_prepro["dataset-type"]
-                                          ][key][key1]["DataType"]
-                                        )}
-                                        variant="outlined"
-                                        helperText={`Example - ${
-                                          render_prepro[
-                                            all_prepro["dataset-type"]
-                                          ][key][key1]["Example"]
-                                        }`}
-                                      />
-                                    )}
-                                  </Grid>
-                                  <div
-                                  style={{marginTop:"1%",display:"flex",justifyContent:"space-between"}}
-                                  title={
-                                    `${
-                                          render_prepro[
-                                            all_prepro["dataset-type"]
-                                          ][key][key1]["Description"]
-                                        }`
-                                  }
-                                >
-                                  <HelpOutlineIcon />
-                                </div>
-                                </Fragment>
-                              )
-                            )}
-                          </Grid>
-                        </span>
-                      ))}
-                    </>
-                  ) : null}
-                </Grid>
-              </Grid>
-            </Grid>
-            <Grid item lg={1} md={1} sm={1} xs={1}></Grid>
-          </Grid>
-        ) : null}
-      </TabPanel>
+      <LayerTab
+        TabPanel={TabPanel}
+        value={value}
+        handleDragEnd={handleDragEnd}
+        jsondata={jsondata}
+        components={components}
+        selected_layer={selected_layer}
+        selected_layer_type={selected_layer_type}
+        showdetails={showdetails}
+        save_value={save_value}
+      />
 
-      <TabPanel value={value} index={1} dir={theme.direction}>
-        <DragDropContext onDragEnd={handleDragEnd}>
-          <Grid container>
-            <Grid item lg={3} md={3} sm={4} xs={4} className={classes.grid1}>
-              <div key="source" className={classes.column1}>
-                <span className={classes.spancss}>Layers</span>
+      <HyperparameterTab
+        TabPanel={TabPanel}
+        value={value}
+        project_details={project_details}
+        state_hyperparam={state_hyperparam}
+        handleChange_hyperparameter={handleChange_hyperparameter}
+        handleChange_hyperparameter_l_o={handleChange_hyperparameter_l_o}
+        all_optimizer={all_optimizer}
+        all_loss={all_loss}
+        showoptimizer={showoptimizer}
+        selected_optimizer={selected_optimizer}
+        selected_loss={selected_loss}
+        _hyper={_hyper}
+        save_value_hyper={save_value_hyper}
+        showloss={showloss}
+        generate_code={generate_code}
+        Train={Train}
+        openErrorDialog={openErrorDialog}
+        setOpenErrorDialog={setOpenErrorDialog}
+      />
 
-                <Droppable droppableId="source">
-                  {(provided, snapshot) => {
-                    return (
-                      <div
-                        ref={provided.innerRef}
-                        {...provided.droppableProps}
-                        className={classes.droppableColsource}
-                      >
-                        {Object.keys(jsondata).map((el, index) => {
-                          return (
-                            <Draggable key={el} index={index} draggableId={el}>
-                              {(provided, snapshot) => {
-                                return (
-                                  <div
-                                    className={classes.item}
-                                    ref={provided.innerRef}
-                                    {...provided.draggableProps}
-                                    {...provided.dragHandleProps}
-                                  >
-                                    {el}
-                                  </div>
-                                );
-                              }}
-                            </Draggable>
-                          );
-                        })}
-                        {provided.placeholder}
-                      </div>
-                    );
-                  }}
-                </Droppable>
-              </div>
-            </Grid>
-
-            <Grid item lg={5} md={5} sm={4} xs={4} className={classes.grid2}>
-              <div key="target" className={classes.column2}>
-                <span className={classes.spancss}>Model</span>
-                
-                <Droppable droppableId="target">
-                
-                  {(provided, snapshot) => {
-                    return (
-                      
-                      <div
-                        ref={provided.innerRef}
-                        {...provided.droppableProps}
-                        className={classes.droppableColtarget}
-                      >
-                        {components.map((el, index) => {
-                          return (
-                            <Draggable
-                              key={el.id}
-                              index={index}
-                              draggableId={el.id}
-                            >
-                            
-                              {(provided, snapshot) => {
-                                return (
-
-                                  <div
-                                    className={classes.container }
-                                    ref={provided.innerRef}
-                                    {...provided.draggableProps}
-                                    {...provided.dragHandleProps}
-                                  >
-                                  
-                                    <div
-                                    className={classes.item1}
-                                    
-                                      onClick={() => {
-                                        
-                                        showdetails(el);
-                                        }}
-                                    >
-                                      {el.name}
-                                      <Button 
-                                      size="small" 
-                                      color="primary" 
-                                      onClick={() =>handleCloneLayer(el) }
-                                      className={classes.cloneBtn}
-                                      >
-                                      <FileCopySharpIcon fontSize="small" />
-                                    </Button>
-                                      
-                                      
-                      
-                                  </div>
-                                  
-                                  {/* <Button size="small" variant="outlined">Clone</Button> */}
-                                  
-                                    
-                                  </div>
-
-                                );
-                              }}
-                            </Draggable>
-                          );
-                        })}
-                        {provided.placeholder}
-                      </div>
-                    );
-                  }}
-                </Droppable>
-              </div>
-            </Grid>
-
-            <Grid item lg={4} md={4} sm={4} xs={4} className={classes.grid3}>
-              <div className={classes.column3}>
-                <span className={classes.spancss}>
-                  {Object.keys(selected_layer_type).length !== 0
-                    ? "name" in components[selected_layer]
-                      ? components[selected_layer].name
-                      : null
-                    : null}
-                </span>
-
-                <div className={classes.body3}>
-                  {Object.keys(selected_layer_type).length === 0 ? (
-                    <h3>please select some layer first</h3>
-                  ) : (
-                    <div className={classes.innerpad}>
-                      {Object.keys(components[selected_layer]).map(
-                        (key, index) => (
-                          <Fragment key={index}>
-                            {key === "name" ||
-                            key === "id" ||
-                            key === "type" ? null : (
-                              <div className={classes.batch}>
-                                <div className={classes.title}>
-                                  {" "}
-                                  {key}
-                                  &nbsp;{" "}
-                                  {selected_layer_type[key]["Required"] ===
-                                  1 ? (
-                                    <span>*</span>
-                                  ) : (
-                                    <span></span>
-                                  )}
-                                </div>
-
-                                <div
-                                  className={classes.infoicon}
-                                  title={
-                                    components[selected_layer][key][
-                                      "Description"
-                                    ]
-                                  }
-                                >
-                                  <HelpOutlineIcon />
-                                </div>
-                                {components[selected_layer][key]["Datatype"] ===
-                                "select" ? (
-                                  <div className={classes.value}>
-                                    <FormControl
-                                      fullWidth
-                                      variant="outlined"
-                                      size="small"
-                                    >
-                                      <Select
-                                        native
-                                        value={
-                                          components[selected_layer][key][
-                                            "value"
-                                          ]
-                                            ? components[selected_layer][key][
-                                                "value"
-                                              ]
-                                            : components[selected_layer][key][
-                                                "Default"
-                                              ]
-                                        }
-                                        onChange={save_value(key)}
-                                      >
-                                        {components[selected_layer][key][
-                                          "Options"
-                                        ].map((arr, index) => (
-                                          <option key={index} value={arr}>
-                                            {arr}
-                                          </option>
-                                        ))}{" "}
-                                      </Select>
-                                    </FormControl>
-                                  </div>
-                                ) : (
-                                  <div className={classes.value}>
-                                    <TextField
-                                      required
-                                      size="small"
-                                      value={
-                                        components[selected_layer][key]["value"]
-                                          ? components[selected_layer][key][
-                                              "value"
-                                            ]
-                                          : components[selected_layer][key][
-                                              "Default"
-                                            ] === "NA"
-                                          ? " "
-                                          : components[selected_layer][key][
-                                              "Default"
-                                            ]
-                                      }
-                                      variant="outlined"
-                                      onChange={save_value(key)}
-                                      helperText={`Example - ${components[selected_layer][key]["Example"]}`}
-                                    />
-                                  </div>
-                                )}
-                              </div>
-                            )}
-                          </Fragment>
-                        )
-                      )}
-                    </div>
-                  )}
-                </div>
-              </div>
-            </Grid>
-
-            <div className={classes.delete}>
-              <Droppable droppableId="delete">
-                {(provided, snapshot) => {
-                  return (
-                    <div ref={provided.innerRef} {...provided.droppableProps}>
-                      <h3>Drag here to delete the layer</h3>
-
-                      {provided.placeholder}
-                    </div>
-                  );
-                }}
-              </Droppable>
-            </div>
-
-          </Grid>
-        </DragDropContext>
-      </TabPanel>
-
-      <TabPanel value={value} index={2} dir={theme.direction}>
-        <Grid container>
-          <Grid item lg={1} md={1} sm={1} xs={1}></Grid>
-          <Grid item lg={10} md={10} sm={10} xs={10}>
-            <Grid container>
-              {project_details.lib === "Pytorch" ? (
-                <>
-                  <Grid item lg={12} md={12} sm={12} xs={12}>
-                    <FormControl variant="outlined" className={classes._hyper}>
-                      <InputLabel>optimizer</InputLabel>
-                      <Select
-                        native
-                        value={state_hyperparam.optimizer}
-                        onChange={handleChange_hyperparameter_l_o("optimizer")}
-                        label="optimizer"
-                        inputProps={{
-                          name: "optimizer",
-                        }}
-                      >
-                        <option aria-label="None" value="" />
-                        {Object.keys(all_optimizer).map((name, index) => {
-                          return (
-                            <option key={index} value={name}>
-                              {name}
-                            </option>
-                          );
-                        })}
-                      </Select>
-                    </FormControl>
-
-                    {showoptimizer ? (
-                      <div className={classes.card}>
-                        {Object.keys(selected_optimizer).map((key, index) => (
-                          <Fragment key={index}>
-                            {key === "name" ||
-                            key === "id" ||
-                            key === "type" ? null : (
-                              <div className={classes.batch}>
-                                <div className={classes.title}>
-                                  {" "}
-                                  {key}
-                                  &nbsp;{" "}
-                                  {selected_optimizer[key]["Required"] === 1 ? (
-                                    <span>*</span>
-                                  ) : (
-                                    <span></span>
-                                  )}
-                                </div>
-
-                                <div
-                                  className={classes.infoicon}
-                                  title={selected_optimizer[key]["Description"]}
-                                >
-                                  <HelpOutlineIcon />
-                                </div>
-                                {selected_optimizer[key]["Datatype"] ===
-                                "select" ? (
-                                  <div className={classes.value}>
-                                    <FormControl
-                                      fullWidth
-                                      variant="outlined"
-                                      size="small"
-                                    >
-                                      <Select
-                                        native
-                                        value={
-                                          selected_optimizer[key]["value"]
-                                            ? selected_optimizer[key]["value"]
-                                            : selected_optimizer[key]["Default"]
-                                        }
-                                        onChange={save_value_hyper(
-                                          key,
-                                          "optimizer"
-                                        )}
-                                      >
-                                        {selected_optimizer[key]["Options"].map(
-                                          (arr, index) => (
-                                            <option key={index} value={arr}>
-                                              {arr}
-                                            </option>
-                                          )
-                                        )}{" "}
-                                      </Select>
-                                    </FormControl>
-                                  </div>
-                                ) : (
-                                  <div className={classes.value}>
-                                    <TextField
-                                      required
-                                      size="small"
-                                      value={
-                                        selected_optimizer[key]["value"]
-                                          ? selected_optimizer[key]["value"]
-                                          : selected_optimizer[key]["Default"]
-                                      }
-                                      variant="outlined"
-                                      onChange={save_value_hyper(
-                                        key,
-                                        "optimizer"
-                                      )}
-                                      helperText={`Example - ${selected_optimizer[key]["Example"]}`}
-                                    />
-                                  </div>
-                                )}
-                              </div>
-                            )}
-                          </Fragment>
-                        ))}
-
-                        <Button
-                          className={classes.action_btn}
-                          variant="contained"
-                          color="default"
-                          onClick={() => _hyper("optimizer", "cancle")}
-                        >
-                          Cancle
-                        </Button>
-
-                        <Button
-                          className={classes.action_btn}
-                          variant="contained"
-                          color="primary"
-                          onClick={() => _hyper("optimizer", "save")}
-                        >
-                          Save
-                        </Button>
-                      </div>
-                    ) : null}
-                  </Grid>
-
-                  <Grid item lg={12} md={12} sm={12} xs={12}>
-                    <FormControl variant="outlined" className={classes._hyper}>
-                      <InputLabel>Loss</InputLabel>
-                      <Select
-                        native
-                        value={state_hyperparam.loss}
-                        onChange={handleChange_hyperparameter_l_o("loss")}
-                        label="loss"
-                        inputProps={{
-                          name: "loss",
-                        }}
-                      >
-                        <option aria-label="None" value="" />
-                        {Object.keys(all_loss).map((name, index) => {
-                          return (
-                            <option key={index} value={name}>
-                              {name}
-                            </option>
-                          );
-                        })}
-                      </Select>
-                    </FormControl>
-
-                    {showloss ? (
-                      <div className={classes.card}>
-                        {Object.keys(selected_loss).map((key, index) => (
-                          <Fragment key={index}>
-                            {key === "name" ||
-                            key === "id" ||
-                            key === "type" ? null : (
-                              <div className={classes.batch}>
-                                <div className={classes.title}>
-                                  {" "}
-                                  {key}
-                                  &nbsp;{" "}
-                                  {selected_loss[key]["Required"] === 1 ? (
-                                    <span>*</span>
-                                  ) : (
-                                    <span></span>
-                                  )}
-                                </div>
-
-                                <div
-                                  className={classes.infoicon}
-                                  title={selected_loss[key]["Description"]}
-                                >
-                                  <HelpOutlineIcon />
-                                </div>
-                                {selected_loss[key]["Datatype"] === "select" ? (
-                                  <div className={classes.value}>
-                                    <FormControl
-                                      fullWidth
-                                      variant="outlined"
-                                      size="small"
-                                    >
-                                      <Select
-                                        native
-                                        value={
-                                          selected_loss[key]["value"]
-                                            ? selected_loss[key]["value"]
-                                            : selected_loss[key]["Default"]
-                                        }
-                                        onChange={save_value_hyper(key, "loss")}
-                                      >
-                                        {selected_loss[key]["Options"].map(
-                                          (arr, index) => (
-                                            <option key={index} value={arr}>
-                                              {arr}
-                                            </option>
-                                          )
-                                        )}{" "}
-                                      </Select>
-                                    </FormControl>
-                                  </div>
-                                ) : (
-                                  <div className={classes.value}>
-                                    <TextField
-                                      required
-                                      size="small"
-                                      id="outlined-required"
-                                      value={
-                                        selected_loss[key]["value"]
-                                          ? selected_loss[key]["value"]
-                                          : selected_loss[key]["Default"]
-                                      }
-                                      variant="outlined"
-                                      onChange={save_value_hyper(key, "loss")}
-                                      helperText={`Example - ${selected_loss[key]["Example"]}`}
-                                    />
-                                  </div>
-                                )}
-                              </div>
-                            )}
-                          </Fragment>
-                        ))}
-
-                        <Button
-                          className={classes.action_btn}
-                          variant="contained"
-                          color="default"
-                          onClick={() => _hyper("loss", "cancle")}
-                        >
-                          Cancle
-                        </Button>
-
-                        <Button
-                          className={classes.action_btn}
-                          variant="contained"
-                          color="primary"
-                          onClick={() => _hyper("loss", "save")}
-                        >
-                          Save
-                        </Button>
-                      </div>
-                    ) : null}
-                  </Grid>
-                </>
-              ) : (
-                <>
-                  <FormControl variant="outlined" className={classes.sel}>
-                    <InputLabel>optimizer</InputLabel>
-                    <Select
-                      native
-                      value={state_hyperparam.optimizer}
-                      onChange={handleChange_hyperparameter("optimizer")}
-                      label="optimizer"
-                      inputProps={{
-                        name: "optimizer",
-                      }}
-                    >
-                      <option aria-label="None" value="" />
-                      <option value={"sgd"}>sgd</option>
-                      <option value={"rmsprop"}>rmsprop</option>
-                      <option value={"adam"}>adam</option>
-                      <option value={"adadelta"}>adadelta</option>
-                      <option value={"adagrad"}>adagrad</option>
-                    </Select>
-                  </FormControl>
-
-                  <FormControl variant="outlined" className={classes.sel}>
-                    <InputLabel>loss</InputLabel>
-                    <Select
-                      native
-                      value={state_hyperparam.loss}
-                      onChange={handleChange_hyperparameter("loss")}
-                      label="loss"
-                      inputProps={{
-                        name: "loss",
-                      }}
-                    >
-                      <option aria-label="None" value="" />
-                      <option value={"binary_crossentropy"}>
-                        binary_crossentropy
-                      </option>
-                      <option value={"categorical_crossentropy"}>
-                        categorical_crossentropy
-                      </option>
-                      <option value={"poisson"}>poisson</option>
-                      <option value={"mean_squared_error"}>
-                        mean_squared_error
-                      </option>
-                      <option value={"mean_absolute_error"}>
-                        mean_absolute_error
-                      </option>
-                      <option value={"cosine_similarity"}>
-                        cosine_similarity
-                      </option>
-                      <option value={"hinge"}>hinge</option>
-                    </Select>
-                  </FormControl>
-                </>
-              )}
-
-              <Grid item lg={12} md={12} sm={12} xs={12}>
-                <TextField
-                  label="epochs"
-                  value={state_hyperparam.epochs}
-                  onChange={handleChange_hyperparameter("epochs")}
-                  variant="outlined"
-                  className={classes.sel}
-                />
-
-                <TextField
-                  label="learning rate"
-                  value={state_hyperparam.learning_rate}
-                  onChange={handleChange_hyperparameter("learning_rate")}
-                  variant="outlined"
-                  className={classes.sel}
-                />
-
-                <FormControl variant="outlined" className={classes.sel}>
-                  <InputLabel>verbose</InputLabel>
-                  <Select
-                    native
-                    value={state_hyperparam.verbose}
-                    onChange={handleChange_hyperparameter("verbose")}
-                    label="verbose"
-                    inputProps={{
-                      name: "verbose",
-                    }}
-                  >
-                    <option aria-label="None" value="" />
-                    <option value={1}>1</option>
-                    <option value={2}>2</option>
-                    <option value={3}>3</option>
-                    <option value={4}>4</option>
-                    <option value={5}>5</option>
-                  </Select>
-                </FormControl>
-
-                {project_details.lib === "Pytorch" ? (
-                  <FormControl variant="outlined" className={classes.sel}>
-                    <InputLabel>metrics</InputLabel>
-                    <Select
-                      native
-                      value={state_hyperparam.metrics}
-                      onChange={handleChange_hyperparameter("metrics")}
-                      label="metrics"
-                      inputProps={{
-                        name: "metrics",
-                      }}
-                    >
-                      <option aria-label="None" value="" />
-                      <option value={"AUC"}>AUC</option>
-                      <option value={"Precision"}>Precision</option>
-                      <option value={"Recall"}>Recall</option>
-                      <option value={"True positives"}>True positives</option>
-                      <option value={"True negatives"}>True negatives</option>
-                      <option value={"False positives"}>False positives</option>
-                      <option value={"False negatives"}>False negatives</option>
-                      <option value={"Precision at recall"}>
-                        Precision at recall
-                      </option>
-                      <option value={"Sensitivity at specificity"}>
-                        Sensitivity at specificity
-                      </option>
-                      <option value={"Specificity at sensitivity"}>
-                        Specificity at sensitivity
-                      </option>
-                    </Select>
-                  </FormControl>
-                ) : (
-                  <FormControl variant="outlined" className={classes.sel}>
-                    <InputLabel>metrics</InputLabel>
-                    <Select
-                      native
-                      value={state_hyperparam.metrics}
-                      onChange={handleChange_hyperparameter("metrics")}
-                      label="metrics"
-                      inputProps={{
-                        name: "metrics",
-                      }}
-                    >
-                      <option aria-label="None" value="" />
-                      <option value={"Accuracy"}>Accuracy</option>
-                      <option value={"BinaryCrossentropy"}>
-                        BinaryCrossentropy
-                      </option>
-                      <option value={"CategoricalCrossentropy"}>
-                        CategoricalCrossentropy
-                      </option>
-                      <option value={"RootMeanSquaredError"}>
-                        CosineSimilarity
-                      </option>
-                      <option value={"AUC"}>Precision</option>
-                      <option value={"Recall"}>Recall</option>
-                      <option value={"MeanIoU"}>MeanIoU</option>
-                      <option value={"Hinge"}>Hinge</option>
-                    </Select>
-                  </FormControl>
-                )}
-                <FormControlLabel
-                  className={classes.save_plot}
-                  control={
-                    <Checkbox
-                      checked={state_hyperparam.plot}
-                      onChange={handleChange_hyperparameter("plot")}
-                      color="primary"
-                    />
-                  }
-                  label="Save Graphs"
-                />
-              </Grid>
-            </Grid>
-          </Grid>
-          <Grid item lg={1} md={1} sm={1} xs={1}></Grid>
-        </Grid>
-
-        <Grid container>
-          <Grid item lg={4} md={4}></Grid>
-          <Grid item lg={2} md={2}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => generate_code()}
-            >
-              Generate Code
-            </Button>
-          </Grid>
-
-          <Grid item lg={2} md={2}>
-            <Button variant="contained" color="primary" onClick={() => Train()}>
-              Train the Model
-            </Button>
-          </Grid>
-          <Grid item lg={4} md={4}></Grid>
-        </Grid>
-
-        {/*Dialog if necessary details are not    */}
-        {openErrorDialog && 
-          <Dialog open={openErrorDialog} onClose={() => setOpenErrorDialog(false)} >
-            <DialogTitle id="error-dialog-title">Required Parameters Missing!! </DialogTitle>
-            <DialogContent dividers>
-              <div>
-                <h3>Please enter required values in all layers in Model</h3>
-              </div>
-            </DialogContent>
-            <DialogActions style={{ justifyContent: "center" }}>
-              <Button variant="contained" onClick={() => setOpenErrorDialog(false)} color="primary">
-                OK
-              </Button>
-            </DialogActions>
-
-          </Dialog>
-        }
-
-
-
-      </TabPanel>
     </div>
   );
 }
