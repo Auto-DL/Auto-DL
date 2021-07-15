@@ -131,14 +131,25 @@ export const useStyles = makeStyles((theme) => ({
     item1: {
         textAlign: "center",
         marginBottom: "10px",
-
+        padding:"2px",
         backgroundColor: "#adbce6",
+        
         color: "black",
         border: "1px solid black",
-        padding: "5px",
         borderRadius: "7px 7px 7px 7px",
         width: "85%",
-    },
+        
+      },
+      cloneBtn :{
+        float:"right",
+        position:"relative",
+        // height:"20%",
+        // width:"20%",
+        maxWidth:"30px",
+        minWidth:"30px",
+        maxHeight:"30px",
+        minHeight:"30px",
+      },
     styleclose: {
         float: "right",
         height: "100%",
