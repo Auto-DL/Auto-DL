@@ -92,8 +92,9 @@ export default function Project_table(props) {
     setOpenShare(false);
   };
 
-  const handleActionsOpen = (event) => {
+  const handleActionsOpen = (project, event) => {
     setAnchorEl(event.currentTarget);
+    setCurrentProject(project);
   };
 
   const handleActionsClose = () => {
