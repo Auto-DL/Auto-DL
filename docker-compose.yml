@@ -16,7 +16,9 @@ services:
     restart: on-failure
 
   frontend:
-    build: FrontEndApp/v1-react
+    build:
+      context: FrontEndApp/v1-react
+      dockerfile: Dockerfile.dev
     image: autodlhub/frontend:v1-beta
     container_name: autodl_frontend
     ports:
