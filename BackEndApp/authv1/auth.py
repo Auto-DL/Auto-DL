@@ -95,11 +95,14 @@ class Otp:
     def find(self):
         return self.collection.find_one({"username": self.username})
 
-    def verify(self):
+    def verify(self, otp_recieved):
         self.expire = datetime.strptime(self.expire)
-        if self.otp is None or self.expire > datetime.now():
+        if self.otp is None or self.expire < datetime.now():
             return False
-        return True
+        if self.otp == otp_recieved:
+            return True
+        else:
+            return False
 
     def delete(self):
         self.otp = None
