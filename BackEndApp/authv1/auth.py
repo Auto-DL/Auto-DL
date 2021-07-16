@@ -93,8 +93,7 @@ class Otp:
     def find(self):
         return self.collection.find_one({"username": self.username})
 
-    def verify(self):
-        otp_recieved = "0RB8KM"
+    def verify(self, otp_recieved):
         user_obj = self.find()
         stored_otp = user_obj.get("otp")
         otp_expire = user_obj.get("expire")
