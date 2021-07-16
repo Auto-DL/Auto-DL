@@ -96,8 +96,8 @@ class Otp:
     def verify(self):
         otp_recieved = "0RB8KM"
         user_obj = self.find()
-        stored_otp = user_obj.get('otp')
-        otp_expire = user_obj.get('expire')
+        stored_otp = user_obj.get("otp")
+        otp_expire = user_obj.get("expire")
         if stored_otp is None or otp_expire < datetime.now():
             return False
         if stored_otp == otp_recieved:
