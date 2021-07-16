@@ -75,14 +75,12 @@ class Otp:
             """
             time_delta: (int) In minutes
             """
-            print("creating otp")
             self.expire = datetime.now() + timedelta(minutes=time_delta)
             self.otp = "".join(
                 random.SystemRandom().choice(string.ascii_uppercase + string.digits)
                 for _ in range(6)
             )
             doc_otp = {
-                "user": self.user,
                 "otp": self.otp,
                 "expire": self.expire,
                 "username": self.user["username"],
@@ -95,15 +93,18 @@ class Otp:
     def find(self):
         return self.collection.find_one({"username": self.username})
 
-    def verify(self, otp_recieved):
-        self.expire = datetime.strptime(self.expire)
-        if self.otp is None or self.expire < datetime.now():
+    def verify(self):
+        otp_recieved = "0RB8KM"
+        user_obj = self.find()
+        stored_otp = user_obj.get('otp')
+        otp_expire = user_obj.get('expire')
+        if stored_otp is None or otp_expire < datetime.now():
             return False
-        if self.otp == otp_recieved:
+        if stored_otp == otp_recieved:
+            self.delete()
             return True
         else:
             return False
 
     def delete(self):
-        self.otp = None
-        self.expire = None
+        self.collection.delete_one({"username": self.username})
