@@ -1,77 +1,14 @@
 import React, { useState, useEffect } from "react";
+import { Button, AppBar, Tabs, Tab, Box, Typography, Dialog, Tooltip } from "@material-ui/core";
+import { useStyles, DialogTitle, DialogActions, DialogContent } from "./step-2/styles.js";
 import _ from "lodash";
-import TextField from "@material-ui/core/TextField";
-import FormControl from "@material-ui/core/FormControl";
-import Select from "@material-ui/core/Select";
-import Button from "@material-ui/core/Button";
-import axios from "axios";
-import fileDownload from "js-file-download";
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import { makeStyles, withStyles, useTheme } from "@material-ui/core/styles";
-import Grid from "@material-ui/core/Grid";
-import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
-import AppBar from "@material-ui/core/AppBar";
-import Tabs from "@material-ui/core/Tabs";
-import Tab from "@material-ui/core/Tab";
-import Box from "@material-ui/core/Box";
-import Typography from "@material-ui/core/Typography";
-import IconButton from "@material-ui/core/IconButton";
-import InputLabel from "@material-ui/core/InputLabel";
 import PropTypes from "prop-types";
-import HomeService from "./HomeService";
-import Checkbox from "@material-ui/core/Checkbox";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Dialog from "@material-ui/core/Dialog";
-import MuiDialogTitle from "@material-ui/core/DialogTitle";
-import MuiDialogContent from "@material-ui/core/DialogContent";
-import MuiDialogActions from "@material-ui/core/DialogActions";
-import CloseIcon from "@material-ui/icons/Close";
-import { CollectionsBookmarkOutlined, OpacitySharp } from "@material-ui/icons";
-import { Tooltip } from "@material-ui/core";
+import fileDownload from "js-file-download";
 import { validate_layers } from "./validation.js";
-
-const styles = (theme) => ({
-  root: {
-    margin: 0,
-    padding: theme.spacing(2),
-  },
-  closeButton: {
-    position: "absolute",
-    right: theme.spacing(1),
-    top: theme.spacing(1),
-    color: theme.palette.grey[500],
-  },
-});
-const DialogTitle = withStyles(styles)((props) => {
-  const { children, classes, onClose, ...other } = props;
-  return (
-    <MuiDialogTitle disableTypography className={classes.root} {...other}>
-      <Typography variant="h6">{children}</Typography>
-      {onClose ? (
-        <IconButton
-          aria-label="close"
-          className={classes.closeButton}
-          onClick={onClose}
-        >
-          <CloseIcon />
-        </IconButton>
-      ) : null}
-    </MuiDialogTitle>
-  );
-});
-
-const DialogContent = withStyles((theme) => ({
-  root: {
-    padding: theme.spacing(2),
-  },
-}))(MuiDialogContent);
-
-const DialogActions = withStyles((theme) => ({
-  root: {
-    margin: 0,
-    padding: theme.spacing(1),
-  },
-}))(MuiDialogActions);
+import HomeService from "./HomeService";
+import PreprocessingTab from "./step-2/PreprocessingTab";
+import LayerTab from "./step-2/LayerTab";
+import HyperparameterTab from "./step-2/HyperparameterTab";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -86,7 +23,7 @@ function TabPanel(props) {
     >
       {value === index && (
         <Box p={2}>
-          <Typography>{children}</Typography>
+          <Typography component={"span"}>{children}</Typography>
         </Box>
       )}
     </div>
@@ -106,219 +43,18 @@ function a11yProps(index) {
   };
 }
 
-const useStyles = makeStyles((theme) => ({
-  App: {
-    // padding: "10px",
-    marginLeft: "5.5%",
-    marginRight: "10px",
-    // backgroundColor:'grey',
-  },
-  column1: {
-    padding: "0px",
-    // backgroundColor:'grey',
-  },
-  column2: {
-    padding: "0px",
-    // backgroundColor:'blue',
-  },
-  column3: {
-    width: "95%",
-    padding: "0px",
-    overflow: "hidden",
-  },
-
-  grid1: {},
-  grid2: {},
-  grid3: {},
-  droppableColsource: {
-    width: "95%",
-    // backgroundColor: "yellow",
-    // backgroundColor: "#7fa0b1",
-    // backgroundColor: "#8e8e8e",
-    backgroundColor: "#c5e4ed",
-    padding: "10px 10px 0 10px",
-    borderRadius: "7px",
-    display: "flex",
-    flexDirection: "column",
-    minHeight: "500px",
-    maxHeight: "500px",
-    overflowY: "auto",
-    border: "1px solid black",
-  },
-  droppableColtarget: {
-    width: "95%",
-    // backgroundColor: "orange",
-    // backgroundColor: "#7fa0b1",
-    // backgroundColor: "#8e8e8e",
-    backgroundColor: "#c5e4ed",
-    padding: "10px 10px 10px 10px",
-    borderRadius: "7px",
-    display: "flex",
-    flexDirection: "column",
-    minHeight: "500px",
-    maxHeight: "500px",
-    maxWidth: "100%",
-    overflowY: "auto",
-    border: "1px solid black",
-  },
-  body3: {
-    width: "100%",
-    backgroundColor: "#D8D8D8",
-    // backgroundColor: "#cfe7ff",
-    padding: "10px",
-    borderRadius: "7px",
-    display: "flex",
-    flexDirection: "column",
-    minHeight: "500px",
-    maxHeight: "500px",
-    // marginTop: "55px",
-    overflowY: "auto",
-  },
-  item: {
-    textAlign: "center",
-    marginBottom: "10px",
-    // backgroundColor: "#FFC270",
-    // backgroundColor: "#e2c3a7",
-    backgroundColor: "#adbce6",
-    color: "black",
-    border: "1px solid black",
-    padding: "5px",
-    borderRadius: "7px",
-    // boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)',
-    // opacity: '0.7',
-  },
-  item1selected: {
-    textAlign: "center",
-    marginBottom: "10px",
-    // backgroundColor: "#FFC270",
-    // backgroundColor: "#e2c3a7",
-    backgroundColor: "rgb(115,194,251)",
-    color: "black",
-    border: "1px solid black",
-    padding: "5px",
-    borderRadius: "7px 7px 7px 7px",
-    width: "85%",
-    // boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)',
-    // float: "right",
-  },
-  item1: {
-    textAlign: "center",
-    marginBottom: "10px",
-    // backgroundColor: "#FFC270",
-    // backgroundColor: "#e2c3a7",
-    backgroundColor: "#adbce6",
-    color: "black",
-    border: "1px solid black",
-    padding: "5px",
-    borderRadius: "7px 7px 7px 7px",
-    width: "85%",
-    // boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)',
-    // float: "right",
-  },
-  styleclose: {
-    float: "right",
-    height: "100%",
-    cursor: "pointer",
-    backgroundColor: "#FFC270",
-    borderRadius: "0px 7px 7px 0px",
-    border: "1px solid white",
-    padding: "1px",
-    marginBottom: "10px",
-  },
-  container: {
-    position: "relative",
-    paddingLeft: "10%",
-  },
-  heading: {
-    textAlign: "center",
-    fontSize: "120%",
-    fontWeigth: "900",
-    paddingBottom: "4px",
-  },
-  batch: {
-    marginBottom: "10px",
-    backgroundColor: "#f2f2f2",
-    color: "black",
-    border: "1px solid white",
-    padding: "5px",
-    borderRadius: "7px",
-    position: "relative",
-    minHeight: "80px",
-  },
-  title: {
-    float: "left",
-    width: "45%",
-    minHeight: "70px",
-    textAlign: "center",
-    transform: "translateY(30%)",
-  },
-  spancss: {
-    marginLeft: "40%",
-  },
-  value: {
-    float: "right",
-    width: "45%",
-    minHeight: "70px",
-    transform: "translateY(15%)",
-  },
-  infoicon: {
-    float: "right",
-    width: "10%",
-    textAlign: "center",
-    transform: "translateY(50%)",
-    cursor: "pointer",
-  },
-  delete: {
-    width: "97%",
-    backgroundColor: "#D8D8D8",
-    padding: "10px",
-    borderRadius: "7px",
-    minHeight: "80px",
-    maxHeight: "80px",
-    minWeight: "60px",
-    minWeight: "60px",
-    margin: "10px",
-    // paddingTop:'3px',
-    textAlign: "center",
-  },
-  sel: {
-    width: "200px",
-    margin: "20px",
-  },
-  _hyper: {
-    width: "400px",
-    margin: "20px",
-    marginLeft: "30%",
-  },
-  save_plot: {
-    marginTop: "25px",
-  },
-  action_btn: {
-    float: "right",
-    margin: "5px",
-  },
-  pad: {
-    padding: "7px",
-  },
-}));
-
 function Step2() {
   const classes = useStyles();
-  const theme = useTheme();
   var project_details = JSON.parse(localStorage.getItem("project_details"));
-  var json_data = JSON.parse(localStorage.getItem("json_data"));
   var username = JSON.parse(localStorage.getItem("username"));
   var token = JSON.parse(localStorage.getItem("token"));
 
-  // console.log(project_details);
-  // console.log(json_data);
-
-  const [components, setcomponents] = React.useState([]);
-  const [selected_layer_type, setselected_layer_type] = React.useState("");
-  const [selected_layer, setselected_layer] = React.useState(-1);
-  const [selected_layer_name, setselected_layer_name] = React.useState("");
-  const [value, setValue] = React.useState(0);
-  const [state_hyperparam, setstate_hyperparam] = React.useState({
+  const [components, setcomponents] = useState([]);
+  const [selected_layer_type, setselected_layer_type] = useState("");
+  const [selected_layer, setselected_layer] = useState(-1);
+  const [selected_layer_name, setselected_layer_name] = useState("");
+  const [value, setValue] = useState(0);
+  const [state_hyperparam, setstate_hyperparam] = useState({
     metrics: "",
     epochs: 0,
     verbose: "",
@@ -327,35 +63,24 @@ function Step2() {
     loss: "",
     learning_rate: 0,
   });
-  const [showoptimizer, setshowoptimizer] = React.useState(false);
-  const [selected_optimizer, setselected_optimizer] = React.useState({});
+  const [showoptimizer, setshowoptimizer] = useState(false);
+  const [selected_optimizer, setselected_optimizer] = useState({});
+  const [showloss, setshowloss] = useState(false);
+  const [selected_loss, setselected_loss] = useState({});
+  const [openModal, setOpenModal] = useState(false);
+  const [generated_file_path, setgenerated_file_path] = useState("");
 
-  const [showloss, setshowloss] = React.useState(false);
-  const [selected_loss, setselected_loss] = React.useState({});
-
-  const [openModal, setOpenModal] = React.useState(false);
-  const [generated_file_path, setgenerated_file_path] = React.useState("");
-
-  const handleClickOpenModal = () => {
-    setOpenModal(true);
-  };
   const handleCloseModal = () => {
     setOpenModal(false);
   };
 
   const typecast_pre = () => {
-    // console.log("typecast here");
-    // console.log(all_prepro);
     var dic = _.cloneDeep(all_prepro);
 
     for (var key in all_prepro) {
-      // console.log(key);
       try {
-        // console.log(typeof JSON.parse(all_prepro[key]));
-        // console.log(JSON.parse(all_prepro[key]));
         dic[key] = JSON.parse(all_prepro[key]);
       } catch (err) {
-        // console.log(err);
         if (key.includes("target_size")) {
           if (typeof all_prepro[key] === "string") {
             const temp = all_prepro[key].split(",");
@@ -376,37 +101,28 @@ function Step2() {
       layer_json: genrate_layers(),
       component_array: components,
     };
-    // console.log(token, data);
-    // handleToggle_backdrop(true);
+
     const res = await HomeService.save_layers(token, data);
 
     if (res.status === 200) {
-      // handleToggle_backdrop(false);
-      // setAllProjects([...res.data.projects]);
-      // console.log(res);
     } else {
-      // localStorage.clear();
-      // history.push("/login");
     }
   }
   async function savepre() {
     const all_prepro_dub = await typecast_pre();
-    // console.log(all_prepro_dub);
 
     const data = {
       username: username,
       project_id: project_details.project_id,
       preprocessing_params: all_prepro_dub,
     };
-    // console.log(token, data);
-    // handleToggle_backdrop(true);
+
     const res = await HomeService.save_pre(token, data);
 
     if (res.status === 200) {
       // handleToggle_backdrop(false);
       // setAllProjects([...res.data.projects]);
       // setall_prepro(res.data.preprocessing);
-      // console.log(res);
     } else {
       // localStorage.clear();
       // history.push("/login");
@@ -429,26 +145,22 @@ function Step2() {
   }
 
   const handleChangetabs = (event, newValue) => {
-    if (newValue !== 1 && value == 1) {
+    if (newValue !== 1 && value === 1) {
       saveData();
-      // console.log(genrate_layers());
     }
-    if (newValue !== 0 && value == 0) {
-      // typecast_pre();
+    if (newValue !== 0 && value === 0) {
       savepre();
     }
-    if (newValue !== 2 && value == 2) {
+    if (newValue !== 2 && value === 2) {
       savehyper();
     }
     setValue(newValue);
   };
 
-  // console.log(components);
-  if (
-    project_details.lib === new String("Pytorch").valueOf() ||
-    project_details.library === new String("Pytorch").valueOf()
-  ) {
-    var temp_pre_meta = {
+  let temp_optimizer, temp_pre_meta, temp_pre, temp_loss, temp_json, hyper;
+
+  if ( project_details.lib === "Pytorch" || project_details.library === "Pytorch" ) {
+    temp_pre_meta = {
       dataset: {
         name: "dataset",
         type: {
@@ -469,7 +181,8 @@ function Step2() {
         // },
       },
     };
-    var temp_pre = {
+
+    temp_pre = {
       // is param in image processing?
       image: {
         params: {
@@ -569,16 +282,12 @@ function Step2() {
             Description: "Desired interpolation enum defined by filters",
           },
         },
-        // ToTensor: {
-        //   name: "augment",
-        //   input_type: "image",
-
-        // },
       },
       csv: {},
       text: {},
     };
-    var temp_loss = {
+
+    temp_loss = {
       L1Loss: {
         name: "l1loss",
         type: "loss-function",
@@ -749,9 +458,10 @@ function Step2() {
           Description:
             "Specifies the threshold at which to change between L1 and L2 loss. This value defaults to 1.0.",
         },
-      },
+      }
     };
-    var temp_optimizer = {
+    
+    temp_optimizer = {
       SGD: {
         name: "SGD",
         type: "optimizer",
@@ -942,7 +652,8 @@ function Step2() {
         },
       },
     };
-    var temp_json = {
+
+    temp_json = {
       Linear: {
         in_features: {
           Example: "3",
@@ -1287,12 +998,9 @@ function Step2() {
             "A dimension along which Softmax will be computed (so every slice along dim will sum to 1).",
         },
       },
-    };
-  } else if (
-    project_details.lib === new String("Keras").valueOf() ||
-    project_details.library === new String("Keras").valueOf()
-  ) {
-    var temp_json = {
+    }
+  } else if ( project_details.lib === "Keras" || project_details.library === "Keras" ) {
+    temp_json = {
       Conv2D: {
         filters: {
           Example: 32,
@@ -1776,7 +1484,8 @@ function Step2() {
         },
       },
     };
-    var temp_loss = {
+
+    temp_loss = {
       L1Loss: {
         name: "l1loss",
         type: "loss-function",
@@ -1949,7 +1658,8 @@ function Step2() {
         },
       },
     };
-    var temp_optimizer = {
+
+    temp_optimizer = {
       SGD: {
         name: "SGD",
         type: "optimizer",
@@ -2140,7 +1850,8 @@ function Step2() {
         },
       },
     };
-    var temp_pre_meta = {
+
+    temp_pre_meta = {
       dataset: {
         name: "dataset",
         type: {
@@ -2161,7 +1872,8 @@ function Step2() {
         // },
       },
     };
-    var temp_pre = {
+
+    temp_pre = {
       image: {
         augment: {
           name: "augment",
@@ -2254,7 +1966,8 @@ function Step2() {
       csv: {},
       text: {},
     };
-    var hyper = {
+
+    hyper = {
       params: {
         name: "params",
         input_type: "all",
@@ -2339,18 +2052,16 @@ function Step2() {
       },
     };
   }
-  // console.log(temp_json);
-  // setall_optimizer(temp_optimizer);
-  const [all_optimizer, setall_optimizer] = React.useState(temp_optimizer);
-  const [all_loss, setall_loss] = React.useState(temp_loss);
-  const [all_prepro, setall_prepro] = React.useState({});
-  const [render_prepro_meta, setrender_prepro_meta] = React.useState(
+
+  const [all_optimizer, setall_optimizer] = useState(temp_optimizer);
+  const [all_loss, setall_loss] = useState(temp_loss);
+  const [all_prepro, setall_prepro] = useState({});
+  const [render_prepro_meta, setrender_prepro_meta] = useState(
     temp_pre_meta
   );
-  const [render_prepro, setrender_prepro] = React.useState(temp_pre);
-  const [show_pre, setshow_pre] = React.useState(false);
-  const [jsondata, setjsondata] = React.useState(temp_json);
-  // console.log(all_prepro);
+  const [render_prepro, setrender_prepro] = useState(temp_pre);
+  const [show_pre, setshow_pre] = useState(false);
+  const [jsondata, setjsondata] = useState(temp_json);
 
   useEffect(() => {
     async function fetchData() {
@@ -2358,33 +2069,35 @@ function Step2() {
         username: username,
         project_id: project_details.project_id,
       };
-      // console.log(token, data);
+
       const res = await HomeService.get_layers(token, data);
 
       if (res.status === 200) {
         setcomponents(res.data.components);
-        // console.log(res.data.components);
       } else {
       }
     }
+
     fetchData();
+
     async function fetchDataPre() {
       const data = {
         username: username,
         project_id: project_details.project_id,
       };
-      // console.log(token, data);
+
       const res = await HomeService.get_pre(token, data);
 
       if (res.status === 200) {
         setall_prepro(res.data.preprocessing);
-        // console.log(all_prepro);
+
         if ("dataset-type" in res.data.preprocessing) {
           setshow_pre(true);
         }
       } else {
       }
     }
+
     fetchDataPre();
 
     async function fetchDataHyper() {
@@ -2392,18 +2105,18 @@ function Step2() {
         username: username,
         project_id: project_details.project_id,
       };
-      // console.log(token, data);
+
       const res = await HomeService.get_hyperparams(token, data);
 
       if (res.status === 200) {
         var temp = res.data.hyperparams;
         setstate_hyperparam(temp);
-        // console.log(res.data.hyperparams);
       } else {
       }
     }
+
     fetchDataHyper();
-  }, []);
+  }, [project_details.project_id, token, username]);
 
   const handleDragEnd = ({ destination, source }) => {
     if (!destination) {
@@ -2417,12 +2130,12 @@ function Step2() {
       return;
     }
 
-    if (destination.droppableId === new String("source").valueOf()) {
+    if (destination.droppableId === "source") {
       return;
     }
     if (
-      destination.droppableId === new String("delete").valueOf() &&
-      source.droppableId === new String("target").valueOf()
+      destination.droppableId === "delete" &&
+      source.droppableId === "target"
     ) {
       const element = components[source.index];
       var temp = components.filter((item) => item !== element);
@@ -2432,8 +2145,8 @@ function Step2() {
       setselected_layer_type("");
     }
     if (
-      destination.droppableId === new String("target").valueOf() &&
-      source.droppableId === new String("target").valueOf()
+      destination.droppableId === "target" &&
+      source.droppableId === "target"
     ) {
       components.splice(
         destination.index,
@@ -2442,8 +2155,11 @@ function Step2() {
       );
       for (var i = 0; i < components.length; i++) {
         components[i]["id"] = components[i]["id"] + i;
-        if (i == 0) {
-          if (!("input_size" in components[i]) || !("input_shape" in components[i])) {
+        if (i === 0) {
+          if (
+            !("input_size" in components[i]) ||
+            !("input_shape" in components[i])
+          ) {
             components[i]["input_shape"] = {
               Example: [200, 200, 3],
               Default: "NA",
@@ -2462,8 +2178,8 @@ function Step2() {
       setcomponents(components);
     }
     if (
-      destination.droppableId === new String("target").valueOf() &&
-      source.droppableId === new String("source").valueOf()
+      destination.droppableId === "target" &&
+      source.droppableId === "source"
     ) {
       const list_names_of_source = Object.keys(jsondata);
       const temp = jsondata[list_names_of_source[source.index]];
@@ -2483,24 +2199,16 @@ function Step2() {
         destination.index
       }`;
       dic["name"] = list_names_of_source[source.index];
-      const layer_name = list_names_of_source[source.index];
-
-      // filters: {
-      //   Example: 32,
-      //   Default: "NA",
-      //   Required: 1,
-      //   Datatype: "number",
-      //   Options: [],
-      //   Description:
-      //     "the dimensionality of the output space [i.e.the number of output filters in the convolution]",
-      // },
 
       components.splice(destination.index, 0, dic);
 
-      for (var i = 0; i < components.length; i++) {
+      for (i = 0; i < components.length; i++) {
         components[i]["id"] = components[i]["id"] + i;
-        if (i == 0) {
-          if (!("input_size" in components[i]) || !("input_shape" in components[i])) {
+        if (i === 0) {
+          if (
+            !("input_size" in components[i]) ||
+            !("input_shape" in components[i])
+          ) {
             components[i]["input_shape"] = {
               Example: [200, 200, 3],
               Default: "NA",
@@ -2516,29 +2224,27 @@ function Step2() {
           } catch (err) {}
         }
       }
-      // console.log(components);
+
       setcomponents(components);
     }
     const validate_res = validate_layers(source, destination, components);
-    console.log(validate_res);
   };
-  const showdetails = (element) => {
-    // console.log(element);
 
+  const showdetails = (element) => {
     setselected_layer_type(element);
 
     var ele = components;
     var index = ele.lastIndexOf(element);
-    // console.log(index, element.name);
+
     setselected_layer(index);
-    setselected_layer_name(element.name);
+    // setselected_layer_name(element.name);
   };
+
   const save_value = (prop) => (event) => {
     var param = prop;
     var index = selected_layer;
     const pervstate = Object.assign([], components);
     pervstate[index][param]["value"] = event.target.value;
-    // console.log(event.target.value);
 
     setcomponents(pervstate);
   };
@@ -2548,47 +2254,27 @@ function Step2() {
     const temp = components;
     var dic = _.cloneDeep(temp);
     var i = 0;
-    if (project_details.lib === new String("Pytorch").valueOf()) {
+    if (project_details.lib === "Pytorch") {
       for (let [key0, value0] of Object.entries(dic)) {
-        // console.log(key0, value0);
         i = i + 1;
         for (var key1 in value0) {
-          // console.log(key1);
           if (!(key1 === "name" || key1 === "id")) {
             if (key1 === "type") {
               final_dict[
-                `activation_function-${i}-${dic[key0].name}` + "-selected"
+                `activation_function-${i}-${dic[key0].name}-selected`
               ] = true;
             } else {
               for (var key2 in dic[key0][key1]) {
-                if (key2 === new String("value").valueOf()) {
-                  // console.log(i);
-                  // console.log(dic[key0].name);
-                  // console.log(key1);
-                  // console.log(dic[key0][key1][key2]);
-
-                  if (
-                    dic[key0][key1].Datatype === new String("number").valueOf()
-                  ) {
+                if (key2 === "value") {
+                  if (dic[key0][key1].Datatype === "number") {
                     final_dict[
                       `Layer-${i}-${dic[key0].name}-${key1}`
                     ] = parseInt(dic[key0][key1][key2]);
-                  } else if (
-                    dic[key0][key1].Datatype === new String("tuple").valueOf()
-                  ) {
-                    const temp = dic[key0][key1][key2].split(",");
-                    // console.log(temp);
-                    // console.log(temp[0]);
-                    // console.log(temp[1]);
-
-                    final_dict[`Layer-${i}-${dic[key0].name}-${key1}`] = [
-                      // parseInt(temp[0]),
-                      // parseInt(temp[1]),
-                    ];
+                  } else if (dic[key0][key1].Datatype === "tuple") {
+                    final_dict[`Layer-${i}-${dic[key0].name}-${key1}`] = [];
                   } else {
                     final_dict[`Layer-${i}-${dic[key0].name}-${key1}`] =
                       dic[key0][key1][key2];
-                    // console.log(dic[key0][key1][key2]);
                   }
                 }
               }
@@ -2596,65 +2282,43 @@ function Step2() {
           }
         }
       }
-    } else if (project_details.lib === new String("Keras").valueOf()) {
+    } else if (project_details.lib === "Keras") {
       for (let [key0, value0] of Object.entries(dic)) {
-        // console.log(key0, value0);
         i = i + 1;
-        for (var key1 in value0) {
-          // console.log(key1);
+        for (key1 in value0) {
           if (!(key1 === "name" || key1 === "id")) {
-            for (var key2 in dic[key0][key1]) {
-              if (key2 === new String("value").valueOf()) {
-                // console.log(i);
-                // console.log(dic[key0].name);
-                // console.log(key1);
-                // console.log(dic[key0][key1][key2]);
-
-                if (
-                  dic[key0][key1].Datatype === new String("number").valueOf()
-                ) {
+            for (key2 in dic[key0][key1]) {
+              if (key2 === "value") {
+                if (dic[key0][key1].Datatype === "number") {
                   final_dict[`Layer-${i}-${dic[key0].name}-${key1}`] = parseInt(
                     dic[key0][key1][key2]
                   );
-                } else if (
-                  dic[key0][key1].Datatype === new String("float").valueOf()
-                ) {
+                } else if (dic[key0][key1].Datatype === "float") {
                   final_dict[
                     `Layer-${i}-${dic[key0].name}-${key1}`
                   ] = parseFloat(dic[key0][key1][key2]);
-                } else if (
-                  dic[key0][key1].Datatype === new String("Tuple").valueOf()
-                ) {
+                } else if (dic[key0][key1].Datatype === "Tuple") {
                   // const temp = dic[key0][key1][key2].split(",");
                   const temp = dic[key0][key1][key2]
                     .split(",")
                     .map(function (item) {
                       return parseInt(item, 10);
                     });
-                  // console.log(temp);
+
                   if (temp.length === 4) {
                     final_dict[`Layer-${i}-${dic[key0].name}-${key1}`] = [
                       [parseInt(temp[0]), parseInt(temp[1])],
                       [parseInt(temp[2]), parseInt(temp[3])],
                     ];
-                  }
-                  // else if (temp.length === 4) {
-                  //   final_dict[`Layer-${i}-${dic[key0].name}-${key1}`] = [
-                  //     [parseInt(temp[0]), parseInt(temp[1])],
-                  //     [parseInt(temp[2]), parseInt(temp[3])],
-                  //   ];
-                  // }
-                  else {
+                  } else {
                     final_dict[`Layer-${i}-${dic[key0].name}-${key1}`] = temp;
                   }
                 } else {
                   final_dict[`Layer-${i}-${dic[key0].name}-${key1}`] =
                     dic[key0][key1][key2];
-                  // console.log(dic[key0][key1][key2]);
                 }
-              } else if (dic[key0].name === new String("Flatten").valueOf()) {
-                // console.log("Flatten");
-                final_dict[`Layer-${i}-${dic[key0].name}` + "-data_format"] =
+              } else if (dic[key0].name === "Flatten") {
+                final_dict[`Layer-${i}-${dic[key0].name}-data_format`] =
                   dic[key0][key1]["Default"];
               }
             }
@@ -2668,22 +2332,19 @@ function Step2() {
 
   // true means it is complete
   const layer_validation = () => {
-    var final_dict = {};
     const temp = components;
     var dic = _.cloneDeep(temp);
     var i = 0;
     var flag = true;
 
-    if (project_details.lib === new String("Keras").valueOf()) {
+    if (project_details.lib === "Keras") {
       for (let [key0, value0] of Object.entries(dic)) {
-        // console.log(key0, value0);
         i = i + 1;
         for (var key1 in value0) {
-          // console.log(key1);
           if (!(key1 === "name" || key1 === "id")) {
             if (
               dic[key0][key1]["Required"] &&
-              dic[key0][key1]["Datatype"] !== new String("select").valueOf()
+              dic[key0][key1]["Datatype"] !== "select"
             ) {
               if (
                 "value" in dic[key0][key1] &&
@@ -2709,36 +2370,20 @@ function Step2() {
   };
 
   const generate_hyper = () => {
-    if (project_details.lib === new String("Pytorch").valueOf()) {
+    if (project_details.lib === "Pytorch") {
       const final_dict = {};
       var i = 0;
       for (let [key0, value0] of Object.entries(selected_optimizer)) {
-        // console.log(key0, value0);
         i = i + 1;
         for (var key1 in value0) {
-          // console.log(key1);
           if (!(key1 === "name" || key1 === "id")) {
-            if (key1 === new String("value").valueOf()) {
-              // console.log(i);
-              // console.log(dic[key0].name);
-              // console.log(key1);
-              // console.log(dic[key0][key1][key2]);
-
-              if (
-                selected_optimizer[key0][key1].Datatype ===
-                new String("number").valueOf()
-              ) {
+            if (key1 === "value") {
+              if (selected_optimizer[key0][key1].Datatype === "number") {
                 final_dict[
                   `${selected_optimizer.type}-${selected_optimizer.name}-${key0}`
                 ] = parseInt(selected_optimizer[key0][key1]);
-              } else if (
-                selected_optimizer[key0][key1].Datatype ===
-                new String("tuple").valueOf()
-              ) {
+              } else if (selected_optimizer[key0][key1].Datatype === "tuple") {
                 const temp = selected_optimizer[key0][key1].split(",");
-                // console.log(temp);
-                // console.log(temp[0]);
-                // console.log(temp[1]);
 
                 final_dict[
                   `${selected_optimizer.type}-${selected_optimizer.name}-${key0}`
@@ -2747,40 +2392,23 @@ function Step2() {
                 final_dict[
                   `${selected_optimizer.type}-${selected_optimizer.name}-${key0}`
                 ] = selected_optimizer[key0][key1];
-                // console.log(selected_optimizer[key0][key1]);
               }
             }
           }
         }
       }
-      var i = 0;
+      i = 0;
       for (let [key0, value0] of Object.entries(selected_loss)) {
-        // console.log(key0, value0);
         i = i + 1;
-        for (var key1 in value0) {
-          // console.log(key1);
+        for (key1 in value0) {
           if (!(key1 === "name" || key1 === "id")) {
-            if (key1 === new String("value").valueOf()) {
-              // console.log(i);
-              // console.log(dic[key0].name);
-              // console.log(key1);
-              // console.log(dic[key0][key1][key2]);
-
-              if (
-                selected_loss[key0][key1].Datatype ===
-                new String("number").valueOf()
-              ) {
+            if (key1 === "value") {
+              if (selected_loss[key0][key1].Datatype === "number") {
                 final_dict[
                   `${selected_loss.type}-${selected_loss.name}-${key0}`
                 ] = parseInt(selected_loss[key0][key1]);
-              } else if (
-                selected_loss[key0][key1].Datatype ===
-                new String("tuple").valueOf()
-              ) {
+              } else if (selected_loss[key0][key1].Datatype === "tuple") {
                 const temp = selected_loss[key0][key1].split(",");
-                // console.log(temp);
-                // console.log(temp[0]);
-                // console.log(temp[1]);
 
                 final_dict[
                   `${selected_loss.type}-${selected_loss.name}-${key0}`
@@ -2789,13 +2417,11 @@ function Step2() {
                 final_dict[
                   `${selected_loss.type}-${selected_loss.name}-${key0}`
                 ] = selected_loss[key0][key1];
-                // console.log(selected_loss[key0][key1]);
               }
             }
           }
         }
       }
-      // console.log(final_dict);
 
       const dict = {
         metrics: state_hyperparam.metrics,
@@ -2806,7 +2432,7 @@ function Step2() {
       };
       var temp = Object.assign({}, final_dict, dict);
     } else {
-      var temp = {
+      temp = {
         metrics: state_hyperparam.metrics,
         epochs: parseFloat(state_hyperparam.epochs),
         verbose: state_hyperparam.verbose,
@@ -2819,6 +2445,11 @@ function Step2() {
 
     return temp;
   };
+
+  //states for dialog box which is triggered if necessary details are blank 
+  //before generating code.
+  const [openErrorDialog,setOpenErrorDialog] = useState(false);
+
   const generate_code = async () => {
     if (layer_validation()) {
       const hyper_data = generate_hyper();
@@ -2841,88 +2472,13 @@ function Step2() {
         // history.push("/login");
       }
     } else {
-      alert("please fill all the required fileds in layers");
+      // alert("please fill all the required fileds in layers");
+      //states for dialog box which is triggered if necessary details are blank 
+      //before generating code.
+      setOpenErrorDialog(true);
     }
   };
-  const generate_code_1 = () => {
-    var final_dict = genrate_layers();
 
-    // here
-    // console.log(final_dict);
-
-    if (project_details.lib === new String("Pytorch").valueOf()) {
-      // console.log("pytorch");
-    } else if (project_details.lib === new String("Keras").valueOf()) {
-      var _dict = {
-        // "Layer-1-Conv2D-filters": 32,
-        // "Layer-1-Conv2D-kernel_size": [
-        //     3, 3
-        // ],
-        // "Layer-1-Conv2D-activation": "relu",
-        // "Layer-1-Conv2D-padding": "same",
-        // "Layer-1-Conv2D-input_shape": [
-        //     200, 200, 3
-        // ],
-
-        // "Layer-2-MaxPooling2D-pool_size": [
-        //     2, 2
-        // ],
-
-        // "Layer-3-Flatten-": {},
-
-        // "Layer-4-Dense-units": 128,
-        // "Layer-4-Dense-activation": "relu",
-        // "Layer-4-Dense-kernel_initializer": "he_uniform",
-
-        // "Layer-5-Dense-units": 1,
-        // "Layer-5-Dense-activation": "sigmoid",
-
-        "dataset-type": "image",
-        "dataset-path": "../data/dogs_and_cats",
-
-        "image-augment-rotation_range": 40,
-        "image-augment-width_shift_range": 0.2,
-        "image-augment-height_shift_range": 0.2,
-        "image-augment-horizontal_flip": "True",
-        "image-augment-rescale": 0.0039215,
-
-        "image-params-target_size": [200, 200],
-        "image-params-batch_size": 64,
-        "image-params-class_mode": "binary",
-
-        optimizer: "sgd",
-        loss: "binary_crossentropy",
-        metrics: ["accuracy"],
-        epochs: 5,
-        verbose: 1,
-        plot: "True",
-        save_plots: "True",
-      };
-      // var dict_call = Object.assign({}, final_dict, _dict);
-      var dict_call = _dict;
-    }
-    // api call
-    // console.log(dict_call);
-    const test_data = {
-      username: username,
-      project_name: project_details.project_name,
-      training_params: dict_call,
-    };
-    // console.log(test_data);
-    axios
-      .post(`v1/generate/`, test_data, {
-        headers: {
-          "Content-Type": "application/json",
-          token: `${token}`,
-        },
-      })
-      .then((response) => {
-        // console.log(response);
-      });
-  };
-  const go_to_file_path = () => {
-    window.open(generated_file_path, "_blank");
-  };
   const download_code = async () => {
     const data = {
       username: username,
@@ -2935,6 +2491,7 @@ function Step2() {
       fileDownload(res.data, `${filename_of_download}.py`);
     }
   };
+
   const Train = async () => {
     const hyper_data = generate_hyper();
     const layers_data = genrate_layers();
@@ -2949,7 +2506,6 @@ function Step2() {
     if (res.status === 200) {
       // handleToggle_backdrop(false);
       // setAllProjects([...res.data.projects]);
-      // console.log(res);
     } else {
       // localStorage.clear();
       // history.push("/login");
@@ -2980,13 +2536,11 @@ function Step2() {
         [prop]: event.target.value,
       });
     }
-    // console.log(prop, event.target.value, state_hyperparam.plot);
   };
 
   const handleChange_hyperparameter_l_o = (prop) => (event) => {
     if (prop === "optimizer") {
       if (event.target.value !== "") {
-        // console.log(all_optimizer[event.target.value]);
         setselected_optimizer(all_optimizer[event.target.value]);
         setstate_hyperparam({
           ...state_hyperparam,
@@ -2996,7 +2550,6 @@ function Step2() {
       }
     } else {
       if (event.target.value !== "") {
-        // console.log(all_loss[event.target.value]);
         setselected_loss(all_loss[event.target.value]);
         setstate_hyperparam({ ...state_hyperparam, loss: event.target.value });
         setshowloss(true);
@@ -3009,13 +2562,13 @@ function Step2() {
       var param = prop;
       const pervstate = Object.assign([], selected_optimizer);
       pervstate[param]["value"] = event.target.value;
-      // console.log(event.target.value);
+
       setselected_optimizer(pervstate);
     } else {
-      var param = prop;
+      param = prop;
       const pervstate = Object.assign([], selected_loss);
       pervstate[param]["value"] = event.target.value;
-      // console.log(event.target.value);
+
       setselected_loss(pervstate);
     }
   };
@@ -3039,6 +2592,7 @@ function Step2() {
       }
     }
   };
+
   const handle_pre_meta = (key, key1, datatype) => (event) => {
     var temp_dic = {};
     for (var key of Object.keys(temp_pre)) {
@@ -3055,11 +2609,12 @@ function Step2() {
       }
     }
     setall_prepro(temp_dic);
-    // console.log(event.target.value);
+
     all_prepro[`dataset-type`] = event.target.value;
     setall_prepro(all_prepro);
     setshow_pre(!show_pre);
   };
+
   const handle_pre = (key, key1, datatype) => (event) => {
     var dic = _.cloneDeep(all_prepro);
     dic[`${all_prepro["dataset-type"]}-${key}-${key1}`] = event.target.value;
@@ -3101,9 +2656,6 @@ function Step2() {
           <Button variant="contained" onClick={download_code} color="primary">
             Download Code
           </Button>
-          {/* <Button onClick={handleCloseModal} color="default">
-            Close
-          </Button> */}
         </DialogActions>
       </Dialog>
 
@@ -3115,7 +2667,6 @@ function Step2() {
           textColor="primary"
           variant="fullWidth"
           aria-label="full width tabs example"
-          // style={{ background: '#6f53ca' }}
         >
           <Tab label="Preprocessing" {...a11yProps(0)} />
           <Tab label="Model" {...a11yProps(1)} />
@@ -3123,848 +2674,50 @@ function Step2() {
         </Tabs>
       </AppBar>
 
-      <TabPanel value={value} index={0} dir={theme.direction}>
-        {value === 0 ? (
-          <Grid container>
-            <Grid item lg={1} md={1} sm={1} xs={1}></Grid>
-            <Grid item lg={10} md={10} sm={10} xs={10}>
-              <Grid container>
-                <Grid item lg={12} md={12} sm={12} xs={12}>
-                  {/* meta */}
-                  {Object.keys(render_prepro_meta).map((key, index) => (
-                    <>
-                      <div className={classes.heading}>{key}</div>
-                      <Grid container>
-                        {Object.keys(render_prepro_meta[key]).map(
-                          (key1, index1) =>
-                            key1 === "name" ? null : (
-                              <>
-                                <Grid
-                                  item
-                                  lg={3}
-                                  md={3}
-                                  sm={3}
-                                  xs={3}
-                                  className={classes.pad}
-                                >
-                                  <FormControl fullWidth variant="outlined">
-                                    <InputLabel>{key1}</InputLabel>
-                                    <Select
-                                      native
-                                      value={
-                                        `dataset-type` in all_prepro
-                                          ? all_prepro[`dataset-type`]
-                                          : ""
-                                      }
-                                      onChange={handle_pre_meta(
-                                        key,
-                                        key1,
-                                        render_prepro_meta[key][key1][
-                                          "DataType"
-                                        ]
-                                      )}
-                                      label={key1}
-                                      inputProps={{
-                                        name: { key1 },
-                                      }}
-                                    >
-                                      <option aria-label="None" value="" />
-                                      {render_prepro_meta[key][key1][
-                                        "Options"
-                                      ].map((op, i) => (
-                                        <option value={op}>{op}</option>
-                                      ))}
-                                    </Select>
-                                  </FormControl>
-                                </Grid>
-                              </>
-                            )
-                        )}
-                      </Grid>
-                    </>
-                  ))}
-                  {/* pre */}
+      <PreprocessingTab
+        TabPanel={TabPanel}
+        value={value}
+        render_prepro={render_prepro}
+        render_prepro_meta={render_prepro_meta}
+        all_prepro={all_prepro}
+        handle_pre={handle_pre}
+        handle_pre_meta={handle_pre_meta}
+        show_pre={show_pre}
+      />
 
-                  {show_pre ? (
-                    <>
-                      {Object.keys(
-                        render_prepro[all_prepro["dataset-type"]]
-                      ).map((key, index) => (
-                        <>
-                          <div className={classes.heading}>{key}</div>
-                          <Grid container>
-                            {Object.keys(
-                              render_prepro[all_prepro["dataset-type"]][key]
-                            ).map((key1, index1) =>
-                              key1 === "name" ||
-                              key1 === "input_type" ? null : (
-                                <>
-                                  <Grid
-                                    item
-                                    lg={3}
-                                    md={3}
-                                    sm={3}
-                                    xs={3}
-                                    className={classes.pad}
-                                  >
-                                    {render_prepro[all_prepro["dataset-type"]][
-                                      key
-                                    ][key1]["DataType"] === "select" ? (
-                                      <FormControl fullWidth variant="outlined">
-                                        <InputLabel>{key1}</InputLabel>
-                                        <Select
-                                          native
-                                          value={
-                                            all_prepro
-                                              ? all_prepro[
-                                                  `${all_prepro["dataset-type"]}-${key}-${key1}`
-                                                ]
-                                              : ""
-                                          }
-                                          onChange={handle_pre(
-                                            key,
-                                            key1,
-                                            render_prepro[
-                                              all_prepro["dataset-type"]
-                                            ][key][key1]["DataType"]
-                                          )}
-                                          label={key1}
-                                          inputProps={{
-                                            name: { key1 },
-                                          }}
-                                        >
-                                          <option aria-label="None" value="" />
-                                          {render_prepro[
-                                            all_prepro["dataset-type"]
-                                          ][key][key1]["Options"].map(
-                                            (op, i) => (
-                                              <option
-                                                value={
-                                                  op === "True"
-                                                    ? true
-                                                    : op === "False"
-                                                    ? false
-                                                    : op
-                                                }
-                                              >
-                                                {op}
-                                              </option>
-                                            )
-                                          )}
-                                        </Select>
-                                      </FormControl>
-                                    ) : (
-                                      <TextField
-                                        fullWidth
-                                        label={key1}
-                                        value={
-                                          all_prepro
-                                            ? all_prepro[
-                                                `${all_prepro["dataset-type"]}-${key}-${key1}`
-                                              ]
-                                            : ""
-                                        }
-                                        onChange={handle_pre(
-                                          key,
-                                          key1,
-                                          render_prepro[
-                                            all_prepro["dataset-type"]
-                                          ][key][key1]["DataType"]
-                                        )}
-                                        variant="outlined"
-                                        helperText={`Example - ${
-                                          render_prepro[
-                                            all_prepro["dataset-type"]
-                                          ][key][key1]["Example"]
-                                        }`}
-                                      />
-                                    )}
-                                  </Grid>
-                                </>
-                              )
-                            )}
-                          </Grid>
-                        </>
-                      ))}
-                    </>
-                  ) : null}
-                </Grid>
-              </Grid>
-            </Grid>
-            <Grid item lg={1} md={1} sm={1} xs={1}></Grid>
-          </Grid>
-        ) : null}
-      </TabPanel>
+      <LayerTab
+        TabPanel={TabPanel}
+        value={value}
+        handleDragEnd={handleDragEnd}
+        jsondata={jsondata}
+        components={components}
+        selected_layer={selected_layer}
+        selected_layer_type={selected_layer_type}
+        showdetails={showdetails}
+        save_value={save_value}
+      />
 
-      <TabPanel value={value} index={1} dir={theme.direction}>
-        <DragDropContext onDragEnd={handleDragEnd}>
-          <Grid container>
-            <Grid item lg={3} md={3} sm={4} xs={4} className={classes.grid1}>
-              <div key="source" className={classes.column1}>
-                <span className={classes.spancss}>Layers</span>
+      <HyperparameterTab
+        TabPanel={TabPanel}
+        value={value}
+        project_details={project_details}
+        state_hyperparam={state_hyperparam}
+        handleChange_hyperparameter={handleChange_hyperparameter}
+        handleChange_hyperparameter_l_o={handleChange_hyperparameter_l_o}
+        all_optimizer={all_optimizer}
+        all_loss={all_loss}
+        showoptimizer={showoptimizer}
+        selected_optimizer={selected_optimizer}
+        selected_loss={selected_loss}
+        _hyper={_hyper}
+        save_value_hyper={save_value_hyper}
+        showloss={showloss}
+        generate_code={generate_code}
+        Train={Train}
+        openErrorDialog={openErrorDialog}
+        setOpenErrorDialog={setOpenErrorDialog}
+      />
 
-                <Droppable droppableId="source">
-                  {(provided, snapshot) => {
-                    return (
-                      <div
-                        ref={provided.innerRef}
-                        {...provided.droppableProps}
-                        className={classes.droppableColsource}
-                      >
-                        {Object.keys(jsondata).map((el, index) => {
-                          return (
-                            <Draggable key={el} index={index} draggableId={el}>
-                              {(provided, snapshot) => {
-                                // console.log(snapshot)
-                                return (
-                                  <div
-                                    className={classes.item}
-                                    ref={provided.innerRef}
-                                    {...provided.draggableProps}
-                                    {...provided.dragHandleProps}
-                                  >
-                                    {el}
-                                  </div>
-                                );
-                              }}
-                            </Draggable>
-                          );
-                        })}
-                        {provided.placeholder}
-                      </div>
-                    );
-                  }}
-                </Droppable>
-              </div>
-            </Grid>
-
-            <Grid item lg={5} md={5} sm={4} xs={4} className={classes.grid2}>
-              <div key="target" className={classes.column2}>
-                <span className={classes.spancss}>Model</span>
-
-                <Droppable droppableId="target">
-                  {(provided, snapshot) => {
-                    return (
-                      <div
-                        ref={provided.innerRef}
-                        {...provided.droppableProps}
-                        className={classes.droppableColtarget}
-                      >
-                        {components.map((el, index) => {
-                          return (
-                            <Draggable
-                              key={el.id}
-                              index={index}
-                              draggableId={el.id}
-                            >
-                              {(provided, snapshot) => {
-                                // console.log(snapshot)
-                                return (
-                                  <div
-                                    className={classes.container}
-                                    ref={provided.innerRef}
-                                    {...provided.draggableProps}
-                                    {...provided.dragHandleProps}
-                                  >
-                                    <div
-                                      className={
-                                        selected_layer ==
-                                        el.id.charAt(el.id.length - 1)
-                                          ? classes.item1selected
-                                          : classes.item1
-                                      }
-                                      onClick={() => showdetails(el)}
-                                    >
-                                      {el.name}
-                                    </div>
-
-                                    {/* <div
-                                          className={classes.styleclose}
-                                          onClick={() => handledelete(el)}
-                                        >
-                                          <CloseIcon />
-                                        </div> */}
-                                  </div>
-                                );
-                              }}
-                            </Draggable>
-                          );
-                        })}
-                        {provided.placeholder}
-                      </div>
-                    );
-                  }}
-                </Droppable>
-              </div>
-            </Grid>
-
-            <Grid item lg={4} md={4} sm={4} xs={4} className={classes.grid3}>
-              <div className={classes.column3}>
-                <span className={classes.spancss}>
-                  {Object.keys(selected_layer_type).length !== 0
-                    ? "name" in components[selected_layer]
-                      ? components[selected_layer].name
-                      : null
-                    : null}
-                </span>
-
-                <div className={classes.body3}>
-                  {Object.keys(selected_layer_type).length === 0 ? (
-                    <h3>please select some layer first</h3>
-                  ) : (
-                    <div className={classes.innerpad}>
-                      {/* <div className={classes.heading}>
-                        {"name" in components[selected_layer]
-                          ? components[selected_layer].name
-                          : null}
-                      </div> */}
-                      {Object.keys(components[selected_layer]).map(
-                        (key, index) => (
-                          <>
-                            {key === "name" ||
-                            key === "id" ||
-                            key === "type" ? null : (
-                              <div className={classes.batch}>
-                                <div className={classes.title}>
-                                  {" "}
-                                  {key}
-                                  &nbsp;{" "}
-                                  {selected_layer_type[key]["Required"] ===
-                                  1 ? (
-                                    <span>*</span>
-                                  ) : (
-                                    <span></span>
-                                  )}
-                                </div>
-
-                                <div
-                                  className={classes.infoicon}
-                                  title={
-                                    components[selected_layer][key][
-                                      "Description"
-                                    ]
-                                  }
-                                >
-                                  <HelpOutlineIcon />
-                                </div>
-                                {components[selected_layer][key]["Datatype"] ==
-                                "select" ? (
-                                  <div className={classes.value}>
-                                    <FormControl
-                                      fullWidth
-                                      variant="outlined"
-                                      size="small"
-                                    >
-                                      <Select
-                                        native
-                                        value={
-                                          components[selected_layer][key][
-                                            "value"
-                                          ]
-                                            ? components[selected_layer][key][
-                                                "value"
-                                              ]
-                                            : components[selected_layer][key][
-                                                "Default"
-                                              ]
-                                        }
-                                        onChange={save_value(key)}
-                                      >
-                                        {components[selected_layer][key][
-                                          "Options"
-                                        ].map((arr) => (
-                                          <option value={arr}>{arr}</option>
-                                        ))}{" "}
-                                      </Select>
-                                    </FormControl>
-                                  </div>
-                                ) : (
-                                  <div className={classes.value}>
-                                    <TextField
-                                      required
-                                      size="small"
-                                      id="outlined-required"
-                                      value={
-                                        components[selected_layer][key]["value"]
-                                          ? components[selected_layer][key][
-                                              "value"
-                                            ]
-                                          : components[selected_layer][key][
-                                              "Default"
-                                            ] === "NA"
-                                          ? ""
-                                          : components[selected_layer][key][
-                                              "Default"
-                                            ]
-                                      }
-                                      variant="outlined"
-                                      onChange={save_value(key)}
-                                      helperText={`Example - ${components[selected_layer][key]["Example"]}`}
-                                    />
-                                  </div>
-                                )}
-                              </div>
-                            )}
-                          </>
-                        )
-                      )}
-                    </div>
-                  )}
-                </div>
-              </div>
-            </Grid>
-
-            <div className={classes.delete}>
-              <Droppable droppableId="delete">
-                {(provided, snapshot) => {
-                  return (
-                    <div
-                      ref={provided.innerRef}
-                      {...provided.droppableProps}
-                      // className={classes.droppableColtarget}
-                    >
-                      <h3>Drag here to delete the layer</h3>
-
-                      {provided.placeholder}
-                    </div>
-                  );
-                }}
-              </Droppable>
-            </div>
-          </Grid>
-        </DragDropContext>
-      </TabPanel>
-
-      <TabPanel value={value} index={2} dir={theme.direction}>
-        <Grid container>
-          <Grid item lg={1} md={1} sm={1} xs={1}></Grid>
-          <Grid item lg={10} md={10} sm={10} xs={10}>
-            <Grid container>
-              {project_details.lib === new String("Pytorch").valueOf() ? (
-                <>
-                  <Grid item lg={12} md={12} sm={12} xs={12}>
-                    <FormControl variant="outlined" className={classes._hyper}>
-                      <InputLabel>optimizer</InputLabel>
-                      <Select
-                        native
-                        value={state_hyperparam.optimizer}
-                        onChange={handleChange_hyperparameter_l_o("optimizer")}
-                        label="optimizer"
-                        inputProps={{
-                          name: "optimizer",
-                        }}
-                      >
-                        <option aria-label="None" value="" />
-                        {Object.keys(all_optimizer).map((name, index) => {
-                          return <option value={name}>{name}</option>;
-                        })}
-                      </Select>
-                    </FormControl>
-
-                    {showoptimizer ? (
-                      <div className={classes.card}>
-                        {Object.keys(selected_optimizer).map((key, index) => (
-                          <>
-                            {key === "name" ||
-                            key === "id" ||
-                            key === "type" ? null : (
-                              <div className={classes.batch}>
-                                <div className={classes.title}>
-                                  {" "}
-                                  {key}
-                                  &nbsp;{" "}
-                                  {selected_optimizer[key]["Required"] === 1 ? (
-                                    <span>*</span>
-                                  ) : (
-                                    <span></span>
-                                  )}
-                                </div>
-
-                                <div
-                                  className={classes.infoicon}
-                                  title={selected_optimizer[key]["Description"]}
-                                >
-                                  <HelpOutlineIcon />
-                                </div>
-                                {selected_optimizer[key]["Datatype"] ==
-                                "select" ? (
-                                  <div className={classes.value}>
-                                    <FormControl
-                                      fullWidth
-                                      variant="outlined"
-                                      size="small"
-                                    >
-                                      <Select
-                                        native
-                                        value={
-                                          selected_optimizer[key]["value"]
-                                            ? selected_optimizer[key]["value"]
-                                            : selected_optimizer[key]["Default"]
-                                        }
-                                        onChange={save_value_hyper(
-                                          key,
-                                          "optimizer"
-                                        )}
-                                      >
-                                        {selected_optimizer[key]["Options"].map(
-                                          (arr) => (
-                                            <option value={arr}>{arr}</option>
-                                          )
-                                        )}{" "}
-                                      </Select>
-                                    </FormControl>
-                                  </div>
-                                ) : (
-                                  <div className={classes.value}>
-                                    <TextField
-                                      required
-                                      size="small"
-                                      id="outlined-required"
-                                      value={
-                                        selected_optimizer[key]["value"]
-                                          ? selected_optimizer[key]["value"]
-                                          : selected_optimizer[key]["Default"]
-                                      }
-                                      variant="outlined"
-                                      onChange={save_value_hyper(
-                                        key,
-                                        "optimizer"
-                                      )}
-                                      helperText={`Example - ${selected_optimizer[key]["Example"]}`}
-                                    />
-                                  </div>
-                                )}
-                              </div>
-                            )}
-                          </>
-                        ))}
-
-                        <Button
-                          className={classes.action_btn}
-                          variant="contained"
-                          color="default"
-                          onClick={() => _hyper("optimizer", "cancle")}
-                        >
-                          Cancle
-                        </Button>
-
-                        <Button
-                          className={classes.action_btn}
-                          variant="contained"
-                          color="primary"
-                          onClick={() => _hyper("optimizer", "save")}
-                        >
-                          Save
-                        </Button>
-                      </div>
-                    ) : null}
-                  </Grid>
-
-                  <Grid item lg={12} md={12} sm={12} xs={12}>
-                    <FormControl variant="outlined" className={classes._hyper}>
-                      <InputLabel>Loss</InputLabel>
-                      <Select
-                        native
-                        value={state_hyperparam.loss}
-                        onChange={handleChange_hyperparameter_l_o("loss")}
-                        label="loss"
-                        inputProps={{
-                          name: "loss",
-                        }}
-                      >
-                        <option aria-label="None" value="" />
-                        {Object.keys(all_loss).map((name, index) => {
-                          return <option value={name}>{name}</option>;
-                        })}
-                      </Select>
-                    </FormControl>
-
-                    {showloss ? (
-                      <div className={classes.card}>
-                        {Object.keys(selected_loss).map((key, index) => (
-                          <>
-                            {key === "name" ||
-                            key === "id" ||
-                            key === "type" ? null : (
-                              <div className={classes.batch}>
-                                <div className={classes.title}>
-                                  {" "}
-                                  {key}
-                                  &nbsp;{" "}
-                                  {selected_loss[key]["Required"] === 1 ? (
-                                    <span>*</span>
-                                  ) : (
-                                    <span></span>
-                                  )}
-                                </div>
-
-                                <div
-                                  className={classes.infoicon}
-                                  title={selected_loss[key]["Description"]}
-                                >
-                                  <HelpOutlineIcon />
-                                </div>
-                                {selected_loss[key]["Datatype"] == "select" ? (
-                                  <div className={classes.value}>
-                                    <FormControl
-                                      fullWidth
-                                      variant="outlined"
-                                      size="small"
-                                    >
-                                      <Select
-                                        native
-                                        value={
-                                          selected_loss[key]["value"]
-                                            ? selected_loss[key]["value"]
-                                            : selected_loss[key]["Default"]
-                                        }
-                                        onChange={save_value_hyper(key, "loss")}
-                                      >
-                                        {selected_loss[key]["Options"].map(
-                                          (arr) => (
-                                            <option value={arr}>{arr}</option>
-                                          )
-                                        )}{" "}
-                                      </Select>
-                                    </FormControl>
-                                  </div>
-                                ) : (
-                                  <div className={classes.value}>
-                                    <TextField
-                                      required
-                                      size="small"
-                                      id="outlined-required"
-                                      value={
-                                        selected_loss[key]["value"]
-                                          ? selected_loss[key]["value"]
-                                          : selected_loss[key]["Default"]
-                                      }
-                                      variant="outlined"
-                                      onChange={save_value_hyper(key, "loss")}
-                                      helperText={`Example - ${selected_loss[key]["Example"]}`}
-                                    />
-                                  </div>
-                                )}
-                              </div>
-                            )}
-                          </>
-                        ))}
-
-                        <Button
-                          className={classes.action_btn}
-                          variant="contained"
-                          color="default"
-                          onClick={() => _hyper("loss", "cancle")}
-                        >
-                          Cancle
-                        </Button>
-
-                        <Button
-                          className={classes.action_btn}
-                          variant="contained"
-                          color="primary"
-                          onClick={() => _hyper("loss", "save")}
-                        >
-                          Save
-                        </Button>
-                      </div>
-                    ) : null}
-                  </Grid>
-                </>
-              ) : (
-                <>
-                  <FormControl variant="outlined" className={classes.sel}>
-                    <InputLabel>optimizer</InputLabel>
-                    <Select
-                      native
-                      value={state_hyperparam.optimizer}
-                      onChange={handleChange_hyperparameter("optimizer")}
-                      label="optimizer"
-                      inputProps={{
-                        name: "optimizer",
-                      }}
-                    >
-                      <option aria-label="None" value="" />
-                      <option value={"sgd"}>sgd</option>
-                      <option value={"rmsprop"}>rmsprop</option>
-                      <option value={"adam"}>adam</option>
-                      <option value={"adadelta"}>adadelta</option>
-                      <option value={"adagrad"}>adagrad</option>
-                    </Select>
-                  </FormControl>
-
-                  <FormControl variant="outlined" className={classes.sel}>
-                    <InputLabel>loss</InputLabel>
-                    <Select
-                      native
-                      value={state_hyperparam.loss}
-                      onChange={handleChange_hyperparameter("loss")}
-                      label="loss"
-                      inputProps={{
-                        name: "loss",
-                      }}
-                    >
-                      <option aria-label="None" value="" />
-                      <option value={"binary_crossentropy"}>
-                        binary_crossentropy
-                      </option>
-                      <option value={"categorical_crossentropy"}>
-                        categorical_crossentropy
-                      </option>
-                      <option value={"poisson"}>poisson</option>
-                      <option value={"mean_squared_error"}>
-                        mean_squared_error
-                      </option>
-                      <option value={"mean_absolute_error"}>
-                        mean_absolute_error
-                      </option>
-                      <option value={"cosine_similarity"}>
-                        cosine_similarity
-                      </option>
-                      <option value={"hinge"}>hinge</option>
-                    </Select>
-                  </FormControl>
-                </>
-              )}
-
-              <Grid item lg={12} md={12} sm={12} xs={12}>
-                <TextField
-                  label="epochs"
-                  value={state_hyperparam.epochs}
-                  onChange={handleChange_hyperparameter("epochs")}
-                  variant="outlined"
-                  className={classes.sel}
-                />
-
-                <TextField
-                  label="learning rate"
-                  value={state_hyperparam.learning_rate}
-                  onChange={handleChange_hyperparameter("learning_rate")}
-                  variant="outlined"
-                  className={classes.sel}
-                />
-
-                <FormControl variant="outlined" className={classes.sel}>
-                  <InputLabel>verbose</InputLabel>
-                  <Select
-                    native
-                    value={state_hyperparam.verbose}
-                    onChange={handleChange_hyperparameter("verbose")}
-                    label="verbose"
-                    inputProps={{
-                      name: "verbose",
-                    }}
-                  >
-                    <option aria-label="None" value="" />
-                    <option value={1}>1</option>
-                    <option value={2}>2</option>
-                    <option value={3}>3</option>
-                    <option value={4}>4</option>
-                    <option value={5}>5</option>
-                  </Select>
-                </FormControl>
-
-                {project_details.lib === new String("Pytorch").valueOf() ? (
-                  <FormControl variant="outlined" className={classes.sel}>
-                    <InputLabel>metrics</InputLabel>
-                    <Select
-                      native
-                      value={state_hyperparam.metrics}
-                      onChange={handleChange_hyperparameter("metrics")}
-                      label="metrics"
-                      inputProps={{
-                        name: "metrics",
-                      }}
-                    >
-                      <option aria-label="None" value="" />
-                      <option value={"AUC"}>AUC</option>
-                      <option value={"Precision"}>Precision</option>
-                      <option value={"Recall"}>Recall</option>
-                      <option value={"True positives"}>True positives</option>
-                      <option value={"True negatives"}>True negatives</option>
-                      <option value={"False positives"}>False positives</option>
-                      <option value={"False negatives"}>False negatives</option>
-                      <option value={"Precision at recall"}>
-                        Precision at recall
-                      </option>
-                      <option value={"Sensitivity at specificity"}>
-                        Sensitivity at specificity
-                      </option>
-                      <option value={"Specificity at sensitivity"}>
-                        Specificity at sensitivity
-                      </option>
-                    </Select>
-                  </FormControl>
-                ) : (
-                  <FormControl variant="outlined" className={classes.sel}>
-                    <InputLabel>metrics</InputLabel>
-                    <Select
-                      native
-                      value={state_hyperparam.metrics}
-                      onChange={handleChange_hyperparameter("metrics")}
-                      label="metrics"
-                      inputProps={{
-                        name: "metrics",
-                      }}
-                    >
-                      <option aria-label="None" value="" />
-                      <option value={"Accuracy"}>Accuracy</option>
-                      <option value={"BinaryCrossentropy"}>
-                        BinaryCrossentropy
-                      </option>
-                      <option value={"CategoricalCrossentropy"}>
-                        CategoricalCrossentropy
-                      </option>
-                      <option value={"RootMeanSquaredError"}>
-                        CosineSimilarity
-                      </option>
-                      <option value={"AUC"}>Precision</option>
-                      <option value={"Recall"}>Recall</option>
-                      <option value={"MeanIoU"}>MeanIoU</option>
-                      <option value={"Hinge"}>Hinge</option>
-                    </Select>
-                  </FormControl>
-                )}
-                <FormControlLabel
-                  className={classes.save_plot}
-                  control={
-                    <Checkbox
-                      checked={state_hyperparam.plot}
-                      // onChange={handleChange}
-                      onChange={handleChange_hyperparameter("plot")}
-                      // value={state_hyperparam.plot}
-                      color="primary"
-                    />
-                  }
-                  label="Save Graphs"
-                />
-              </Grid>
-            </Grid>
-          </Grid>
-          <Grid item lg={1} md={1} sm={1} xs={1}></Grid>
-        </Grid>
-
-        <Grid container>
-          <Grid item lg={4} md={4}></Grid>
-          <Grid item lg={2} md={2}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => generate_code()}
-            >
-              Generate Code
-            </Button>
-          </Grid>
-          {/* <Grid item lg={1} md={1}>
-                    </Grid> */}
-          <Grid item lg={2} md={2}>
-            <Button variant="contained" color="primary" onClick={() => Train()}>
-              Train the Model
-            </Button>
-          </Grid>
-          <Grid item lg={4} md={4}></Grid>
-        </Grid>
-      </TabPanel>
     </div>
   );
 }

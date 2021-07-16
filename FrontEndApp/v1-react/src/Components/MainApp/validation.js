@@ -1,51 +1,6 @@
-// Function is called at line 2522 in Step2.js
 // we are assuming that batch_size is not included in the shape
-var layer_dims = {
-  Conv2D: {
-    expected_dim: 3,
-    returned_dim: 3,
-  },
+import { keras_layers } from "../../resources/keras";
 
-  Dense: {
-    expected_dim: 1,
-    returned_dim: 1,
-  },
-
-  LSTM: {
-    expected_dim: 2,
-    returned_dim: 1,
-  },
-
-  SimpleRNN: {
-    expected_dim: 1,
-    returned_dim: 1,
-  },
-
-  Dropout: {
-    expected_dim: "all",
-    returned_dim: "same",
-  },
-
-  Flatten: {
-    expected_dim: "all",
-    returned_dim: 1,
-  },
-
-  ZeroPadding2D: {
-    expected_dim: 3,
-    returned_dim: 3,
-  },
-
-  AveragePooling2D: {
-    expected_dim: 3,
-    returned_dim: 3,
-  },
-
-  MaxPooling2D: {
-    expected_dim: 3,
-    returned_dim: 3,
-  },
-};
 /**
  * Validate order of layers such that dimensions of consecutive layers are not conflicting
  * @function validate_layers
@@ -63,18 +18,19 @@ export const validate_layers = (source, destination, components) => {
   const des_idx = destination.index;
   const src_idx = source.index;
   // adding new layers
+  var obj;
   if (src_dic === "source") {
     const curr_layer = components[des_idx].name;
-    if (layer_dims[curr_layer].returned_dim === "same") {
+    if (keras_layers[curr_layer].dimensions.returned_dim === "same") {
     } else {
       if (des_idx !== 0) {
         const above_layer = components[des_idx - 1].name;
         if (
-          layer_dims[curr_layer].expected_dim !== "all" &&
-          layer_dims[above_layer].returned_dim !==
-            layer_dims[curr_layer].expected_dim
+          keras_layers[curr_layer].dimensions.expected_dim !== "all" &&
+          keras_layers[above_layer].dimensions.returned_dim !==
+            keras_layers[curr_layer].dimensions.expected_dim
         ) {
-          var obj = {
+          obj = {
             indices: [des_idx - 1, des_idx],
             error_description:
               "Wrong layer placement (current layer and the layer above)",
@@ -86,11 +42,11 @@ export const validate_layers = (source, destination, components) => {
       if (des_idx !== components.length - 1) {
         const below_layer = components[des_idx + 1].name;
         if (
-          layer_dims[below_layer].expected_dim !== "all" &&
-          layer_dims[curr_layer].returned_dim !==
-            layer_dims[below_layer].expected_dim
+          keras_layers[below_layer].dimensions.expected_dim !== "all" &&
+          keras_layers[curr_layer].dimensions.returned_dim !==
+            keras_layers[below_layer].dimensions.expected_dim
         ) {
-          var obj = {
+          obj = {
             indices: [des_idx, des_idx + 1],
             error_description:
               "Wrong layer placement (current layer and the layer below)",
@@ -104,17 +60,17 @@ export const validate_layers = (source, destination, components) => {
   //deleting layers
   else if (des_dic === "delete") {
     const curr_layer = components[src_idx].name;
-    if (layer_dims[curr_layer].returned_dim === "same") {
+    if (keras_layers[curr_layer].dimensions.returned_dim === "same") {
     } else if (src_idx !== components.length - 1) {
       const below_layer = components[src_idx + 1].name;
       if (src_idx !== 0) {
         var above_layer = components[src_idx - 1].name;
         if (
-          layer_dims[below_layer].expected_dim !== "all" &&
-          layer_dims[above_layer].returned_dim !==
-            layer_dims[below_layer].expected_dim
+          keras_layers[below_layer].dimensions.expected_dim !== "all" &&
+          keras_layers[above_layer].dimensions.returned_dim !==
+            keras_layers[below_layer].dimensions.expected_dim
         ) {
-          var obj = {
+          obj = {
             indices: [src_idx - 1, src_idx],
             error_description: "Wrong layer placement (delete)",
             error: "Wrong layer placement.",
@@ -128,18 +84,18 @@ export const validate_layers = (source, destination, components) => {
   else if (src_dic === "target" && des_dic !== "delete") {
     const curr_layer = components[des_idx].name;
     //for dropout layer
-    if (layer_dims[curr_layer].returned_dim === "same") {
+    if (keras_layers[curr_layer].dimensions.returned_dim === "same") {
     } else {
       //for src layer
       if (des_idx !== 0) {
         const above_layer = components[des_idx - 1].name;
         if (
-          layer_dims[above_layer].returned_dim !== "same" &&
-          layer_dims[curr_layer].expected_dim !== "all" &&
-          layer_dims[above_layer].returned_dim !==
-            layer_dims[curr_layer].expected_dim
+          keras_layers[above_layer].dimensions.returned_dim !== "same" &&
+          keras_layers[curr_layer].dimensions.expected_dim !== "all" &&
+          keras_layers[above_layer].dimensions.returned_dim !==
+            keras_layers[curr_layer].dimensions.expected_dim
         ) {
-          var obj = {
+          obj = {
             indices: [des_idx - 1, des_idx],
             error_description:
               "Wrong layer placement (current layer and the layer above)",
@@ -151,11 +107,11 @@ export const validate_layers = (source, destination, components) => {
       if (des_idx !== components.length - 1) {
         const below_layer = components[des_idx + 1].name;
         if (
-          layer_dims[below_layer].expected_dim !== "all" &&
-          layer_dims[curr_layer].returned_dim !==
-            layer_dims[below_layer].expected_dim
+          keras_layers[below_layer].dimensions.expected_dim !== "all" &&
+          keras_layers[curr_layer].dimensions.returned_dim !==
+            keras_layers[below_layer].dimensions.expected_dim
         ) {
-          var obj = {
+          obj = {
             indices: [des_idx, des_idx + 1],
             error_description:
               "Wrong layer placement (current layer and the layer above)",
@@ -169,19 +125,19 @@ export const validate_layers = (source, destination, components) => {
         const above_layer = components[src_idx - 1].name;
         const below_layer = components[src_idx].name;
         if (
-          layer_dims[below_layer].expected_dim !== "all" &&
-          layer_dims[above_layer].returned_dim !==
-            layer_dims[below_layer].expected_dim
+          keras_layers[below_layer].dimensions.expected_dim !== "all" &&
+          keras_layers[above_layer].dimensions.returned_dim !==
+            keras_layers[below_layer].dimensions.expected_dim
         ) {
           if (des_idx > src_idx) {
-            var obj = {
+            obj = {
               indices: [src_idx - 1, src_idx],
               error_description:
                 "Wrong layer placement (current layer moves up to down)",
               error: "Wrong layer placement.",
             };
           } else {
-            var obj = {
+            obj = {
               indices: [src_idx, src_idx + 1],
               error_description:
                 "Wrong layer placement (current layer moves down to up)",
