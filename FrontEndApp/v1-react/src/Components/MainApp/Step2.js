@@ -54,6 +54,7 @@ function Step2() {
   const [selected_layer, setselected_layer] = useState(-1);
   const [selected_layer_name, setselected_layer_name] = useState("");
   const [value, setValue] = useState(0);
+  const [openErrorDialog,setOpenErrorDialog]=useState(false);
   const [state_hyperparam, setstate_hyperparam] = useState({
     metrics: "",
     epochs: 0,
@@ -147,6 +148,7 @@ function Step2() {
   const handleChangetabs = (event, newValue) => {
     if (newValue !== 1 && value === 1) {
       saveData();
+
     }
     if (newValue !== 0 && value === 0) {
       savepre();
@@ -2047,7 +2049,7 @@ function Step2() {
           Required: 0,
           DataType: "select",
           Options: ["True", "False"],
-          Description: "Whether to save training graphs",
+          Description: " to save training Whethergraphs",
         },
       },
     };
@@ -2090,6 +2092,7 @@ function Step2() {
 
       if (res.status === 200) {
         setall_prepro(res.data.preprocessing);
+        // console.log("all_prepro1",all_prepro);
 
         if ("dataset-type" in res.data.preprocessing) {
           setshow_pre(true);
@@ -2118,6 +2121,9 @@ function Step2() {
     fetchDataHyper();
   }, [project_details.project_id, token, username]);
 
+
+
+
   const handleDragEnd = ({ destination, source }) => {
     if (!destination) {
       return;
@@ -2127,6 +2133,7 @@ function Step2() {
       destination.index === source.index &&
       destination.droppableId === source.droppableId
     ) {
+     
       return;
     }
 
@@ -2177,55 +2184,71 @@ function Step2() {
       }
       setcomponents(components);
     }
-    if (
-      destination.droppableId === "target" &&
-      source.droppableId === "source"
-    ) {
-      const list_names_of_source = Object.keys(jsondata);
-      const temp = jsondata[list_names_of_source[source.index]];
-      var dic = _.cloneDeep(temp);
+    if (destination.droppableId === "target" && source.droppableId === "source") 
+      {
+        const list_names_of_source = Object.keys(jsondata);
+        console.log("list of keys is and source index :",list_names_of_source,source.index);
+        const temp = jsondata[list_names_of_source[source.index]];
+        console.log("temp is ",temp);
+        
+        var dic = _.cloneDeep(temp);
+        console.log("dictionary after ",dic);
 
-      if (Array.isArray(components) && components.length === 0) {
-      }
+        // if (Array.isArray(components) && components.length === 0) {
+        // }
 
-      for (var key1 in dic) {
-        for (var key2 in dic[key1]) {
-          if (key2 === "value") {
-            delete dic[key1][key2];
+
+        // for (var key1 in dic) {
+        //   console.log("key 1 is  ",key1);
+        //   for (var key2 in dic[key1]) {
+        //     if (key2 === "value") {
+        //       console.log("key 2 is  ",key2);
+        //       console.log("dic is  ",dic[key1][key2]);
+
+        //       delete dic[key1][key2];
+
+        //     }
+        //   }
+        // }
+
+        //getting the id 
+        dic["id"] = `${list_names_of_source[source.index]}-${source.index}-${
+          destination.index
+        }`;
+        // console.log("we are getting the id ",dic["id"]);
+        dic["name"] = list_names_of_source[source.index];
+
+        console.log("components before",components);
+        
+        components.splice(destination.index, 0, dic);
+
+        console.log("components after",components);
+
+        for (i = 0; i < components.length; i++) {
+          components[i]["id"] = components[i]["id"] + i;
+          console.log("inside loop id",components[i]["id"]);
+          if (i === 0) {
+            if (
+              !("input_size" in components[i]) ||
+              !("input_shape" in components[i])
+            ) {
+              components[i]["input_shape"] = {
+                Example: [200, 200, 3],
+                Default: "NA",
+                Required: 1,
+                Datatype: "Tuple",
+                Options: [],
+                Description: "Input shape for the first layer",
+              };
+            }
+          } else {
+            try {
+              delete components[i]["input_shape"];
+            } catch (err) {}
           }
         }
-      }
-      dic["id"] = `${list_names_of_source[source.index]}-${source.index}-${
-        destination.index
-      }`;
-      dic["name"] = list_names_of_source[source.index];
 
-      components.splice(destination.index, 0, dic);
-
-      for (i = 0; i < components.length; i++) {
-        components[i]["id"] = components[i]["id"] + i;
-        if (i === 0) {
-          if (
-            !("input_size" in components[i]) ||
-            !("input_shape" in components[i])
-          ) {
-            components[i]["input_shape"] = {
-              Example: [200, 200, 3],
-              Default: "NA",
-              Required: 1,
-              Datatype: "Tuple",
-              Options: [],
-              Description: "Input shape for the first layer",
-            };
-          }
-        } else {
-          try {
-            delete components[i]["input_shape"];
-          } catch (err) {}
-        }
-      }
-
-      setcomponents(components);
+        setcomponents(components);
     }
     const validate_res = validate_layers(source, destination, components);
   };
@@ -2237,7 +2260,6 @@ function Step2() {
     var index = ele.lastIndexOf(element);
 
     setselected_layer(index);
-    // setselected_layer_name(element.name);
   };
 
   const save_value = (prop) => (event) => {
@@ -2245,7 +2267,9 @@ function Step2() {
     var index = selected_layer;
     const pervstate = Object.assign([], components);
     pervstate[index][param]["value"] = event.target.value;
-
+    console.log("prop is ",prop);
+    console.log(event.target.value);
+    console.log(components);
     setcomponents(pervstate);
   };
 
@@ -2446,9 +2470,7 @@ function Step2() {
     return temp;
   };
 
-  //states for dialog box which is triggered if necessary details are blank 
-  //before generating code.
-  const [openErrorDialog,setOpenErrorDialog] = useState(false);
+ 
 
   const generate_code = async () => {
     if (layer_validation()) {
@@ -2610,6 +2632,7 @@ function Step2() {
     }
     setall_prepro(temp_dic);
 
+
     all_prepro[`dataset-type`] = event.target.value;
     setall_prepro(all_prepro);
     setshow_pre(!show_pre);
@@ -2620,6 +2643,70 @@ function Step2() {
     dic[`${all_prepro["dataset-type"]}-${key}-${key1}`] = event.target.value;
     setall_prepro(dic);
   };
+
+
+  const handleCloneLayer = (layer) => {
+    // handleChangetabs();
+    
+      //getting source names of all layers 
+        const list_names_of_source=Object.keys(jsondata);
+        let source_index;
+
+        //where to place layer in UI
+        let destination_index=Number(layer.id[layer.id.length-1])+1;
+        console.log("destination index  is ",destination_index);
+        
+
+    
+        //finding layer in source array for id framing
+        for(let i=0;i<list_names_of_source.length;i++)
+        {
+          if(layer.name === list_names_of_source[i] )
+          {
+            source_index=i;
+            break;
+          }
+        }
+
+        //cloning the layer 
+        let clonedLayer= _.cloneDeep(layer);
+        
+        //assigning new id and name
+        clonedLayer["id"]=`${layer.name}-${source_index}-${destination_index}`;
+        clonedLayer["name"] = list_names_of_source[source_index];
+        
+
+        //inserting layer just below the layer to be cloned 
+        components.splice(destination_index,0,clonedLayer);
+        
+
+        for (let i = 0; i < components.length; i++) {
+          components[i]["id"] = components[i]["id"] + i;
+          if (i === 0) {
+            if (
+              !("input_size" in components[i]) ||
+              !("input_shape" in components[i])
+            ) {
+              components[i]["input_shape"] = {
+                Example: [200, 200, 3],
+                Default: "NA",
+                Required: 1,
+                Datatype: "Tuple",
+                Options: [],
+                Description: "Input shape for the first layer",
+              };
+            }
+          } else {
+            try {
+              delete components[i]["input_shape"];
+            } catch (err) {}
+          }
+          // console.log("inside loop id",components[i]["id"]);
+        }
+        let some_dic = _.cloneDeep(components);
+        setcomponents(some_dic);
+  };
+
 
   return (
     <div className={classes.App}>
@@ -2695,6 +2782,7 @@ function Step2() {
         selected_layer_type={selected_layer_type}
         showdetails={showdetails}
         save_value={save_value}
+        handleCloneLayer={handleCloneLayer}
       />
 
       <HyperparameterTab

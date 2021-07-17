@@ -57,6 +57,7 @@ export default function ProjectTable(props) {
     setCurrentProject(project);
   };
 
+  
   const handleActionsClose = () => {
     setAnchorEl(null);
   };
