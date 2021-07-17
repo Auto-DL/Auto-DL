@@ -59,7 +59,7 @@ class Token:
         return False
 
 
-class Otp:
+class OTP:
     def __init__(self, user, otp=None, expire=None, **kwargs):
         self.user = user
         self.username = user.get("username")
@@ -97,13 +97,10 @@ class Otp:
         user_obj = self.find()
         stored_otp = user_obj.get("otp")
         otp_expire = user_obj.get("expire")
-        if stored_otp is None or otp_expire < datetime.now():
-            return False
-        if stored_otp == otp_recieved:
+        if otp_expire > datetime.now() and stored_otp == otp_recieved:
             self.delete()
             return True
-        else:
-            return False
+        return False
 
     def delete(self):
         self.collection.delete_one({"username": self.username})
