@@ -2703,8 +2703,8 @@ function Step2() {
           }
           // console.log("inside loop id",components[i]["id"]);
         }
-
-        setcomponents(components);
+        let some_dic = _.cloneDeep(components);
+        setcomponents(some_dic);
   };
 
 
