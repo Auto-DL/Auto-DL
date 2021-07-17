@@ -154,7 +154,7 @@ const LayerTab = ({ TabPanel, value, handleDragEnd, jsondata, components, select
                               </div>
 
                               <div
-                                className={classes.infoicon}
+                                className={classes.infoiconLayer}
                                 title={
                                   components[selected_layer][key][
                                     "Description"
@@ -163,9 +163,10 @@ const LayerTab = ({ TabPanel, value, handleDragEnd, jsondata, components, select
                               >
                                <HelpOutlineIcon
                                   fontSize="small" 
+                                  cl
                                   onClick={() => {
                                     handleDescriptionLayer(key);
-                                    setTimeout(()=> setselected_InputFieldDesc(""),30000);
+                                    setTimeout(()=> setselected_InputFieldDesc(""),3000);
                                   }}
 
 

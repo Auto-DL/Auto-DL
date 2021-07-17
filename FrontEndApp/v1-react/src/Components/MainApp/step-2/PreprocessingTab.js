@@ -89,13 +89,13 @@ const PreprocessingTab = ({ TabPanel, value, render_prepro, render_prepro_meta, 
                     ).map((key, index) => (
                       <span key={index}>
                         <div className={classes.heading}>{key}</div>
-                        <Grid container>
+                        <Grid container  >
                           {Object.keys(
                             render_prepro[all_prepro["dataset-type"]][key]
                           ).map((key1, index1) =>
                             key1 === "name" ||
                             key1 === "input_type" ? null : (
-                              <Fragment key={index1}>
+                              <Fragment key={index1} >
                                 <Grid
                                   item
                                   lg={3}
@@ -103,18 +103,9 @@ const PreprocessingTab = ({ TabPanel, value, render_prepro, render_prepro_meta, 
                                   sm={3}
                                   xs={3}
                                   className={classes.pad}
+                                  style={{display:"flex"}}
                                 >
-                                <div style={{float:"right"}} >
-                                      <HelpOutlineIcon 
-                                      fontSize="small" 
-                                      // onMouseOver={() => handleDescriptionPre(key1)}
-                                      // onMouseLeave={() => setselected_InputFieldDesc("")}
-                                      onClick={() => {
-                                        handleDescriptionPre(key1);
-                                        setTimeout(()=> setselected_InputFieldDesc(""),3000);
-                                      }}
-                                      />
-                                  </div>
+                                
                                   {render_prepro[all_prepro["dataset-type"]][
                                     key
                                   ][key1]["DataType"] === "select" ? (
@@ -209,6 +200,17 @@ const PreprocessingTab = ({ TabPanel, value, render_prepro, render_prepro_meta, 
                                     />
                                   )}
                                 </Grid>
+                                <div className={classes.infoiconPre} >
+                                      <HelpOutlineIcon 
+                                      fontSize="small" 
+                                      // onMouseOver={() => handleDescriptionPre(key1)}
+                                      // onMouseLeave={() => setselected_InputFieldDesc("")}
+                                      onClick={() => {
+                                        handleDescriptionPre(key1);
+                                        setTimeout(()=> setselected_InputFieldDesc(""),3000);
+                                      }}
+                                      />
+                                </div>
                               </Fragment>
                             )
                           )}

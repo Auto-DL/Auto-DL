@@ -204,11 +204,22 @@ export const useStyles = makeStyles((theme) => ({
         minHeight: "70px",
         transform: "translateY(15%)",
     },
-    infoicon: {
+    infoiconLayer: {
         float: "right",
-        width: "10%",
+        // width: "10%",
         textAlign: "center",
         transform: "translateY(50%)",
+        // marginTop:"2%",
+        marginLeft:"1%",
+        
+        cursor: "pointer",
+    },
+    infoiconPre: {
+        float: "right",
+        // width: "10%",
+        textAlign: "center",
+        // transform: "translateY(50%)",
+        marginTop:"1%",
         cursor: "pointer",
     },
     delete: {
