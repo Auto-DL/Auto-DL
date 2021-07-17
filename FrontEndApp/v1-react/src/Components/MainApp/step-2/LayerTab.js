@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Fragment ,useState} from "react";
 import { Grid, TextField, FormControl, Select } from "@material-ui/core";
 import { useTheme } from "@material-ui/core/styles";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
@@ -10,6 +10,12 @@ import Button from "@material-ui/core/Button";
 const LayerTab = ({ TabPanel, value, handleDragEnd, jsondata, components, selected_layer, selected_layer_type, showdetails, save_value ,handleCloneLayer}) => {
   const theme = useTheme();
   const classes = useStyles();
+  const [selected_InputFieldDesc,setselected_InputFieldDesc]=useState("");
+
+  const handleDescriptionLayer =(index)=>{
+    setselected_InputFieldDesc(index);
+    // console.log(index);
+  }
 
   return (
       <TabPanel value={value} index={1} dir={theme.direction}>
@@ -155,7 +161,15 @@ const LayerTab = ({ TabPanel, value, handleDragEnd, jsondata, components, select
                                   ]
                                 }
                               >
-                                <HelpOutlineIcon />
+                               <HelpOutlineIcon
+                                  fontSize="small" 
+                                  onClick={() => {
+                                    handleDescriptionLayer(key);
+                                    setTimeout(()=> setselected_InputFieldDesc(""),30000);
+                                  }}
+
+
+                                 />
                               </div>
                               {components[selected_layer][key]["Datatype"] ===
                               "select" ? (
@@ -188,6 +202,15 @@ const LayerTab = ({ TabPanel, value, handleDragEnd, jsondata, components, select
                                         </option>
                                       ))}{" "}
                                     </Select>
+                                    {
+                                          selected_InputFieldDesc===key?
+                                          <p style={{fontSize:"80%",marginTop:"1px",fontWeight:"100",color:"#a2a4a8",marginLeft:"5%"}}>
+                                          {components[selected_layer][key]["Description"]}
+                                          </p>
+                                          :<p style={{fontSize:"80%",marginTop:"1px",fontWeight:"100",color:"#a2a4a8",marginLeft:"5%"}}>
+                                            Example-{components[selected_layer][key]["Example"]}
+                                          </p>
+                                        }
                                   </FormControl>
                                 </div>
                               ) : (
@@ -210,7 +233,15 @@ const LayerTab = ({ TabPanel, value, handleDragEnd, jsondata, components, select
                                     }
                                     variant="outlined"
                                     onChange={save_value(key)}
-                                    helperText={`Example - ${components[selected_layer][key]["Example"]}`}
+                                    helperText={
+                                      // `Example - ${components[selected_layer][key]["Example"]}`
+                                      `${
+                                          selected_InputFieldDesc===key ?
+                                          components[selected_layer][key]["Description"]
+                                          :`Example-${components[selected_layer][key]["Example"]}`
+                                        }`
+
+                                      }
                                   />
                                 </div>
                               )}

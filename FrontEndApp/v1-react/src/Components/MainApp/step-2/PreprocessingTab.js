@@ -1,11 +1,21 @@
-import { Fragment } from "react";
-import { Grid, FormControl, InputLabel, TextField, Select } from "@material-ui/core";
+import { Fragment,useState } from "react";
+import { Grid, FormControl, InputLabel, TextField, Select,Button} from "@material-ui/core";
 import { useTheme } from "@material-ui/core/styles";
 import { useStyles } from "./styles.js";
+import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
 
 const PreprocessingTab = ({ TabPanel, value, render_prepro, render_prepro_meta, all_prepro, handle_pre, handle_pre_meta, show_pre,  }) => {
   const theme = useTheme();
   const classes = useStyles();
+  const [selected_InputFieldDesc,setselected_InputFieldDesc]=useState("");
+
+  const handleDescriptionPre=(index) =>{
+
+    setselected_InputFieldDesc(index);
+    console.log("index of pre is ",selected_InputFieldDesc);
+
+
+  }
 
   return (
       <TabPanel value={value} index={0} dir={theme.direction}>
@@ -94,10 +104,22 @@ const PreprocessingTab = ({ TabPanel, value, render_prepro, render_prepro_meta, 
                                   xs={3}
                                   className={classes.pad}
                                 >
+                                <div style={{float:"right"}} >
+                                      <HelpOutlineIcon 
+                                      fontSize="small" 
+                                      // onMouseOver={() => handleDescriptionPre(key1)}
+                                      // onMouseLeave={() => setselected_InputFieldDesc("")}
+                                      onClick={() => {
+                                        handleDescriptionPre(key1);
+                                        setTimeout(()=> setselected_InputFieldDesc(""),3000);
+                                      }}
+                                      />
+                                  </div>
                                   {render_prepro[all_prepro["dataset-type"]][
                                     key
                                   ][key1]["DataType"] === "select" ? (
                                     <FormControl fullWidth variant="outlined">
+                                    
                                       <InputLabel>{key1}</InputLabel>
                                       <Select
                                         native
@@ -140,16 +162,26 @@ const PreprocessingTab = ({ TabPanel, value, render_prepro, render_prepro_meta, 
                                           )
                                         )}
                                       </Select>
+                                      {
+                                          selected_InputFieldDesc===key1?
+                                          <p style={{fontSize:"80%",marginTop:"1px",fontWeight:"100",color:"#a2a4a8",marginLeft:"5%"}}>
+                                          {render_prepro[all_prepro["dataset-type"]][key][key1]["Description"]}
+                                          </p>
+                                          :<p style={{fontSize:"80%",marginTop:"1px",fontWeight:"100",color:"#a2a4a8",marginLeft:"5%"}}>
+                                            Example-{render_prepro[all_prepro["dataset-type"]][key][key1]["Example"]}
+                                          </p>
+                                        }
                                     </FormControl>
                                   ) : (
                                     <TextField
                                       fullWidth
                                       label={key1}
                                       value={
-                                        all_prepro
-                                          ? all_prepro[
-                                              `${all_prepro["dataset-type"]}-${key}-${key1}`
-                                            ]
+                                        all_prepro? 
+                                          // all_prepro[
+                                          //     `${all_prepro["dataset-type"]}-${key}-${key1}`
+                                          //   ]
+                                           render_prepro[all_prepro["dataset-type"]][key][key1]["Default"]
                                           : ""
                                       }
                                       onChange={handle_pre(
@@ -160,11 +192,20 @@ const PreprocessingTab = ({ TabPanel, value, render_prepro, render_prepro_meta, 
                                         ][key][key1]["DataType"]
                                       )}
                                       variant="outlined"
-                                      helperText={`Example - ${
-                                        render_prepro[
-                                          all_prepro["dataset-type"]
-                                        ][key][key1]["Example"]
-                                      }`}
+                                      // helperText={`Example - ${
+                                      //   render_prepro[
+                                      //     all_prepro["dataset-type"]
+                                      //   ][key][key1]["Example"]
+                                      // }`}
+                                      helperText={
+                                        `${selected_InputFieldDesc===key1 ? render_prepro[
+                                            all_prepro["dataset-type"]
+                                          ][key][key1]["Description"] : `Example-${render_prepro[
+                                            all_prepro["dataset-type"]
+                                          ][key][key1]["Example"]}`}`
+
+
+                                        }
                                     />
                                   )}
                                 </Grid>

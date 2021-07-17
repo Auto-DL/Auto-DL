@@ -150,6 +150,13 @@ export const useStyles = makeStyles((theme) => ({
         maxHeight:"30px",
         minHeight:"30px",
       },
+      inputFieldDesc:{
+        fontSize:"80%",
+        marginTop:"1px",
+        fontWeight:"100",
+        color:"#a2a4a8",
+        marginLeft:"5%"
+    },
     styleclose: {
         float: "right",
         height: "100%",
@@ -179,6 +186,7 @@ export const useStyles = makeStyles((theme) => ({
         borderRadius: "7px",
         position: "relative",
         minHeight: "80px",
+        overflow:"auto"
     },
     title: {
         float: "left",
