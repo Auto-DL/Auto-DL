@@ -2255,70 +2255,6 @@ function Step2() {
 
 
 
-  const handleCloneLayer = (layer) => {
-    // handleChangetabs();
-    
-      //getting source names of all layers 
-        const list_names_of_source=Object.keys(jsondata);
-        let source_index;
-
-        //where to place layer in UI
-        let destination_index=Number(layer.id[layer.id.length-1])+1;
-        console.log("destination index  is ",destination_index);
-        
-
-    
-        //finding layer in source array for id framing
-        for(let i=0;i<list_names_of_source.length;i++)
-        {
-          if(layer.name === list_names_of_source[i] )
-          {
-            source_index=i;
-            break;
-          }
-        }
-
-        //cloning the layer 
-        let clonedLayer= _.cloneDeep(layer);
-        
-        //assigning new id and name
-        clonedLayer["id"]=`${layer.name}-${source_index}-${destination_index}`;
-        clonedLayer["name"] = list_names_of_source[source_index];
-        
-
-        //inserting layer just below the layer to be cloned 
-        components.splice(destination_index,0,clonedLayer);
-        
-
-        for (let i = 0; i < components.length; i++) {
-          components[i]["id"] = components[i]["id"] + i;
-          if (i === 0) {
-            if (
-              !("input_size" in components[i]) ||
-              !("input_shape" in components[i])
-            ) {
-              components[i]["input_shape"] = {
-                Example: [200, 200, 3],
-                Default: "NA",
-                Required: 1,
-                Datatype: "Tuple",
-                Options: [],
-                Description: "Input shape for the first layer",
-              };
-            }
-          } else {
-            try {
-              delete components[i]["input_shape"];
-            } catch (err) {}
-          }
-          // console.log("inside loop id",components[i]["id"]);
-        }
-
-        setcomponents(components);
-  };
-
-
-
 
   const showdetails = (element) => {
     setselected_layer_type(element);
@@ -2712,7 +2648,7 @@ function Step2() {
   };
 
 
-  const handleCloneLayer = (layer) => {
+   const handleCloneLayer = (layer) => {
     // handleChangetabs();
     
       //getting source names of all layers 
