@@ -75,6 +75,8 @@ class OTP:
             """
             time_delta: (int) In minutes
             """
+            if self.find():
+                self.delete()
             self.expire = datetime.now() + timedelta(minutes=time_delta)
             self.otp = "".join(
                 random.SystemRandom().choice(string.ascii_uppercase + string.digits)
@@ -97,8 +99,8 @@ class OTP:
         user_obj = self.find()
         stored_otp = user_obj.get("otp")
         otp_expire = user_obj.get("expire")
+        self.delete()
         if otp_expire > datetime.now() and stored_otp == otp_recieved:
-            self.delete()
             return True
         return False
 
