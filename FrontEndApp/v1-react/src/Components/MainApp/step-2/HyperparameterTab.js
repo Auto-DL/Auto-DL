@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Fragment,useState } from "react";
 import { Grid, FormControl, FormControlLabel, InputLabel, Select, TextField, Button, Dialog, Checkbox } from "@material-ui/core";
 import { useTheme } from "@material-ui/core/styles";
 import { useStyles, DialogTitle, DialogActions, DialogContent } from "./styles.js";
@@ -7,6 +7,17 @@ import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
 const HyperparameterTab = ({ TabPanel, value, project_details, state_hyperparam, handleChange_hyperparameter, handleChange_hyperparameter_l_o, all_optimizer, all_loss, showoptimizer, selected_optimizer, selected_loss, _hyper, save_value_hyper, showloss, generate_code, Train, openErrorDialog, setOpenErrorDialog }) => {
   const theme = useTheme();
   const classes = useStyles();
+
+  const [selected_InputFieldDesc,setselected_InputFieldDesc]=useState("");
+
+  const handleDescriptionPre=(index) =>{
+
+    setselected_InputFieldDesc(index);
+    console.log("index of pre is ",selected_InputFieldDesc);
+
+
+  }
+
 
   return (
       <TabPanel value={value} index={2} dir={theme.direction}>
@@ -276,6 +287,8 @@ const HyperparameterTab = ({ TabPanel, value, project_details, state_hyperparam,
                     <option value={"adadelta"}>adadelta</option>
                     <option value={"adagrad"}>adagrad</option>
                   </Select>
+                  
+
                 </FormControl>
 
                 <FormControl variant="outlined" className={classes.sel}>
@@ -319,6 +332,7 @@ const HyperparameterTab = ({ TabPanel, value, project_details, state_hyperparam,
                 onChange={handleChange_hyperparameter("epochs")}
                 variant="outlined"
                 className={classes.sel}
+                helperText="je"
               />
 
               <TextField
