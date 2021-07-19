@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Fragment,useState } from "react";
 import { Grid, FormControl, FormControlLabel, InputLabel, Select, TextField, Button, Dialog, Checkbox } from "@material-ui/core";
 import { useTheme } from "@material-ui/core/styles";
 import { useStyles, DialogTitle, DialogActions, DialogContent } from "./styles.js";
@@ -7,6 +7,17 @@ import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
 const HyperparameterTab = ({ TabPanel, value, project_details, state_hyperparam, handleChange_hyperparameter, handleChange_hyperparameter_l_o, all_optimizer, all_loss, showoptimizer, selected_optimizer, selected_loss, _hyper, save_value_hyper, showloss, generate_code, Train, openErrorDialog, setOpenErrorDialog }) => {
   const theme = useTheme();
   const classes = useStyles();
+
+  const [selected_InputFieldDesc,setselected_InputFieldDesc]=useState("");
+
+  const handleDescriptionPre=(index) =>{
+
+    setselected_InputFieldDesc(index);
+    console.log("index of pre is ",selected_InputFieldDesc);
+
+
+  }
+
 
   return (
       <TabPanel value={value} index={2} dir={theme.direction}>
@@ -258,8 +269,10 @@ const HyperparameterTab = ({ TabPanel, value, project_details, state_hyperparam,
               </>
             ) : (
               <>
+              <div style={{ width:"100%",margin:"2% 0% 2%"}}> 
                 <FormControl variant="outlined" className={classes.sel}>
                   <InputLabel>optimizer</InputLabel>
+                 
                   <Select
                     native
                     value={state_hyperparam.optimizer}
@@ -277,6 +290,8 @@ const HyperparameterTab = ({ TabPanel, value, project_details, state_hyperparam,
                     <option value={"adagrad"}>adagrad</option>
                   </Select>
                 </FormControl>
+                <HelpOutlineIcon style={{marginTop:"1%"}}/>
+
 
                 <FormControl variant="outlined" className={classes.sel}>
                   <InputLabel>loss</InputLabel>
@@ -309,17 +324,23 @@ const HyperparameterTab = ({ TabPanel, value, project_details, state_hyperparam,
                     <option value={"hinge"}>hinge</option>
                   </Select>
                 </FormControl>
+                <HelpOutlineIcon style={{marginTop:"1%"}}/>
+                </div>
               </>
             )}
 
             <Grid item lg={12} md={12} sm={12} xs={12}>
+
+            <div style={{width:"100%"}}>
               <TextField
-                label="epochs"
-                value={state_hyperparam.epochs}
-                onChange={handleChange_hyperparameter("epochs")}
-                variant="outlined"
-                className={classes.sel}
-              />
+                  label="epochs"
+                  value={state_hyperparam.epochs}
+                  onChange={handleChange_hyperparameter("epochs")}
+                  variant="outlined"
+                  className={classes.sel}
+                 
+                />
+                <HelpOutlineIcon style={{marginTop:"1%"}}/>
 
               <TextField
                 label="learning rate"
@@ -328,6 +349,11 @@ const HyperparameterTab = ({ TabPanel, value, project_details, state_hyperparam,
                 variant="outlined"
                 className={classes.sel}
               />
+
+              <HelpOutlineIcon style={{marginTop:"1%"}}/>
+
+              
+              
 
               <FormControl variant="outlined" className={classes.sel}>
                 <InputLabel>verbose</InputLabel>
@@ -347,7 +373,10 @@ const HyperparameterTab = ({ TabPanel, value, project_details, state_hyperparam,
                   <option value={4}>4</option>
                   <option value={5}>5</option>
                 </Select>
+                
               </FormControl>
+              <HelpOutlineIcon style={{marginTop:"1%"}}/>
+             
 
               {project_details.lib === "Pytorch" ? (
                 <FormControl variant="outlined" className={classes.sel}>
@@ -409,7 +438,9 @@ const HyperparameterTab = ({ TabPanel, value, project_details, state_hyperparam,
                     <option value={"Hinge"}>Hinge</option>
                   </Select>
                 </FormControl>
+                
               )}
+              <HelpOutlineIcon style={{marginTop:"1%"}}/>
               <FormControlLabel
                 className={classes.save_plot}
                 control={
@@ -421,6 +452,9 @@ const HyperparameterTab = ({ TabPanel, value, project_details, state_hyperparam,
                 }
                 label="Save Graphs"
               />
+              </div>
+
+              
             </Grid>
           </Grid>
         </Grid>

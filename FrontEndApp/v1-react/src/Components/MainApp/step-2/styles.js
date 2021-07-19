@@ -222,6 +222,7 @@ export const useStyles = makeStyles((theme) => ({
         marginTop:"1%",
         cursor: "pointer",
     },
+
     delete: {
         width: "97%",
         backgroundColor: "#D8D8D8",
@@ -233,8 +234,10 @@ export const useStyles = makeStyles((theme) => ({
         textAlign: "center",
     },
     sel: {
-        width: "200px",
-        margin: "20px",
+        // width: "200px",
+        // margin: "20px",
+       width:"20%",
+       margin:"1%",
     },
     _hyper: {
         width: "400px",
@@ -243,6 +246,7 @@ export const useStyles = makeStyles((theme) => ({
     },
     save_plot: {
         marginTop: "25px",
+        
     },
     action_btn: {
         float: "right",
