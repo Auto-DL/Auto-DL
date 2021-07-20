@@ -131,12 +131,9 @@ logging.config.dictConfig({
     'version': 1,
     'disable_existing_loggers': False,
     'formatters': {
-        'colored': {
+        'console': {
 			'()': 'colorlog.ColoredFormatter',
 			'format': "%(log_color)s %(asctime)s %(name)-12s %(levelname)-8s %(message)s"
-        },
-        'console': {
-            'format': '%(name)-12s %(levelname)-8s %(message)s'
         },
         'file': {
             'format': '%(asctime)s %(name)-12s %(levelname)-8s %(message)s'
@@ -145,7 +142,7 @@ logging.config.dictConfig({
     'handlers': {
         'console': {
             'class': 'logging.StreamHandler',
-            'formatter': 'colored'
+            'formatter': 'console'
         },
         'file': {
             'level': 'DEBUG',
