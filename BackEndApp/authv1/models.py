@@ -11,7 +11,6 @@ class User:
     def __init__(self, username, password, **kwargs):
         self.username = username
         self.password = password
-        self.auth_token = ""
         self.is_verified = False
         self.db = connector.connect()
         self.collection_name = kwargs.get("collection", "user")
@@ -43,6 +42,7 @@ class User:
             "first_name": self.attributes.get("first_name", ""),
             "last_name": self.attributes.get("last_name", ""),
             "email": self.attributes.get("email"),
+            "is_verified": False,
         }
         return self.collection.insert_one(user_document)
 

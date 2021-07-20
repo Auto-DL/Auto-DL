@@ -1,3 +1,4 @@
+from django.core.mail import message
 from django.core.mail.message import EmailMessage
 from django.contrib.sites.shortcuts import get_current_site
 from django.urls import reverse
@@ -10,6 +11,8 @@ import bcrypt
 from BackEndApp.settings import EMAIL_HOST_USER
 from .models import User, Session
 from .store import Store
+from .emails import EmailTemplates
+from .auth import OTP
 
 
 @api_view(["POST"])
@@ -56,42 +59,24 @@ def register(request):
         user = User(
             username,
             password,
-            **{"email": email, "first_name": first_name, "last_name": last_name},
+            **{"email": email, "first_name": first_name, "last_name": last_name}
         )
         user_id = user.create()
-        this_user = user.find()
+        user = user.find()
 
-        store_obj = Store(this_user)
+        store_obj = Store(user)
         cache_path = store_obj.create()
 
-        session = Session(this_user)
+        session = Session(user)
         token = session.create()
 
-        # Email Verification
-        user.update("auth_token", token)
+        message = "Registered Successfully"
+        status = 200
 
-        email_subject = "Verify Your Account"
-
-        domain = get_current_site(request).domain
-        link = reverse("verify", kwargs={"username": username, "token": token})
-        activation_link = " http://" + domain + link
-
-        email_body = f"Click this link to verify your account" + activation_link
-
-        email = EmailMessage(
-            email_subject,
-            email_body,
-            EMAIL_HOST_USER,
-            [this_user.get("email")],
-        )
-        email.send(fail_silently=False)
-
-        status, message = 200, "Verification email sent succesfuly"
     except Exception as e:
         message = "Some error occurred!! Please try again."
         status = 401
         token = None
-
     return JsonResponse(
         {"message": message, "username": username, "token": token}, status=status
     )
@@ -121,23 +106,57 @@ def logout(request):
     return JsonResponse({"message": message}, status=status)
 
 
-@api_view(["GET"])
-def verify(request, username, token):
+@api_view(["POST"])
+def send_otp(request):
     try:
-        username = username
-        auth_token_recieved = token
+        username = request.data.get("username")
         user = User(username=username, password=None)
         this_user = user.find()
-        auth_token = this_user.get("auth_token")
-        if auth_token == auth_token_recieved:
+
+        otp_obj = OTP(this_user)
+        otp = otp_obj.create()
+
+        email = EmailTemplates(this_user)
+        subject, msg = email.verify_email(username, otp)
+        send_email = EmailMessage(
+            subject,
+            msg,
+            EMAIL_HOST_USER,
+            [this_user.get("email")],
+        )
+        send_email.send(fail_silently=False)
+
+        message = "OTP sent successfully"
+        status = 200
+
+    except Exception as e:
+        message = "Internal server error"
+        status = 500
+
+    return JsonResponse({"message": message}, status=status)
+
+
+@api_view(["GET"])
+def verify_email(request):
+    try:
+        username = request.data.get("username")
+        user = User(username=username, password=None)
+        this_user = user.find()
+
+        otp = request.data.get("otp")
+        otp_obj = OTP(this_user)
+
+        if otp_obj.verify(otp):
             user.update("is_verified", True)
-            message = "Account Verified successfully"
+            message = "Verified Successfully"
             status = 200
         else:
-            message = "Account verification failed"
+            message = "Invalid OTP!"
             status = 401
+
     except Exception as e:
-        message = "Email verification failed! Please try again later."
+        print(str(e))
+        message = "Internal service error"
         status = 500
-        return JsonResponse({"message": message}, status=status)
+
     return JsonResponse({"message": message}, status=status)
