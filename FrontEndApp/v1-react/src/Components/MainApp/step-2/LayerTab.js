@@ -4,8 +4,10 @@ import { useTheme } from "@material-ui/core/styles";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { useStyles } from "./styles.js";
 import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
+import FileCopySharpIcon from '@material-ui/icons/FileCopySharp';
+import Button from "@material-ui/core/Button";
 
-const LayerTab = ({ TabPanel, value, handleDragEnd, jsondata, components, selected_layer, selected_layer_type, showdetails, save_value }) => {
+const LayerTab = ({ TabPanel, value, handleDragEnd, jsondata, components, selected_layer, selected_layer_type, showdetails, save_value ,handleCloneLayer}) => {
   const theme = useTheme();
   const classes = useStyles();
 
@@ -88,6 +90,14 @@ const LayerTab = ({ TabPanel, value, handleDragEnd, jsondata, components, select
                                     onClick={() => showdetails(el)}
                                   >
                                     {el.name}
+                                    <Button 
+                                      size="small" 
+                                      color="primary" 
+                                      onClick={() =>handleCloneLayer(el) }
+                                      className={classes.cloneBtn}
+                                      >
+                                      <FileCopySharpIcon fontSize="small" />
+                                    </Button>
                                   </div>
                                 </div>
                               );
