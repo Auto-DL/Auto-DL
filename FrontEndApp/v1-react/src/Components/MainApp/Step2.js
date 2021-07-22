@@ -1,6 +1,20 @@
 import React, { useState, useEffect } from "react";
-import { Button, AppBar, Tabs, Tab, Box, Typography, Dialog, Tooltip } from "@material-ui/core";
-import { useStyles, DialogTitle, DialogActions, DialogContent } from "./step-2/styles.js";
+import {
+  Button,
+  AppBar,
+  Tabs,
+  Tab,
+  Box,
+  Typography,
+  Dialog,
+  Tooltip,
+} from "@material-ui/core";
+import {
+  useStyles,
+  DialogTitle,
+  DialogActions,
+  DialogContent,
+} from "./step-2/styles.js";
 import _ from "lodash";
 import PropTypes from "prop-types";
 import fileDownload from "js-file-download";
@@ -54,7 +68,7 @@ function Step2() {
   const [selected_layer, setselected_layer] = useState(-1);
   const [selected_layer_name, setselected_layer_name] = useState("");
   const [value, setValue] = useState(0);
-  const [openErrorDialog,setOpenErrorDialog]=useState(false);
+  const [openErrorDialog, setOpenErrorDialog] = useState(false);
   const [state_hyperparam, setstate_hyperparam] = useState({
     metrics: "",
     epochs: 0,
@@ -148,7 +162,6 @@ function Step2() {
   const handleChangetabs = (event, newValue) => {
     if (newValue !== 1 && value === 1) {
       saveData();
-
     }
     if (newValue !== 0 && value === 0) {
       savepre();
@@ -161,7 +174,10 @@ function Step2() {
 
   let temp_optimizer, temp_pre_meta, temp_pre, temp_loss, temp_json, hyper;
 
-  if ( project_details.lib === "Pytorch" || project_details.library === "Pytorch" ) {
+  if (
+    project_details.lib === "Pytorch" ||
+    project_details.library === "Pytorch"
+  ) {
     temp_pre_meta = {
       dataset: {
         name: "dataset",
@@ -460,9 +476,9 @@ function Step2() {
           Description:
             "Specifies the threshold at which to change between L1 and L2 loss. This value defaults to 1.0.",
         },
-      }
+      },
     };
-    
+
     temp_optimizer = {
       SGD: {
         name: "SGD",
@@ -1000,8 +1016,11 @@ function Step2() {
             "A dimension along which Softmax will be computed (so every slice along dim will sum to 1).",
         },
       },
-    }
-  } else if ( project_details.lib === "Keras" || project_details.library === "Keras" ) {
+    };
+  } else if (
+    project_details.lib === "Keras" ||
+    project_details.library === "Keras"
+  ) {
     temp_json = {
       Conv2D: {
         filters: {
@@ -2058,9 +2077,7 @@ function Step2() {
   const [all_optimizer, setall_optimizer] = useState(temp_optimizer);
   const [all_loss, setall_loss] = useState(temp_loss);
   const [all_prepro, setall_prepro] = useState({});
-  const [render_prepro_meta, setrender_prepro_meta] = useState(
-    temp_pre_meta
-  );
+  const [render_prepro_meta, setrender_prepro_meta] = useState(temp_pre_meta);
   const [render_prepro, setrender_prepro] = useState(temp_pre);
   const [show_pre, setshow_pre] = useState(false);
   const [jsondata, setjsondata] = useState(temp_json);
@@ -2121,9 +2138,6 @@ function Step2() {
     fetchDataHyper();
   }, [project_details.project_id, token, username]);
 
-
-
-
   const handleDragEnd = ({ destination, source }) => {
     if (!destination) {
       return;
@@ -2133,7 +2147,6 @@ function Step2() {
       destination.index === source.index &&
       destination.droppableId === source.droppableId
     ) {
-     
       return;
     }
 
@@ -2184,71 +2197,76 @@ function Step2() {
       }
       setcomponents(components);
     }
-    if (destination.droppableId === "target" && source.droppableId === "source") 
-      {
-        const list_names_of_source = Object.keys(jsondata);
-        console.log("list of keys is and source index :",list_names_of_source,source.index);
-        const temp = jsondata[list_names_of_source[source.index]];
-        console.log("temp is ",temp);
-        
-        var dic = _.cloneDeep(temp);
-        console.log("dictionary after ",dic);
+    if (
+      destination.droppableId === "target" &&
+      source.droppableId === "source"
+    ) {
+      const list_names_of_source = Object.keys(jsondata);
+      console.log(
+        "list of keys is and source index :",
+        list_names_of_source,
+        source.index
+      );
+      const temp = jsondata[list_names_of_source[source.index]];
+      console.log("temp is ", temp);
 
-        // if (Array.isArray(components) && components.length === 0) {
-        // }
+      var dic = _.cloneDeep(temp);
+      console.log("dictionary after ", dic);
 
+      // if (Array.isArray(components) && components.length === 0) {
+      // }
 
-        // for (var key1 in dic) {
-        //   console.log("key 1 is  ",key1);
-        //   for (var key2 in dic[key1]) {
-        //     if (key2 === "value") {
-        //       console.log("key 2 is  ",key2);
-        //       console.log("dic is  ",dic[key1][key2]);
+      // for (var key1 in dic) {
+      //   console.log("key 1 is  ",key1);
+      //   for (var key2 in dic[key1]) {
+      //     if (key2 === "value") {
+      //       console.log("key 2 is  ",key2);
+      //       console.log("dic is  ",dic[key1][key2]);
 
-        //       delete dic[key1][key2];
+      //       delete dic[key1][key2];
 
-        //     }
-        //   }
-        // }
+      //     }
+      //   }
+      // }
 
-        //getting the id 
-        dic["id"] = `${list_names_of_source[source.index]}-${source.index}-${
-          destination.index
-        }`;
-        // console.log("we are getting the id ",dic["id"]);
-        dic["name"] = list_names_of_source[source.index];
+      //getting the id
+      dic["id"] = `${list_names_of_source[source.index]}-${source.index}-${
+        destination.index
+      }`;
+      // console.log("we are getting the id ",dic["id"]);
+      dic["name"] = list_names_of_source[source.index];
 
-        console.log("components before",components);
-        
-        components.splice(destination.index, 0, dic);
+      console.log("components before", components);
 
-        console.log("components after",components);
+      components.splice(destination.index, 0, dic);
 
-        for (i = 0; i < components.length; i++) {
-          components[i]["id"] = components[i]["id"] + i;
-          console.log("inside loop id",components[i]["id"]);
-          if (i === 0) {
-            if (
-              !("input_size" in components[i]) ||
-              !("input_shape" in components[i])
-            ) {
-              components[i]["input_shape"] = {
-                Example: [200, 200, 3],
-                Default: "NA",
-                Required: 1,
-                Datatype: "Tuple",
-                Options: [],
-                Description: "Input shape for the first layer",
-              };
-            }
-          } else {
-            try {
-              delete components[i]["input_shape"];
-            } catch (err) {}
+      console.log("components after", components);
+
+      for (i = 0; i < components.length; i++) {
+        components[i]["id"] = components[i]["id"] + i;
+        console.log("inside loop id", components[i]["id"]);
+        if (i === 0) {
+          if (
+            !("input_size" in components[i]) ||
+            !("input_shape" in components[i])
+          ) {
+            components[i]["input_shape"] = {
+              Example: [200, 200, 3],
+              Default: "NA",
+              Required: 1,
+              Datatype: "Tuple",
+              Options: [],
+              Description: "Input shape for the first layer",
+            };
           }
+        } else {
+          try {
+            delete components[i]["input_shape"];
+          } catch (err) {}
         }
+      }
 
-        setcomponents(components);
+      setcomponents(components);
     }
     const validate_res = validate_layers(source, destination, components);
   };
@@ -2267,7 +2285,7 @@ function Step2() {
     var index = selected_layer;
     const pervstate = Object.assign([], components);
     pervstate[index][param]["value"] = event.target.value;
-    console.log("prop is ",prop);
+    console.log("prop is ", prop);
     console.log(event.target.value);
     console.log(components);
     setcomponents(pervstate);
@@ -2470,8 +2488,6 @@ function Step2() {
     return temp;
   };
 
- 
-
   const generate_code = async () => {
     if (layer_validation()) {
       const hyper_data = generate_hyper();
@@ -2495,7 +2511,7 @@ function Step2() {
       }
     } else {
       // alert("please fill all the required fileds in layers");
-      //states for dialog box which is triggered if necessary details are blank 
+      //states for dialog box which is triggered if necessary details are blank
       //before generating code.
       setOpenErrorDialog(true);
     }
@@ -2632,7 +2648,6 @@ function Step2() {
     }
     setall_prepro(temp_dic);
 
-
     all_prepro[`dataset-type`] = event.target.value;
     setall_prepro(all_prepro);
     setshow_pre(!show_pre);
@@ -2644,69 +2659,61 @@ function Step2() {
     setall_prepro(dic);
   };
 
-
   const handleCloneLayer = (layer) => {
     // handleChangetabs();
-    
-      //getting source names of all layers 
-        const list_names_of_source=Object.keys(jsondata);
-        let source_index;
 
-        //where to place layer in UI
-        let destination_index=Number(layer.id[layer.id.length-1])+1;
-        console.log("destination index  is ",destination_index);
-        
+    //getting source names of all layers
+    const list_names_of_source = Object.keys(jsondata);
+    let source_index;
 
-    
-        //finding layer in source array for id framing
-        for(let i=0;i<list_names_of_source.length;i++)
-        {
-          if(layer.name === list_names_of_source[i] )
-          {
-            source_index=i;
-            break;
-          }
+    //where to place layer in UI
+    let destination_index = Number(layer.id[layer.id.length - 1]) + 1;
+    console.log("destination index  is ", destination_index);
+
+    //finding layer in source array for id framing
+    for (let i = 0; i < list_names_of_source.length; i++) {
+      if (layer.name === list_names_of_source[i]) {
+        source_index = i;
+        break;
+      }
+    }
+
+    //cloning the layer
+    let clonedLayer = _.cloneDeep(layer);
+
+    //assigning new id and name
+    clonedLayer["id"] = `${layer.name}-${source_index}-${destination_index}`;
+    clonedLayer["name"] = list_names_of_source[source_index];
+
+    //inserting layer just below the layer to be cloned
+    components.splice(destination_index, 0, clonedLayer);
+
+    for (let i = 0; i < components.length; i++) {
+      components[i]["id"] = components[i]["id"] + i;
+      if (i === 0) {
+        if (
+          !("input_size" in components[i]) ||
+          !("input_shape" in components[i])
+        ) {
+          components[i]["input_shape"] = {
+            Example: [200, 200, 3],
+            Default: "NA",
+            Required: 1,
+            Datatype: "Tuple",
+            Options: [],
+            Description: "Input shape for the first layer",
+          };
         }
-
-        //cloning the layer 
-        let clonedLayer= _.cloneDeep(layer);
-        
-        //assigning new id and name
-        clonedLayer["id"]=`${layer.name}-${source_index}-${destination_index}`;
-        clonedLayer["name"] = list_names_of_source[source_index];
-        
-
-        //inserting layer just below the layer to be cloned 
-        components.splice(destination_index,0,clonedLayer);
-        
-
-        for (let i = 0; i < components.length; i++) {
-          components[i]["id"] = components[i]["id"] + i;
-          if (i === 0) {
-            if (
-              !("input_size" in components[i]) ||
-              !("input_shape" in components[i])
-            ) {
-              components[i]["input_shape"] = {
-                Example: [200, 200, 3],
-                Default: "NA",
-                Required: 1,
-                Datatype: "Tuple",
-                Options: [],
-                Description: "Input shape for the first layer",
-              };
-            }
-          } else {
-            try {
-              delete components[i]["input_shape"];
-            } catch (err) {}
-          }
-          // console.log("inside loop id",components[i]["id"]);
-        }
-        let some_dic = _.cloneDeep(components);
-        setcomponents(some_dic);
+      } else {
+        try {
+          delete components[i]["input_shape"];
+        } catch (err) {}
+      }
+      // console.log("inside loop id",components[i]["id"]);
+    }
+    let some_dic = _.cloneDeep(components);
+    setcomponents(some_dic);
   };
-
 
   return (
     <div className={classes.App}>
@@ -2805,7 +2812,6 @@ function Step2() {
         openErrorDialog={openErrorDialog}
         setOpenErrorDialog={setOpenErrorDialog}
       />
-
     </div>
   );
 }
