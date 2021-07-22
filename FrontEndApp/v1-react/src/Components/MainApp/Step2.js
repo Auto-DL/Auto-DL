@@ -12,6 +12,7 @@ import HyperparameterTab from "./step-2/HyperparameterTab";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
+  
 
   return (
     <div
@@ -662,6 +663,7 @@ function Step2() {
           Default: "",
           Required: 1,
           DataType: "number",
+          
           Options: [],
           Description: " size of each input sample",
         },
@@ -2065,6 +2067,10 @@ function Step2() {
   const [show_pre, setshow_pre] = useState(false);
   const [jsondata, setjsondata] = useState(temp_json);
 
+  
+  const [invalidLayerIndices,setInvalidLayerIndices]=useState(new Set());
+  const [validLayerIndices,setValidLayerIndices]=useState([]);
+
   useEffect(() => {
     async function fetchData() {
       const data = {
@@ -2187,12 +2193,12 @@ function Step2() {
     if (destination.droppableId === "target" && source.droppableId === "source") 
       {
         const list_names_of_source = Object.keys(jsondata);
-        console.log("list of keys is and source index :",list_names_of_source,source.index);
+        // console.log("list of keys is and source index :",list_names_of_source,source.index);
         const temp = jsondata[list_names_of_source[source.index]];
-        console.log("temp is ",temp);
+        // console.log("temp is ",temp);
         
         var dic = _.cloneDeep(temp);
-        console.log("dictionary after ",dic);
+        // console.log("dictionary after ",dic);
 
         // if (Array.isArray(components) && components.length === 0) {
         // }
@@ -2218,15 +2224,15 @@ function Step2() {
         // console.log("we are getting the id ",dic["id"]);
         dic["name"] = list_names_of_source[source.index];
 
-        console.log("components before",components);
+        // console.log("components before",components);
         
         components.splice(destination.index, 0, dic);
 
-        console.log("components after",components);
+        // console.log("components after",components);
 
         for (i = 0; i < components.length; i++) {
           components[i]["id"] = components[i]["id"] + i;
-          console.log("inside loop id",components[i]["id"]);
+          // console.log("inside loop id",components[i]["id"]);
           if (i === 0) {
             if (
               !("input_size" in components[i]) ||
@@ -2250,8 +2256,41 @@ function Step2() {
 
         setcomponents(components);
     }
+
     const validate_res = validate_layers(source, destination, components);
+    console.log("val res is",validate_res);
+
+    //destructuring the validate_res object 
+    const {invalidIndices,validIndices}=validate_res;
+    setValidLayerIndices(validIndices);
+
+    console.log("after destructuring ",invalidIndices,validIndices);
+
+    const arr=handleInvalidLayers(invalidIndices);
+    setInvalidLayerIndices(arr);
+    // console.log("Validate layers returned ",invalidIndices);
+    // console.log("Arr set is ",arr);
+    
+   
+
+
   };
+
+
+  const handleInvalidLayers= (validate_res) =>{
+    const indexSet=new Set();
+    //extracting indices of invalid layers and collecting them in a set
+    for(let i=0;i<validate_res.length;i++)
+    {
+      for(let j=0;j<validate_res[i].indices.length;j++)
+      {
+        indexSet.add(validate_res[i].indices[j]);
+      }
+    }
+    // console.log("index set is ",indexSet);
+    return indexSet;
+
+  }
 
 
 
@@ -2657,7 +2696,7 @@ function Step2() {
 
         //where to place layer in UI
         let destination_index=Number(layer.id[layer.id.length-1])+1;
-        console.log("destination index  is ",destination_index);
+        // console.log("destination index  is ",destination_index);
         
 
     
@@ -2786,6 +2825,9 @@ function Step2() {
         showdetails={showdetails}
         save_value={save_value}
         handleCloneLayer={handleCloneLayer}
+        invalidLayerIndices={invalidLayerIndices}
+        validLayerIndices={validLayerIndices}
+        
       />
 
       <HyperparameterTab
@@ -2807,6 +2849,7 @@ function Step2() {
         Train={Train}
         openErrorDialog={openErrorDialog}
         setOpenErrorDialog={setOpenErrorDialog}
+       
       />
 
     </div>

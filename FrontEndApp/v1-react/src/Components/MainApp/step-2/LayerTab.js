@@ -7,9 +7,12 @@ import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
 import FileCopySharpIcon from '@material-ui/icons/FileCopySharp';
 import Button from "@material-ui/core/Button";
 
-const LayerTab = ({ TabPanel, value, handleDragEnd, jsondata, components, selected_layer, selected_layer_type, showdetails, save_value ,handleCloneLayer}) => {
+const LayerTab = ({ TabPanel, value, handleDragEnd, jsondata, components, selected_layer, selected_layer_type, showdetails, save_value ,handleCloneLayer,invalidLayerIndices,validLayerIndices}) => {
   const theme = useTheme();
   const classes = useStyles();
+  console.log("nside layer tab validate_res",validLayerIndices);
+  
+
 
   return (
       <TabPanel value={value} index={1} dir={theme.direction}>
@@ -33,7 +36,7 @@ const LayerTab = ({ TabPanel, value, handleDragEnd, jsondata, components, select
                             {(provided, snapshot) => {
                               return (
                                 <div
-                                  className={classes.item}
+                                  className={validLayerIndices.includes(index)? classes.itemValid:classes.item}
                                   ref={provided.innerRef}
                                   {...provided.draggableProps}
                                   {...provided.dragHandleProps}
@@ -66,6 +69,7 @@ const LayerTab = ({ TabPanel, value, handleDragEnd, jsondata, components, select
                       className={classes.droppableColtarget}
                     >
                       {components.map((el, index) => {
+                        
                         return (
                           <Draggable
                             key={el.id}
@@ -82,10 +86,14 @@ const LayerTab = ({ TabPanel, value, handleDragEnd, jsondata, components, select
                                 >
                                   <div
                                     className={
-                                      selected_layer ===
-                                      el.id.charAt(el.id.length - 1)
-                                        ? classes.item1selected
-                                        : classes.item1
+                                      // selected_layer ===
+                                      // el.id.charAt(el.id.length - 1)
+                                      //   ? classes.item1selected
+                                      //   : classes.item1
+                                      invalidLayerIndices.has(index)? classes.item1Error 
+                                      : selected_layer===index ? 
+                                      classes.item1selected 
+                                      :classes.item1
                                     }
                                     onClick={() => showdetails(el)}
                                   >
