@@ -294,10 +294,14 @@ function Home() {
   const handleCloseModalSave = async () => {
     // vallidation
     if (
-      values.project_name !== "" &&
-      values.project_description !== "" &&
-      values.path !== "" &&
-      values.output_file_name !== ""
+      values.project_name &&
+      values.project_name.trim() &&
+      values.project_description &&
+      values.project_description.trim() &&
+      values.data_dir &&
+      values.data_dir.trim() &&
+      values.output_file_name &&
+      values.output_file_name.trim()
     ) {
       if (IsEdit) {
         var data = {
@@ -390,7 +394,6 @@ function Home() {
                 fullWidth
                 label="Project Name"
                 defaultValue={
-                  values.project_name &&
                   values.project_name.slice(-5) === "Clone"
                     ? values.project_name
                     : values.project_name + " Clone"

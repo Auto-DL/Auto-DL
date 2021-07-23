@@ -1,14 +1,29 @@
 import { Fragment } from "react";
-import { Grid, FormControl, InputLabel, TextField, Select } from "@material-ui/core";
+import {
+  Grid,
+  FormControl,
+  InputLabel,
+  TextField,
+  Select,
+} from "@material-ui/core";
 import { useTheme } from "@material-ui/core/styles";
 import { useStyles } from "./styles.js";
 
-const PreprocessingTab = ({ TabPanel, value, render_prepro, render_prepro_meta, all_prepro, handle_pre, handle_pre_meta, show_pre,  }) => {
+const PreprocessingTab = ({
+  TabPanel,
+  value,
+  render_prepro,
+  render_prepro_meta,
+  all_prepro,
+  handle_pre,
+  handle_pre_meta,
+  show_pre,
+}) => {
   const theme = useTheme();
   const classes = useStyles();
 
   return (
-      <TabPanel value={value} index={0} dir={theme.direction}>
+    <TabPanel value={value} index={0} dir={theme.direction}>
       {value === 0 ? (
         <Grid container>
           <Grid item lg={1} md={1} sm={1} xs={1}></Grid>
@@ -44,9 +59,7 @@ const PreprocessingTab = ({ TabPanel, value, render_prepro, render_prepro_meta, 
                                     onChange={handle_pre_meta(
                                       key,
                                       key1,
-                                      render_prepro_meta[key][key1][
-                                        "DataType"
-                                      ]
+                                      render_prepro_meta[key][key1]["DataType"]
                                     )}
                                     label={key1}
                                     inputProps={{
@@ -74,33 +87,76 @@ const PreprocessingTab = ({ TabPanel, value, render_prepro, render_prepro_meta, 
 
                 {show_pre ? (
                   <>
-                    {Object.keys(
-                      render_prepro[all_prepro["dataset-type"]]
-                    ).map((key, index) => (
-                      <span key={index}>
-                        <div className={classes.heading}>{key}</div>
-                        <Grid container>
-                          {Object.keys(
-                            render_prepro[all_prepro["dataset-type"]][key]
-                          ).map((key1, index1) =>
-                            key1 === "name" ||
-                            key1 === "input_type" ? null : (
-                              <Fragment key={index1}>
-                                <Grid
-                                  item
-                                  lg={3}
-                                  md={3}
-                                  sm={3}
-                                  xs={3}
-                                  className={classes.pad}
-                                >
-                                  {render_prepro[all_prepro["dataset-type"]][
-                                    key
-                                  ][key1]["DataType"] === "select" ? (
-                                    <FormControl fullWidth variant="outlined">
-                                      <InputLabel>{key1}</InputLabel>
-                                      <Select
-                                        native
+                    {Object.keys(render_prepro[all_prepro["dataset-type"]]).map(
+                      (key, index) => (
+                        <span key={index}>
+                          <div className={classes.heading}>{key}</div>
+                          <Grid container>
+                            {Object.keys(
+                              render_prepro[all_prepro["dataset-type"]][key]
+                            ).map((key1, index1) =>
+                              key1 === "name" ||
+                              key1 === "input_type" ? null : (
+                                <Fragment key={index1}>
+                                  <Grid
+                                    item
+                                    lg={3}
+                                    md={3}
+                                    sm={3}
+                                    xs={3}
+                                    className={classes.pad}
+                                  >
+                                    {render_prepro[all_prepro["dataset-type"]][
+                                      key
+                                    ][key1]["DataType"] === "select" ? (
+                                      <FormControl fullWidth variant="outlined">
+                                        <InputLabel>{key1}</InputLabel>
+                                        <Select
+                                          native
+                                          value={
+                                            all_prepro
+                                              ? all_prepro[
+                                                  `${all_prepro["dataset-type"]}-${key}-${key1}`
+                                                ]
+                                              : ""
+                                          }
+                                          onChange={handle_pre(
+                                            key,
+                                            key1,
+                                            render_prepro[
+                                              all_prepro["dataset-type"]
+                                            ][key][key1]["DataType"]
+                                          )}
+                                          label={key1}
+                                          inputProps={{
+                                            name: { key1 },
+                                          }}
+                                        >
+                                          <option aria-label="None" value="" />
+                                          {render_prepro[
+                                            all_prepro["dataset-type"]
+                                          ][key][key1]["Options"].map(
+                                            (op, i) => (
+                                              <option
+                                                key={i}
+                                                value={
+                                                  op === "True"
+                                                    ? true
+                                                    : op === "False"
+                                                    ? false
+                                                    : op
+                                                }
+                                              >
+                                                {op}
+                                              </option>
+                                            )
+                                          )}
+                                        </Select>
+                                      </FormControl>
+                                    ) : (
+                                      <TextField
+                                        fullWidth
+                                        label={key1}
                                         value={
                                           all_prepro
                                             ? all_prepro[
@@ -115,65 +171,22 @@ const PreprocessingTab = ({ TabPanel, value, render_prepro, render_prepro_meta, 
                                             all_prepro["dataset-type"]
                                           ][key][key1]["DataType"]
                                         )}
-                                        label={key1}
-                                        inputProps={{
-                                          name: { key1 },
-                                        }}
-                                      >
-                                        <option aria-label="None" value="" />
-                                        {render_prepro[
-                                          all_prepro["dataset-type"]
-                                        ][key][key1]["Options"].map(
-                                          (op, i) => (
-                                            <option
-                                              key={i}
-                                              value={
-                                                op === "True"
-                                                  ? true
-                                                  : op === "False"
-                                                  ? false
-                                                  : op
-                                              }
-                                            >
-                                              {op}
-                                            </option>
-                                          )
-                                        )}
-                                      </Select>
-                                    </FormControl>
-                                  ) : (
-                                    <TextField
-                                      fullWidth
-                                      label={key1}
-                                      value={
-                                        all_prepro
-                                          ? all_prepro[
-                                              `${all_prepro["dataset-type"]}-${key}-${key1}`
-                                            ]
-                                          : ""
-                                      }
-                                      onChange={handle_pre(
-                                        key,
-                                        key1,
-                                        render_prepro[
-                                          all_prepro["dataset-type"]
-                                        ][key][key1]["DataType"]
-                                      )}
-                                      variant="outlined"
-                                      helperText={`Example - ${
-                                        render_prepro[
-                                          all_prepro["dataset-type"]
-                                        ][key][key1]["Example"]
-                                      }`}
-                                    />
-                                  )}
-                                </Grid>
-                              </Fragment>
-                            )
-                          )}
-                        </Grid>
-                      </span>
-                    ))}
+                                        variant="outlined"
+                                        helperText={`Example - ${
+                                          render_prepro[
+                                            all_prepro["dataset-type"]
+                                          ][key][key1]["Example"]
+                                        }`}
+                                      />
+                                    )}
+                                  </Grid>
+                                </Fragment>
+                              )
+                            )}
+                          </Grid>
+                        </span>
+                      )
+                    )}
                   </>
                 ) : null}
               </Grid>
@@ -184,6 +197,6 @@ const PreprocessingTab = ({ TabPanel, value, render_prepro, render_prepro_meta, 
       ) : null}
     </TabPanel>
   );
-}
- 
+};
+
 export default PreprocessingTab;

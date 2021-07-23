@@ -155,11 +155,14 @@ function LoginForm() {
     };
     // vallidation
     if (
-      values.username !== "" &&
-      values.password !== "" &&
-      values.first_name !== "" &&
-      values.last_name !== "" &&
-      values.email !== "" &&
+      values.username &&
+      values.username.trim() &&
+      values.password &&
+      values.first_name &&
+      values.first_name.trim() &&
+      values.last_name &&
+      values.last_name.trim() &&
+      values.email &&
       values.password === values.confirmpassword
     ) {
       const res = await LoginService.register(data);

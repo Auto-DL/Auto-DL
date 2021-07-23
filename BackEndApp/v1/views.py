@@ -149,7 +149,7 @@ def get_all_projects(request):
             500,
             False,
             "Projects could not be fetched",
-            "",
+            [],
         )
     return JsonResponse(
         {"success": success, "message": message, "projects": projects}, status=status
