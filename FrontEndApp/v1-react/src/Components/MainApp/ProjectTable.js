@@ -1,11 +1,27 @@
 import React, { useState, Fragment } from "react";
 import { withStyles, makeStyles } from "@material-ui/core/styles";
-import { Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Dialog, DialogActions, DialogTitle, Button, IconButton, Menu, MenuItem } from "@material-ui/core";
+import {
+  Typography,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Dialog,
+  DialogActions,
+  DialogTitle,
+  Button,
+  IconButton,
+  Menu,
+  MenuItem,
+} from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import AddCircleIcon from "@material-ui/icons/AddCircle";
-import FileCopyIcon from '@material-ui/icons/FileCopy';
+import FileCopyIcon from "@material-ui/icons/FileCopy";
 import HomeService from "./HomeService";
 
 const StyledTableCell = withStyles((theme) => ({
@@ -57,7 +73,6 @@ export default function ProjectTable(props) {
     setCurrentProject(project);
   };
 
-  
   const handleActionsClose = () => {
     setAnchorEl(null);
   };
@@ -73,7 +88,7 @@ export default function ProjectTable(props) {
     handleActionsClose();
     props.cloneProject(currentProject);
   };
-  
+
   const handleDelete = () => {
     console.log(currentProject.project_id);
     handleActionsClose();
@@ -147,10 +162,16 @@ export default function ProjectTable(props) {
                   <StyledTableCell align="center">Name</StyledTableCell>
                   <StyledTableCell align="center">Language</StyledTableCell>
                   <StyledTableCell align="center">Library</StyledTableCell>
-                  <StyledTableCell align="center">Data Directory</StyledTableCell>
+                  <StyledTableCell align="center">
+                    Data Directory
+                  </StyledTableCell>
                   <StyledTableCell align="center">Task</StyledTableCell>
-                  <StyledTableCell align="center">Output File Name</StyledTableCell>
-                  <StyledTableCell align="center">Project Description</StyledTableCell>
+                  <StyledTableCell align="center">
+                    Output File Name
+                  </StyledTableCell>
+                  <StyledTableCell align="center">
+                    Project Description
+                  </StyledTableCell>
                   <StyledTableCell align="center">Actions</StyledTableCell>
                 </TableRow>
               </TableHead>
@@ -205,7 +226,10 @@ export default function ProjectTable(props) {
                           align="center"
                           onClick={() => props.handlestep(project[p])}
                         >
-                          {project[p].project_description.length <= 40 ? project[p].project_description : project[p].project_description.slice(0, 40)+"..."}
+                          {project[p].project_description.length <= 40
+                            ? project[p].project_description
+                            : project[p].project_description.slice(0, 40) +
+                              "..."}
                         </StyledTableCell>
                         <StyledTableCell align="center">
                           <IconButton
