@@ -116,10 +116,8 @@ export default function Project_table(props) {
 
   const handleDeleteYes = async () => {
     setOpen(false);
-    // console.log(username);
-    // console.log(currentProject);
     const project_id =
-      currentProject.shared_by && currentProject.shared_by !== username
+      currentProject.username !== username
         ? "shared_" + currentProject.project_id
         : currentProject.project_id;
     const data = {
@@ -127,7 +125,7 @@ export default function Project_table(props) {
       project_id: project_id,
       project_name: currentProject.project_name,
       project_description: currentProject.project_description,
-      shared_by: currentProject.shared_by,
+      owner: currentProject.username,
     };
     const res = await HomeService.delete_project(token, data);
     // console.log(res);
@@ -146,11 +144,13 @@ export default function Project_table(props) {
 
   const handleShare = async () => {
     const res = await HomeService.get_all_users(token);
-    setAllUsers(
-      res.data.users.filter(
-        (user) => user !== username && user !== currentProject.shared_by
-      )
-    );
+    if (res) {
+      setAllUsers(
+        res.data.users.filter(
+          (user) => user !== username && user !== currentProject.username
+        )
+      );
+    }
     handleShareActionsClose();
     setOpenShare(true);
     handleActionsClose();
@@ -162,23 +162,18 @@ export default function Project_table(props) {
   };
 
   const handleShareClick = () => {
-    var owner = "";
-    if (currentProject.shared_by) {
-      owner = currentProject.shared_by;
-    }
-
     if (allUsers.includes(usernameToShareWith)) {
       props.shareProject(
         username,
-        owner,
         currentProject.project_id,
         usernameToShareWith
       );
       if (
         currentProject.shared_with &&
         !currentProject.shared_with.includes(usernameToShareWith)
-      )
+      ) {
         currentProject.shared_with.push(usernameToShareWith);
+      }
     }
   };
 

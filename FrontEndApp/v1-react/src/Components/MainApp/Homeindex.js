@@ -311,7 +311,7 @@ function Home() {
           data_dir: values.data_dir,
           output_file_name: values.output_file_name,
           username: username,
-          shared_by: SelectedProject.shared_by,
+          shared_by: SelectedProject.username,
         };
 
         var res = await HomeService.edit_project(token, data);
@@ -345,13 +345,12 @@ function Home() {
     setOpen(true);
   };
 
-  const shareProject = async (shared_by, owner, project_id, share_with) => {
-    const data = { shared_by, owner, project_id, share_with };
+  const shareProject = async (username, project_id, share_with) => {
+    const data = { username, project_id, share_with };
     const res = await HomeService.share_project(token, data);
 
     if (res.status === 200) {
       setalert({ ...values, msg: res.data.message, severity: "success" });
-      // localStorage.setItem("project_details", JSON.stringify(data));
     } else {
       setalert({ ...values, msg: res.data.message, severity: "error" });
     }

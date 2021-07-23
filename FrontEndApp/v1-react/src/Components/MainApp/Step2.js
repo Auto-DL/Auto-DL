@@ -87,7 +87,7 @@ function Step2() {
 
   const getProjectId = () => {
     const project_id =
-      project_details.shared_by && project_details.shared_by !== username
+      project_details.username !== username
         ? "shared_" + project_details.project_id
         : project_details.project_id;
     return project_id;
