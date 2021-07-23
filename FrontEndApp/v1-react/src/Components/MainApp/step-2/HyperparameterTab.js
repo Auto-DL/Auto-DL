@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Fragment,useState } from "react";
 import {
   Grid,
   FormControl,
@@ -38,10 +38,18 @@ const HyperparameterTab = ({
   Train,
   openErrorDialog,
   setOpenErrorDialog,
+  hyper
 }) => {
   const theme = useTheme();
   const classes = useStyles();
 
+
+  const [showOptiDesc,setShowOptiDesc]=useState(false);
+  const [showLossDesc,setShowLossDesc]=useState(false);
+  const [showEpochDesc,setShowEpochDesc]=useState(false);
+  const [showLearnRateDesc,setShowLearnRateDesc]=useState(false);
+  const [showVerboseDesc,setShowVerboseDesc]=useState(false); 
+  const [showMetricDesc,setShowMetricDesc]=useState(false); 
 
 
 
@@ -315,8 +323,29 @@ const HyperparameterTab = ({
                     <option value={"adadelta"}>adadelta</option>
                     <option value={"adagrad"}>adagrad</option>
                   </Select>
+                  {
+                    showOptiDesc?
+                    <p style={{fontSize:"80%",marginTop:"1px",fontWeight:"100",color:"#a2a4a8",marginLeft:"5%"}}>
+                    {hyper["params"]["optimizer"]["Description"]}
+                    </p>
+                    :<p style={{fontSize:"80%",marginTop:"1px",fontWeight:"100",color:"#a2a4a8",marginLeft:"5%"}}>
+                      Example-{hyper["params"]["optimizer"]["Example"]}
+                    </p>
+                  }
+                  
+
                 </FormControl>
-                <HelpOutlineIcon style={{marginTop:"1%"}}/>
+                <HelpOutlineIcon 
+                className={classes.infoiconHyper}
+                onClick={
+                  ()=> {
+                    setShowOptiDesc(true)
+                    setTimeout(()=>setShowOptiDesc(false),3000)
+                    }
+                  
+                  }
+
+                />
 
 
                 <FormControl variant="outlined" className={classes.sel}>
@@ -349,8 +378,26 @@ const HyperparameterTab = ({
                     </option>
                     <option value={"hinge"}>hinge</option>
                   </Select>
+                  {
+                    showLossDesc?
+                    <p style={{fontSize:"80%",marginTop:"1px",fontWeight:"100",color:"#a2a4a8",marginLeft:"5%"}}>
+                    {hyper["params"]["loss"]["Description"]}
+                    </p>
+                    :<p style={{fontSize:"80%",marginTop:"1px",fontWeight:"100",color:"#a2a4a8",marginLeft:"5%"}}>
+                      Example-{hyper["params"]["loss"]["Example"]}
+                    </p>
+                  }
                 </FormControl>
-                <HelpOutlineIcon style={{marginTop:"1%"}}/>
+                <HelpOutlineIcon 
+                className={classes.infoiconHyper}
+                onClick={
+                  ()=> {
+                    setShowLossDesc(true)
+                    setTimeout(()=>setShowLossDesc(false),3000)
+                    }
+                  
+                  }
+                />
                 </div>
               </>
             )}
@@ -364,9 +411,23 @@ const HyperparameterTab = ({
                   onChange={handleChange_hyperparameter("epochs")}
                   variant="outlined"
                   className={classes.sel}
+                  helperText={
+                    `${showEpochDesc?hyper["params"]["epochs"]["Description"]:`Example-${hyper["params"]["epochs"]["Example"]}`}`
+                  }
+
+
                  
                 />
-                <HelpOutlineIcon style={{marginTop:"1%"}}/>
+                <HelpOutlineIcon 
+                className={classes.infoiconHyper}
+                onClick={
+                  ()=> {
+                    setShowEpochDesc(true)
+                    setTimeout(()=>setShowEpochDesc(false),3000)
+                    }
+                  
+                  }
+                />
 
               <TextField
                 label="learning rate"
@@ -374,9 +435,22 @@ const HyperparameterTab = ({
                 onChange={handleChange_hyperparameter("learning_rate")}
                 variant="outlined"
                 className={classes.sel}
+                helperText={
+                    showLearnRateDesc?`It controls how quickly the model is adapted to the problem`:`Example-0.0`
+
+                  }
               />
 
-              <HelpOutlineIcon style={{marginTop:"1%"}}/>
+              <HelpOutlineIcon 
+                className={classes.infoiconHyper}
+                onClick={
+                  ()=> {
+                    setShowLearnRateDesc(true)
+                    setTimeout(()=>setShowLearnRateDesc(false),3000)
+                    }
+                  
+                  }
+                />
 
               
               
@@ -399,9 +473,27 @@ const HyperparameterTab = ({
                   <option value={4}>4</option>
                   <option value={5}>5</option>
                 </Select>
+                {
+                  showVerboseDesc?
+                    <p style={{fontSize:"80%",marginTop:"1px",fontWeight:"100",color:"#a2a4a8",marginLeft:"5%"}}>
+                    {hyper["params"]["verbose"]["Description"]}
+                    </p>
+                    :<p style={{fontSize:"80%",marginTop:"1px",fontWeight:"100",color:"#a2a4a8",marginLeft:"5%"}}>
+                      Example-{hyper["params"]["verbose"]["Example"]}
+                    </p>
+                  }
                 
               </FormControl>
-              <HelpOutlineIcon style={{marginTop:"1%"}}/>
+              <HelpOutlineIcon 
+                className={classes.infoiconHyper}
+                onClick={
+                  ()=> {
+                    setShowVerboseDesc(true)
+                    setTimeout(()=>setShowVerboseDesc(false),3000)
+                    }
+                  
+                  }
+                />
              
 
               {project_details.lib === "Pytorch" ? (
@@ -463,10 +555,28 @@ const HyperparameterTab = ({
                     <option value={"MeanIoU"}>MeanIoU</option>
                     <option value={"Hinge"}>Hinge</option>
                   </Select>
+                  {
+                    showMetricDesc?
+                    <p style={{fontSize:"80%",marginTop:"1px",fontWeight:"100",color:"#a2a4a8",marginLeft:"5%"}}>
+                    {hyper["params"]["loss"]["Description"]}
+                    </p>
+                    :<p style={{fontSize:"80%",marginTop:"1px",fontWeight:"100",color:"#a2a4a8",marginLeft:"5%"}}>
+                      Example-{hyper["params"]["loss"]["Example"]}
+                    </p>
+                  }
                 </FormControl>
                 
               )}
-              <HelpOutlineIcon style={{marginTop:"1%"}}/>
+              <HelpOutlineIcon 
+                className={classes.infoiconHyper}
+                onClick={
+                  ()=> {
+                    setShowMetricDesc(true)
+                    setTimeout(()=>setShowMetricDesc(false),3000)
+                    }
+                  
+                  }
+                />
               <FormControlLabel
                 className={classes.save_plot}
                 control={

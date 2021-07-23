@@ -222,6 +222,10 @@ export const useStyles = makeStyles((theme) => ({
         marginTop:"1%",
         cursor: "pointer",
     },
+    infoiconHyper:{
+      marginTop:"1%",
+      cursor:"pointer"
+    },
 
     delete: {
         width: "97%",
