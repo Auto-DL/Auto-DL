@@ -146,7 +146,7 @@ export default function ProjectTable(props) {
               id="tableTitle"
               component="div"
             >
-              Projects
+              Projects &#40;{props.projects ? props.projects.length : 0}&#41;
             </Typography>
             <Typography component={"span"} className={classes.floatright}>
               <div onClick={props.create_new_project}>
@@ -178,7 +178,7 @@ export default function ProjectTable(props) {
               <TableBody>
                 {props.projects.map((project, index) => (
                   <Fragment key={index}>
-                    {Object.keys(project).map((p, index) => (
+                    {Object.keys(project).map((p, objIndex) => (
                       <TableRow
                         hover
                         className={classes.hover}
@@ -188,48 +188,52 @@ export default function ProjectTable(props) {
                           align="center"
                           component="th"
                           scope="row"
+                          data-testid={`project-name-${index}`}
                           onClick={() => props.handlestep(project[p])}
                         >
                           {project[p].project_name}
                         </StyledTableCell>
                         <StyledTableCell
                           align="center"
+                          data-testid={`project-lang-${index}`}
                           onClick={() => props.handlestep(project[p])}
                         >
                           {project[p].lang}
                         </StyledTableCell>
                         <StyledTableCell
                           align="center"
+                          data-testid={`project-lib-${index}`}
                           onClick={() => props.handlestep(project[p])}
                         >
                           {project[p].lib}
                         </StyledTableCell>
                         <StyledTableCell
                           align="center"
+                          data-testid={`project-datadir-${index}`}
                           onClick={() => props.handlestep(project[p])}
                         >
                           {project[p].data_dir}
                         </StyledTableCell>
                         <StyledTableCell
                           align="center"
+                          data-testid={`project-task-${index}`}
                           onClick={() => props.handlestep(project[p])}
                         >
                           {project[p].task}
                         </StyledTableCell>
                         <StyledTableCell
                           align="center"
+                          data-testid={`project-output-${index}`}
                           onClick={() => props.handlestep(project[p])}
                         >
                           {project[p].output_file_name}
                         </StyledTableCell>
                         <StyledTableCell
                           align="center"
+                          data-testid={`project-description-${index}`}
                           onClick={() => props.handlestep(project[p])}
                         >
-                          {project[p].project_description.length <= 40
-                            ? project[p].project_description
-                            : project[p].project_description.slice(0, 40) +
-                              "..."}
+                          {project[p].project_description.length <= 40 ? project[p].project_description : project[p].project_description.slice(0, 40) + "..."}
                         </StyledTableCell>
                         <StyledTableCell align="center">
                           <IconButton
