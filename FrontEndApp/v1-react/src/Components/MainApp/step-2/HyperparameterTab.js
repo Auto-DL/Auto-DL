@@ -8,15 +8,7 @@ const HyperparameterTab = ({ TabPanel, value, project_details, state_hyperparam,
   const theme = useTheme();
   const classes = useStyles();
 
-  const [selected_InputFieldDesc,setselected_InputFieldDesc]=useState("");
 
-  const handleDescriptionPre=(index) =>{
-
-    setselected_InputFieldDesc(index);
-    console.log("index of pre is ",selected_InputFieldDesc);
-
-
-  }
 
 
   return (
