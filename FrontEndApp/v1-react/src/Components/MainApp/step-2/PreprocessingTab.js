@@ -1,10 +1,19 @@
 import { Fragment,useState } from "react";
-import { Grid, FormControl, InputLabel, TextField, Select,Button} from "@material-ui/core";
+import { Grid, FormControl, InputLabel, TextField, Select} from "@material-ui/core";
 import { useTheme } from "@material-ui/core/styles";
 import { useStyles } from "./styles.js";
 import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
 
-const PreprocessingTab = ({ TabPanel, value, render_prepro, render_prepro_meta, all_prepro, handle_pre, handle_pre_meta, show_pre,  }) => {
+const PreprocessingTab = ({
+  TabPanel,
+  value,
+  render_prepro,
+  render_prepro_meta,
+  all_prepro,
+  handle_pre,
+  handle_pre_meta,
+  show_pre,
+}) => {
   const theme = useTheme();
   const classes = useStyles();
   const [selected_InputFieldDesc,setselected_InputFieldDesc]=useState("");
@@ -18,7 +27,7 @@ const PreprocessingTab = ({ TabPanel, value, render_prepro, render_prepro_meta, 
   }
 
   return (
-      <TabPanel value={value} index={0} dir={theme.direction}>
+    <TabPanel value={value} index={0} dir={theme.direction}>
       {value === 0 ? (
         <Grid container>
           <Grid item lg={1} md={1} sm={1} xs={1}></Grid>
@@ -54,9 +63,7 @@ const PreprocessingTab = ({ TabPanel, value, render_prepro, render_prepro_meta, 
                                     onChange={handle_pre_meta(
                                       key,
                                       key1,
-                                      render_prepro_meta[key][key1][
-                                        "DataType"
-                                      ]
+                                      render_prepro_meta[key][key1]["DataType"]
                                     )}
                                     label={key1}
                                     inputProps={{
@@ -227,6 +234,6 @@ const PreprocessingTab = ({ TabPanel, value, render_prepro, render_prepro_meta, 
       ) : null}
     </TabPanel>
   );
-}
- 
+};
+
 export default PreprocessingTab;
