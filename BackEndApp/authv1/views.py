@@ -112,7 +112,7 @@ def forgot_password(request):
         otp = OTP(this_user)
         generated_otp = otp.create()
 
-        user_email = this_user["email"]
+        user_email = this_user.get("email")
         email = EmailTemplates(this_user)
         subject, msg = email.forgot_password(username, generated_otp)
         send_mail(subject, msg, EMAIL_HOST_USER, [user_email])
@@ -138,20 +138,21 @@ def verify_otp(request):
         otp = OTP(user)
         otp_verified = otp.verify(received_otp)
 
-        if otp_verified == True:
-            message = "OTP verification successfull."
-            status = 200
+        email_verified = user.get("is_verified")
 
-        else:
-            email_verified = user.get("is_verified")
+        if email_verified == True:
 
-            if email_verified == True:
-                message = " Incorrect OTP! Please try again."
-                status = 401
+            if otp_verified == True:
+                message = "OTP verification successfull."
+                status = 200
 
             else:
-                message = "Sorry we can't help you right now, please email info.autodl@gmail.com if you think it's a mistake."
-                status = 500
+                message = "Incorrect OTP! Please try again."
+                status = 401
+
+        else:
+            message = "Sorry we can't help you right now, please email info.autodl@gmail.com if you think it's a mistake."
+            status = 500
 
     except Exception as e:
         message = "Some error occurred! Please try again."
