@@ -14,7 +14,8 @@ from v1.models import UserData
 from dlmml.utils import json_to_dict
 from dlmml.parser import *
 
-from .utils import generate_uid, copy_file, format_code
+
+from .utils import generate_uid, copy_file, format_code, delete_broken_symlinks
 
 
 @api_view(["POST"])
@@ -131,9 +132,8 @@ def get_all_projects(request):
         user = User(username=username, password=None)
         user = user.find()
         store_obj = Store(user)
-        for f in os.scandir(store_obj.path):
-            if os.path.islink(f) and not os.path.exists(f):
-                os.remove(os.path.join(store_obj.path, f.name))
+
+        delete_broken_symlinks(store_obj.path)
         project_ids = store_obj.enlist()
 
         projects = []
@@ -202,8 +202,8 @@ def edit_project(request):
         output_file_name = request.data.get("output_file_name")
         shared_by = request.data.get("shared_by")
         store_obj = Store(user)
-        print(store_obj.path)
-        if shared_by and not shared_by[0] == username:
+
+        if shared_by and not shared_by == username:
             project_id = "shared_" + project_id
 
         if not store_obj.exist(project_id):
@@ -253,17 +253,18 @@ def delete_project(request):
         if err:
             raise Exception(exception)
 
-        project_dir = os.path.join(
-            store_obj.rootpath,
-            request.data.get("shared_by"),
-            project_id.replace("shared_", ""),
-        )
+        if project_id.startswith("shared_"):
+            project_dir = os.path.join(
+                store_obj.rootpath,
+                request.data.get("owner"),
+                project_id.replace("shared_", ""),
+            )
 
-        with open(project_dir + os.sep + "meta.json", "r") as f:
-            metadata = json.load(f)
-        metadata["shared_with"].remove(username)
-        with open(project_dir + os.sep + "meta.json", "w") as f:
-            json.dump(metadata, f)
+            with open(project_dir + os.sep + "meta.json", "r") as f:
+                metadata = json.load(f)
+            metadata["shared_with"].remove(username)
+            with open(project_dir + os.sep + "meta.json", "w") as f:
+                json.dump(metadata, f)
 
         status, success, message = 200, True, "Project Deleted Successfully"
     except Exception as e:
@@ -303,7 +304,6 @@ def create_project(request):
             "data_dir": data_dir,
             "output_file_name": output_file_name,
             "username": username,
-            "shared_by": "",
             "shared_with": [],
         }
 
@@ -397,11 +397,7 @@ def save_layers(request):
         user = User(username=username, password=None)
         user = user.find()
 
-        store_obj = Store(
-            user
-        )  # if not (os.path.exists(os.path.join(store_obj.rootpath, share_with, "shared"))):
-        #     os.makedirs(os.path.join(store_obj.rootpath, share_with, "shared"))
-
+        store_obj = Store(user)
         project_id = request.data.get("project_id")
         layers = request.data.get("layer_json")
         components = request.data.get("component_array")
@@ -602,9 +598,9 @@ def download_code(request):
 
 @api_view(["GET"])
 @is_authenticated
-def get_all_users(request):
+def all_users(request):
     """
-    Endpoint for getting all the users
+    Endpoint to get all the users
     Inputs:
     -------
     request:
@@ -636,13 +632,13 @@ def get_all_users(request):
 
 @api_view(["POST"])
 @is_authenticated
-def update_sharing_details(request):
+def share_project(request):
     """
-    Endpoint for dowloading generated code.
+    Endpoint to share projects.
     Inputs:
     -------
     request:
-        Requires: owner of the project, user to share with, user sharing the project,  project_id in request data
+        Requires:  user to share with, user sharing the project, project_id in request data
                   token in request header
     Returns:
     --------
@@ -650,12 +646,10 @@ def update_sharing_details(request):
     """
 
     try:
-
-        owner = request.data.get("owner")
         share_with = request.data.get("share_with")
-        shared_by = request.data.get("shared_by")
+        username = request.data.get("username")
 
-        user = User(username=owner or shared_by, password=None)
+        user = User(username=username, password=None)
         user = user.find()
         project_id = request.data.get("project_id")
 
@@ -665,33 +659,32 @@ def update_sharing_details(request):
         with open(project_dir + os.sep + "meta.json", "r") as f:
             metadata = json.load(f)
 
-        try:
-            src = os.path.join(project_dir)
+        dst = os.path.join(
+            store_obj.rootpath,
+            share_with,
+            "shared_" + str(project_id),
+        )
 
-            dst = os.path.join(
-                store_obj.rootpath,
-                share_with,
-                "shared_" + str(project_id),
-            )
+        os.symlink(project_dir, dst)
+        if not "shared_with" in metadata:
+            metadata["shared_with"] = []
+        metadata["shared_with"].append(share_with)
+        with open(project_dir + os.sep + "meta.json", "w") as f:
+            json.dump(metadata, f)
+        status, success, message = 200, True, "Shared Successfully"
 
-            try:
-                os.symlink(src, dst)
-                if not metadata["shared_by"]:
-                    metadata["shared_by"] = shared_by
-                metadata["shared_with"].append(share_with)
-                with open(project_dir + os.sep + "meta.json", "w") as f:
-                    json.dump(metadata, f)
-                status, success, message = 200, True, "Shared Successfully"
-            except:
-                status, success, message = (
-                    500,
-                    False,
-                    "Project is already being shared",
-                )
-
-        except:
-            status, success, message = 500, False, "Something went wrong"
-
+    except FileExistsError:
+        status, success, message = (
+            500,
+            False,
+            "Project is already being shared",
+        )
+    except OSError.symlink_exception:
+        status, success, message = (
+            500,
+            False,
+            "System administrator privileges are required to share projects.",
+        )
     except:
         status, success, message = 500, False, "Failed"
     return JsonResponse({"success": success, "message": message}, status=status)
