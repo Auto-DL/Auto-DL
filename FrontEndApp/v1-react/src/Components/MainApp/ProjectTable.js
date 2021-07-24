@@ -144,7 +144,7 @@ export default function Project_table(props) {
 
   const handleShare = async () => {
     const res = await HomeService.get_all_users(token);
-    if (res) {
+    if (res.data.users) {
       setAllUsers(
         res.data.users.filter(
           (user) => user !== username && user !== currentProject.username

@@ -186,10 +186,8 @@ function Home() {
       if (res.status === 200) {
         handleToggle_backdrop(false);
         setAllProjects([...res.data.projects]);
-        // console.log("all projects are", AllProjects);
       } else {
         localStorage.clear();
-        console.log("something went wrong");
         history.push("/login");
       }
     }
@@ -311,7 +309,7 @@ function Home() {
           data_dir: values.data_dir,
           output_file_name: values.output_file_name,
           username: username,
-          shared_by: SelectedProject.username,
+          owner: SelectedProject.username,
         };
 
         var res = await HomeService.edit_project(token, data);

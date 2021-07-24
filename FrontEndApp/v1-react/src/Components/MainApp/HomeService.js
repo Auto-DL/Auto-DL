@@ -220,7 +220,7 @@ class HomeService {
 
   async get_all_users(token) {
     try {
-      const response = await axios.get(`v1/users/all`, {
+      const response = await axios.get(`v1/users/all/`, {
         headers: {
           "Content-Type": "application/json",
           token: `${token}`,
