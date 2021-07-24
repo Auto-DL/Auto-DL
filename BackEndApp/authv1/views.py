@@ -1,11 +1,5 @@
-from django.core.mail import message
-from django.core.mail.message import EmailMessage
-from django.contrib.sites.shortcuts import get_current_site
-from django.urls import reverse
 from django.http import JsonResponse
 from rest_framework.decorators import api_view
-from rest_framework.response import Response
-import json
 import bcrypt
 
 from BackEndApp.settings import EMAIL_HOST_USER
@@ -107,56 +101,25 @@ def logout(request):
 
 
 @api_view(["POST"])
-def send_otp(request):
-    try:
-        username = request.data.get("username")
-        user = User(username=username, password=None)
-        this_user = user.find()
-
-        otp_obj = OTP(this_user)
-        otp = otp_obj.create()
-
-        email = EmailTemplates(this_user)
-        subject, msg = email.verify_email(username, otp)
-        send_email = EmailMessage(
-            subject,
-            msg,
-            EMAIL_HOST_USER,
-            [this_user.get("email")],
-        )
-        send_email.send(fail_silently=False)
-
-        message = "OTP sent successfully"
-        status = 200
-
-    except Exception as e:
-        message = "Internal server error"
-        status = 500
-
-    return JsonResponse({"message": message}, status=status)
-
-
-@api_view(["GET"])
 def verify_email(request):
     try:
         username = request.data.get("username")
         user = User(username=username, password=None)
         this_user = user.find()
 
-        otp = request.data.get("otp")
         otp_obj = OTP(this_user)
+        generated_otp = otp_obj.create()
 
-        if otp_obj.verify(otp):
-            user.update("is_verified", True)
-            message = "Verified Successfully"
-            status = 200
-        else:
-            message = "Invalid OTP!"
-            status = 401
+        user_email = this_user.get("email")
+        email = EmailTemplates(this_user)
+        subject, msg = email.verify_email(username, generated_otp)
+        send_mail(subject, msg, EMAIL_HOST_USER, [user_email])
+
+        message = "OTP sent successfully"
+        status = 200
 
     except Exception as e:
-        print(str(e))
-        message = "Internal service error"
+        message = "Internal server error"
         status = 500
 
     return JsonResponse({"message": message}, status=status)
