@@ -200,10 +200,10 @@ def edit_project(request):
         project_description = request.data.get("project_description")
         data_dir = request.data.get("data_dir")
         output_file_name = request.data.get("output_file_name")
-        shared_by = request.data.get("shared_by")
+        owner = request.data.get("owner")
         store_obj = Store(user)
 
-        if shared_by and not shared_by == username:
+        if owner and not owner == username:
             project_id = "shared_" + project_id
 
         if not store_obj.exist(project_id):
@@ -679,12 +679,19 @@ def share_project(request):
             False,
             "Project is already being shared",
         )
-    except OSError.symlink_exception:
-        status, success, message = (
-            500,
-            False,
-            "System administrator privileges are required to share projects.",
-        )
+    except OSError as e:
+        if e.winerror == 1314:
+            status, success, message = (
+                500,
+                False,
+                "System administrator privileges are required to share projects.",
+            )
+        else:
+            status, success, message = (
+                500,
+                False,
+                "Could not share project",
+            )
     except:
         status, success, message = 500, False, "Failed"
     return JsonResponse({"success": success, "message": message}, status=status)
