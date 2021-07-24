@@ -50,7 +50,7 @@ describe("Project Details Render", () => {
         expect(titleElement).toBeInTheDocument();
     });
 
-    test("should render correct project name", async () => {
+    test("should render correct project details", async () => {
         render(
             <ProjectTable
                 cloneProject={mockedCloneProject}
@@ -61,97 +61,20 @@ describe("Project Details Render", () => {
                 projects={mockedProjects}
             />
         );
-        const textElement = await screen.findByTestId("project-name-1");
+        
+        let textElement = await screen.findByTestId("project-name-1");
         expect(textElement).toBeInTheDocument();
-    });
-
-    test("should render correct project language", async () => {
-        render(
-            <ProjectTable
-                cloneProject={mockedCloneProject}
-                create_new_project={mockedCreateNewProject}
-                editProject={mockedEditProject}
-                handleStep={mockedHandleStep}
-                parent_call_on_delete={mockedParentCallOnDelete}
-                projects={mockedProjects}
-            />
-        );
-        const textElement = await screen.findByTestId("project-lang-1");
+        textElement = await screen.findByTestId("project-lang-1");
         expect(textElement).toBeInTheDocument();
-    });
-
-    test("should render correct project library", async () => {
-        render(
-            <ProjectTable
-                cloneProject={mockedCloneProject}
-                create_new_project={mockedCreateNewProject}
-                editProject={mockedEditProject}
-                handleStep={mockedHandleStep}
-                parent_call_on_delete={mockedParentCallOnDelete}
-                projects={mockedProjects}
-            />
-        );
-        const textElement = await screen.findByTestId("project-lib-1");
+        textElement = await screen.findByTestId("project-lib-1");
         expect(textElement).toBeInTheDocument();
-    });
-
-    test("should render correct project data directory", async () => {
-        render(
-            <ProjectTable
-                cloneProject={mockedCloneProject}
-                create_new_project={mockedCreateNewProject}
-                editProject={mockedEditProject}
-                handleStep={mockedHandleStep}
-                parent_call_on_delete={mockedParentCallOnDelete}
-                projects={mockedProjects}
-            />
-        );
-        const textElement = await screen.findByTestId("project-datadir-1");
+        textElement = await screen.findByTestId("project-datadir-1");
         expect(textElement).toBeInTheDocument();
-    });
-
-    test("should render correct project task", async () => {
-        render(
-            <ProjectTable
-                cloneProject={mockedCloneProject}
-                create_new_project={mockedCreateNewProject}
-                editProject={mockedEditProject}
-                handleStep={mockedHandleStep}
-                parent_call_on_delete={mockedParentCallOnDelete}
-                projects={mockedProjects}
-            />
-        );
-        const textElement = await screen.findByTestId("project-task-1");
+        textElement = await screen.findByTestId("project-task-1");
         expect(textElement).toBeInTheDocument();
-    });
-
-    test("should render correct project output file name", async () => {
-        render(
-            <ProjectTable
-                cloneProject={mockedCloneProject}
-                create_new_project={mockedCreateNewProject}
-                editProject={mockedEditProject}
-                handleStep={mockedHandleStep}
-                parent_call_on_delete={mockedParentCallOnDelete}
-                projects={mockedProjects}
-            />
-        );
-        const textElement = await screen.findByTestId("project-output-1");
+        textElement = await screen.findByTestId("project-output-1");
         expect(textElement).toBeInTheDocument();
-    });
-
-    test("should render correct project description", async () => {
-        render(
-            <ProjectTable
-                cloneProject={mockedCloneProject}
-                create_new_project={mockedCreateNewProject}
-                editProject={mockedEditProject}
-                handleStep={mockedHandleStep}
-                parent_call_on_delete={mockedParentCallOnDelete}
-                projects={mockedProjects}
-            />
-        );
-        const textElement = await screen.findByTestId("project-description-1");
+        textElement = await screen.findByTestId("project-description-1");
         expect(textElement).toBeInTheDocument();
     });
 });
