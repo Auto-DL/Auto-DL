@@ -262,7 +262,9 @@ def delete_project(request):
 
             with open(project_dir + os.sep + "meta.json", "r") as f:
                 metadata = json.load(f)
-            metadata["shared_with"].remove(username)
+            if metadata.get("shared_with", None):
+                if username in metadata.get("shared_with"):
+                    metadata["shared_with"].remove(username)
             with open(project_dir + os.sep + "meta.json", "w") as f:
                 json.dump(metadata, f)
 
@@ -666,7 +668,8 @@ def share_project(request):
         )
 
         os.symlink(project_dir, dst)
-        if not "shared_with" in metadata:
+
+        if not metadata.get("shared_with", None):
             metadata["shared_with"] = []
         metadata["shared_with"].append(share_with)
         with open(project_dir + os.sep + "meta.json", "w") as f:
