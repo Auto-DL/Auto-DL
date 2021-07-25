@@ -121,6 +121,12 @@ function LoginForm() {
 
   const handleChangetabs = (event, newValue) => {
     setValue(newValue);
+    values.registerPassword = "";
+    values.confirmpassword = "";
+    values.loginPassword = "";
+    values.showRegisterPassword=false;
+    values.showLoginPassword=false;
+
   };
 
   const login = async () => {
