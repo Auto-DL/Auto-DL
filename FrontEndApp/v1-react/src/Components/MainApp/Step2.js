@@ -2814,6 +2814,7 @@ function Step2() {
         Train={Train}
         openErrorDialog={openErrorDialog}
         setOpenErrorDialog={setOpenErrorDialog}
+        hyper={hyper}
       />
     </div>
   );
