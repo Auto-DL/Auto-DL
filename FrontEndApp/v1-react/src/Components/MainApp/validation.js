@@ -10,18 +10,24 @@ import { keras_layers } from "../../resources/keras";
  * @returns {Array of objects} [] if no errors, [ {indices: [int,int], error: 'error message'}, {..}, .. ] if error
  */
 export const validate_layers = (source, destination, components) => {
+
+  
   //variables
   let errors = [];
   //array having indices of layers which can be added next
   let validIndices=[];
 
+  console.log("In layer validation components",components);
   
 
   const src_dic = source.droppableId;
   const des_dic = destination.droppableId;
   const des_idx = destination.index;
   const src_idx = source.index;
-  // adding new layers
+
+  console.log("Source deop and destination drop",src_dic,des_dic);
+  console.log("In layer validation des_idx",des_idx);
+  // // adding new layers
   var obj;
   console.log("destination index is",des_idx);
   if (src_dic === "source") {
@@ -171,29 +177,66 @@ export const validate_layers = (source, destination, components) => {
     }
   }
 
-  //Layers which are correct to be added after last layer
-  if(des_idx === components.length-1 && errors.length===0 && components.length>0)
-  {
-    console.log("can suggest layers")
-    const curr_layer=components[des_idx].name;
-    let i=0;
+  const suggestLayers = (curr_layer) =>{
 
+    let i=0;
+    const indices=[];
     for(const layer in keras_layers)
-    {
-      
-      
+    { 
       if( keras_layers[curr_layer].dimensions.returned_dim === keras_layers[layer].dimensions.expected_dim
          || keras_layers[layer].dimensions.expected_dim==="all")
       {
         // console.log("layers",layer);
-        validIndices.push(i);
+        indices.push(i);
       }
       i++;
     }
-    // console.log("validIndices are",validIndices);
+
+    return indices;
+
+  }
+
+
+
+  //deleting the last present layer in components array
+  if(src_dic==="target" && des_dic==="delete")
+  {
+    console.log("deleting last layer so all layers are valid");
+    if(components.length===1)
+    {
+      //if no layer present all  layers are valid 
+      validIndices=[0,1,2,3,4,5,6,7,8,9];
+    }
+    else{
+      const curr_layer=components[components.length-2].name;
+      validIndices=suggestLayers(curr_layer);
+
+    }
+
+
+
 
 
   }
+
+  // //Layers which are correct to be added after last layer
+  if(src_dic==="source" && des_dic==="target")
+  {
+    console.log("can suggest layers")
+    const curr_layer=components[components.length-1].name;
+    validIndices=suggestLayers(curr_layer);
+    
+    // console.log("validIndices are",validIndices);
+  }
+
+  if(src_dic==="target" && des_dic==="target")
+  {
+   console.log("components are",components);
+    
+    // console.log("validIndices are",validIndices);
+  }
+
+
 
   const validAndInvalid={
     invalidIndices : errors,

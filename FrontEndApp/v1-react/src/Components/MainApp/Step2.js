@@ -2145,6 +2145,7 @@ function Step2() {
   }, [project_details.project_id, token, username]);
 
   const handleDragEnd = ({ destination, source }) => {
+    console.log("components before",components);
     if (!destination) {
       return;
     }
@@ -2157,23 +2158,31 @@ function Step2() {
     }
 
     if (destination.droppableId === "source") {
+      console.log("dropping in  source",components);
       return;
     }
+    
     if (
       destination.droppableId === "delete" &&
       source.droppableId === "target"
     ) {
+      console.log("deleting from target");
       const element = components[source.index];
+      
       var temp = components.filter((item) => item !== element);
+      if(temp.length===0)  console.log("deleting last element");
       setcomponents(temp);
       setselected_layer(-1);
       setselected_layer_name("");
       setselected_layer_type("");
+      if(temp.length===0)  console.log("components on deleting last element",components);
     }
     if (
       destination.droppableId === "target" &&
       source.droppableId === "target"
     ) {
+      console.log("droppig from target to target");
+      console.log("what is this",components.splice(source.index, 1)[0])
       components.splice(
         destination.index,
         0,
@@ -2207,33 +2216,32 @@ function Step2() {
       destination.droppableId === "target" &&
       source.droppableId === "source"
     ) {
+      console.log("dropping from source to target");
+
+      if(components.length!==0)
+      {
+        console.log("Source destination is ",source,destination);
+        // const validate_res = validate_layers(source, destination, components);
+        console.log("valid indices are",validLayerIndices);
+        console.log("Validate res has ",validLayerIndices.includes(source.index))
+        if(!(validLayerIndices.includes(source.index)))
+        {
+          console.log("cannot include layer ")
+          return;
+        }
+
+      }
       const list_names_of_source = Object.keys(jsondata);
-      console.log(
-        "list of keys is and source index :",
-        list_names_of_source,
-        source.index
-      );
+      // console.log(
+      //   "list of keys is and source index :",
+      //   list_names_of_source,
+      //   source.index
+      // );
       const temp = jsondata[list_names_of_source[source.index]];
-      console.log("temp is ", temp);
+      // console.log("temp is ", temp);
 
       var dic = _.cloneDeep(temp);
       console.log("dictionary after ", dic);
-
-      // if (Array.isArray(components) && components.length === 0) {
-      // }
-
-      // for (var key1 in dic) {
-      //   console.log("key 1 is  ",key1);
-      //   for (var key2 in dic[key1]) {
-      //     if (key2 === "value") {
-      //       console.log("key 2 is  ",key2);
-      //       console.log("dic is  ",dic[key1][key2]);
-
-      //       delete dic[key1][key2];
-
-      //     }
-      //   }
-      // }
 
       //getting the id
       dic["id"] = `${list_names_of_source[source.index]}-${source.index}-${
@@ -2242,15 +2250,15 @@ function Step2() {
       // console.log("we are getting the id ",dic["id"]);
       dic["name"] = list_names_of_source[source.index];
 
-      console.log("components before", components);
+      // console.log("components before", components);
 
       components.splice(destination.index, 0, dic);
 
-      console.log("components after", components);
+      // console.log("components after", components);
 
       for (i = 0; i < components.length; i++) {
         components[i]["id"] = components[i]["id"] + i;
-        console.log("inside loop id", components[i]["id"]);
+        // console.log("inside loop id", components[i]["id"]);
         if (i === 0) {
           if (
             !("input_size" in components[i]) ||
@@ -2274,6 +2282,7 @@ function Step2() {
 
       setcomponents(components);
     }
+    console.log("source index is ",source.index)
 
     const validate_res = validate_layers(source, destination, components);
     console.log("val res is",validate_res);
@@ -2725,22 +2734,7 @@ function Step2() {
           }
         }
 
-    //getting source names of all layers
-    const list_names_of_source = Object.keys(jsondata);
-    let source_index;
-
-    //where to place layer in UI
-    let destination_index = Number(layer.id[layer.id.length - 1]) + 1;
-    console.log("destination index  is ", destination_index);
-
-    //finding layer in source array for id framing
-    for (let i = 0; i < list_names_of_source.length; i++) {
-      if (layer.name === list_names_of_source[i]) {
-        source_index = i;
-        break;
-      }
-    }
-
+    
     //cloning the layer
     let clonedLayer = _.cloneDeep(layer);
 
