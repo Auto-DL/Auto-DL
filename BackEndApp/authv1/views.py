@@ -1,12 +1,13 @@
+import bcrypt
+from BackEndApp.settings import EMAIL_HOST_USER
 from django.http import JsonResponse
 from rest_framework.decorators import api_view
-import bcrypt
+from django.core.mail import send_mail
 
-from BackEndApp.settings import EMAIL_HOST_USER
-from .models import User, Session
-from .store import Store
-from .emails import EmailTemplates
 from .auth import OTP
+from .emails import EmailTemplates
+from .models import Session, User
+from .store import Store
 
 
 @api_view(["POST"])
@@ -115,11 +116,11 @@ def verify_email(request):
         subject, msg = email.verify_email(username, generated_otp)
         send_mail(subject, msg, EMAIL_HOST_USER, [user_email])
 
-        message = "OTP sent successfully"
+        message = "Email sent successfully"
         status = 200
 
     except Exception as e:
-        message = "Internal server error"
+        message = "Some error occured! Please try again."
         status = 500
 
     return JsonResponse({"message": message}, status=status)
