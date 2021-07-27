@@ -2170,24 +2170,29 @@ function Step2() {
       const element = components[source.index];
       
       var temp = components.filter((item) => item !== element);
-      if(temp.length===0)  console.log("deleting last element");
+      // if(temp.length===0)  console.log("deleting last element");
       setcomponents(temp);
       setselected_layer(-1);
       setselected_layer_name("");
       setselected_layer_type("");
-      if(temp.length===0)  console.log("components on deleting last element",components);
+      // if(temp.length===0)  console.log("components on deleting last element",components);
     }
     if (
       destination.droppableId === "target" &&
       source.droppableId === "target"
     ) {
-      console.log("droppig from target to target");
-      console.log("what is this",components.splice(source.index, 1)[0])
-      components.splice(
-        destination.index,
-        0,
-        components.splice(source.index, 1)[0]
-      );
+
+      const tempArr=_.cloneDeep(components);
+      tempArr.splice(destination.index,0,tempArr.splice(source.index, 1)[0]);
+      const {invalidIndices}=validate_layers(source,destination,tempArr);
+      
+      if(invalidIndices.length>0) {
+        alert("cannot switch ");
+        return;
+      }
+      components.splice(destination.index,0,components.splice(source.index, 1)[0]);
+
+      // console.log("compinents after splice is ",components);
       for (var i = 0; i < components.length; i++) {
         components[i]["id"] = components[i]["id"] + i;
         if (i === 0) {
@@ -2220,10 +2225,6 @@ function Step2() {
 
       if(components.length!==0)
       {
-        console.log("Source destination is ",source,destination);
-        // const validate_res = validate_layers(source, destination, components);
-        console.log("valid indices are",validLayerIndices);
-        console.log("Validate res has ",validLayerIndices.includes(source.index))
         if(!(validLayerIndices.includes(source.index)))
         {
           console.log("cannot include layer ")
@@ -2232,16 +2233,11 @@ function Step2() {
 
       }
       const list_names_of_source = Object.keys(jsondata);
-      // console.log(
-      //   "list of keys is and source index :",
-      //   list_names_of_source,
-      //   source.index
-      // );
+      
       const temp = jsondata[list_names_of_source[source.index]];
-      // console.log("temp is ", temp);
-
+      
       var dic = _.cloneDeep(temp);
-      console.log("dictionary after ", dic);
+     
 
       //getting the id
       dic["id"] = `${list_names_of_source[source.index]}-${source.index}-${
@@ -2252,13 +2248,23 @@ function Step2() {
 
       // console.log("components before", components);
 
+      //puhsing in temporary array 
+      const tempArr=_.cloneDeep(components);
+      tempArr.splice(destination.index,0,dic);
+      const {invalidIndices,validIndices}=validate_layers(source,destination,tempArr);
+      if(invalidIndices.length>0)
+      {
+        alert("cannot plave");
+        return;
+      }
+
       components.splice(destination.index, 0, dic);
 
       // console.log("components after", components);
 
       for (i = 0; i < components.length; i++) {
         components[i]["id"] = components[i]["id"] + i;
-        // console.log("inside loop id", components[i]["id"]);
+        
         if (i === 0) {
           if (
             !("input_size" in components[i]) ||

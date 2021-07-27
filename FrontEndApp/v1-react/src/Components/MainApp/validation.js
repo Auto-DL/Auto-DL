@@ -231,9 +231,10 @@ export const validate_layers = (source, destination, components) => {
 
   if(src_dic==="target" && des_dic==="target")
   {
-   console.log("components are",components);
-    
-    // console.log("validIndices are",validIndices);
+    const curr_layer=components[components.length-1].name;
+    validIndices=suggestLayers(curr_layer);
+
+
   }
 
 
