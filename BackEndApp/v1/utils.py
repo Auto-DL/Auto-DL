@@ -37,5 +37,11 @@ def format_code(file):
     os.system("black {}".format(file))
 
 
+def delete_broken_symlinks(path):
+    for f in os.scandir(path):
+        if os.path.islink(f) and not os.path.exists(f):
+            os.remove(os.path.join(path, f.name))
+
+
 if __name__ == "__main__":
     print(generate_uid())
