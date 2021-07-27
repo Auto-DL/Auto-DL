@@ -106,22 +106,29 @@ def forgot_password(request):
         this_user = user.find()
 
         if user is None:
-            message = "User does not exist"
+            message = "Invalid Credentials."
             status = 401
 
-        otp = OTP(this_user)
-        generated_otp = otp.create()
+        email_verified = user.get("is_verified")
 
-        user_email = this_user.get("email")
-        email = EmailTemplates(this_user)
-        subject, msg = email.forgot_password(username, generated_otp)
-        send_mail(subject, msg, EMAIL_HOST_USER, [user_email])
+        if email_verified == True:
+            otp = OTP(this_user)
+            generated_otp = otp.create()
 
-        message = "Email sent successfully."
-        status = 200
+            user_email = this_user.get("email")
+            email = EmailTemplates(this_user)
+            subject, msg = email.forgot_password(username, generated_otp)
+            send_mail(subject, msg, EMAIL_HOST_USER, [user_email])
+
+            message = "Email sent successfully."
+            status = 200
+
+        else:
+            message = "Sorry we can't help you right now, please email info.autodl@gmail.com if you think it's a mistake."
+            status = 500
 
     except Exception as e:
-        message = "Some error occurred!! Please try again."
+        message = "Some error occurred! Please try again."
         status = 500
 
     return JsonResponse({"message": message}, status=status)
@@ -138,21 +145,20 @@ def verify_otp(request):
         otp = OTP(user)
         otp_verified = otp.verify(received_otp)
 
-        email_verified = user.get("is_verified")
+        if otp_verified == True:
 
-        if email_verified == True:
-
-            if otp_verified == True:
+            if is_email_validation == False:
                 message = "OTP verification successfull."
                 status = 200
 
             else:
-                message = "Incorrect OTP! Please try again."
-                status = 401
+                user.update("is_verified", True)
+                message = "Email verification successfull."
+                status = 200
 
         else:
-            message = "Sorry we can't help you right now, please email info.autodl@gmail.com if you think it's a mistake."
-            status = 500
+            message = "Incorrect OTP! Please try again."
+            status = 401
 
     except Exception as e:
         message = "Some error occurred! Please try again."
@@ -169,7 +175,7 @@ def update_password(request):
         this_user = user.find()
 
         if this_user is None:
-            message = "User does not exist"
+            message = "Invalid Credentials."
             status = 401
 
         new_password = request.data.get("password")
@@ -182,7 +188,7 @@ def update_password(request):
 
         else:
             status, error = user.update("password", hashed_password)
-            message = "Password Reset successful!"
+            message = "Password Reset successfull."
             status = 200
 
     except Exception as e:
