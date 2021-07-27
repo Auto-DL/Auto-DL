@@ -12,31 +12,27 @@ from .store import Store
 
 @api_view(["POST"])
 def login(request):
-    try:
-        username = request.data.get("username")
-        password = request.data.get("password")
-        user = User(username, password)
-        user = user.find()
 
-        if user is None or not bcrypt.checkpw(
-            password.encode("utf-8"), user.get("password")
-        ):
-            status = 401
-            message = "Invalid credentials"
-            token = None
+    username = request.data.get("username")
+    password = request.data.get("password")
+    user = User(username, password)
+    user = user.find()
 
-        if user.get("is_verified") == True:
-            session = Session(user)
-            token = session.create()
-            status = 200
-            message = "Login Successful"
+    if user is None or not bcrypt.checkpw(
+        password.encode("utf-8"), user.get("password")
+    ):
+        status = 401
+        message = "Invalid credentials"
+        token = None
+    else:
+        session = Session(user)
+        token = session.create()
+        status = 200
+        message = "Login Successful"
+
         if token is None:
             status = 500
-            raise Exception("Some error occured")
-    except Exception as e:
-        status = 500
-        message = "Some Error Occured please try again!"
-        return JsonResponse({"message": message, "user": username}, status=status)
+            message = "Some error occured"
     return JsonResponse(
         {"message": message, "user": username, "token": token}, status=status
     )
