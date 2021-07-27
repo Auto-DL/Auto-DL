@@ -1,15 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  BrowserRouter,
-  Switch,
-  useLocation,
-  IndexRoute,
-  Route,
-  Link,
-  Redirect,
-  useParams,
-  useHistory,
-} from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import {
   Grid,
   CircularProgress,
@@ -319,6 +309,7 @@ function Home() {
           data_dir: values.data_dir,
           output_file_name: values.output_file_name,
           username: username,
+          owner: SelectedProject.username,
         };
 
         var res = await HomeService.edit_project(token, data);
@@ -352,6 +343,17 @@ function Home() {
     setOpen(true);
   };
 
+  const shareProject = async (username, project_id, share_with) => {
+    const data = { username, project_id, share_with };
+    const res = await HomeService.share_project(token, data);
+
+    if (res.status === 200) {
+      setalert({ ...values, msg: res.data.message, severity: "success" });
+    } else {
+      setalert({ ...values, msg: res.data.message, severity: "error" });
+    }
+    setOpen(true);
+  };
   return (
     <>
       <Backdrop
@@ -727,6 +729,7 @@ function Home() {
             parent_call_on_delete={parent_call_on_delete}
             handlestep={handlestep}
             create_new_project={create_new_project}
+            shareProject={shareProject}
             cloneProject={cloneProject}
           />
         </Grid>
