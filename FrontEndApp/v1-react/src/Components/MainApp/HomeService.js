@@ -177,9 +177,51 @@ class HomeService {
       return error.response;
     }
   }
+
+  async clone_project(token, data) {
+    try {
+      const response = await axios.post(`v1/project/clone/`, data, {
+        headers: {
+          "Content-Type": "application/json",
+          token: `${token}`,
+        },
+      });
+      return response;
+    } catch (error) {
+      return error.response;
+    }
+  }
+
   async get_project(token, data) {
     try {
       const response = await axios.post(`${BACKEND_API_URL}/v1/project/get/`, data, {
+        headers: {
+          "Content-Type": "application/json",
+          token: `${token}`,
+        },
+      });
+      return response;
+    } catch (error) {
+      return error.response;
+    }
+  }
+  async share_project(token, data) {
+    try {
+      const response = await axios.post(`v1/project/share/`, data, {
+        headers: {
+          "Content-Type": "application/json",
+          token: `${token}`,
+        },
+      });
+      return response;
+    } catch (error) {
+      return error.response;
+    }
+  }
+
+  async get_all_users(token) {
+    try {
+      const response = await axios.get(`v1/users/all/`, {
         headers: {
           "Content-Type": "application/json",
           token: `${token}`,

@@ -12,16 +12,26 @@ import {
   Dialog,
   DialogActions,
   DialogTitle,
+  DialogContent,
   Button,
   IconButton,
   Menu,
+  TextField,
   MenuItem,
+  Box,
+  Grid,
+  Popover,
 } from "@material-ui/core";
+
+import Autocomplete from "@material-ui/lab/Autocomplete";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
+import ShareIcon from "@material-ui/icons/Share";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import AddCircleIcon from "@material-ui/icons/AddCircle";
+import FileCopyIcon from "@material-ui/icons/FileCopy";
 import HomeService from "./HomeService";
+import PeopleAltIcon from "@material-ui/icons/PeopleAlt";
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
@@ -55,51 +65,128 @@ const useStyles = makeStyles({
   },
 });
 
-export default function ProjectTable(props) {
+export default function Project_table(props) {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
+  const [openShare, setOpenShare] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
-  const [currentProject, setCurrentProject] = useState(null);
+  const [anchorElShared, setAnchorElShared] = useState(null);
+  const [allUsers, setAllUsers] = useState([]);
+  const [currentProject, setCurrentProject] = useState({});
+  const [usernameToShareWith, setUsernameToShareWith] = useState("");
+  const [currentSharedUsers, setCurrentSharedUsers] = useState([]);
+  const [anchorElPop, setAnchorElPop] = React.useState(null);
+
   var username = JSON.parse(localStorage.getItem("username"));
   var token = JSON.parse(localStorage.getItem("token"));
 
   const handleClose = () => {
     setOpen(false);
+    setOpenShare(false);
   };
 
-  const handleDeleteYes = async () => {
-    setOpen(false);
-    const data = {
-      username: username,
-      project_id: currentProject.project_id,
-      project_name: currentProject.project_name,
-      project_description: currentProject.project_description,
-    };
-    const res = await HomeService.delete_project(token, data);
-    console.log(res);
-    props.parent_call_on_delete();
-  };
-
-  const handleActionsOpen = (event) => {
+  const handleActionsOpen = (project, event) => {
     setAnchorEl(event.currentTarget);
+    setCurrentProject(project);
   };
 
   const handleActionsClose = () => {
     setAnchorEl(null);
   };
 
-  const handleEdit = (project) => {
-    console.log(project.project_id);
+  const handleEdit = () => {
     handleActionsClose();
-    props.editproject(project);
+    handleShareActionsClose();
+    props.editproject(currentProject);
   };
 
-  const handleDelete = (project) => {
-    console.log(project.project_id);
+  const handleClone = () => {
+    // console.log(currentProject.project_id);
     handleActionsClose();
-    setCurrentProject(project);
+    props.cloneProject(currentProject);
+  };
+
+  const handleDelete = () => {
+    // console.log("current proj is", currentProject);
+    handleActionsClose();
+    handleShareActionsClose();
+    setCurrentProject(currentProject);
     setOpen(true);
   };
+
+  const handleDeleteYes = async () => {
+    setOpen(false);
+    const project_id =
+      currentProject.username !== username
+        ? "shared_" + currentProject.project_id
+        : currentProject.project_id;
+    const data = {
+      username: username,
+      project_id: project_id,
+      project_name: currentProject.project_name,
+      project_description: currentProject.project_description,
+      owner: currentProject.username,
+    };
+    const res = await HomeService.delete_project(token, data);
+    // console.log(res);
+    props.parent_call_on_delete();
+  };
+
+  //share handlers
+  const handleShareActionsOpen = (project, event) => {
+    setAnchorElShared(event.currentTarget);
+    setCurrentProject(project);
+  };
+
+  const handleShareActionsClose = () => {
+    setAnchorElShared(null);
+  };
+
+  const handleShare = async () => {
+    const res = await HomeService.get_all_users(token);
+    if (res.data.users) {
+      setAllUsers(
+        res.data.users.filter(
+          (user) => user !== username && user !== currentProject.username
+        )
+      );
+    }
+    handleShareActionsClose();
+    setOpenShare(true);
+    handleActionsClose();
+    setCurrentProject(currentProject);
+  };
+
+  const handleShareUsernameChange = (event, value) => {
+    setUsernameToShareWith(value);
+  };
+
+  const handleShareClick = () => {
+    if (allUsers.includes(usernameToShareWith)) {
+      props.shareProject(
+        username,
+        currentProject.project_id,
+        usernameToShareWith
+      );
+      if (
+        currentProject.shared_with &&
+        !currentProject.shared_with.includes(usernameToShareWith)
+      ) {
+        currentProject.shared_with.push(usernameToShareWith);
+      }
+    }
+  };
+
+  const handleClickPop = (event) => {
+    setAnchorElPop(event.currentTarget);
+  };
+
+  const handleClosePop = () => {
+    setAnchorElPop(null);
+  };
+
+  const openPop = Boolean(anchorElPop);
+  const id = openPop ? "simple-popover" : undefined;
 
   return (
     <>
@@ -116,12 +203,65 @@ export default function ProjectTable(props) {
           </Button>
         </DialogActions>
       </Dialog>
+      <Dialog open={openShare} onClose={handleClose}>
+        <DialogTitle id="alert-dialog-title">
+          Share Project ({currentProject ? currentProject.project_name : ""})
+        </DialogTitle>
+        <DialogContent dividers>
+          <Typography variant="body1" gutterBottom>
+            Enter the username of the user to share the project with:
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          </Typography>
+          <Box my={2}>
+            <Autocomplete
+              id="combo-box-demo"
+              options={allUsers}
+              getOptionLabel={(option) => option}
+              style={{ width: 250 }}
+              onInputChange={handleShareUsernameChange}
+              renderInput={(params) => (
+                <TextField {...params} label="Username" variant="outlined" />
+              )}
+            />
+          </Box>
+          <Box my={1}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleShareClick}
+            >
+              Share
+            </Button>
+          </Box>
+        </DialogContent>
+      </Dialog>
+      <Popover
+        id={id}
+        open={openPop}
+        anchorEl={anchorElPop}
+        onClose={handleClosePop}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "center",
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "center",
+        }}
+      >
+        <Box p={2} justify="center">
+          <Typography style={{ fontWeight: 600 }}> Sharing With:</Typography>
 
+          {currentSharedUsers.map((user) => (
+            <Typography>{user}</Typography>
+          ))}
+        </Box>
+      </Popover>
       {props.projects.length === 0 ? (
         <>
           <div>
             <div className={classes.title}>No projects to show</div>
-            <Typography component={"span"} className={classes.floatright}>
+            <Typography className={classes.floatright}>
               <div onClick={props.create_new_project}>
                 <AddCircleIcon fontSize={"large"} />
               </div>
@@ -130,134 +270,380 @@ export default function ProjectTable(props) {
         </>
       ) : (
         <>
-          <div>
-            <Typography
-              className={classes.title}
-              variant="h6"
-              id="tableTitle"
-              component="div"
-            >
-              Projects
-            </Typography>
-            <Typography component={"span"} className={classes.floatright}>
-              <div onClick={props.create_new_project}>
-                <AddCircleIcon fontSize={"large"} />
+          {props.projects.filter(
+            (project) => !Object.keys(project)[0].startsWith("shared_")
+          ).length > 0 ? (
+            <>
+              <div>
+                <Typography
+                  className={classes.title}
+                  variant="h6"
+                  id="tableTitle"
+                  component="div"
+                >
+                  Projects &#40;{props.projects ? props.projects.length : 0}&#41;
+                </Typography>
+                <Typography component={"span"} className={classes.floatright}>
+                  <div onClick={props.create_new_project}>
+                    <AddCircleIcon fontSize={"large"} />
+                  </div>
+                </Typography>
               </div>
-            </Typography>
-          </div>
+              <TableContainer component={Paper}>
+                <Table className={classes.table} aria-label="customized table">
+                  <TableHead>
+                    <TableRow>
+                      <StyledTableCell
+                        width="2%"
+                        align="center"
+                      ></StyledTableCell>
+                      <StyledTableCell width="10%" align="center">
+                        Name
+                      </StyledTableCell>
+                      <StyledTableCell width="12%" align="center">
+                        Language
+                      </StyledTableCell>
+                      <StyledTableCell width="12%" align="center">
+                        Library
+                      </StyledTableCell>
+                      <StyledTableCell width="12%" align="center">
+                        Data Directory
+                      </StyledTableCell>
+                      <StyledTableCell width="12%" align="center">
+                        Task
+                      </StyledTableCell>
+                      <StyledTableCell width="12%" align="center">
+                        Output File Name
+                      </StyledTableCell>
+                      <StyledTableCell width="16%" align="center">
+                        Project Description
+                      </StyledTableCell>
+                      <StyledTableCell width="12%" align="center">
+                        Actions
+                      </StyledTableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {props.projects
+                      .filter(
+                        (project) =>
+                          !Object.keys(project)[0].startsWith("shared_")
+                      )
+                      .map((project, index) => (
+                        <Fragment key={index}>
+                          {Object.keys(project).map((p) => (
+                            <TableRow
+                              hover
+                              className={classes.hover}
+                              key={project[p].project_id}
+                            >
+                              <StyledTableCell
+                                align="center"
+                                onClick={() => props.handlestep(project[p])}
+                              >
+                                <Grid
+                                  container
+                                  direction="row"
+                                  alignItems="center"
+                                  justify="center"
+                                  onClick={() => props.handlestep(project[p])}
+                                >
+                                  {project[p].shared_with &&
+                                  project[p].shared_with.length > 0 ? (
+                                    <IconButton
+                                      onMouseEnter={() =>
+                                        setCurrentSharedUsers(
+                                          project[p].shared_with
+                                        )
+                                      }
+                                      onMouseOver={handleClickPop}
+                                      style={{ backgroundColor: "transparent" }}
+                                      disableFocusRipple={true}
+                                      disableRipple={true}
+                                    >
+                                      <PeopleAltIcon />
+                                    </IconButton>
+                                  ) : (
+                                    ""
+                                  )}
+                                </Grid>
+                              </StyledTableCell>
+                              <StyledTableCell
+                                align="center"
+                                component="th"
+                                scope="row"
+                                data-testid={`project-name-${index}`}
+                              >
+                                <> {project[p].project_name}</>
+                              </StyledTableCell>
+                              <StyledTableCell
+                                align="center"
+                                data-testid={`project-lang-${index}`}
+                                onClick={() => props.handlestep(project[p])}
+                              >
+                                {project[p].lang}
+                              </StyledTableCell>
+                              <StyledTableCell
+                                align="center"
+                                data-testid={`project-lib-${index}`}
+                                onClick={() => props.handlestep(project[p])}
+                              >
+                                {project[p].lib}
+                              </StyledTableCell>
+                              <StyledTableCell
+                                align="center"
+                                data-testid={`project-datadir-${index}`}
+                                onClick={() => props.handlestep(project[p])}
+                              >
+                                {project[p].data_dir}
+                              </StyledTableCell>
+                              <StyledTableCell
+                                align="center"
+                                data-testid={`project-task-${index}`}
+                                onClick={() => props.handlestep(project[p])}
+                              >
+                                {project[p].task}
+                              </StyledTableCell>
+                              <StyledTableCell
+                                align="center"
+                                data-testid={`project-output-${index}`}
+                                onClick={() => props.handlestep(project[p])}
+                              >
+                                {project[p].output_file_name}
+                              </StyledTableCell>
+                              <StyledTableCell
+                                align="center"
+                                data-testid={`project-description-${index}`}
+                                onClick={() => props.handlestep(project[p])}
+                              >
+                                {project[p].project_description.length <= 40
+                                  ? project[p].project_description
+                                  : project[p].project_description.slice(
+                                      0,
+                                      40
+                                    ) + "..."}
+                              </StyledTableCell>
+                              <StyledTableCell align="center">
+                                <IconButton
+                                  aria-controls="customized-menu"
+                                  aria-label="options"
+                                  aria-haspopup="true"
+                                  onClick={(e) =>
+                                    handleActionsOpen(project[p], e)
+                                  }
+                                >
+                                  <MoreVertIcon />
+                                </IconButton>
+                                <Menu
+                                  id="customized-menu"
+                                  anchorEl={anchorEl}
+                                  elevation={1}
+                                  keepMounted
+                                  open={Boolean(anchorEl)}
+                                  onClose={handleActionsClose}
+                                >
+                                  <MenuItem onClick={handleEdit}>
+                                    <EditIcon /> &nbsp; Edit
+                                  </MenuItem>
+                                  <MenuItem onClick={handleClone}>
+                                    <FileCopyIcon /> &nbsp; Clone
+                                  </MenuItem>
+                                  <MenuItem onClick={handleDelete}>
+                                    <DeleteIcon /> &nbsp; Delete
+                                  </MenuItem>
+                                  <MenuItem onClick={handleShare}>
+                                    <ShareIcon /> &nbsp; Share
+                                  </MenuItem>
+                                </Menu>
+                              </StyledTableCell>
+                            </TableRow>
+                          ))}
+                        </Fragment>
+                      ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>{" "}
+            </>
+          ) : (
+            <>
+              <div>
+                <div className={classes.title}>
+                  No personal projects to show
+                </div>
+                <Typography className={classes.floatright}>
+                  <div onClick={props.create_new_project}>
+                    <AddCircleIcon fontSize={"large"} />
+                  </div>
+                </Typography>
+              </div>
+            </>
+          )}
 
-          <TableContainer component={Paper}>
-            <Table className={classes.table} aria-label="customized table">
-              <TableHead>
-                <TableRow>
-                  <StyledTableCell align="center">Name</StyledTableCell>
-                  <StyledTableCell align="center">Language</StyledTableCell>
-                  <StyledTableCell align="center">Library</StyledTableCell>
-                  <StyledTableCell align="center">
-                    Data Directory
-                  </StyledTableCell>
-                  <StyledTableCell align="center">Task</StyledTableCell>
-                  <StyledTableCell align="center">
-                    Output File Name
-                  </StyledTableCell>
-                  <StyledTableCell align="center">
-                    Project Description
-                  </StyledTableCell>
-                  <StyledTableCell align="center">Actions</StyledTableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {props.projects.map((project, index) => (
-                  <Fragment key={index}>
-                    {Object.keys(project).map((p, index) => (
-                      <TableRow
-                        hover
-                        className={classes.hover}
-                        key={project[p].project_id}
-                      >
-                        <StyledTableCell
-                          align="center"
-                          component="th"
-                          scope="row"
-                          onClick={() => props.handlestep(project[p])}
-                        >
-                          {project[p].project_name}
-                        </StyledTableCell>
-                        <StyledTableCell
-                          align="center"
-                          onClick={() => props.handlestep(project[p])}
-                        >
-                          {project[p].lang}
-                        </StyledTableCell>
-                        <StyledTableCell
-                          align="center"
-                          onClick={() => props.handlestep(project[p])}
-                        >
-                          {project[p].lib}
-                        </StyledTableCell>
-                        <StyledTableCell
-                          align="center"
-                          onClick={() => props.handlestep(project[p])}
-                        >
-                          {project[p].data_dir}
-                        </StyledTableCell>
-                        <StyledTableCell
-                          align="center"
-                          onClick={() => props.handlestep(project[p])}
-                        >
-                          {project[p].task}
-                        </StyledTableCell>
-                        <StyledTableCell
-                          align="center"
-                          onClick={() => props.handlestep(project[p])}
-                        >
-                          {project[p].output_file_name}
-                        </StyledTableCell>
-                        <StyledTableCell
-                          align="center"
-                          onClick={() => props.handlestep(project[p])}
-                        >
-                          {project[p].project_description}
-                        </StyledTableCell>
-                        <StyledTableCell
-                          align="center"
-                          onClick={() => setCurrentProject(project[p])}
-                        >
-                          <IconButton
-                            aria-controls="customized-menu"
-                            aria-label="options"
-                            aria-haspopup="true"
-                            onClick={handleActionsOpen}
-                          >
-                            <MoreVertIcon />
-                          </IconButton>
-                          <Menu
-                            id="customized-menu"
-                            anchorEl={anchorEl}
-                            elevation={1}
-                            keepMounted
-                            open={Boolean(anchorEl)}
-                            onClose={handleActionsClose}
-                          >
-                            <MenuItem
-                              onClick={() => handleEdit(currentProject)}
+          {/* SHARED PROJECTS SECTION */}
+
+          {props.projects.filter((project) =>
+            Object.keys(project)[0].startsWith("shared_")
+          ).length > 0 ? (
+            <>
+              <div style={{ marginTop: "80px" }}>
+                <Typography
+                  className={classes.title}
+                  variant="h6"
+                  id="tableTitle"
+                  component="div"
+                  style={{ marginBottom: "8px" }}
+                >
+                  Shared with me
+                </Typography>
+              </div>
+
+              <TableContainer component={Paper}>
+                <Table className={classes.table} aria-label="customized table">
+                  <TableHead>
+                    <TableRow>
+                      <StyledTableCell
+                        width="4%"
+                        align="center"
+                      ></StyledTableCell>
+                      <StyledTableCell width="10%" align="center">
+                        Name
+                      </StyledTableCell>
+                      <StyledTableCell width="12%" align="center">
+                        Language
+                      </StyledTableCell>
+                      <StyledTableCell width="12%" align="center">
+                        Library
+                      </StyledTableCell>
+                      <StyledTableCell width="12%" align="center">
+                        Data Directory
+                      </StyledTableCell>
+                      <StyledTableCell width="12%" align="center">
+                        Task
+                      </StyledTableCell>
+                      <StyledTableCell width="12%" align="center">
+                        Output File Name
+                      </StyledTableCell>
+                      <StyledTableCell width="16%" align="center">
+                        Project Description
+                      </StyledTableCell>
+                      <StyledTableCell width="12%" align="center">
+                        Actions
+                      </StyledTableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {props.projects
+                      .filter((project) =>
+                        Object.keys(project)[0].startsWith("shared_")
+                      )
+                      .map((project, index) => (
+                        <Fragment key={index}>
+                          {Object.keys(project).map((p) => (
+                            <TableRow
+                              hover
+                              className={classes.hover}
+                              key={project[p].project_id}
                             >
-                              <EditIcon /> &nbsp; Edit
-                            </MenuItem>
-                            <MenuItem
-                              onClick={() => handleDelete(currentProject)}
-                            >
-                              <DeleteIcon /> &nbsp; Delete
-                            </MenuItem>
-                          </Menu>
-                        </StyledTableCell>
-                      </TableRow>
-                    ))}
-                  </Fragment>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+                              <StyledTableCell
+                                align="center"
+                                onClick={() => props.handlestep(project[p])}
+                              ></StyledTableCell>
+                              <StyledTableCell
+                                align="center"
+                                component="th"
+                                scope="row"
+                              >
+                                {project[p].project_name}
+                              </StyledTableCell>
+                              <StyledTableCell
+                                align="center"
+                                onClick={() => props.handlestep(project[p])}
+                              >
+                                {project[p].lang}
+                              </StyledTableCell>
+                              <StyledTableCell
+                                align="center"
+                                onClick={() => props.handlestep(project[p])}
+                              >
+                                {project[p].lib}
+                              </StyledTableCell>
+                              <StyledTableCell
+                                align="center"
+                                onClick={() => props.handlestep(project[p])}
+                              >
+                                {project[p].data_dir}
+                              </StyledTableCell>
+                              <StyledTableCell
+                                align="center"
+                                onClick={() => props.handlestep(project[p])}
+                              >
+                                {project[p].task}
+                              </StyledTableCell>
+                              <StyledTableCell
+                                align="center"
+                                onClick={() => props.handlestep(project[p])}
+                              >
+                                {project[p].output_file_name}
+                              </StyledTableCell>
+                              <StyledTableCell
+                                align="center"
+                                onClick={() => props.handlestep(project[p])}
+                              >
+                                {project[p].project_description.length <= 40
+                                  ? project[p].project_description
+                                  : project[p].project_description.slice(
+                                      0,
+                                      40
+                                    ) + "..."}
+                              </StyledTableCell>
+                              <StyledTableCell align="center">
+                                <IconButton
+                                  aria-controls="customized-menu2"
+                                  aria-label="options"
+                                  aria-haspopup="true"
+                                  onClick={(e) =>
+                                    handleShareActionsOpen(project[p], e)
+                                  }
+                                >
+                                  <MoreVertIcon />
+                                </IconButton>
+                                <Menu
+                                  id="customized-menu2"
+                                  anchorEl={anchorElShared}
+                                  elevation={1}
+                                  keepMounted
+                                  open={Boolean(anchorElShared)}
+                                  onClose={handleShareActionsClose}
+                                >
+                                  <MenuItem onClick={handleEdit}>
+                                    <EditIcon /> &nbsp; Edit
+                                  </MenuItem>
+                                  {/* <MenuItem onClick={handleClone}>
+                                    <FileCopyIcon /> &nbsp; Clone
+                                  </MenuItem> */}
+                                  <MenuItem onClick={handleDelete}>
+                                    <DeleteIcon /> &nbsp; Delete
+                                  </MenuItem>
+                                  {/* <MenuItem
+                                    onClick={() => {
+                                      handleShare();
+                                    }}
+                                  >
+                                    <ShareIcon /> &nbsp; Share
+                                  </MenuItem> */}
+                                </Menu>
+                              </StyledTableCell>
+                            </TableRow>
+                          ))}
+                        </Fragment>
+                      ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </>
+          ) : (
+            ""
+          )}
         </>
       )}
     </>
