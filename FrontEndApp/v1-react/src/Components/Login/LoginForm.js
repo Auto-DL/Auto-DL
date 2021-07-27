@@ -134,10 +134,12 @@ function LoginForm() {
       username: values.username,
       password: values.loginPassword,
     };
+
     // vallidation
     if (values.username !== "" && values.loginPassword !== "") {
       const res = await LoginService.login(data);
       if (res.status === 200) {
+        
         setalert({ ...values, msg: res.data.message, severity: "success" });
 
         localStorage.setItem("username", JSON.stringify(res.data.user));
@@ -154,6 +156,7 @@ function LoginForm() {
         severity: "warning",
       });
     }
+
     setOpen(true);
   };
 
@@ -179,7 +182,7 @@ function LoginForm() {
       values.registerPassword === values.confirmpassword
     ) {
       const res = await LoginService.register(data);
-      if (res.status === 200) {
+      if (res && res.status === 200) {
         setalert({ ...values, msg: res.data.message, severity: "success" });
 
         localStorage.setItem("username", JSON.stringify(res.data.username));
@@ -237,6 +240,7 @@ function LoginForm() {
                     autoComplete="Username"
                     autoFocus
                     onChange={handleChange("username")}
+                    data-testid={"loginUsername"}
                   />
 
                   <FormControl fullWidth margin="normal" variant="outlined">
@@ -247,6 +251,7 @@ function LoginForm() {
                       type={values.showLoginPassword ? "text" : "password"}
                       value={values.loginPassword}
                       onChange={handleChange("loginPassword")}
+                      data-testid={"loginPassword"}
                       endAdornment={
                         <InputAdornment position="end">
                           <IconButton
@@ -277,6 +282,7 @@ function LoginForm() {
                     fullWidth
                     variant="contained"
                     color="primary"
+                    data-testid={"loginButton"}
                     onClick={login}
                   >
                     LOGIN
@@ -404,8 +410,8 @@ function LoginForm() {
         <Grid item lg={4} md={4} sm={1} xs={1}></Grid>
       </Grid>
 
-      <Snackbar open={open} autoHideDuration={6000} onClose={handleCloseAlert}>
-        <Alert onClose={handleCloseAlert} severity={alert.severity}>
+      <Snackbar open={open} data-testid={"warning"} autoHideDuration={60000} onClose={handleCloseAlert}>
+        <Alert onClose={handleCloseAlert}  severity={alert.severity}>
           {alert.msg}
         </Alert>
       </Snackbar>

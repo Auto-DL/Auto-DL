@@ -371,7 +371,6 @@ def clone_project(request):
         status, success, message = 500, False, "Project could not be cloned"
     return JsonResponse({"success": success, "message": message}, status=status)
 
-
 @api_view(["POST"])
 @is_authenticated
 def save_layers(request):
