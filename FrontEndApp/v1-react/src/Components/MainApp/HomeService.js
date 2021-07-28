@@ -204,6 +204,33 @@ class HomeService {
       return error.response;
     }
   }
+  async share_project(token, data) {
+    try {
+      const response = await axios.post(`v1/project/share/`, data, {
+        headers: {
+          "Content-Type": "application/json",
+          token: `${token}`,
+        },
+      });
+      return response;
+    } catch (error) {
+      return error.response;
+    }
+  }
+
+  async get_all_users(token) {
+    try {
+      const response = await axios.get(`v1/users/all/`, {
+        headers: {
+          "Content-Type": "application/json",
+          token: `${token}`,
+        },
+      });
+      return response;
+    } catch (error) {
+      return error.response;
+    }
+  }
 }
 
 export default new HomeService();
