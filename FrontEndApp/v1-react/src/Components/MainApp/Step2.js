@@ -2143,10 +2143,10 @@ function Step2() {
 
     fetchDataHyper();
 
-    const {validIndices}=validate_layers(undefined,undefined,components);
-    setValidLayerIndices(validIndices);
+    // const {validIndices}=validate_layers(undefined,undefined,components);
+    // setValidLayerIndices(validIndices);
 
-  }, [project_details.project_id, token, username,components]);
+  }, [project_details.project_id, token, username]);
 
   const handleDragEnd = ({ destination, source }) => {
     console.log("components before",components);
