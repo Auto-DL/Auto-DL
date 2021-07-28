@@ -2142,7 +2142,11 @@ function Step2() {
     }
 
     fetchDataHyper();
-  }, [project_details.project_id, token, username]);
+
+    const {validIndices}=validate_layers(undefined,undefined,components);
+    setValidLayerIndices(validIndices);
+
+  }, [project_details.project_id, token, username,components]);
 
   const handleDragEnd = ({ destination, source }) => {
     console.log("components before",components);

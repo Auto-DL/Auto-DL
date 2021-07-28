@@ -18,12 +18,54 @@ export const validate_layers = (source, destination, components) => {
   let validIndices=[];
 
   console.log("In layer validation components",components);
+
+  const suggestLayers = (curr_layer) =>{
+
+    let i=0;
+    const indices=[];
+    for(const layer in keras_layers)
+    { 
+      if( keras_layers[curr_layer].dimensions.returned_dim === keras_layers[layer].dimensions.expected_dim
+         || keras_layers[layer].dimensions.expected_dim==="all")
+      {
+        // console.log("layers",layer);
+        indices.push(i);
+      }
+      i++;
+    }
+
+    return indices;
+
+  }
+
+  if(source ===undefined && destination===undefined)
+  {
+    console.log("in undefined blocck components are",components);
+    if(components.length>0)
+    {
+      const curr_layer=components[components.length-1].name;
+      validIndices=suggestLayers(curr_layer);
+    }
+    else {
+      validIndices=[0,1,2,3,4,5,6,7,8,9];
+    }
+
+    const validAndInvalid={
+      invalidIndices : errors,
+      validIndices : validIndices
   
+    }
+    return validAndInvalid; 
+  }
 
   const src_dic = source.droppableId;
   const des_dic = destination.droppableId;
   const des_idx = destination.index;
   const src_idx = source.index;
+
+  
+
+  
 
   console.log("Source deop and destination drop",src_dic,des_dic);
   console.log("In layer validation des_idx",des_idx);
@@ -177,24 +219,7 @@ export const validate_layers = (source, destination, components) => {
     }
   }
 
-  const suggestLayers = (curr_layer) =>{
-
-    let i=0;
-    const indices=[];
-    for(const layer in keras_layers)
-    { 
-      if( keras_layers[curr_layer].dimensions.returned_dim === keras_layers[layer].dimensions.expected_dim
-         || keras_layers[layer].dimensions.expected_dim==="all")
-      {
-        // console.log("layers",layer);
-        indices.push(i);
-      }
-      i++;
-    }
-
-    return indices;
-
-  }
+  
 
 
 
