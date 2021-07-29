@@ -1,5 +1,4 @@
-from django.contrib import admin
-from django.urls import path, include
+from django.urls import path
 from . import views
 
 urlpatterns = [
@@ -9,4 +8,5 @@ urlpatterns = [
     path("otp/verify/", views.verify_otp, name="verify-otp"),
     path("password/forgot/", views.forgot_password, name="forgot-password"),
     path("password/update/", views.update_password, name="update-password"),
+    path("email/verify/", views.verify_email, name="verify-email"),
 ]

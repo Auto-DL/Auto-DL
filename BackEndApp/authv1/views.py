@@ -1,13 +1,15 @@
+import bcrypt
+from BackEndApp.settings import EMAIL_HOST_USER
 from django.http import JsonResponse
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 import json
 import bcrypt
-from BackEndApp.settings import EMAIL_HOST_USER
+
 from django.core.mail import send_mail
-from authv1.auth import OTP
-from authv1.emails import EmailTemplates
-from .models import User, Session
+from .auth import OTP
+from .emails import EmailTemplates
+from .models import Session, User
 from .store import Store
 
 
@@ -109,9 +111,10 @@ def forgot_password(request):
             message = "Invalid Credentials."
             status = 401
 
-        email_verified = user.get("is_verified")
+        email_verified = this_user.get("is_verified")
 
         if email_verified == True:
+
             otp = OTP(this_user)
             generated_otp = otp.create()
 
@@ -135,26 +138,47 @@ def forgot_password(request):
 
 
 @api_view(["POST"])
+def verify_email(request):
+    try:
+        username = request.data.get("username")
+        user = User(username=username, password=None)
+        this_user = user.find()
+
+        otp_obj = OTP(this_user)
+        generated_otp = otp_obj.create()
+        user_email = this_user.get("email")
+        email = EmailTemplates(this_user)
+        subject, msg = email.verify_email(username, generated_otp)
+        send_mail(subject, msg, EMAIL_HOST_USER, [user_email])
+
+        message = "Email sent successfully"
+        status = 200
+
+    except Exception as e:
+        message = "Some error occured! Please try again."
+        status = 500
+
+    return JsonResponse({"message": message}, status=status)
+
+
+@api_view(["POST"])
 def verify_otp(request):
     try:
         username = request.data.get("username")
         received_otp = request.data.get("received_otp")
         user = User(username=username, password=None)
-        user = user.find()
+        this_user = user.find()
 
-        otp = OTP(user)
+        otp = OTP(this_user)
         otp_verified = otp.verify(received_otp)
 
         if otp_verified == True:
 
-            if is_email_validation == False:
-                message = "OTP verification successfull."
-                status = 200
-
-            else:
+            if request.data.get("is_email_validation"):
                 user.update("is_verified", True)
-                message = "Email verification successfull."
-                status = 200
+
+            message = "OTP verification successfull."
+            status = 200
 
         else:
             message = "Incorrect OTP! Please try again."
