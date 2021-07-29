@@ -80,9 +80,11 @@ function LoginForm() {
     email: "",
     first_name: "",
     last_name: "",
-    password: "",
+    loginPassword: "",
+    registerPassword:"",
     confirmpassword: "",
-    showPassword: false,
+    showLoginPassword: false,
+    showRegisterPassword:false,
   });
 
   const [open, setOpen] = React.useState(false);
@@ -103,8 +105,12 @@ function LoginForm() {
     setValues({ ...values, [prop]: event.target.value });
   };
 
-  const handleClickShowPassword = () => {
-    setValues({ ...values, showPassword: !values.showPassword });
+  const handleClickShowLoginPassword = () => {
+    setValues({ ...values, showLoginPassword: !values.showLoginPassword });
+  };
+
+  const handleClickShowRegisterPassword = () => {
+    setValues({ ...values, showRegisterPassword: !values.showRegisterPassword });
   };
 
   const handleMouseDownPassword = (event) => {
@@ -115,15 +121,21 @@ function LoginForm() {
 
   const handleChangetabs = (event, newValue) => {
     setValue(newValue);
+    values.registerPassword = "";
+    values.confirmpassword = "";
+    values.loginPassword = "";
+    values.showRegisterPassword=false;
+    values.showLoginPassword=false;
+
   };
 
   const login = async () => {
     const data = {
       username: values.username,
-      password: values.password,
+      password: values.loginPassword,
     };
     // vallidation
-    if (values.username !== "" && values.password !== "") {
+    if (values.username !== "" && values.loginPassword !== "") {
       const res = await LoginService.login(data);
       if (res.status === 200) {
         setalert({ ...values, msg: res.data.message, severity: "success" });
@@ -151,19 +163,20 @@ function LoginForm() {
       first_name: values.first_name,
       last_name: values.last_name,
       email: values.email,
-      password: values.password,
+      password: values.registerPassword,
     };
-    // vallidation
+
+    // validation
     if (
       values.username &&
       values.username.trim() &&
-      values.password &&
+      values.registerPassword &&
       values.first_name &&
       values.first_name.trim() &&
       values.last_name &&
       values.last_name.trim() &&
       values.email &&
-      values.password === values.confirmpassword
+      values.registerPassword === values.confirmpassword
     ) {
       const res = await LoginService.register(data);
       if (res.status === 200) {
@@ -226,23 +239,23 @@ function LoginForm() {
                     onChange={handleChange("username")}
                   />
 
-                  <FormControl fullWidth margin="normal" variant="filled">
-                    <InputLabel htmlFor="outlined-adornment-password">
+                  <FormControl fullWidth margin="normal" variant="outlined">
+                    <InputLabel htmlFor="outlined-adornment-password" style={{backgroundColor: "white",padding:"0px 5px"}}>
                       Password *
                     </InputLabel>
                     <OutlinedInput
-                      type={values.showPassword ? "text" : "password"}
-                      value={values.password}
-                      onChange={handleChange("password")}
+                      type={values.showLoginPassword ? "text" : "password"}
+                      value={values.loginPassword}
+                      onChange={handleChange("loginPassword")}
                       endAdornment={
                         <InputAdornment position="end">
                           <IconButton
                             aria-label="toggle password visibility"
-                            onClick={handleClickShowPassword}
+                            onClick={handleClickShowLoginPassword}
                             onMouseDown={handleMouseDownPassword}
                             edge="end"
                           >
-                            {values.showPassword ? (
+                            {values.showLoginPassword ? (
                               <Visibility />
                             ) : (
                               <VisibilityOff />
@@ -314,23 +327,23 @@ function LoginForm() {
                     onChange={handleChange("email")}
                   />
 
-                  <FormControl fullWidth margin="normal" variant="filled">
-                    <InputLabel htmlFor="outlined-adornment-password">
+                  <FormControl fullWidth margin="normal" variant="outlined" >
+                    <InputLabel variant="outlined" htmlFor="outlined-adornment-password"  style={{backgroundColor: "white",padding:"0px 5px"}}>
                       Password *
                     </InputLabel>
                     <OutlinedInput
-                      type={values.showPassword ? "text" : "password"}
-                      value={values.password}
-                      onChange={handleChange("password")}
+                      type={values.showRegisterPassword ? "text" : "password"}
+                      value={values.registerPassword}
+                      onChange={handleChange("registerPassword")}
                       endAdornment={
                         <InputAdornment position="end">
                           <IconButton
                             aria-label="toggle password visibility"
-                            onClick={handleClickShowPassword}
+                            onClick={handleClickShowRegisterPassword}
                             onMouseDown={handleMouseDownPassword}
                             edge="end"
                           >
-                            {values.showPassword ? (
+                            {values.showRegisterPassword ? (
                               <Visibility />
                             ) : (
                               <VisibilityOff />
@@ -341,23 +354,23 @@ function LoginForm() {
                     />
                   </FormControl>
 
-                  <FormControl fullWidth margin="normal" variant="filled">
-                    <InputLabel htmlFor="outlined-adornment-password">
+                  <FormControl fullWidth margin="normal" variant="outlined">
+                    <InputLabel htmlFor="outlined-adornment-password"  style={{backgroundColor:"white",padding:"0px 5px"}}>
                       Confirm Password *
                     </InputLabel>
                     <OutlinedInput
-                      type={values.showPassword ? "text" : "password"}
+                      type={values.showRegisterPassword ? "text" : "password"}
                       value={values.confirmpassword}
                       onChange={handleChange("confirmpassword")}
                       endAdornment={
                         <InputAdornment position="end">
                           <IconButton
                             aria-label="toggle password visibility"
-                            onClick={handleClickShowPassword}
+                            onClick={handleClickShowRegisterPassword}
                             onMouseDown={handleMouseDownPassword}
                             edge="end"
                           >
-                            {values.showPassword ? (
+                            {values.showRegisterPassword ? (
                               <Visibility />
                             ) : (
                               <VisibilityOff />
