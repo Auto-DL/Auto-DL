@@ -6,120 +6,120 @@ import { makeStyles, withStyles } from "@material-ui/core/styles";
 import CloseIcon from "@material-ui/icons/Close";
 
 export const styles = (theme) => ({
-    root: {
-        margin: 0,
-        padding: theme.spacing(2),
-    },
-    closeButton: {
-        position: "absolute",
-        right: theme.spacing(1),
-        top: theme.spacing(1),
-        color: theme.palette.grey[500],
-    },
+  root: {
+    margin: 0,
+    padding: theme.spacing(2),
+  },
+  closeButton: {
+    position: "absolute",
+    right: theme.spacing(1),
+    top: theme.spacing(1),
+    color: theme.palette.grey[500],
+  },
 });
 
 export const DialogTitle = withStyles(styles)((props) => {
-    const { children, classes, onClose, ...other } = props;
-    return (
-        <MuiDialogTitle disableTypography className={classes.root} {...other}>
-            <Typography component={"span"} variant="h6">
-                {children}
-            </Typography>
-            {onClose ? (
-                <IconButton
-                    aria-label="close"
-                    className={classes.closeButton}
-                    onClick={onClose}
-                >
-                    <CloseIcon />
-                </IconButton>
-            ) : null}
-        </MuiDialogTitle>
-    );
+  const { children, classes, onClose, ...other } = props;
+  return (
+    <MuiDialogTitle disableTypography className={classes.root} {...other}>
+      <Typography component={"span"} variant="h6">
+        {children}
+      </Typography>
+      {onClose ? (
+        <IconButton
+          aria-label="close"
+          className={classes.closeButton}
+          onClick={onClose}
+        >
+          <CloseIcon />
+        </IconButton>
+      ) : null}
+    </MuiDialogTitle>
+  );
 });
 
 export const DialogContent = withStyles((theme) => ({
-    root: {
-        padding: theme.spacing(2),
-    },
+  root: {
+    padding: theme.spacing(2),
+  },
 }))(MuiDialogContent);
 
 export const DialogActions = withStyles((theme) => ({
-    root: {
-        margin: 0,
-        padding: theme.spacing(1),
-    },
+  root: {
+    margin: 0,
+    padding: theme.spacing(1),
+  },
 }))(MuiDialogActions);
 
 export const useStyles = makeStyles((theme) => ({
-    App: {
-        marginLeft: "5.5%",
-        marginRight: "10px",
-    },
-    column1: {
-        padding: "0px",
-    },
-    column2: {
-        padding: "0px",
-    },
-    column3: {
-        width: "95%",
-        padding: "0px",
-        overflow: "hidden",
-    },
+  App: {
+    marginLeft: "5.5%",
+    marginRight: "10px",
+  },
+  column1: {
+    padding: "0px",
+  },
+  column2: {
+    padding: "0px",
+  },
+  column3: {
+    width: "95%",
+    padding: "0px",
+    overflow: "hidden",
+  },
 
-    grid1: {},
-    grid2: {},
-    grid3: {},
-    droppableColsource: {
-        width: "95%",
-        backgroundColor: "#c5e4ed",
-        padding: "10px 10px 0 10px",
-        borderRadius: "7px",
-        display: "flex",
-        flexDirection: "column",
-        minHeight: "500px",
-        maxHeight: "500px",
-        overflowY: "auto",
-        border: "1px solid black",
-    },
-    droppableColtarget: {
-        width: "95%",
-        backgroundColor: "#c5e4ed",
-        padding: "10px 10px 10px 10px",
-        borderRadius: "7px",
-        display: "flex",
-        flexDirection: "column",
-        minHeight: "500px",
-        maxHeight: "500px",
-        maxWidth: "100%",
-        overflowY: "auto",
-        border: "1px solid black",
-    },
-    body3: {
-        width: "100%",
-        backgroundColor: "#D8D8D8",
-        padding: "10px",
-        borderRadius: "7px",
-        display: "flex",
-        flexDirection: "column",
-        minHeight: "500px",
-        maxHeight: "500px",
-        overflowY: "auto",
-    },
-    item: {
-        textAlign: "center",
-        marginBottom: "10px",
+  grid1: {},
+  grid2: {},
+  grid3: {},
+  droppableColsource: {
+    width: "95%",
+    backgroundColor: "#c5e4ed",
+    padding: "10px 10px 0 10px",
+    borderRadius: "7px",
+    display: "flex",
+    flexDirection: "column",
+    minHeight: "500px",
+    maxHeight: "500px",
+    overflowY: "auto",
+    border: "1px solid black",
+  },
+  droppableColtarget: {
+    width: "95%",
+    backgroundColor: "#c5e4ed",
+    padding: "10px 10px 10px 10px",
+    borderRadius: "7px",
+    display: "flex",
+    flexDirection: "column",
+    minHeight: "500px",
+    maxHeight: "500px",
+    maxWidth: "100%",
+    overflowY: "auto",
+    border: "1px solid black",
+  },
+  body3: {
+    width: "100%",
+    backgroundColor: "#D8D8D8",
+    padding: "10px",
+    borderRadius: "7px",
+    display: "flex",
+    flexDirection: "column",
+    minHeight: "500px",
+    maxHeight: "500px",
+    overflowY: "auto",
+  },
+  item: {
+    textAlign: "center",
+    marginBottom: "10px",
 
-        backgroundColor: "#adbce6",
-        color: "black",
-        border: "1px solid black",
-        padding: "5px",
-        borderRadius: "7px",
-    },
-    item1selected: {
-        textAlign: "center",
-        marginBottom: "10px",
+    backgroundColor: "#adbce6",
+    color: "black",
+    border: "1px solid black",
+    padding: "5px",
+    borderRadius: "7px",
+  },
+  item1selected: {
+    textAlign: "center",
+    marginBottom: "10px",
 
         backgroundColor: "rgb(115,194,251)",
         color: "black",
@@ -150,6 +150,13 @@ export const useStyles = makeStyles((theme) => ({
         maxHeight:"30px",
         minHeight:"30px",
       },
+      inputFieldDesc:{
+        fontSize:"80%",
+        marginTop:"1px",
+        fontWeight:"100",
+        color:"#a2a4a8",
+        marginLeft:"5%"
+    },
     styleclose: {
         float: "right",
         height: "100%",
@@ -179,6 +186,7 @@ export const useStyles = makeStyles((theme) => ({
         borderRadius: "7px",
         position: "relative",
         minHeight: "80px",
+        overflow:"auto"
     },
     title: {
         float: "left",
@@ -196,13 +204,29 @@ export const useStyles = makeStyles((theme) => ({
         minHeight: "70px",
         transform: "translateY(15%)",
     },
-    infoicon: {
+    infoiconLayer: {
         float: "right",
-        width: "10%",
+        // width: "10%",
         textAlign: "center",
         transform: "translateY(50%)",
+        // marginTop:"2%",
+        marginLeft:"1%",
+        
         cursor: "pointer",
     },
+    infoiconPre: {
+        float: "right",
+        // width: "10%",
+        textAlign: "center",
+        // transform: "translateY(50%)",
+        marginTop:"1%",
+        cursor: "pointer",
+    },
+    infoiconHyper:{
+      marginTop:"1%",
+      cursor:"pointer"
+    },
+
     delete: {
         width: "97%",
         backgroundColor: "#D8D8D8",
@@ -214,8 +238,10 @@ export const useStyles = makeStyles((theme) => ({
         textAlign: "center",
     },
     sel: {
-        width: "200px",
-        margin: "20px",
+        // width: "200px",
+        // margin: "20px",
+       width:"20%",
+       margin:"1%",
     },
     _hyper: {
         width: "400px",
@@ -224,6 +250,7 @@ export const useStyles = makeStyles((theme) => ({
     },
     save_plot: {
         marginTop: "25px",
+        
     },
     action_btn: {
         float: "right",

@@ -1,18 +1,35 @@
-import { Fragment } from "react";
+import { Fragment ,useState} from "react";
 import { Grid, TextField, FormControl, Select } from "@material-ui/core";
 import { useTheme } from "@material-ui/core/styles";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { useStyles } from "./styles.js";
 import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
-import FileCopySharpIcon from '@material-ui/icons/FileCopySharp';
+import FileCopySharpIcon from "@material-ui/icons/FileCopySharp";
 import Button from "@material-ui/core/Button";
 
-const LayerTab = ({ TabPanel, value, handleDragEnd, jsondata, components, selected_layer, selected_layer_type, showdetails, save_value ,handleCloneLayer}) => {
+const LayerTab = ({
+  TabPanel,
+  value,
+  handleDragEnd,
+  jsondata,
+  components,
+  selected_layer,
+  selected_layer_type,
+  showdetails,
+  save_value,
+  handleCloneLayer,
+}) => {
   const theme = useTheme();
   const classes = useStyles();
+  const [selected_InputFieldDesc,setselected_InputFieldDesc]=useState("");
+
+  const handleDescriptionLayer =(index)=>{
+    setselected_InputFieldDesc(index);
+    // console.log(index);
+  }
 
   return (
-      <TabPanel value={value} index={1} dir={theme.direction}>
+    <TabPanel value={value} index={1} dir={theme.direction}>
       <DragDropContext onDragEnd={handleDragEnd}>
         <Grid container>
           <Grid item lg={3} md={3} sm={4} xs={4} className={classes.grid1}>
@@ -90,12 +107,12 @@ const LayerTab = ({ TabPanel, value, handleDragEnd, jsondata, components, select
                                     onClick={() => showdetails(el)}
                                   >
                                     {el.name}
-                                    <Button 
-                                      size="small" 
-                                      color="primary" 
-                                      onClick={() =>handleCloneLayer(el) }
+                                    <Button
+                                      size="small"
+                                      color="primary"
+                                      onClick={() => handleCloneLayer(el)}
                                       className={classes.cloneBtn}
-                                      >
+                                    >
                                       <FileCopySharpIcon fontSize="small" />
                                     </Button>
                                   </div>
@@ -139,8 +156,7 @@ const LayerTab = ({ TabPanel, value, handleDragEnd, jsondata, components, select
                                 {" "}
                                 {key}
                                 &nbsp;{" "}
-                                {selected_layer_type[key]["Required"] ===
-                                1 ? (
+                                {selected_layer_type[key]["Required"] === 1 ? (
                                   <span>*</span>
                                 ) : (
                                   <span></span>
@@ -148,14 +164,21 @@ const LayerTab = ({ TabPanel, value, handleDragEnd, jsondata, components, select
                               </div>
 
                               <div
-                                className={classes.infoicon}
+                                className={classes.infoiconLayer}
                                 title={
-                                  components[selected_layer][key][
-                                    "Description"
-                                  ]
+                                  components[selected_layer][key]["Description"]
                                 }
                               >
-                                <HelpOutlineIcon />
+                               <HelpOutlineIcon
+                                  fontSize="small" 
+                                  cl
+                                  onClick={() => {
+                                    handleDescriptionLayer(key);
+                                    setTimeout(()=> setselected_InputFieldDesc(""),3000);
+                                  }}
+
+
+                                 />
                               </div>
                               {components[selected_layer][key]["Datatype"] ===
                               "select" ? (
@@ -168,9 +191,7 @@ const LayerTab = ({ TabPanel, value, handleDragEnd, jsondata, components, select
                                     <Select
                                       native
                                       value={
-                                        components[selected_layer][key][
-                                          "value"
-                                        ]
+                                        components[selected_layer][key]["value"]
                                           ? components[selected_layer][key][
                                               "value"
                                             ]
@@ -188,6 +209,15 @@ const LayerTab = ({ TabPanel, value, handleDragEnd, jsondata, components, select
                                         </option>
                                       ))}{" "}
                                     </Select>
+                                    {
+                                          selected_InputFieldDesc===key?
+                                          <p style={{fontSize:"80%",marginTop:"1px",fontWeight:"100",color:"#a2a4a8",marginLeft:"5%"}}>
+                                          {components[selected_layer][key]["Description"]}
+                                          </p>
+                                          :<p style={{fontSize:"80%",marginTop:"1px",fontWeight:"100",color:"#a2a4a8",marginLeft:"5%"}}>
+                                            Example-{components[selected_layer][key]["Example"]}
+                                          </p>
+                                        }
                                   </FormControl>
                                 </div>
                               ) : (
@@ -210,7 +240,15 @@ const LayerTab = ({ TabPanel, value, handleDragEnd, jsondata, components, select
                                     }
                                     variant="outlined"
                                     onChange={save_value(key)}
-                                    helperText={`Example - ${components[selected_layer][key]["Example"]}`}
+                                    helperText={
+                                      // `Example - ${components[selected_layer][key]["Example"]}`
+                                      `${
+                                          selected_InputFieldDesc===key ?
+                                          components[selected_layer][key]["Description"]
+                                          :`Example-${components[selected_layer][key]["Example"]}`
+                                        }`
+
+                                      }
                                   />
                                 </div>
                               )}
@@ -242,6 +280,6 @@ const LayerTab = ({ TabPanel, value, handleDragEnd, jsondata, components, select
       </DragDropContext>
     </TabPanel>
   );
-}
- 
+};
+
 export default LayerTab;
