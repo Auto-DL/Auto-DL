@@ -86,6 +86,14 @@ function Step2() {
   const [openModal, setOpenModal] = useState(false);
   const [generated_file_path, setgenerated_file_path] = useState("");
 
+  const getProjectId = () => {
+    const project_id =
+      project_details.username !== username
+        ? "shared_" + project_details.project_id
+        : project_details.project_id;
+    return project_id;
+  };
+
   const handleCloseModal = () => {
     setOpenModal(false);
   };
@@ -113,7 +121,7 @@ function Step2() {
   async function saveData() {
     const data = {
       username: username,
-      project_id: project_details.project_id,
+      project_id: getProjectId(),
       layer_json: genrate_layers(),
       component_array: components,
     };
@@ -129,7 +137,7 @@ function Step2() {
 
     const data = {
       username: username,
-      project_id: project_details.project_id,
+      project_id: getProjectId(),
       preprocessing_params: all_prepro_dub,
     };
 
@@ -150,7 +158,7 @@ function Step2() {
 
     const data = {
       username: username,
-      project_id: project_details.project_id,
+      project_id: getProjectId(),
       hyperparams: hyper_data,
     };
     const res = await HomeService.save_hyperparams(token, data);
@@ -2092,7 +2100,7 @@ function Step2() {
     async function fetchData() {
       const data = {
         username: username,
-        project_id: project_details.project_id,
+        project_id: getProjectId(),
       };
 
       const res = await HomeService.get_layers(token, data);
@@ -2108,7 +2116,7 @@ function Step2() {
     async function fetchDataPre() {
       const data = {
         username: username,
-        project_id: project_details.project_id,
+        project_id: getProjectId(),
       };
 
       const res = await HomeService.get_pre(token, data);
@@ -2129,7 +2137,7 @@ function Step2() {
     async function fetchDataHyper() {
       const data = {
         username: username,
-        project_id: project_details.project_id,
+        project_id: getProjectId(),
       };
 
       const res = await HomeService.get_hyperparams(token, data);
@@ -2142,11 +2150,7 @@ function Step2() {
     }
 
     fetchDataHyper();
-
-    // const {validIndices}=validate_layers(undefined,undefined,components);
-    // setValidLayerIndices(validIndices);
-
-  }, [project_details.project_id, token, username]);
+  }, [getProjectId(), token, username]);
 
   const handleDragEnd = ({ destination, source }) => {
     console.log("components before",components);
@@ -2554,9 +2558,10 @@ function Step2() {
       const hyper_data = generate_hyper();
       const layers_data = genrate_layers();
       var _data = Object.assign({}, hyper_data, layers_data);
+
       const data = {
         username: username,
-        project_id: project_details.project_id,
+        project_id: getProjectId(),
         training_params: _data,
       };
       const res = await HomeService.generate_code(token, data);
@@ -2581,7 +2586,7 @@ function Step2() {
   const download_code = async () => {
     const data = {
       username: username,
-      project_id: project_details.project_id,
+      project_id: getProjectId(),
     };
     const res = await HomeService.download_code(token, data);
     if (res.status === 200) {
@@ -2597,7 +2602,7 @@ function Step2() {
     var _data = Object.assign({}, hyper_data, layers_data);
     const data = {
       username: username,
-      project_id: project_details.project_id,
+      project_id: getProjectId(),
       training_params: _data,
     };
     const res = await HomeService.train_model(token, data);
