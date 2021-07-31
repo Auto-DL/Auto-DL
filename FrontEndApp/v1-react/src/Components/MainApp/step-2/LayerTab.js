@@ -6,6 +6,9 @@ import { useStyles } from "./styles.js";
 import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
 import FileCopySharpIcon from "@material-ui/icons/FileCopySharp";
 import Button from "@material-ui/core/Button";
+import WarningIcon from '@material-ui/icons/Warning';
+import CheckCircleIcon from '@material-ui/icons/CheckCircle';
+
 
 const LayerTab = ({
   TabPanel,
@@ -24,11 +27,11 @@ const LayerTab = ({
   const theme = useTheme();
   const classes = useStyles();
   const [selected_InputFieldDesc,setselected_InputFieldDesc]=useState("");
+  const [selectedWarnLayer,setSelectedWarnLayer]=useState("");
+  const [suggestDesc,setSuggestDesc]=useState("");
 
-  const handleDescriptionLayer =(index)=>{
-    setselected_InputFieldDesc(index);
-    // console.log(index);
-  }
+
+
 
   return (
     <TabPanel value={value} index={1} dir={theme.direction}>
@@ -52,12 +55,33 @@ const LayerTab = ({
                             {(provided, snapshot) => {
                               return (
                                 <div
-                                  className={validLayerIndices.includes(index)? classes.itemValid:classes.item}
+                                className={classes.item}
                                   ref={provided.innerRef}
                                   {...provided.draggableProps}
                                   {...provided.dragHandleProps}
                                 >
                                   {el}
+                                  {validLayerIndices.includes(index)
+                                   && 
+                                   <Button
+                                      size="small"
+                                      color="primary"
+                                      onClick={() => {
+                                        setSuggestDesc(index);
+                                        setTimeout(()=>setSuggestDesc(""),3000);
+                                        }}
+                                      className={classes.cloneBtn}
+                                    >
+                                      <CheckCircleIcon fontSize="small" />
+                                    </Button>
+
+                                  }
+                                  {suggestDesc===index &&
+                                    <div style={{fontSize:"60%",marginTop:"1px",fontWeight:"100",color:"#a2a4a8",textAlign:"left",color:"black"}}>
+                                      Tip : Valid layer to be added.
+                                    </div>
+                                  }
+
                                 </div>
                               );
                             }}
@@ -101,6 +125,7 @@ const LayerTab = ({
                                   {...provided.dragHandleProps}
                                 >
                                   <div
+                                  
                                     className={
                                       // selected_layer ===
                                       // el.id.charAt(el.id.length - 1)
@@ -113,6 +138,7 @@ const LayerTab = ({
                                     }
                                     onClick={() => showdetails(el)}
                                   >
+
                                     {el.name}
                                     <Button
                                       size="small"
@@ -122,7 +148,29 @@ const LayerTab = ({
                                     >
                                       <FileCopySharpIcon fontSize="small" />
                                     </Button>
+                                    {invalidLayerIndices.has(index) &&
+                                     
+                                      <Button
+                                        size="small"
+                                        color="primary"
+                                        onClick={() => {
+                                          setSelectedWarnLayer(index);
+                                          setTimeout(()=>setSelectedWarnLayer(""),3000)
+                                          }}
+                                        className={classes.cloneBtn}
+                                      >
+                                        <WarningIcon  fontSize="small" />
+                                      </Button>
+                                    }
+                                    {
+                                      selectedWarnLayer===index &&
+                                  <div style={{fontSize:"60%",marginTop:"1px",fontWeight:"100",color:"#a2a4a8",textAlign:"left",color:"black"}}>
+                                    Warning : highlited layer is wrongly placed 
                                   </div>
+                                  }
+                                  </div>
+                                  
+                                    
                                 </div>
                               );
                             }}
@@ -178,9 +226,8 @@ const LayerTab = ({
                               >
                                <HelpOutlineIcon
                                   fontSize="small" 
-                                  cl
                                   onClick={() => {
-                                    handleDescriptionLayer(key);
+                                    setselected_InputFieldDesc(key);
                                     setTimeout(()=> setselected_InputFieldDesc(""),3000);
                                   }}
 

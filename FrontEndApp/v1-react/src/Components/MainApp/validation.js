@@ -233,14 +233,12 @@ export const validate_layers = (source, destination, components) => {
       validIndices=[0,1,2,3,4,5,6,7,8,9];
     }
     else{
-      const curr_layer=components[components.length-2].name;
+      let len=components.length;
+      const curr_layer=components[len-1].name;
+      console.log("layer after deleting is ",curr_layer);
       validIndices=suggestLayers(curr_layer);
 
     }
-
-
-
-
 
   }
 

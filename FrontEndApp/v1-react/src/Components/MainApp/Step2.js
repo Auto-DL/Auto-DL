@@ -8,6 +8,7 @@ import {
   Typography,
   Dialog,
   Tooltip,
+
 } from "@material-ui/core";
 import {
   useStyles,
@@ -18,7 +19,7 @@ import {
 import _ from "lodash";
 import PropTypes from "prop-types";
 import fileDownload from "js-file-download";
-import { validate_layers } from "./validation.js";
+import { validate_layers } from "./validation2";
 import HomeService from "./HomeService";
 import PreprocessingTab from "./step-2/PreprocessingTab";
 import LayerTab from "./step-2/LayerTab";
@@ -2153,6 +2154,7 @@ function Step2() {
   }, [getProjectId(), token, username]);
 
   const handleDragEnd = ({ destination, source }) => {
+    let tempArr=_.cloneDeep(components);
     console.log("components before",components);
     if (!destination) {
       return;
@@ -2166,7 +2168,7 @@ function Step2() {
     }
 
     if (destination.droppableId === "source") {
-      console.log("dropping in  source",components);
+      console.log("dropping in  source",tempArr);
       return;
     }
     
@@ -2175,11 +2177,14 @@ function Step2() {
       source.droppableId === "target"
     ) {
       console.log("deleting from target");
-      const element = components[source.index];
+      const element = tempArr[source.index];
       
-      var temp = components.filter((item) => item !== element);
+      // var temp = components.filter((item) => item !== element);
+      var temp = tempArr.filter((item) => item !== element);
+      tempArr=temp;
+      
       // if(temp.length===0)  console.log("deleting last element");
-      setcomponents(temp);
+      // setcomponents(temp);
       setselected_layer(-1);
       setselected_layer_name("");
       setselected_layer_type("");
@@ -2190,25 +2195,29 @@ function Step2() {
       source.droppableId === "target"
     ) {
 
-      const tempArr=_.cloneDeep(components);
-      tempArr.splice(destination.index,0,tempArr.splice(source.index, 1)[0]);
-      const {invalidIndices}=validate_layers(source,destination,tempArr);
+      // const tempArr=_.cloneDeep(components);
+      // tempArr.splice(destination.index,0,tempArr.splice(source.index, 1)[0]);
+      // const {invalidIndices}=validate_layers(source,destination,tempArr);
       
-      if(invalidIndices.length>0) {
-        alert("cannot switch ");
-        return;
-      }
-      components.splice(destination.index,0,components.splice(source.index, 1)[0]);
+      // if(invalidIndices.length>0) {
+      //   alert("cannot switch ");
+      //   return;
+      // }
+
+      // components.splice(destination.index,0,components.splice(source.index, 1)[0]);
+
+      tempArr.splice(destination.index,0,components.splice(source.index, 1)[0]);
+
 
       // console.log("compinents after splice is ",components);
-      for (var i = 0; i < components.length; i++) {
-        components[i]["id"] = components[i]["id"] + i;
+      for (var i = 0; i < tempArr.length; i++) {
+        tempArr[i]["id"] = tempArr[i]["id"] + i;
         if (i === 0) {
           if (
-            !("input_size" in components[i]) ||
-            !("input_shape" in components[i])
+            !("input_size" in tempArr[i]) ||
+            !("input_shape" in tempArr[i])
           ) {
-            components[i]["input_shape"] = {
+            tempArr[i]["input_shape"] = {
               Example: [200, 200, 3],
               Default: "NA",
               Required: 1,
@@ -2219,11 +2228,11 @@ function Step2() {
           }
         } else {
           try {
-            delete components[i]["input_shape"];
+            delete tempArr[i]["input_shape"];
           } catch (err) {}
         }
       }
-      setcomponents(components);
+      // setcomponents(components);
     }
     if (
       destination.droppableId === "target" &&
@@ -2231,15 +2240,15 @@ function Step2() {
     ) {
       console.log("dropping from source to target");
 
-      if(components.length!==0)
-      {
-        if(!(validLayerIndices.includes(source.index)))
-        {
-          console.log("cannot include layer ")
-          return;
-        }
+      // if(components.length!==0)
+      // {
+      //   if(!(validLayerIndices.includes(source.index)))
+      //   {
+      //     console.log("cannot include layer ")
+      //     return;
+      //   }
 
-      }
+      // }
       const list_names_of_source = Object.keys(jsondata);
       
       const temp = jsondata[list_names_of_source[source.index]];
@@ -2257,28 +2266,29 @@ function Step2() {
       // console.log("components before", components);
 
       //puhsing in temporary array 
-      const tempArr=_.cloneDeep(components);
-      tempArr.splice(destination.index,0,dic);
-      const {invalidIndices,validIndices}=validate_layers(source,destination,tempArr);
-      if(invalidIndices.length>0)
-      {
-        alert("cannot plave");
-        return;
-      }
+      // const tempArr=_.cloneDeep(components);
+      // tempArr.splice(destination.index,0,dic);
+      // const {invalidIndices,validIndices}=validate_layers(source,destination,tempArr);
+      // if(invalidIndices.length>0)
+      // {
+      //   alert("cannot plave");
+      //   return;
+      // }
 
-      components.splice(destination.index, 0, dic);
+      // components.splice(destination.index, 0, dic);
+      tempArr.splice(destination.index, 0, dic);
 
       // console.log("components after", components);
 
-      for (i = 0; i < components.length; i++) {
-        components[i]["id"] = components[i]["id"] + i;
+      for (i = 0; i < tempArr.length; i++) {
+        tempArr[i]["id"] = tempArr[i]["id"] + i;
         
         if (i === 0) {
           if (
-            !("input_size" in components[i]) ||
-            !("input_shape" in components[i])
+            !("input_size" in tempArr[i]) ||
+            !("input_shape" in tempArr[i])
           ) {
-            components[i]["input_shape"] = {
+            tempArr[i]["input_shape"] = {
               Example: [200, 200, 3],
               Default: "NA",
               Required: 1,
@@ -2289,28 +2299,46 @@ function Step2() {
           }
         } else {
           try {
-            delete components[i]["input_shape"];
+            delete tempArr[i]["input_shape"];
           } catch (err) {}
         }
       }
 
-      setcomponents(components);
+      // setcomponents(components);
     }
-    console.log("source index is ",source.index)
+    
+    // validate layers part 1
+    // console.log("source index is ",source.index)
+    // if ( destination.droppableId === "delete" && source.droppableId === "target") console.log("components after dekete are ",components);
+    // const validate_res = validate_layers(source, destination, components);
+    // console.log("val res is",validate_res);
+    // let invalidIndices=handleInvalidLayers(validate_res.invalidIndices);
+    // console.log("invalidIndices are in step2",invalidIndices);
+    // setInvalidLayerIndices(invalidIndices);
+    // setValidLayerIndices(validate_res.validIndices);
 
-    const validate_res = validate_layers(source, destination, components);
-    console.log("val res is",validate_res);
-
-    //destructuring the validate_res object 
-    const {invalidIndices,validIndices}=validate_res;
+    
+    const {invalidIndices,validIndices}=validate_layers(source, destination, tempArr);
+    console.log("val res is",invalidIndices,validIndices);
+    setInvalidLayerIndices(invalidIndices);
     setValidLayerIndices(validIndices);
 
-    console.log("after destructuring ",invalidIndices,validIndices);
+    setcomponents(tempArr);
 
-    const arr=handleInvalidLayers(invalidIndices);
-    setInvalidLayerIndices(arr);
-    // console.log("Validate layers returned ",invalidIndices);
-    // console.log("Arr set is ",arr);
+
+
+
+
+    // //destructuring the validate_res object 
+    // const {invalidIndices,validIndices}=validate_res;
+    // setValidLayerIndices(validIndices);
+
+    // console.log("after destructuring ",invalidIndices,validIndices);
+
+    // const arr=handleInvalidLayers(invalidIndices);
+    // setInvalidLayerIndices(arr);
+    // // console.log("Validate layers returned ",invalidIndices);
+    // // console.log("Arr set is ",arr);
     
    
 
@@ -2338,9 +2366,12 @@ function Step2() {
 
   const showdetails = (element) => {
     setselected_layer_type(element);
+    console.log("selected layer is ",selected_layer_type);
 
     var ele = components;
     var index = ele.lastIndexOf(element);
+    console.log("index is ",index);
+
 
     setselected_layer(index);
   };
