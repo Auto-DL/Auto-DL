@@ -158,10 +158,12 @@ LOGGING = {
             "()": "colorlog.ColoredFormatter",
             "format": "%(log_color)s %(asctime)s | %(name)s/%(funcName)s | "
             "%(levelname)s:%(reset)s %(message)s",
+            "datefmt": "%Y-%m-%d %H:%M:%S",
         },
         "file": {
             "format": "%(asctime)s | %(name)s/%(funcName)s | "
-            "%(levelname)s: %(message)s"
+            "%(levelname)s: %(message)s",
+            "datefmt": "%Y-%m-%d %H:%M:%S",
         },
     },
     "filters": {"autoreloadFilter": {"()": AutoreloadLogFilter}},
