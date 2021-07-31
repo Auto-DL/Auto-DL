@@ -23,14 +23,3 @@ describe("Read Projects", () => {
         });
     });
 });
-
-// describe("Create Projects", () => {
-//     test("should create a new project", async () => {
-//         render(<Homeindex />);
-
-//         await waitFor(() => {
-//             let btnElement = screen.getByTestId("project-save-button");
-//             expect(btnElement).toBeInTheDocument();
-//         });
-//     });
-// });
