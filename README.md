@@ -79,7 +79,9 @@ sudo ./scripts/install.sh
             └───dogs
     ```
 
-6.  ```sh
+6. Clone the `sample.env` to create `.env` in both `BackEndApp/` and `FrontEndApp/v1-react/` and configure the necessary environment variables
+
+7.  ```sh
     # run the backend
     # only after all requriements from requirements.txt are installed
     cd BackEndApp
@@ -87,7 +89,7 @@ sudo ./scripts/install.sh
     # you can ignore any migration warnings
     ```
 
-7.  ```sh
+8.  ```sh
     # finally, run the react frontend
     # on a new terminal tab
     cd FrontEndApp/v1-react
