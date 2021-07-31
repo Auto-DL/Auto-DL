@@ -173,7 +173,7 @@ const PreprocessingTab = ({
                                     <TextField
                                       fullWidth
                                       label={key1}
-                                      value={
+                                      defaultValue={
                                         all_prepro? 
                                           // all_prepro[
                                           //     `${all_prepro["dataset-type"]}-${key}-${key1}`
