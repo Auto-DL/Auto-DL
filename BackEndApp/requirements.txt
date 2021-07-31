@@ -1,3 +1,4 @@
+colorlogs==0.1
 Django>=3.0.7
 django-cors-headers==3.5.0
 djangorestframework==3.11.2

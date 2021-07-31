@@ -14,6 +14,8 @@ import os
 from urllib.parse import urlparse
 from corsheaders.defaults import default_headers
 
+from . import logging
+
 FRONTEND_HOST = os.getenv("FRONTEND_HOST", "http://localhost:3000")
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
