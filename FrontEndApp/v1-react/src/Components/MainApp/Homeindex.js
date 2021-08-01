@@ -1,78 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
-import {
-  Grid,
-  CircularProgress,
-  Backdrop,
-  Select,
-  MenuItem,
-  Snackbar,
-  Button,
-  TextField,
-  FormControlLabel,
-  FormLabel,
-  Input,
-  FormGroup,
-  Checkbox,
-  FormHelperText,
-  InputLabel,
-  FormControl,
-  Dialog,
-  Typography,
-  IconButton,
-} from "@material-ui/core";
-import { makeStyles, withStyles, useTheme } from "@material-ui/core/styles";
+import { Grid, CircularProgress, Backdrop, Snackbar } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 import MuiAlert from "@material-ui/lab/Alert";
-import MuiDialogTitle from "@material-ui/core/DialogTitle";
-import MuiDialogContent from "@material-ui/core/DialogContent";
-import MuiDialogActions from "@material-ui/core/DialogActions";
-import CloseIcon from "@material-ui/icons/Close";
 import HomeService from "./HomeService";
-import ProjectTable from "./ProjectTable";
-
-const styles = (theme) => ({
-  root: {
-    margin: 0,
-    padding: theme.spacing(2),
-  },
-  closeButton: {
-    position: "absolute",
-    right: theme.spacing(1),
-    top: theme.spacing(1),
-    color: theme.palette.grey[500],
-  },
-});
-
-const DialogTitle = withStyles(styles)((props) => {
-  const { children, classes, onClose, ...other } = props;
-  return (
-    <MuiDialogTitle disableTypography className={classes.root} {...other}>
-      <Typography variant="h6">{children}</Typography>
-      {onClose ? (
-        <IconButton
-          aria-label="close"
-          className={classes.closeButton}
-          onClick={onClose}
-        >
-          <CloseIcon />
-        </IconButton>
-      ) : null}
-    </MuiDialogTitle>
-  );
-});
-
-const DialogContent = withStyles((theme) => ({
-  root: {
-    padding: theme.spacing(2),
-  },
-}))(MuiDialogContent);
-
-const DialogActions = withStyles((theme) => ({
-  root: {
-    margin: 0,
-    padding: theme.spacing(1),
-  },
-}))(MuiDialogActions);
+import ProjectTable from "./projects/ProjectTable";
+import UpsertProjectModal from "./projects/UpsertProjectModal";
+import CloneProjectModal from "./projects/CloneProjectModal";
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -356,361 +290,35 @@ function Home() {
         <CircularProgress color="inherit" />
       </Backdrop>
 
-      {/* Clone existing Projects */}
+      {/* Clone Existing Projects */}
 
-      <Dialog
-        onClose={handleCloseCloneModal}
-        aria-labelledby="project-cloning-dialog"
-        open={openCloneModal}
-      >
-        {cloneStep === 0 && (
-          <div>
-            <DialogTitle
-              id="project-cloning-dialog"
-              onClose={handleCloseCloneModal}
-            >
-              Clone Project - Step 1
-            </DialogTitle>
-            <DialogContent dividers>
-              <Typography variant="body1" gutterBottom>
-                Enter a few details for the new project to be cloned
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-              </Typography>
-              <TextField
-                variant="outlined"
-                margin="normal"
-                required
-                fullWidth
-                label="Project Name"
-                defaultValue={
-                  values.project_name.slice(-5) === "Clone"
-                    ? values.project_name
-                    : values.project_name + " Clone"
-                }
-                size="small"
-                autoComplete="Project Name"
-                autoFocus
-                onChange={handleChange("project_name")}
-                onFocus={handleChange("project_name")}
-              />
-              <TextField
-                variant="outlined"
-                margin="normal"
-                required
-                fullWidth
-                label="Output File Name"
-                defaultValue={values.output_file_name}
-                size="small"
-                autoComplete="Output File Name"
-                onChange={handleChange("output_file_name")}
-              />
-              <TextField
-                variant="outlined"
-                margin="normal"
-                required
-                fullWidth
-                label="Project Description"
-                defaultValue={values.project_description}
-                size="small"
-                autoComplete="Project Description"
-                onChange={handleChange("project_description")}
-              />
-            </DialogContent>
-            <DialogActions style={{ justifyContent: "center" }}>
-              <Button
-                variant="contained"
-                onClick={() => setCloneStep(1)}
-                color="primary"
-              >
-                Proceed to Step 2
-              </Button>
-            </DialogActions>
-          </div>
-        )}
-        {cloneStep === 1 && (
-          <div>
-            <DialogTitle
-              id="project-cloning-dialog"
-              onClose={handleCloseCloneModal}
-            >
-              Clone Project - Step 2
-            </DialogTitle>
-            <DialogContent dividers>
-              <Typography variant="body1" gutterBottom>
-                Select the required items to be cloned into the new project
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-              </Typography>
-              <FormControl
-                component="fieldset"
-                className={classes.cloneFormControl}
-              >
-                <FormGroup>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={modelLayers}
-                        color="primary"
-                        onChange={handleCloneChange}
-                        name="modelLayers"
-                      />
-                    }
-                    label="Model Layers"
-                  />
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={preprocessingParameters}
-                        color="primary"
-                        onChange={handleCloneChange}
-                        name="preprocessingParameters"
-                      />
-                    }
-                    label="Preprocessing Parameters"
-                  />
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={hyperParameters}
-                        color="primary"
-                        onChange={handleCloneChange}
-                        name="hyperParameters"
-                      />
-                    }
-                    label="Hyperparameters"
-                  />
-                </FormGroup>
-              </FormControl>
-            </DialogContent>
-            <DialogActions style={{ justifyContent: "space-evenly" }}>
-              <Button
-                variant="contained"
-                onClick={() => setCloneStep(0)}
-                color="secondary"
-              >
-                Previous Step
-              </Button>
-              {(modelLayers || preprocessingParameters || hyperParameters) && (
-                <Button
-                  variant="contained"
-                  onClick={handleSaveClone}
-                  color="primary"
-                >
-                  Create Clone
-                </Button>
-              )}
-            </DialogActions>
-          </div>
-        )}
-      </Dialog>
+      <CloneProjectModal
+        handleCloseCloneModal={handleCloseCloneModal}
+        openCloneModal={openCloneModal}
+        cloneStep={cloneStep}
+        handleChange={handleChange}
+        values={values}
+        classes={classes}
+        modelLayers={modelLayers}
+        handleCloneChange={handleCloneChange}
+        preprocessingParameters={preprocessingParameters}
+        hyperParameters={hyperParameters}
+        setCloneStep={setCloneStep}
+        handleSaveClone={handleSaveClone}
+      />
 
       {/* Create and Edit Projects */}
 
-      <Dialog
-        onClose={handleCloseModal}
-        aria-labelledby="customized-dialog-title"
-        open={openModal}
-      >
-        <DialogTitle id="customized-dialog-title" onClose={handleCloseModal}>
-          Project details
-        </DialogTitle>
-        <DialogContent dividers>
-          {IsEdit ? (
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              defaultValue={values.project_name}
-              label="Project Name"
-              size="small"
-              autoComplete="Project Name"
-              autoFocus
-              onChange={handleChange("project_name")}
-            />
-          ) : (
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              label="Project Name"
-              size="small"
-              autoComplete="Project Name"
-              autoFocus
-              onChange={handleChange("project_name")}
-            />
-          )}
+      <UpsertProjectModal
+        handleCloseModal={handleCloseModal}
+        handleCloseModalSave={handleCloseModalSave}
+        openModal={openModal}
+        IsEdit={IsEdit}
+        values={values}
+        handleChange={handleChange}
+        classes={classes}
+      />
 
-          {IsEdit ? (
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              defaultValue={values.project_description}
-              label="Project Description"
-              size="small"
-              autoComplete="Project Description"
-              onChange={handleChange("project_description")}
-            />
-          ) : (
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              label="Project Description"
-              size="small"
-              autoComplete="Project Description"
-              onChange={handleChange("project_description")}
-            />
-          )}
-
-          {IsEdit ? (
-            <FormControl
-              variant="outlined"
-              disabled
-              className={classes.formControl}
-            >
-              <InputLabel>Language</InputLabel>
-              <Select
-                value={values.language}
-                onChange={handleChange("language")}
-                label="Language"
-              >
-                <MenuItem value={"python"}>Python</MenuItem>
-              </Select>
-            </FormControl>
-          ) : (
-            <FormControl variant="outlined" className={classes.formControl}>
-              <InputLabel>Language</InputLabel>
-              <Select
-                value={values.language}
-                onChange={handleChange("language")}
-                label="Language"
-              >
-                <MenuItem value={"python"}>Python</MenuItem>
-              </Select>
-            </FormControl>
-          )}
-
-          {IsEdit ? (
-            <FormControl
-              variant="outlined"
-              disabled
-              className={classes.formControl}
-            >
-              <InputLabel>Library</InputLabel>
-              <Select
-                value={values.library}
-                onChange={handleChange("library")}
-                label="Library"
-              >
-                <MenuItem value={"Keras"}>Keras</MenuItem>
-              </Select>
-            </FormControl>
-          ) : (
-            <FormControl variant="outlined" className={classes.formControl}>
-              <InputLabel>Library</InputLabel>
-              <Select
-                value={values.library}
-                onChange={handleChange("library")}
-                label="Library"
-              >
-                <MenuItem value={"Keras"}>Keras</MenuItem>
-                {/* <MenuItem value={"Pytorch"}>Pytorch</MenuItem> */}
-              </Select>
-            </FormControl>
-          )}
-
-          {IsEdit ? (
-            <FormControl
-              variant="outlined"
-              disabled
-              className={classes.formControl}
-            >
-              <InputLabel>Task</InputLabel>
-              <Select
-                value={values.task}
-                onChange={handleChange("task")}
-                label="Task"
-              >
-                <MenuItem value={"Classification"}>Classification</MenuItem>
-                <MenuItem value={"Regression"}>Regression</MenuItem>
-                <MenuItem value={"Unsupervised"}>Unsupervised</MenuItem>
-              </Select>
-            </FormControl>
-          ) : (
-            <FormControl variant="outlined" className={classes.formControl}>
-              <InputLabel>Task</InputLabel>
-              <Select
-                value={values.task}
-                onChange={handleChange("task")}
-                label="Task"
-              >
-                <MenuItem value={"Classification"}>Classification</MenuItem>
-                <MenuItem value={"Regression"}>Regression</MenuItem>
-                <MenuItem value={"Unsupervised"}>Unsupervised</MenuItem>
-              </Select>
-            </FormControl>
-          )}
-
-          {IsEdit ? (
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              label="Data directory"
-              size="small"
-              defaultValue={values.data_dir}
-              autoComplete="Data directory"
-              onChange={handleChange("data_dir")}
-            />
-          ) : (
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              label="Data directory"
-              size="small"
-              autoComplete="Data directory"
-              onChange={handleChange("data_dir")}
-            />
-          )}
-
-          {IsEdit ? (
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              defaultValue={values.output_file_name}
-              label="Output File Name"
-              size="small"
-              autoComplete="Output File Name"
-              onChange={handleChange("output_file_name")}
-            />
-          ) : (
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              label="Output File Name"
-              size="small"
-              autoComplete="Output File Name"
-              onChange={handleChange("output_file_name")}
-            />
-          )}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseModalSave} color="primary" data-testid="project-save-button">
-            Save Changes
-          </Button>
-        </DialogActions>
-      </Dialog>
       <Grid container>
         <Grid item lg={1} md={1} sm={1} xs={1}></Grid>
 
