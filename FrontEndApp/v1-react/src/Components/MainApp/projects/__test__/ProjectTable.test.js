@@ -39,7 +39,7 @@ describe("Project Details Render", () => {
                 projects={mockProjects}
             />
         );
-        
+
         let textElement = await screen.findByTestId("project-name-1");
         expect(textElement).toBeInTheDocument();
         textElement = await screen.findByTestId("project-lang-1");
