@@ -17,3 +17,5 @@ pydata-sphinx-theme==0.5.0
 recommonmark==0.7.1
 black
 autoflake
+pytest
+pytest-mock
