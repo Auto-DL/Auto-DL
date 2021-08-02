@@ -1,5 +1,5 @@
 import { render, waitFor, screen } from "@testing-library/react";
-import Homeindex from "../Homeindex";
+import Home from "../Homeindex";
 import { setupServer } from "msw/node";
 import { handlers } from "../../../mocks/handlers";
 
@@ -11,7 +11,7 @@ afterAll(() => server.close());
 
 describe("Read Projects", () => {
     test("should render projects sent from mocks", async () => {
-        render(<Homeindex />);
+        render(<Home />);
 
         await waitFor(() => {
             let textElement = screen.getByText(/(First)/);

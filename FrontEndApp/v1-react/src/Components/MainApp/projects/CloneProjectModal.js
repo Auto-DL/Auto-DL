@@ -1,4 +1,5 @@
 import { Button, TextField, FormControlLabel, FormGroup, Checkbox, FormControl, Dialog, Typography } from "@material-ui/core";
+import { handleSaveClone } from "../operations/CloneProject";
 import { DialogActions, DialogTitle, DialogContent } from "./styles";
 
 export const CloneProjectStepOne = ({ handleCloseCloneModal, handleChange, setCloneStep, values }) => {
@@ -68,7 +69,7 @@ export const CloneProjectStepOne = ({ handleCloseCloneModal, handleChange, setCl
     );
 };
 
-export const CloneProjectStepTwo = ({ handleCloseCloneModal, classes, modelLayers, handleCloneChange, preprocessingParameters, hyperParameters, setCloneStep, handleSaveClone }) => {
+export const CloneProjectStepTwo = ({ handleCloseCloneModal, classes, modelLayers, handleCloneChange, preprocessingParameters, hyperParameters, setCloneStep, values, cloneOptions, setOpen, setOpenCloneModal, SelectedProject, setalert, username, token }) => {
     return (
         <div>
             <DialogTitle
@@ -134,7 +135,7 @@ export const CloneProjectStepTwo = ({ handleCloseCloneModal, classes, modelLayer
                 {(modelLayers || preprocessingParameters || hyperParameters) && (
                     <Button
                         variant="contained"
-                        onClick={handleSaveClone}
+                        onClick={() => handleSaveClone(values, SelectedProject, cloneOptions, setCloneStep, setOpenCloneModal, setOpen, setalert, username, token)}
                         color="primary"
                     >
                         Create Clone
@@ -145,7 +146,7 @@ export const CloneProjectStepTwo = ({ handleCloseCloneModal, classes, modelLayer
     );
 };
 
-const CloneProjectModal = ({ handleCloseCloneModal, openCloneModal, cloneStep, handleChange, setCloneStep, values, classes, modelLayers, handleCloneChange, preprocessingParameters, hyperParameters, handleSaveClone }) => {
+const CloneProjectModal = ({ handleCloseCloneModal, openCloneModal, cloneStep, handleChange, setCloneStep, values, classes, modelLayers, handleCloneChange, preprocessingParameters, hyperParameters, setalert, username, token, SelectedProject, cloneOptions, setOpen, setOpenCloneModal }) => {
     return (
         <Dialog
             onClose={handleCloseCloneModal}
@@ -169,7 +170,14 @@ const CloneProjectModal = ({ handleCloseCloneModal, openCloneModal, cloneStep, h
                     preprocessingParameters={preprocessingParameters}
                     hyperParameters={hyperParameters}
                     setCloneStep={setCloneStep}
-                    handleSaveClone={handleSaveClone}
+                    values={values}
+                    SelectedProject={SelectedProject}
+                    cloneOptions={cloneOptions}
+                    setOpen={setOpen}
+                    setOpenCloneModal={setOpenCloneModal}
+                    setalert={setalert}
+                    username={username}
+                    token={token}
                 />
             )}
         </Dialog>

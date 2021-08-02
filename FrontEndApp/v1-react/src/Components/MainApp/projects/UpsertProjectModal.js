@@ -1,7 +1,8 @@
 import { Select, MenuItem, Button, TextField, InputLabel, FormControl, Dialog } from "@material-ui/core";
+import { handleCloseModalSave } from "../operations/UpsertProject";
 import { DialogActions, DialogTitle, DialogContent } from "./styles";
 
-const UpsertProjectModal = ({ handleCloseModal, handleCloseModalSave, openModal, IsEdit, values, handleChange, classes }) => {
+const UpsertProjectModal = ({ handleCloseModal, openModal, IsEdit, values, handleChange, classes, setalert, setOpen, setOpenModal, SelectedProject, username, token }) => {
     return (
       <Dialog
         onClose={handleCloseModal}
@@ -24,6 +25,7 @@ const UpsertProjectModal = ({ handleCloseModal, handleCloseModalSave, openModal,
               size="small"
               autoComplete="Project Name"
               autoFocus
+              data-testid="edit-project-input-name"
               onChange={handleChange("project_name")}
             />
             ) : (
@@ -36,6 +38,7 @@ const UpsertProjectModal = ({ handleCloseModal, handleCloseModalSave, openModal,
               size="small"
               autoComplete="Project Name"
               autoFocus
+              data-testid="create-project-input-name"
               onChange={handleChange("project_name")}
             />
           )}
@@ -50,6 +53,7 @@ const UpsertProjectModal = ({ handleCloseModal, handleCloseModalSave, openModal,
               label="Project Description"
               size="small"
               autoComplete="Project Description"
+              data-testid="edit-project-input-desc"
               onChange={handleChange("project_description")}
             />
           ) : (
@@ -61,6 +65,7 @@ const UpsertProjectModal = ({ handleCloseModal, handleCloseModalSave, openModal,
               label="Project Description"
               size="small"
               autoComplete="Project Description"
+              data-testid="create-project-input-desc"
               onChange={handleChange("project_description")}
             />
           )}
@@ -164,6 +169,7 @@ const UpsertProjectModal = ({ handleCloseModal, handleCloseModalSave, openModal,
               size="small"
               defaultValue={values.data_dir}
               autoComplete="Data directory"
+              data-testid="edit-project-input-datadir"
               onChange={handleChange("data_dir")}
             />
           ) : (
@@ -175,6 +181,7 @@ const UpsertProjectModal = ({ handleCloseModal, handleCloseModalSave, openModal,
               label="Data directory"
               size="small"
               autoComplete="Data directory"
+              data-testid="create-project-input-datadir"
               onChange={handleChange("data_dir")}
             />
           )}
@@ -189,6 +196,7 @@ const UpsertProjectModal = ({ handleCloseModal, handleCloseModalSave, openModal,
               label="Output File Name"
               size="small"
               autoComplete="Output File Name"
+              data-testid="edit-project-input-opfile"
               onChange={handleChange("output_file_name")}
             />
           ) : (
@@ -200,13 +208,17 @@ const UpsertProjectModal = ({ handleCloseModal, handleCloseModalSave, openModal,
               label="Output File Name"
               size="small"
               autoComplete="Output File Name"
+              data-testid="create-project-input-opfile"
               onChange={handleChange("output_file_name")}
             />
           )}
         </DialogContent>
 
         <DialogActions>
-          <Button onClick={handleCloseModalSave} color="primary" data-testid="project-save-button">
+          <Button
+            onClick={() => handleCloseModalSave(values, IsEdit, setalert, setOpen, setOpenModal, SelectedProject, username, token)}
+            color="primary"
+          >
             Save Changes
           </Button>
         </DialogActions>

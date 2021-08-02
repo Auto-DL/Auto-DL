@@ -32,12 +32,11 @@ const useStyles = makeStyles((theme) => ({
 
 function Home() {
   const history = useHistory();
+  const classes = useStyles();
+
   var token = JSON.parse(localStorage.getItem("token"));
   var username = JSON.parse(localStorage.getItem("username"));
 
-  const [AllProjects, setAllProjects] = useState([]);
-
-  const classes = useStyles();
   const [values, setValues] = React.useState({
     project_name: "",
     project_description: "",
@@ -47,12 +46,14 @@ function Home() {
     library: "Keras",
     output_file_name: "",
   });
+
+  const [AllProjects, setAllProjects] = useState([]);
   const [SelectedProject, setSelectedProject] = React.useState({});
   const [IsEdit, setIsEdit] = React.useState(false);
   const [openModal, setOpenModal] = React.useState(false);
-
   const [cloneStep, setCloneStep] = useState(0);
   const [openCloneModal, setOpenCloneModal] = useState(false);
+
   const [cloneOptions, setCloneOptions] = useState({
     modelLayers: false,
     preprocessingParameters: false,
@@ -72,9 +73,6 @@ function Home() {
     });
   };
 
-  const handleClickOpenModal = () => {
-    setOpenModal(true);
-  };
   const handleCloseModal = () => {
     setOpenModal(false);
   };
@@ -129,6 +127,7 @@ function Home() {
     setOpenModal(true);
     setOpenModal(false);
   };
+
   const create_new_project = () => {
     setOpenModal(true);
     setIsEdit(false);
@@ -143,6 +142,7 @@ function Home() {
       output_file_name: "",
     });
   };
+
   const editproject = (proj) => {
     setSelectedProject(proj);
     setValues({
@@ -185,90 +185,6 @@ function Home() {
     });
   };
 
-  const handleSaveClone = async () => {
-    var data = {
-      language: values.language,
-      library: values.library,
-      project_name: values.project_name,
-      project_id: SelectedProject.project_id,
-      project_description: values.project_description,
-      task: values.task,
-      path: values.data_dir,
-      output_file_name: values.output_file_name,
-      username: username,
-      model_layers: cloneOptions.modelLayers,
-      preprocessing_parameters: cloneOptions.preprocessingParameters,
-      hyper_parameters: cloneOptions.hyperParameters,
-    };
-
-    var res = await HomeService.clone_project(token, data);
-
-    if (res.status === 200) {
-      setalert({ ...values, msg: res.data.message, severity: "success" });
-      localStorage.setItem("project_details", JSON.stringify(data));
-    } else {
-      setalert({ ...values, msg: res.data.message, severity: "error" });
-    }
-
-    setCloneStep(0);
-    setOpenCloneModal(false);
-    setOpen(true);
-  };
-
-  const handleCloseModalSave = async () => {
-    // vallidation
-    if (
-      values.project_name &&
-      values.project_name.trim() &&
-      values.project_description &&
-      values.project_description.trim() &&
-      values.data_dir &&
-      values.data_dir.trim() &&
-      values.output_file_name &&
-      values.output_file_name.trim()
-    ) {
-      if (IsEdit) {
-        var data = {
-          project_name: values.project_name,
-          project_description: values.project_description,
-          project_id: SelectedProject.project_id,
-          data_dir: values.data_dir,
-          output_file_name: values.output_file_name,
-          username: username,
-          owner: SelectedProject.username,
-        };
-
-        var res = await HomeService.edit_project(token, data);
-      } else {
-        data = {
-          language: values.language,
-          library: values.library,
-          project_name: values.project_name,
-          project_description: values.project_description,
-          task: values.task,
-          path: values.data_dir,
-          output_file_name: values.output_file_name,
-          username: username,
-        };
-        res = await HomeService.create_project(token, data);
-      }
-      if (res.status === 200) {
-        setalert({ ...values, msg: res.data.message, severity: "success" });
-        localStorage.setItem("project_details", JSON.stringify(data));
-      } else {
-        setalert({ ...values, msg: res.data.message, severity: "error" });
-      }
-      setOpenModal(false);
-    } else {
-      setalert({
-        ...values,
-        msg: "Please fill all the details",
-        severity: "warning",
-      });
-    }
-    setOpen(true);
-  };
-
   const shareProject = async (username, project_id, share_with) => {
     const data = { username, project_id, share_with };
     const res = await HomeService.share_project(token, data);
@@ -280,6 +196,7 @@ function Home() {
     }
     setOpen(true);
   };
+
   return (
     <>
       <Backdrop
@@ -304,19 +221,31 @@ function Home() {
         preprocessingParameters={preprocessingParameters}
         hyperParameters={hyperParameters}
         setCloneStep={setCloneStep}
-        handleSaveClone={handleSaveClone}
+        values={values}
+        SelectedProject={SelectedProject}
+        cloneOptions={cloneOptions}
+        setOpen={setOpen}
+        setOpenCloneModal={setOpenCloneModal}
+        setalert={setalert}
+        username={username}
+        token={token}
       />
 
       {/* Create and Edit Projects */}
 
       <UpsertProjectModal
         handleCloseModal={handleCloseModal}
-        handleCloseModalSave={handleCloseModalSave}
         openModal={openModal}
         IsEdit={IsEdit}
         values={values}
         handleChange={handleChange}
         classes={classes}
+        setalert={setalert}
+        SelectedProject={SelectedProject}
+        setOpen={setOpen}
+        setOpenModal={setOpenModal}
+        username={username}
+        token={token}
       />
 
       <Grid container>
