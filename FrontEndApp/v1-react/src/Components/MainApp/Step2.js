@@ -2108,6 +2108,12 @@ function Step2() {
 
       if (res.status === 200) {
         setcomponents(res.data.components);
+        let tempArr=res.data.components;
+        const {invalidIndices,validIndices}=validate_layers( tempArr);
+        console.log("val res is",invalidIndices,validIndices);
+        setInvalidLayerIndices(invalidIndices);
+        setValidLayerIndices(validIndices);
+
       } else {
       }
     }
@@ -2151,6 +2157,7 @@ function Step2() {
     }
 
     fetchDataHyper();
+    
   }, [getProjectId(), token, username]);
 
   const handleDragEnd = ({ destination, source }) => {
@@ -2318,7 +2325,7 @@ function Step2() {
     // setValidLayerIndices(validate_res.validIndices);
 
     
-    const {invalidIndices,validIndices}=validate_layers(source, destination, tempArr);
+    const {invalidIndices,validIndices}=validate_layers( tempArr);
     console.log("val res is",invalidIndices,validIndices);
     setInvalidLayerIndices(invalidIndices);
     setValidLayerIndices(validIndices);

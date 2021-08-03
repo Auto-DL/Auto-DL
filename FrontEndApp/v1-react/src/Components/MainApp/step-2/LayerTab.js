@@ -131,7 +131,7 @@ const LayerTab = ({
                                       // el.id.charAt(el.id.length - 1)
                                       //   ? classes.item1selected
                                       //   : classes.item1
-                                      invalidLayerIndices.has(index)? classes.item1Error 
+                                      invalidLayerIndices.has(index) && selected_layer===index ? classes.item1Error 
                                       : selected_layer===index ? 
                                       classes.item1selected 
                                       :classes.item1

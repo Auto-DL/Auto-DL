@@ -143,7 +143,6 @@ export const useStyles = makeStyles((theme) => ({
         marginBottom: "10px",
         padding:"2px",
         backgroundColor: "#adbce6",
-        
         color: "black",
         border: "1px solid black",
         borderRadius: "7px 7px 7px 7px",
@@ -154,8 +153,8 @@ export const useStyles = makeStyles((theme) => ({
         textAlign: "center",
         marginBottom: "10px",
         padding:"2px",
-        backgroundColor: "#ffcc00",
-        
+        backgroundColor: "rgb(115,194,251)",
+        padding: "5px",
         color: "black",
         border: "1px solid black",
         borderRadius: "7px 7px 7px 7px",
