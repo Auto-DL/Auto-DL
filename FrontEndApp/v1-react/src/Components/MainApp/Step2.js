@@ -19,7 +19,7 @@ import {
 import _ from "lodash";
 import PropTypes from "prop-types";
 import fileDownload from "js-file-download";
-import { validate_layers } from "./validation2";
+import { validate_layers } from "./validation";
 import HomeService from "./HomeService";
 import PreprocessingTab from "./step-2/PreprocessingTab";
 import LayerTab from "./step-2/LayerTab";
@@ -2110,7 +2110,6 @@ function Step2() {
         setcomponents(res.data.components);
         let tempArr=res.data.components;
         const {invalidIndices,validIndices}=validate_layers( tempArr);
-        console.log("val res is",invalidIndices,validIndices);
         setInvalidLayerIndices(invalidIndices);
         setValidLayerIndices(validIndices);
 
@@ -2186,32 +2185,22 @@ function Step2() {
       console.log("deleting from target");
       const element = tempArr[source.index];
       
-      // var temp = components.filter((item) => item !== element);
+      
       var temp = tempArr.filter((item) => item !== element);
       tempArr=temp;
       
-      // if(temp.length===0)  console.log("deleting last element");
-      // setcomponents(temp);
+    
       setselected_layer(-1);
       setselected_layer_name("");
       setselected_layer_type("");
-      // if(temp.length===0)  console.log("components on deleting last element",components);
+      
     }
     if (
       destination.droppableId === "target" &&
       source.droppableId === "target"
     ) {
 
-      // const tempArr=_.cloneDeep(components);
-      // tempArr.splice(destination.index,0,tempArr.splice(source.index, 1)[0]);
-      // const {invalidIndices}=validate_layers(source,destination,tempArr);
       
-      // if(invalidIndices.length>0) {
-      //   alert("cannot switch ");
-      //   return;
-      // }
-
-      // components.splice(destination.index,0,components.splice(source.index, 1)[0]);
 
       tempArr.splice(destination.index,0,components.splice(source.index, 1)[0]);
 
@@ -2247,15 +2236,7 @@ function Step2() {
     ) {
       console.log("dropping from source to target");
 
-      // if(components.length!==0)
-      // {
-      //   if(!(validLayerIndices.includes(source.index)))
-      //   {
-      //     console.log("cannot include layer ")
-      //     return;
-      //   }
 
-      // }
       const list_names_of_source = Object.keys(jsondata);
       
       const temp = jsondata[list_names_of_source[source.index]];
@@ -2263,29 +2244,15 @@ function Step2() {
       var dic = _.cloneDeep(temp);
      
 
-      //getting the id
+      
       dic["id"] = `${list_names_of_source[source.index]}-${source.index}-${
         destination.index
       }`;
-      // console.log("we are getting the id ",dic["id"]);
+      
       dic["name"] = list_names_of_source[source.index];
 
-      // console.log("components before", components);
-
-      //puhsing in temporary array 
-      // const tempArr=_.cloneDeep(components);
-      // tempArr.splice(destination.index,0,dic);
-      // const {invalidIndices,validIndices}=validate_layers(source,destination,tempArr);
-      // if(invalidIndices.length>0)
-      // {
-      //   alert("cannot plave");
-      //   return;
-      // }
-
-      // components.splice(destination.index, 0, dic);
+     
       tempArr.splice(destination.index, 0, dic);
-
-      // console.log("components after", components);
 
       for (i = 0; i < tempArr.length; i++) {
         tempArr[i]["id"] = tempArr[i]["id"] + i;
@@ -2311,18 +2278,9 @@ function Step2() {
         }
       }
 
-      // setcomponents(components);
     }
     
-    // validate layers part 1
-    // console.log("source index is ",source.index)
-    // if ( destination.droppableId === "delete" && source.droppableId === "target") console.log("components after dekete are ",components);
-    // const validate_res = validate_layers(source, destination, components);
-    // console.log("val res is",validate_res);
-    // let invalidIndices=handleInvalidLayers(validate_res.invalidIndices);
-    // console.log("invalidIndices are in step2",invalidIndices);
-    // setInvalidLayerIndices(invalidIndices);
-    // setValidLayerIndices(validate_res.validIndices);
+ 
 
     
     const {invalidIndices,validIndices}=validate_layers( tempArr);
@@ -2336,16 +2294,6 @@ function Step2() {
 
 
 
-    // //destructuring the validate_res object 
-    // const {invalidIndices,validIndices}=validate_res;
-    // setValidLayerIndices(validIndices);
-
-    // console.log("after destructuring ",invalidIndices,validIndices);
-
-    // const arr=handleInvalidLayers(invalidIndices);
-    // setInvalidLayerIndices(arr);
-    // // console.log("Validate layers returned ",invalidIndices);
-    // // console.log("Arr set is ",arr);
     
    
 
@@ -2363,7 +2311,6 @@ function Step2() {
         indexSet.add(validate_res[i].indices[j]);
       }
     }
-    // console.log("index set is ",indexSet);
     return indexSet;
 
   }
@@ -2614,7 +2561,6 @@ function Step2() {
         // history.push("/login");
       }
     } else {
-      // alert("please fill all the required fileds in layers");
       //states for dialog box which is triggered if necessary details are blank
       //before generating code.
       setOpenErrorDialog(true);
