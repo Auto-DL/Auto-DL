@@ -14,12 +14,9 @@
 
 </center>
 
-# Generator
+# Auto-DL
 
 The interface section of Auto-DL contains front-end and back-end servers based on React and Django Rest Framework respectively.
-The backend calls the [DLMML API](https://www.github.com/Auto-DL/DLMML) according to the requests it recieves.
-
-Generator has DLMML as a submodule.
 
 ## Demo
 
@@ -46,9 +43,7 @@ sudo ./scripts/install.sh
 
 1.  ```sh
     # clone the repo
-    git clone https://github.com/Auto-DL/Generator.git
-    git submodule init
-    git submodule update
+    git clone https://github.com/Auto-DL/Auto-DL.git
     ```
 2. ***Activate your environment** (not necessary but highly recommended).*
 
@@ -63,7 +58,7 @@ sudo ./scripts/install.sh
     cd FrontEndApp
     npm install
 
-    # go grab a cup of coffee, it takes an eternity XD
+    # go grab a cup of coffee (or tea), it takes an eternity XD
     ```
 5. Place data in the `./data` directory.
 
@@ -79,15 +74,18 @@ sudo ./scripts/install.sh
             └───dogs
     ```
 
-6.  ```sh
+6. Clone the `sample.env` to create `.env` in both `BackEndApp/` and `FrontEndApp/v1-react/` and configure the necessary environment variables
+
+7.  ```sh
     # run the backend
     # only after all requriements from requirements.txt are installed
     cd BackEndApp
+    mkdir logs
     python manage.py runserver
     # you can ignore any migration warnings
     ```
 
-7.  ```sh
+8.  ```sh
     # finally, run the react frontend
     # on a new terminal tab
     cd FrontEndApp/v1-react
@@ -105,8 +103,6 @@ Configure the necessary environment variables in `docker-compose.yml` and run `d
 ## Where to go next?
 
 #### To know more about the project and initiative, please visit our [website](https://auto-dl.github.io/)
-
-#### Curious to know about the DLMML API? [Here](https://github.com/Auto-DL/DLMML), Have a look :)
 
 ## Note
 - To know more about the technicalities of the project, read our [developer guidelines](https://github.com/Auto-DL/Generator/blob/master/docs/devguide.md).
