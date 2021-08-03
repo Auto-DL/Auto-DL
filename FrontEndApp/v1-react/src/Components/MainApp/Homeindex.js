@@ -108,7 +108,7 @@ function Home() {
     project_name: "",
     project_description: "",
     data_dir: "",
-    language: "Python",
+    language: "python",
     task: "Classification",
     library: "Keras",
     output_file_name: "",
@@ -166,25 +166,17 @@ function Home() {
 
   const [open_backdrop, setOpen_backdrop] = React.useState(false);
 
-  const handleClose_backdrop = () => {
-    setOpen_backdrop(false);
-  };
-
-  const handleToggle_backdrop = (state) => {
-    setOpen_backdrop(state);
-  };
-
   useEffect(() => {
     async function fetchData() {
       const data = {
         username: username,
       };
 
-      handleToggle_backdrop(true);
+      setOpen_backdrop(true);
       const res = await HomeService.get_all(token, data);
 
       if (res.status === 200) {
-        handleToggle_backdrop(false);
+        setOpen_backdrop(false);
         setAllProjects([...res.data.projects]);
       } else {
         localStorage.clear();
@@ -359,7 +351,7 @@ function Home() {
       <Backdrop
         className={classes.backdrop}
         open={open_backdrop}
-        onClick={handleClose_backdrop}
+        onClick={() => setOpen_backdrop(false)}
       >
         <CircularProgress color="inherit" />
       </Backdrop>
@@ -714,8 +706,8 @@ function Home() {
           )}
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseModalSave} color="primary">
-            Save changes
+          <Button onClick={handleCloseModalSave} color="primary" data-testid="project-save-button">
+            Save Changes
           </Button>
         </DialogActions>
       </Dialog>

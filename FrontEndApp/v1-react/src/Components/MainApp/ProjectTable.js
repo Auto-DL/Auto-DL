@@ -261,7 +261,7 @@ export default function Project_table(props) {
         <>
           <div>
             <div className={classes.title}>No projects to show</div>
-            <Typography className={classes.floatright}>
+            <Typography className={classes.floatright} component="div">
               <div onClick={props.create_new_project}>
                 <AddCircleIcon fontSize={"large"} />
               </div>
@@ -345,7 +345,7 @@ export default function Project_table(props) {
                                   container
                                   direction="row"
                                   alignItems="center"
-                                  justify="center"
+                                  justifyContent="center"
                                   onClick={() => props.handlestep(project[p])}
                                 >
                                   {project[p].shared_with &&
