@@ -1,6 +1,5 @@
 import os
 import sys
-import mongomock
 import pytest
 
 sys.path.append("..")
