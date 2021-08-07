@@ -9,7 +9,6 @@ from authv1.store import Store
 from tests.mocks import MockUser
 
 tempdir = tempfile.mkdtemp()
-print(tempdir)
 
 
 def test_create():
@@ -75,7 +74,6 @@ def test_enlist():
     project_path_3 = store.create(project="test_project_dir_2")
 
     test_projects = store.enlist()
-    print(test_projects)
     if (
         "test_project_dir_0" in test_projects
         and "test_project_dir_1" in test_projects
