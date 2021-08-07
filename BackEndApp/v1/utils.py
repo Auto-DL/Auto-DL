@@ -43,5 +43,5 @@ def delete_broken_symlinks(path):
             os.remove(os.path.join(path, f.name))
 
 
-if __name__ == "__main__":
-    print(generate_uid())
+# if __name__ == "__main__":
+#     print(generate_uid())
