@@ -2202,7 +2202,7 @@ function Step2() {
 
       
 
-      tempArr.splice(destination.index,0,components.splice(source.index, 1)[0]);
+      tempArr.splice(destination.index,0,tempArr.splice(source.index, 1)[0]);
 
 
       // console.log("compinents after splice is ",components);
@@ -2320,12 +2320,11 @@ function Step2() {
 
   const showdetails = (element) => {
     setselected_layer_type(element);
-    console.log("selected layer is ",selected_layer_type);
+    console.log("selected layer type is ",selected_layer_type);
 
     var ele = components;
     var index = ele.lastIndexOf(element);
     console.log("index is ",index);
-
 
     setselected_layer(index);
   };
