@@ -23,6 +23,9 @@ class Token:
         """
         time_delta: (int) In hours
         """
+        if self.user is None:
+            return None
+
         secret = os.getenv("JWT_SECRET")
         self.expire = datetime.now() + timedelta(hours=time_delta)
 

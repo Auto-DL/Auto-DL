@@ -2128,6 +2128,7 @@ function Step2() {
       const res = await HomeService.get_pre(token, data);
 
       if (res.status === 200) {
+        
         setall_prepro(res.data.preprocessing);
         // console.log("all_prepro1",all_prepro);
 
