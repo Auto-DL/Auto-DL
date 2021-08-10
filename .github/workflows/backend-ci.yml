@@ -6,6 +6,9 @@ jobs:
     strategy:
       matrix:
         python-version: [3.8]
+    defaults:
+      run:
+        working-directory: ./BackEndApp
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python ${{ matrix.python-version }}
