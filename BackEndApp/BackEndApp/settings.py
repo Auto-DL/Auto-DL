@@ -14,6 +14,9 @@ import os
 from urllib.parse import urlparse
 from corsheaders.defaults import default_headers
 
+from . import logging
+
+HOST = os.getenv("HOST", "http://localhost:8000")
 FRONTEND_HOST = os.getenv("FRONTEND_HOST", "http://localhost:3000")
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -29,7 +32,7 @@ SECRET_KEY = "q$2lre_hyydi(w7hb!*03()$y*q#rzy#ny^9hitqjb^q1_a6q="
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", urlparse(FRONTEND_HOST).hostname]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", urlparse(HOST).hostname]
 
 
 # Application definition
@@ -84,11 +87,12 @@ WSGI_APPLICATION = "BackEndApp.wsgi.application"
 DATABASES = {"default": {"ENGINE": "django.db.backends.dummy"}}
 
 CORS_ORIGIN_ALLOW_ALL = False
-CORS_ALLOWED_ORIGINS = [FRONTEND_HOST]
+CORS_ALLOWED_ORIGINS = [HOST, FRONTEND_HOST, "http://localhost:8000"]
 CORS_ALLOW_HEADERS = list(default_headers) + [
     "token",
 ]
 CORS_ORIGIN_WHITELIST = (
+    HOST,
     FRONTEND_HOST,
     "http://localhost:8000",
 )
@@ -137,5 +141,4 @@ EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
-DEFAULT_FROM_EMAIL = os.environ.get("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
