@@ -30,6 +30,8 @@ const LayerTab = ({
   const [selectedWarnLayer,setSelectedWarnLayer]=useState("");
   const [suggestDesc,setSuggestDesc]=useState("");
 
+  // console.log("selected_layer_type in layer tab is : " ,selected_layer_type);
+
 
 
 
@@ -196,7 +198,7 @@ const LayerTab = ({
               </span>
 
               <div className={classes.body3}>
-                {Object.keys(selected_layer_type).length === 0 ? (
+                {selected_layer_type === "" ? (
                   <h3>please select some layer first</h3>
                 ) : (
                   <div className={classes.innerpad}>
@@ -216,6 +218,7 @@ const LayerTab = ({
                                 ) : (
                                   <span></span>
                                 )}
+                                {console.log('selected_layer_type[key]["Required"]',selected_layer_type[key]["Required"] )}
                               </div>
 
                               <div

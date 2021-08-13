@@ -2162,7 +2162,7 @@ function Step2() {
 
   const handleDragEnd = ({ destination, source }) => {
     let tempArr=_.cloneDeep(components);
-    console.log("components before",components);
+    
     if (!destination) {
       return;
     }
@@ -2200,10 +2200,46 @@ function Step2() {
       destination.droppableId === "target" &&
       source.droppableId === "target"
     ) {
+      //It means the layer which is draggged is selected
+      // let dragLayerIsSelcted=false;
+      // let prevSrcIdx;
+      // let prevDestIdx;
+      // let layerIsSel=false;
+      // if(tempArr[source.index]["id"]===selected_layer_type.id){
+      //   dragLayerIsSelcted=true;
+      // }
+      // else
+      // {
+      //   prevSrcIdx=source.index;
+      //   prevDestIdx=destination.index;
+      // }
+      // if(tempArr[source.index]["id"] === selected_layer_type["id"] || tempArr[destination.index]["id"] === selected_layer_type["id"] )
+      // {
+      //   layerIsSel=true;
+      // }
 
-      
 
-      tempArr.splice(destination.index,0,tempArr.splice(source.index, 1)[0]);
+      // tempArr.splice(destination.index,0,tempArr.splice(source.index, 1)[0]);
+      // console.log("source and des index are",source.index,destination.index);
+
+      // if(layerIsSel)
+      // {
+      //   if(selected_layer_type!=="")
+      //   {
+      //     if(dragLayerIsSelcted)
+      //     {
+      //       setselected_layer_type(tempArr[destination.index]);
+      //       setselected_layer(destination.index);
+      //       console.log("selected_layer_type on drag and id is  ",selected_layer_type,selected_layer_type["id"]); 
+      //     }
+      //     else{
+      //       setselected_layer_type(tempArr[prevDestIdx]);
+      //       setselected_layer(prevSrcIdx);
+      //       console.log("unselected layer is dragged  and layer selected is ",selected_layer_type)
+      //     }
+      //   }
+      // }
+     
 
 
       // console.log("compinents after splice is ",components);
@@ -2285,7 +2321,7 @@ function Step2() {
 
     
     const {invalidIndices,validIndices}=validate_layers( tempArr);
-    console.log("val res is",invalidIndices,validIndices);
+    // console.log("val res is",invalidIndices,validIndices);
     setInvalidLayerIndices(invalidIndices);
     setValidLayerIndices(validIndices);
 

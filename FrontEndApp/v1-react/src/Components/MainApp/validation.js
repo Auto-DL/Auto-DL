@@ -12,7 +12,6 @@ import { keras_layers } from "../../resources/keras";
 export const validate_layers = ( components) => {
     let errors=new Set();
     let validIndices=[];
-    console.log("compo valid",components);
 
 
     const suggestLayers = (curr_layer) =>{
@@ -59,7 +58,6 @@ export const validate_layers = ( components) => {
                         
         }
     }
-    console.log("components are and error are",components,errors);
 
     const validAndInvalid={
         invalidIndices : errors,
