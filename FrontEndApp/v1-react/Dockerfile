@@ -1,12 +1,15 @@
 FROM node:latest as build
 
 ENV NODE_ENV=production
+ARG REACT_APP_BACKEND_API_URL
+ENV REACT_APP_BACKEND_API_URL $REACT_APP_BACKEND_API_URL
 
 WORKDIR /usr/src/app
 
 COPY package.json /usr/src/app/
+COPY package-lock.json /usr/src/app/
 RUN npm install
-RUN npm install -g serve react-scripts
+RUN npm install -g react-scripts
 
 COPY . /usr/src/app/
 
