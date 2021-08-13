@@ -72,20 +72,41 @@ pip install -r requirements.txt
 cd Auto-DL/FrontEndApp
 npm install
 ```
-Place data in the `./data` directory.
+* Place data in the `./data` directory.
 
-    Your data should be divided into classes for classification, for example, if you're classifying "Cats V/s Dogs", then your `./data` directory would look like:
-    ```sh
-    data
-    └───dogs_and_cats
-        ├───test
-        │   ├───cats
-        │   └───dogs
-        └───train
-            ├───cats
-            └───dogs
+* Your data should be divided into classes for classification, for example, if you're classifying "Cats V/s Dogs", then your `./data` directory would look like:
+    
+        data
+        └───dogs_and_cats
+            ├───test
+            │   ├───cats
+            │   └───dogs
+            └───train
+                ├───cats
+                └───dogs
+
+* Clone the sample.env to create .env in both BackEndApp/ and FrontEndApp/v1-react/ and configure the necessary environment variables
 
 
+* Only after all requriements from requirements.txt are installed
+
+```
+cd BackEndApp
+mkdir logs
+```
+* Run the Backend
+```
+python manage.py runserver
+# you can ignore any migration warnings
+```
+
+* Finally, run the react frontend
+
+```
+# on a new terminal tab
+cd FrontEndApp/v1-react
+npm start
+```
 
 
 
