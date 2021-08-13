@@ -1,7 +1,10 @@
-<p align="center"><img width=30% src="static/adl_generator.png"></p>
+# Auto-DL (A-DL)
 
-<center>
+<img src="/Logo.png" width="100">
 
+## About
+
+----
 [![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
 ![Contributions welcome](https://img.shields.io/badge/contributions-welcome-orange.svg)
 [![GitHub issues](https://img.shields.io/github/issues-raw/Auto-DL/Generator?color=red)](https://github.com/Auto-DL/Generator/issues?q=is%3Aopen+is%3Aissue)
@@ -12,55 +15,64 @@
 [![Documentation Status](https://readthedocs.org/projects/auto-dl/badge/?version=latest)](https://auto-dl.readthedocs.io/en/latest/?badge=latest)
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.0-4baaaa.svg)](code_of_conduct.md)
 
-</center>
 
-# Auto-DL
+In a nutshell, Auto-DL is a futuristic way of building deep learning models nearly 10X faster than the usual process.
 
-The interface section of Auto-DL contains front-end and back-end servers based on React and Django Rest Framework respectively.
+## What to Use Auto-DL for and When to Use It
 
-## Demo
 
-<img src="static/v1-alpha.gif">
+Building deep learning models takes a lot of time. 
+Use automate your "meta-work" so that you can focus on building your models without worrying about writing code.
 
-<br>
-<br>
+- Building models
+- Model Validation
+- Easy App Deployment
 
-## Setup
+Execute repetitive tasks, save time, and optimize your development process with Auto-DL.
 
-1. Install all the necessary libraries and binaries
-```sh
-sudo ./scripts/install.sh
+## To start developing Auto-DL
+
+The [community repository](https://github.com/Auto-DL/Auto-DL/blob/v1-beta/CONTRIBUTING.md) hosts all information about
+building Auto-DL from source, how to contribute code
+and documentation, who to contact about what, etc.
+
+To setup Auto-DL right away in the required OS:
+
+### Prerequisites
+
+* Install [Python](https://www.python.org/downloads/)
+* Install [Node](https://nodejs.org/en/download/)
+
+### If you are on Windows OS
+
+* Download [Git](https://git-scm.com/download/win) 
+
+
+
+##### Method 1
+
+* Clone the repository
+```
+git clone https://github.com/Auto-DL/Auto-DL.git
 ```
 
-2. Follow the [instructions](#how-to-run) to run `BackEndApp` and `FrontEndApp` locally or Let it RIP!
-```sh
-./scripts/run.sh
-# or you can pass --install to perform both step 1 and 2
-./scripts/run.sh --install
+* Setup [Environment](https://docs.python.org/3/library/venv.html) (Not necessary but highly recomended)
+
+```
+cd Auto-DL/BackEndApp
+```
+* Install the requirements, this might take some time, be patient
+
+```
+pip install -r requirements.txt
+
 ```
 
-## How to run
-
-1.  ```sh
-    # clone the repo
-    git clone https://github.com/Auto-DL/Auto-DL.git
-    ```
-2. ***Activate your environment** (not necessary but highly recommended).*
-
-3.  ```sh
-    # install the requirements, this might take some time, be patient
-    pip install -r requirements.txt
-    ```
-
-4.  ```sh
-    # If you think your machine can handle a simulatenous installation of node modules, open another terminal
-
-    cd FrontEndApp
-    npm install
-
-    # go grab a cup of coffee (or tea), it takes an eternity XD
-    ```
-5. Place data in the `./data` directory.
+```
+cd Auto-DL/FrontEndApp
+npm install
+```
+Place data in the `./data` directory.
 
     Your data should be divided into classes for classification, for example, if you're classifying "Cats V/s Dogs", then your `./data` directory would look like:
     ```sh
@@ -72,51 +84,39 @@ sudo ./scripts/install.sh
         └───train
             ├───cats
             └───dogs
-    ```
 
-6. Clone the `sample.env` to create `.env` in both `BackEndApp/` and `FrontEndApp/v1-react/` and configure the necessary environment variables
 
-7.  ```sh
-    # run the backend
-    # only after all requriements from requirements.txt are installed
-    cd BackEndApp
-    mkdir logs
-    python manage.py runserver
-    # you can ignore any migration warnings
-    ```
 
-8.  ```sh
-    # finally, run the react frontend
-    # on a new terminal tab
-    cd FrontEndApp/v1-react
-    npm start
-    ```
 
-**Note:**  For detailed instruction on data directory (point 5) please read [DLMML's User Guide](https://github.com/Auto-DL/DLMML/blob/master/docs/userguide.md).
 
-### Using Docker
+### If you are on Linux
 
-Configure the necessary environment variables in `docker-compose.yml` and run `docker-compose up`. This will setup a development server, so instead if you want to setup a production server you can replace the dockerfile context in `docker-compose.yml` for each container to include the production **Dockerfile** instead of **Dockerfile.dev**.
+##### Method 1
 
-> Note: Before running the production docker containers modify the **nginx** configuration if needed in `nginx/nginx.conf` as the FrontEndApp docker container uses **nginx** in production
 
-## Where to go next?
+```
+git clone https://github.com/Auto-DL/Auto-DL.git
+```
+```
+cd Auto-DL
+```
 
-#### To know more about the project and initiative, please visit our [website](https://auto-dl.github.io/)
+Install the necessary libraries and binaries
 
-## Note
-- To know more about the technicalities of the project, read our [developer guidelines](https://github.com/Auto-DL/Generator/blob/master/docs/devguide.md).
-- For more detailed instructions to run the Generator module, Read our [User guidelines](https://github.com/Auto-DL/Generator/blob/master/docs/userguide.md)
+```
+sudo ./scripts/install.sh
+```
 
-## Contributing
-Please take a look at our [contributing guidelines](CONTRIBUTING.md) if you're interested in helping!
 
-#### Features/Enhancements Planned
+### If you are on Mac
 
-- Improve the UI and UX.
+```
+git clone https://github.com/Auto-DL/Auto-DL.git
+```
+```
+cd Auto-DL
+```
+Install the necessary libraries and binaries
 
-- Show model training realted stats on the frontend.
-
-- Visualization and data preprocessing steps.
-
-- Model Explainability.
+```
+sudo ./scripts/install.sh
