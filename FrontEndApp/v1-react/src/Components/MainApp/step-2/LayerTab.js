@@ -129,10 +129,7 @@ const LayerTab = ({
                                   <div
                                   
                                     className={
-                                      // selected_layer ===
-                                      // el.id.charAt(el.id.length - 1)
-                                      //   ? classes.item1selected
-                                      //   : classes.item1
+                                      
                                       invalidLayerIndices.has(index) && selected_layer===index ? classes.item1Error 
                                       : selected_layer===index ? 
                                       classes.item1selected 
@@ -213,12 +210,12 @@ const LayerTab = ({
                                 {" "}
                                 {key}
                                 &nbsp;{" "}
-                                {selected_layer_type[key]["Required"] === 1 ? (
+                                {selected_layer_type[key]? selected_layer_type[key]["Required"] === 1 ? (
                                   <span>*</span>
                                 ) : (
                                   <span></span>
-                                )}
-                                {console.log('selected_layer_type[key]["Required"]',selected_layer_type[key]["Required"] )}
+                                ):null }
+                                {/* {console.log('selected_layer_type[key]["Required"]',selected_layer_type[key]["Required"] )} */}
                               </div>
 
                               <div

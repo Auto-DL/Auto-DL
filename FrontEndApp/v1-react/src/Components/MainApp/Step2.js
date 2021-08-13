@@ -2200,45 +2200,49 @@ function Step2() {
       destination.droppableId === "target" &&
       source.droppableId === "target"
     ) {
-      //It means the layer which is draggged is selected
-      // let dragLayerIsSelcted=false;
-      // let prevSrcIdx;
-      // let prevDestIdx;
-      // let layerIsSel=false;
-      // if(tempArr[source.index]["id"]===selected_layer_type.id){
-      //   dragLayerIsSelcted=true;
-      // }
-      // else
-      // {
-      //   prevSrcIdx=source.index;
-      //   prevDestIdx=destination.index;
-      // }
-      // if(tempArr[source.index]["id"] === selected_layer_type["id"] || tempArr[destination.index]["id"] === selected_layer_type["id"] )
-      // {
-      //   layerIsSel=true;
-      // }
+      // It means the layer which is draggged is selected
+      let dragLayerIsSelcted=false;
+      let prevSrcIdx;
+      let prevDestIdx;
+      let layerIsSel=false;
+      if(tempArr[source.index]["id"]===selected_layer_type.id){
+        dragLayerIsSelcted=true;
+      }
+      else
+      {
+        prevSrcIdx=source.index;
+        prevDestIdx=destination.index;
+      }
+      if(tempArr[source.index]["id"] === selected_layer_type["id"] || tempArr[destination.index]["id"] === selected_layer_type["id"] )
+      {
+        layerIsSel=true;
+      }
+      else
+      {
+        setselected_layer_type("");
+        setselected_layer(-1);
+      }
 
 
-      // tempArr.splice(destination.index,0,tempArr.splice(source.index, 1)[0]);
+      tempArr.splice(destination.index,0,tempArr.splice(source.index, 1)[0]);
       // console.log("source and des index are",source.index,destination.index);
 
-      // if(layerIsSel)
-      // {
-      //   if(selected_layer_type!=="")
-      //   {
-      //     if(dragLayerIsSelcted)
-      //     {
-      //       setselected_layer_type(tempArr[destination.index]);
-      //       setselected_layer(destination.index);
-      //       console.log("selected_layer_type on drag and id is  ",selected_layer_type,selected_layer_type["id"]); 
-      //     }
-      //     else{
-      //       setselected_layer_type(tempArr[prevDestIdx]);
-      //       setselected_layer(prevSrcIdx);
-      //       console.log("unselected layer is dragged  and layer selected is ",selected_layer_type)
-      //     }
-      //   }
-      // }
+      if(layerIsSel)
+      {
+          if(dragLayerIsSelcted)
+          {
+            setselected_layer_type(tempArr[destination.index]);
+            setselected_layer(destination.index);
+            console.log("selected_layer_type on drag and id is  ",selected_layer_type,selected_layer_type["id"]); 
+          }
+          else{
+            setselected_layer_type(tempArr[prevSrcIdx]);
+            setselected_layer(prevDestIdx);
+            console.log("unselected layer is dragged  and layer selected is ",selected_layer_type)
+          }
+        
+      }
+     
      
 
 
