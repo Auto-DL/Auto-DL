@@ -162,7 +162,7 @@ const LayerTab = ({
                                       </Button>
                                     }
                                     {
-                                      selectedWarnLayer===index &&
+                                  selectedWarnLayer===index &&
                                   <div style={{fontSize:"60%",marginTop:"1px",fontWeight:"100",color:"#a2a4a8",textAlign:"left",color:"black"}}>
                                     Warning : highlited layer is wrongly placed 
                                   </div>
