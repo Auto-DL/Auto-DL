@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link } from 'react-router-dom';
 import {
   Button,
   AppBar,
@@ -2116,7 +2117,7 @@ function Step2() {
       const res = await HomeService.get_pre(token, data);
 
       if (res.status === 200) {
-        
+
         setall_prepro(res.data.preprocessing);
         // console.log("all_prepro1",all_prepro);
 
@@ -2201,7 +2202,7 @@ function Step2() {
         } else {
           try {
             delete components[i]["input_shape"];
-          } catch (err) {}
+          } catch (err) { }
         }
       }
       setcomponents(components);
@@ -2239,9 +2240,8 @@ function Step2() {
       // }
 
       //getting the id
-      dic["id"] = `${list_names_of_source[source.index]}-${source.index}-${
-        destination.index
-      }`;
+      dic["id"] = `${list_names_of_source[source.index]}-${source.index}-${destination.index
+        }`;
       // console.log("we are getting the id ",dic["id"]);
       dic["name"] = list_names_of_source[source.index];
 
@@ -2271,7 +2271,7 @@ function Step2() {
         } else {
           try {
             delete components[i]["input_shape"];
-          } catch (err) {}
+          } catch (err) { }
         }
       }
 
@@ -2717,7 +2717,7 @@ function Step2() {
       } else {
         try {
           delete components[i]["input_shape"];
-        } catch (err) {}
+        } catch (err) { }
       }
       // console.log("inside loop id",components[i]["id"]);
     }
@@ -2760,6 +2760,14 @@ function Step2() {
           <Button variant="contained" onClick={download_code} color="primary">
             Download Code
           </Button>
+          {/* <Link to="https://github.com/login/oauth/authorize?client_id=cf38877318e6d0fb3c51"> */}
+          <Button variant="contained" onClick={(e) => {
+            e.preventDefault();
+            window.location.href = 'https://github.com/login/oauth/authorize?client_id=cf38877318e6d0fb3c51';
+          }} color="primary">
+            Publish to GitHub
+          </Button>
+          {/* </Link> */}
         </DialogActions>
       </Dialog>
 
@@ -2823,7 +2831,7 @@ function Step2() {
         setOpenErrorDialog={setOpenErrorDialog}
         hyper={hyper}
       />
-    </div>
+    </div >
   );
 }
 

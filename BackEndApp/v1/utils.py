@@ -1,5 +1,9 @@
 from uuid import uuid4 as uid
 import os
+from github import Github
+
+# g = Github("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")
+g = Github()
 
 
 def generate_uid():
@@ -45,3 +49,21 @@ def delete_broken_symlinks(path):
 
 # if __name__ == "__main__":
 #     print(generate_uid())
+
+
+def get_access_token(code):
+    clientID = "cf38877318e6d0fb3c51"
+    secret = "fe4a30a8712d3621ad02799e739ef913d660cc53"
+    oauth = g.get_oauth_application(clientID, secret)
+    url = oauth.get_login_url()
+    access_token = oauth.get_access_token(code=code)
+    tokenID = access_token.token
+    print("token is")
+    
+    print(tokenID)
+    gnew = Github(tokenID)
+    repos = gnew.get_user().get_repos()
+    for i in repos:
+        print(i)
+    # print(t.objects)
+    # return t

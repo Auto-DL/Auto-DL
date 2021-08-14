@@ -15,7 +15,13 @@ from dlmml.utils import json_to_dict
 from dlmml.parser import *
 
 
-from .utils import generate_uid, copy_file, format_code, delete_broken_symlinks
+from .utils import (
+    generate_uid,
+    copy_file,
+    format_code,
+    delete_broken_symlinks,
+    get_access_token,
+)
 
 
 @api_view(["POST"])
@@ -698,3 +704,13 @@ def share_project(request):
     except:
         status, success, message = 500, False, "Failed"
     return JsonResponse({"success": success, "message": message}, status=status)
+
+
+# @api_view(["GET", "POST"])
+def publish_on_github(request):
+    print("hereeeeeee")
+    code = request.GET.get("code")
+    access_token = get_access_token(code)
+    
+    # print(access_token)
+    return JsonResponse({"success": True, "message": access_token}, status=200)
