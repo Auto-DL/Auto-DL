@@ -92,24 +92,6 @@ export default function Project_table(props) {
     setOpen(true);
   };
 
-  const handleDeleteYes = async () => {
-    setOpen(false);
-    const project_id =
-      currentProject.username !== username
-        ? "shared_" + currentProject.project_id
-        : currentProject.project_id;
-    const data = {
-      username: username,
-      project_id: project_id,
-      project_name: currentProject.project_name,
-      project_description: currentProject.project_description,
-      owner: currentProject.username,
-    };
-    const res = await HomeService.delete_project(token, data);
-    // console.log(res);
-    props.parent_call_on_delete();
-  };
-
   //share handlers
   const handleShareActionsOpen = (project, event) => {
     setAnchorElShared(event.currentTarget);
@@ -166,6 +148,9 @@ export default function Project_table(props) {
   const openPop = Boolean(anchorElPop);
   const id = openPop ? "simple-popover" : undefined;
 
+  const parentCallOnDelete = () => props.parent_call_on_delete();
+  const setCloseDeleteModal = () => setOpen(false);
+
   return (
     <>
       <Dialog open={open} onClose={handleClose}>
@@ -176,11 +161,15 @@ export default function Project_table(props) {
           <Button onClick={handleClose} color="primary">
             No
           </Button>
-          <Button onClick={handleDeleteYes} color="secondary">
+          <Button
+            onClick={() => props.handleDeleteYes(setCloseDeleteModal, currentProject, username, token, parentCallOnDelete)}
+            color="secondary"
+          >
             Yes
           </Button>
         </DialogActions>
       </Dialog>
+
       <Dialog open={openShare} onClose={handleClose}>
         <DialogTitle id="alert-dialog-title">
           Share Project ({currentProject ? currentProject.project_name : ""})
@@ -213,6 +202,7 @@ export default function Project_table(props) {
           </Box>
         </DialogContent>
       </Dialog>
+
       <Popover
         id={id}
         open={openPop}
@@ -235,6 +225,7 @@ export default function Project_table(props) {
           ))}
         </Box>
       </Popover>
+
       {props.projects.length === 0 ? (
         <>
           <div>
@@ -262,7 +253,7 @@ export default function Project_table(props) {
                   Projects &#40;{props.projects ? props.projects.length : 0}&#41;
                 </Typography>
                 <Typography component={"span"} className={classes.floatright}>
-                  <div data-testid="create-project-btn" onClick={props.create_new_project}>
+                  <div onClick={props.create_new_project}>
                     <AddCircleIcon fontSize={"large"} />
                   </div>
                 </Typography>
@@ -406,6 +397,7 @@ export default function Project_table(props) {
                                   aria-controls="customized-menu"
                                   aria-label="options"
                                   aria-haspopup="true"
+                                  data-testid={`project-actions-btn-${index}`}
                                   onClick={(e) =>
                                     handleActionsOpen(project[p], e)
                                   }
@@ -426,7 +418,7 @@ export default function Project_table(props) {
                                   <MenuItem onClick={handleClone}>
                                     <FileCopyIcon /> &nbsp; Clone
                                   </MenuItem>
-                                  <MenuItem onClick={handleDelete}>
+                                  <MenuItem onClick={handleDelete} data-testid={`delete-project-btn-${index}`}>
                                     <DeleteIcon /> &nbsp; Delete
                                   </MenuItem>
                                   <MenuItem onClick={handleShare}>

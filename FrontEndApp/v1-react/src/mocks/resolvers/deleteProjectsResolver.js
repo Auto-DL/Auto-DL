@@ -1,7 +1,7 @@
-export const createMockProject = (req, res, ctx) => {
+export const deleteMockProject = (req, res, ctx) => {
     let status = 200;
     let success = True;
-    let message = "Project Created Successfully";
+    let message = "Project Deleted Successfully";
 
     return res(
         ctx.status(status),

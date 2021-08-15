@@ -1,5 +1,4 @@
 import { Button, TextField, FormControlLabel, FormGroup, Checkbox, FormControl, Dialog, Typography } from "@material-ui/core";
-import { handleSaveClone } from "../operations/CloneProject";
 import { DialogActions, DialogTitle, DialogContent } from "./styles";
 
 export const CloneProjectStepOne = ({ handleCloseCloneModal, handleChange, setCloneStep, values }) => {
@@ -69,7 +68,7 @@ export const CloneProjectStepOne = ({ handleCloseCloneModal, handleChange, setCl
     );
 };
 
-export const CloneProjectStepTwo = ({ handleCloseCloneModal, classes, modelLayers, handleCloneChange, preprocessingParameters, hyperParameters, setCloneStep, values, cloneOptions, setOpen, setOpenCloneModal, SelectedProject, setalert, username, token }) => {
+export const CloneProjectStepTwo = ({ handleCloseCloneModal, handleSaveClone, classes, modelLayers, handleCloneChange, preprocessingParameters, hyperParameters, setCloneStep, values, cloneOptions, setOpen, setOpenCloneModal, SelectedProject, setalert, username, token }) => {
     return (
         <div>
             <DialogTitle
@@ -146,7 +145,7 @@ export const CloneProjectStepTwo = ({ handleCloseCloneModal, classes, modelLayer
     );
 };
 
-const CloneProjectModal = ({ handleCloseCloneModal, openCloneModal, cloneStep, handleChange, setCloneStep, values, classes, modelLayers, handleCloneChange, preprocessingParameters, hyperParameters, setalert, username, token, SelectedProject, cloneOptions, setOpen, setOpenCloneModal }) => {
+const CloneProjectModal = ({ handleCloseCloneModal, handleSaveClone, openCloneModal, cloneStep, handleChange, setCloneStep, values, classes, modelLayers, handleCloneChange, preprocessingParameters, hyperParameters, setalert, username, token, SelectedProject, cloneOptions, setOpen, setOpenCloneModal }) => {
     return (
         <Dialog
             onClose={handleCloseCloneModal}
@@ -164,6 +163,7 @@ const CloneProjectModal = ({ handleCloseCloneModal, openCloneModal, cloneStep, h
             {cloneStep === 1 && (
                 <CloneProjectStepTwo
                     handleCloseCloneModal={handleCloseCloneModal}
+                    handleSaveClone={handleSaveClone}
                     classes={classes}
                     modelLayers={modelLayers}
                     handleCloneChange={handleCloneChange}
