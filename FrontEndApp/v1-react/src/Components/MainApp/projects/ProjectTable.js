@@ -1,28 +1,6 @@
 import React, { useState, Fragment } from "react";
 import { withStyles, makeStyles } from "@material-ui/core/styles";
-import {
-  Typography,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  Dialog,
-  DialogActions,
-  DialogTitle,
-  DialogContent,
-  Button,
-  IconButton,
-  Menu,
-  TextField,
-  MenuItem,
-  Box,
-  Grid,
-  Popover,
-} from "@material-ui/core";
-
+import { Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Dialog, DialogActions, DialogTitle, DialogContent, Button, IconButton, Menu, TextField, MenuItem, Box, Grid, Popover } from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
@@ -30,7 +8,7 @@ import ShareIcon from "@material-ui/icons/Share";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import AddCircleIcon from "@material-ui/icons/AddCircle";
 import FileCopyIcon from "@material-ui/icons/FileCopy";
-import HomeService from "./HomeService";
+import HomeService from "../HomeService";
 import PeopleAltIcon from "@material-ui/icons/PeopleAlt";
 
 const StyledTableCell = withStyles((theme) => ({
@@ -284,7 +262,7 @@ export default function Project_table(props) {
                   Projects &#40;{props.projects ? props.projects.length : 0}&#41;
                 </Typography>
                 <Typography component={"span"} className={classes.floatright}>
-                  <div onClick={props.create_new_project}>
+                  <div data-testid="create-project-btn" onClick={props.create_new_project}>
                     <AddCircleIcon fontSize={"large"} />
                   </div>
                 </Typography>
