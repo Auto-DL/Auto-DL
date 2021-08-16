@@ -155,7 +155,7 @@ and documentation, who to contact about what, etc.
 ## Contact
 <!-- Actual text -->
 
-You can find usme on [![Twitter][1.2]][1], or on [![LinkedIn][2.2]][2].
+You can find us on [![Twitter][1.2]][1], or on [![LinkedIn][2.2]][2].
 
 <!-- Icons -->
 
