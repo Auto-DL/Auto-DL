@@ -1,6 +1,6 @@
 # Auto-DL (A-DL)
 
-<img src="/Logo.png" width="100">
+<img src="static/adl_generator.png" width="100">
 
 ## About
 
@@ -169,8 +169,8 @@ You can find us on [![Twitter][1.2]][1], or on [![LinkedIn][2.2]][2].
 
 <!-- Icons -->
 
-[1.2]: http://i.imgur.com/wWzX9uB.png (twitter icon without padding)
-[2.2]: https://raw.githubusercontent.com/MartinHeinz/MartinHeinz/master/linkedin-3-16.png (LinkedIn icon without padding)
+[1.2]: http://i.imgur.com/wWzX9uB.png (Twitter)
+[2.2]: https://raw.githubusercontent.com/MartinHeinz/MartinHeinz/master/linkedin-3-16.png (LinkedIn)
 
 <!-- Links to our social media accounts -->
 
