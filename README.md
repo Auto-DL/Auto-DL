@@ -151,6 +151,16 @@ The [community repository](https://github.com/Auto-DL/Auto-DL/blob/v1-beta/CONTR
 building Auto-DL from source, how to contribute code
 and documentation, who to contact about what, etc.
 
+### Features/Enhancements planned
+
+* Improve the UI and UX.
+
+* Show model training realted stats on the frontend.
+
+* Visualization and data preprocessing steps.
+
+* Model Explainability.
+
 ---
 ## Contact
 <!-- Actual text -->
@@ -193,3 +203,5 @@ For more details, visit our [website](https://auto-dl.tech/)
 ---
 
 ## Copyright and Licensing
+
+[GNU General Public License v3.0](https://github.com/Auto-DL/Auto-DL/blob/v1-beta/LICENSE)
