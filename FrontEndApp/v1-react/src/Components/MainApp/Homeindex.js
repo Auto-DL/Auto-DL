@@ -7,6 +7,7 @@ import HomeService from "./HomeService";
 import ProjectTable from "./projects/ProjectTable";
 import UpsertProjectModal from "./projects/UpsertProjectModal";
 import CloneProjectModal from "./projects/CloneProjectModal";
+import DeployProjectModal from "../Deployment/DeployProjectModal";
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -37,7 +38,7 @@ function Home() {
   var token = JSON.parse(localStorage.getItem("token"));
   var username = JSON.parse(localStorage.getItem("username"));
 
-  const [values, setValues] = React.useState({
+  const [values, setValues] = useState({
     project_name: "",
     project_description: "",
     data_dir: "",
@@ -48,16 +49,24 @@ function Home() {
   });
 
   const [AllProjects, setAllProjects] = useState([]);
-  const [SelectedProject, setSelectedProject] = React.useState({});
-  const [IsEdit, setIsEdit] = React.useState(false);
-  const [openModal, setOpenModal] = React.useState(false);
+  const [SelectedProject, setSelectedProject] = useState({});
+  const [IsEdit, setIsEdit] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
   const [cloneStep, setCloneStep] = useState(0);
   const [openCloneModal, setOpenCloneModal] = useState(false);
+  const [deployStep, setDeployStep] = useState(0);
+  const [openDeployModal, setOpenDeployModal] = useState(false);
 
   const [cloneOptions, setCloneOptions] = useState({
     modelLayers: false,
     preprocessingParameters: false,
     hyperParameters: false,
+  });
+
+  const [deployOptions, setDeployOptions] = useState({
+    localDeploy: false,
+    awsDeploy: false,
+    gcpDeploy: false,
   });
 
   const {
@@ -66,9 +75,22 @@ function Home() {
     hyperParameters,
   } = cloneOptions;
 
+  const {
+    localDeploy,
+    awsDeploy,
+    gcpDeploy,
+  } = deployOptions;
+
   const handleCloneChange = (event) => {
     setCloneOptions({
       ...cloneOptions,
+      [event.target.name]: event.target.checked,
+    });
+  };
+
+  const handleDeployChange = (event) => {
+    setDeployOptions({
+      ...deployOptions,
       [event.target.name]: event.target.checked,
     });
   };
@@ -77,9 +99,9 @@ function Home() {
     setOpenModal(false);
   };
 
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
 
-  const [alert, setalert] = React.useState({
+  const [alert, setalert] = useState({
     msg: "This is alert msg",
     severity: "warning",
   });
@@ -96,7 +118,7 @@ function Home() {
     setValues({ ...values, [prop]: event.target.value });
   };
 
-  const [open_backdrop, setOpen_backdrop] = React.useState(false);
+  const [open_backdrop, setOpen_backdrop] = useState(false);
 
   useEffect(() => {
     async function fetchData() {
@@ -116,7 +138,7 @@ function Home() {
       }
     }
     fetchData();
-  }, [openModal, openCloneModal, history, token, username]);
+  }, [openModal, openCloneModal, openDeployModal, history, token, username]);
 
   const handlestep = async (proj) => {
     localStorage.setItem("project_details", JSON.stringify(proj));
@@ -185,6 +207,31 @@ function Home() {
     });
   };
 
+  const deployProject = (proj) => {
+    setSelectedProject(proj);
+    setValues({
+      ...values,
+      project_name: proj.project_name,
+      project_description: proj.project_description,
+      data_dir: proj.data_dir,
+      language: proj.lang,
+      task: proj.task,
+      library: proj.lib,
+      output_file_name: proj.output_file_name,
+    });
+    setOpenDeployModal(true);
+  };
+
+  const handleCloseDeployModal = () => {
+    setOpenDeployModal(false);
+    setDeployStep(0);
+    setDeployOptions({
+      localDeploy: false,
+      awsDeploy: false,
+      gcpDeploy: false,
+    });
+  };
+
   const shareProject = async (username, project_id, share_with) => {
     const data = { username, project_id, share_with };
     const res = await HomeService.share_project(token, data);
@@ -231,6 +278,27 @@ function Home() {
         token={token}
       />
 
+      {/* Deploy Trained Projects */}
+
+      <DeployProjectModal
+        handleCloseDeployModal={handleCloseDeployModal}
+        openDeployModal={openDeployModal}
+        deployStep={deployStep}
+        handleChange={handleChange}
+        values={values}
+        classes={classes}
+        handleDeployChange={handleDeployChange}
+        localDeploy={localDeploy}
+        awsDeploy={awsDeploy}
+        gcpDeploy={gcpDeploy}
+        setDeployStep={setDeployStep}
+        values={values}
+        setOpen={setOpen}
+        setalert={setalert}
+        username={username}
+        token={token}
+      />
+
       {/* Create and Edit Projects */}
 
       <UpsertProjectModal
@@ -260,6 +328,7 @@ function Home() {
             create_new_project={create_new_project}
             shareProject={shareProject}
             cloneProject={cloneProject}
+            deployProject={deployProject}
           />
         </Grid>
 

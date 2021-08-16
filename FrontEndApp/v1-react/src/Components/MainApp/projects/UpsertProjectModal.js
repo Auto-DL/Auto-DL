@@ -192,6 +192,33 @@ const UpsertProjectModal = ({ handleCloseModal, openModal, IsEdit, values, handl
               margin="normal"
               required
               fullWidth
+              label="Data directory"
+              size="small"
+              defaultValue={values.data_dir}
+              autoComplete="Data directory"
+              data-testid="edit-project-input-datadir"
+              onChange={handleChange("data_dir")}
+            />
+          ) : (
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              label="Data directory"
+              size="small"
+              autoComplete="Data directory"
+              data-testid="create-project-input-datadir"
+              onChange={handleChange("data_dir")}
+            />
+          )}
+
+          {IsEdit ? (
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
               defaultValue={values.output_file_name}
               label="Output File Name"
               size="small"
