@@ -1,6 +1,6 @@
 # Auto-DL (A-DL)
 
-<img src="static/adl_generator.png" width="100">
+<img src="static/adl_generator.png" width=30%>
 
 ## About
 
