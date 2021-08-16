@@ -30,11 +30,10 @@ Use automate your "meta-work" so that you can focus on building your models with
 
 Execute repetitive tasks, save time, and optimize your development process with Auto-DL.
 
-## To start developing Auto-DL
+## User Guidelines
 
-The [community repository](https://github.com/Auto-DL/Auto-DL/blob/v1-beta/CONTRIBUTING.md) hosts all information about
-building Auto-DL from source, how to contribute code
-and documentation, who to contact about what, etc.
+### How to run?
+
 
 To setup Auto-DL right away in the required OS:
 
@@ -141,3 +140,20 @@ Install the necessary libraries and binaries
 
 ```
 sudo ./scripts/install.sh
+```
+---
+## Developer Guidelines
+
+The [community repository](https://github.com/Auto-DL/Auto-DL/blob/v1-beta/CONTRIBUTING.md) hosts all information about
+building Auto-DL from source, how to contribute code
+and documentation, who to contact about what, etc.
+
+---
+## Contact
+--- 
+
+## Contributors
+
+<a href="https://github.com/Auto-DL/Auto-DL/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=Auto-DL/Auto-DL" />
+</a>
