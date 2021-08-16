@@ -42,11 +42,14 @@ To setup Auto-DL right away in the required OS:
 * Install [Python](https://www.python.org/downloads/)
 * Install [Node](https://nodejs.org/en/download/)
 
+### Which OS are you on?
+* Windows
+* Linux
+* MacOS
+
 ### If you are on Windows OS
 
 * Download [Git](https://git-scm.com/download/win) 
-
-
 
 ##### Method 1
 
@@ -150,6 +153,30 @@ and documentation, who to contact about what, etc.
 
 ---
 ## Contact
+<!-- Actual text -->
+
+You can find usme on [![Twitter][1.2]][1], or on [![LinkedIn][2.2]][2].
+
+<!-- Icons -->
+
+[1.2]: http://i.imgur.com/wWzX9uB.png (twitter icon without padding)
+[2.2]: https://raw.githubusercontent.com/MartinHeinz/MartinHeinz/master/linkedin-3-16.png (LinkedIn icon without padding)
+
+<!-- Links to our social media accounts -->
+
+[1]: https://twitter.com/auto_dl
+[2]: https://www.linkedin.com/company/autodl/
+
+Email: info@auto-dl.tech
+
+Join our community on [slack]()
+
+Have doubts?
+
+Read the [FAQ]()
+
+For more details, visit our [website](https://auto-dl.tech/)
+
 --- 
 
 ## Contributors
@@ -157,3 +184,12 @@ and documentation, who to contact about what, etc.
 <a href="https://github.com/Auto-DL/Auto-DL/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=Auto-DL/Auto-DL" />
 </a>
+
+---
+
+## Maintainers and Reviewers
+
+
+---
+
+## Copyright and Licensing
