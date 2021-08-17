@@ -1,6 +1,6 @@
 # Auto-DL (A-DL)
 
-<img src="static/adl_generator.png" width=30%>
+<img src="static/logo.png" width=30%>
 
 ## About
 
@@ -116,6 +116,10 @@ npm start
 
 ##### Method 1
 
+**Note:** You can also use the same method used for windows above.
+
+#### Method 2
+
 
 ```
 git clone https://github.com/Auto-DL/Auto-DL.git
@@ -129,10 +133,18 @@ Install the necessary libraries and binaries
 ```
 sudo ./scripts/install.sh
 ```
-
+```
+sudo ./scripts/run.sh
+```
 
 ### If you are on Mac
 
+##### Method 1
+
+**Note:** You can also use the same method used for windows above.
+
+##### Method 2
+
 ```
 git clone https://github.com/Auto-DL/Auto-DL.git
 ```
@@ -142,8 +154,12 @@ cd Auto-DL
 Install the necessary libraries and binaries
 
 ```
-sudo ./scripts/install.sh
+brew ./scripts/install.sh
 ```
+```
+brew ./scripts/run.sh
+```
+
 ---
 ## Developer Guidelines
 
