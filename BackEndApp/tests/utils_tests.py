@@ -20,7 +20,7 @@ class TestUser:
         user.attributes = {
             "first_name": "test",
             "last_name": "user",
-            "email": "test_user0@gmail.com",
+            "email": "test_user@gmail.com",
         }
         user.collection = collection
         return user
@@ -51,25 +51,6 @@ class TestUser:
             ),
         )
     )
-    def user_sameEmail(self):
-        collection = mongomock.MongoClient().db.collection
-        user = User(username="test_user", password="test_pw")
-        user.attributes = {
-            "first_name": "test",
-            "last_name": "user",
-            "email": "test_user@gmail.com",
-        }
-        user.collection = collection
-        return user
-
-    @mongomock.patch(
-        servers=(
-            (
-                os.getenv("MONGODB_URI"),
-                27017,
-            ),
-        )
-    )
     def user_invalidEmail(self):
         collection = mongomock.MongoClient().db.collection
         user = User(username="test_user", password="test_pw")
@@ -77,25 +58,6 @@ class TestUser:
             "first_name": "test",
             "last_name": "user",
             "email": "test_user@.com",
-        }
-        user.collection = collection
-        return user
-
-    @mongomock.patch(
-        servers=(
-            (
-                os.getenv("MONGODB_URI"),
-                27017,
-            ),
-        )
-    )
-    def user_sameUsername(self):
-        collection = mongomock.MongoClient().db.collection
-        user = User(username="abc", password="test_pw")
-        user.attributes = {
-            "first_name": "test",
-            "last_name": "user",
-            "email": "test_user121@gmail.com",
         }
         user.collection = collection
         return user

@@ -15,10 +15,10 @@ def test_create():
     # email already registered
     with pytest.raises(ValueError) as e:
         user = TestUser()
-        mock_user = user.user_sameEmail()
+        mock_user = user.user_test()
         collection = mock_user.collection
         user_doc = {
-            "username": "abc",
+            "username": "test_user1",
             "password": None,
             "first_name": "test",
             "last_name": "use",
@@ -39,14 +39,14 @@ def test_create():
     # username already exists
     with pytest.raises(ValueError) as e:
         user = TestUser()
-        mock_user = user.user_sameUsername()
+        mock_user = user.user_test()
         collection = mock_user.collection
         user_doc = {
-            "username": "abc",
+            "username": "test_user",
             "password": None,
             "first_name": "test",
             "last_name": "use",
-            "email": "test_user@gmail.com",
+            "email": "test_user0@gmail.com",
             "is_verified": False,
         }
         collection.insert_one(user_doc)
@@ -68,7 +68,7 @@ def test_find():
     mock_user.create()
     assert mock_user.find() == collection.find_one({"username": "test_user"})
     assert mock_user.find(by_email=True) == collection.find_one(
-        {"email": "test_user0@gmail.com"}
+        {"email": "test_user@gmail.com"}
     )
 
 
