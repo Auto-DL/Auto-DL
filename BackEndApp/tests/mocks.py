@@ -1,10 +1,7 @@
 import os
 import sys
-import pytest
 
 sys.path.append("..")
-
-from authv1.auth import OTP
 
 
 class MockOS:
@@ -23,15 +20,3 @@ class MockUser:
     def mock_wrong_user(self):
         user = {"username": None, "email": None}
         return user
-
-
-class MockOTP:
-    def mock_otp(self, mocker):
-        user = MockUser()
-        mock_user = user.mock_user()
-
-        mock_os = MockOS()
-        mock_os.mock_jwt_secret(mocker)
-
-        otp_obj = OTP(mock_user)
-        return otp_obj

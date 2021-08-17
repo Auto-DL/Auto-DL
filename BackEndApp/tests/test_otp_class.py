@@ -1,14 +1,11 @@
 from datetime import datetime
 
-from .mocks import MockUser, MockOTP
-
-user = MockUser()
-mock_user = user.mock_user()
+from .utils_tests import TestOTP
 
 
-def test_create(mocker):
-    otp = MockOTP()
-    mock_otp = otp.mock_otp(mocker)
+def test_create():
+    otp = TestOTP()
+    mock_otp = otp.mock_otp()
 
     generted_otp = mock_otp.create()
     second_genereted_otp = mock_otp.create()
@@ -21,9 +18,9 @@ def test_create(mocker):
     assert stored_otp != generted_otp and stored_otp == second_genereted_otp
 
 
-def test_find(mocker):
-    otp = MockOTP()
-    mock_otp = otp.mock_otp(mocker)
+def test_find():
+    otp = TestOTP()
+    mock_otp = otp.mock_otp()
 
     username = mock_otp.username
     collection = mock_otp.collection
@@ -32,9 +29,9 @@ def test_find(mocker):
     assert mock_otp.find() == collection.find_one({"username": username})
 
 
-def test_verify(mocker):
-    otp = MockOTP()
-    mock_otp = otp.mock_otp(mocker)
+def test_verify():
+    otp = TestOTP()
+    mock_otp = otp.mock_otp()
 
     collection = mock_otp.collection
     username = mock_otp.username
@@ -54,9 +51,9 @@ def test_verify(mocker):
     )
 
 
-def test_delete(mocker):
-    otp = MockOTP()
-    mock_otp = otp.mock_otp(mocker)
+def test_delete():
+    otp = TestOTP()
+    mock_otp = otp.mock_otp()
 
     collection = mock_otp.collection
     username = mock_otp.username
