@@ -4,14 +4,14 @@ from .utils_tests import TestOTP
 
 
 def test_create():
-    otp = TestOTP()
-    mock_otp = otp.mock_otp()
+    otp_test = TestOTP()
+    otp = otp_test.create_otp()
 
-    generted_otp = mock_otp.create()
-    second_genereted_otp = mock_otp.create()
+    generted_otp = otp.create()
+    second_genereted_otp = otp.create()
 
-    collection = mock_otp.collection
-    username = mock_otp.username
+    collection = otp.collection
+    username = otp.username
 
     otp1 = collection.find_one({"username": username})
     stored_otp = otp1.get("otp")
@@ -19,45 +19,41 @@ def test_create():
 
 
 def test_find():
-    otp = TestOTP()
-    mock_otp = otp.mock_otp()
+    otp_test = TestOTP()
+    otp = otp_test.create_otp()
 
-    username = mock_otp.username
-    collection = mock_otp.collection
+    username = otp.username
+    collection = otp.collection
 
-    otp = mock_otp.create()
-    assert mock_otp.find() == collection.find_one({"username": username})
+    otp.create()
+    assert otp.find() == collection.find_one({"username": username})
 
 
 def test_verify():
-    otp = TestOTP()
-    mock_otp = otp.mock_otp()
+    otp_test = TestOTP()
+    otp = otp_test.create_otp()
 
-    collection = mock_otp.collection
-    username = mock_otp.username
+    collection = otp.collection
+    username = otp.username
 
-    mock_otp.create()
-    assert (
-        mock_otp.verify(collection.find_one({"username": username}).get("otp")) == True
-    )
-    mock_otp.create()
+    otp.create()
+    assert otp.verify(collection.find_one({"username": username}).get("otp")) == True
+    otp.create()
     collection.update_one(
         {"username": username},
         {"$set": {"expire": datetime.now()}},
         upsert=False,
     )
-    assert (
-        mock_otp.verify(collection.find_one({"username": username}).get("otp")) == False
-    )
+    assert otp.verify(collection.find_one({"username": username}).get("otp")) == False
 
 
 def test_delete():
-    otp = TestOTP()
-    mock_otp = otp.mock_otp()
+    otp_test = TestOTP()
+    otp = otp_test.create_otp()
 
-    collection = mock_otp.collection
-    username = mock_otp.username
+    collection = otp.collection
+    username = otp.username
 
-    mock_otp.create()
-    mock_otp.delete()
+    otp.create()
+    otp.delete()
     assert collection.find_one({"useraname": username}) == None

@@ -17,7 +17,7 @@ class TestOTP:
             ),
         )
     )
-    def mock_otp(self):
+    def create_otp(self):
         collection = mongomock.MongoClient().db.collection
         user = MockUser()
         mock_user = user.mock_user()
