@@ -208,7 +208,7 @@ class HomeService {
   }
   async share_project(token, data) {
     try {
-      
+
       const response = await axios.post(`v1/project/share/`, data, {
         headers: {
           "Content-Type": "application/json",
@@ -224,6 +224,37 @@ class HomeService {
   async get_all_users(token) {
     try {
       const response = await axios.get(`v1/users/all/`, {
+        headers: {
+          "Content-Type": "application/json",
+          token: `${token}`,
+        },
+      });
+      return response;
+    } catch (error) {
+      return error.response;
+    }
+  }
+
+
+
+  // async get_git_access_token(token, data) {
+  //   try {
+  //     const response = await axios.get(`v1/authorize/github/accesstoken/get/`, data, {
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         token: `${token}`,
+  //       },
+  //     });
+  //     return response;
+  //   } catch (error) {
+  //     return error.response;
+  //   }
+  // }
+
+  async get_git_access_token(token, data) {
+    try {
+      console.log("dataaaaaaaaaa is", data)
+      const response = await axios.post(`v1/authorize/github/accesstoken/get/`, data, {
         headers: {
           "Content-Type": "application/json",
           token: `${token}`,

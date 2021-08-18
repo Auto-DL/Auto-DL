@@ -88,7 +88,7 @@ class Session:
     def create(self):
         token_obj = Token(self.user)
         token = token_obj.create()
-        token = str(token, "utf-8")
+        # token = str(token, "utf-8")
         expire = token_obj.expire.strftime(DATE_FORMAT)
 
         session_document = {"token": token, "expire": expire, "user": self.user}

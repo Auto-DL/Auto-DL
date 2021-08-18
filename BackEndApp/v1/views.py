@@ -20,7 +20,8 @@ from .utils import (
     copy_file,
     format_code,
     delete_broken_symlinks,
-    get_access_token,
+    generate_git_access_token,
+    publish_to_github,
 )
 
 
@@ -706,11 +707,30 @@ def share_project(request):
     return JsonResponse({"success": success, "message": message}, status=status)
 
 
-# @api_view(["GET", "POST"])
-def publish_on_github(request):
-    print("hereeeeeee")
-    code = request.GET.get("code")
-    access_token = get_access_token(code)
+@api_view(["POST"])
+@is_authenticated
+def get_git_access_token(request):
+    print("in get access token")
+    code = request.data.get("code")
+    print("code is", code, type(code))
+    
+    try:
+        git_access_token = generate_git_access_token(code)
+    except:
+        git_access_token = None
 
-    # print(access_token)
-    return JsonResponse({"success": True, "message": access_token}, status=200)
+    if git_access_token:
+        publish_to_github(git_access_token)
+        return JsonResponse(
+            {
+                "success": True,
+                "message": "Access Token Fetched",
+                "git_access_token": git_access_token,
+            },
+            status=200,
+        )
+
+    return JsonResponse(
+        {"success": True, "message": "Something went wrong", "git_access_token": ""},
+        status=400,
+    )

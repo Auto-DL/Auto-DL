@@ -63,6 +63,7 @@ function Step2() {
   var project_details = JSON.parse(localStorage.getItem("project_details"));
   var username = JSON.parse(localStorage.getItem("username"));
   var token = JSON.parse(localStorage.getItem("token"));
+  var git_access_token = JSON.parse(localStorage.getItem("git_access_token")) || "";
 
   const [components, setcomponents] = useState([]);
   const [selected_layer_type, setselected_layer_type] = useState("");
@@ -2763,9 +2764,10 @@ function Step2() {
           {/* <Link to="https://github.com/login/oauth/authorize?client_id=cf38877318e6d0fb3c51"> */}
           <Button variant="contained" onClick={(e) => {
             e.preventDefault();
-            window.location.href = 'https://github.com/login/oauth/authorize?client_id=cf38877318e6d0fb3c51';
+            window.location.href = 'https://github.com/login/oauth/authorize?client_id=cf38877318e6d0fb3c51&scope=public_repo';
           }} color="primary">
-            Publish to GitHub
+            {git_access_token ? "Publish to GitHub" : "Authorize GitHub"}
+
           </Button>
           {/* </Link> */}
         </DialogActions>

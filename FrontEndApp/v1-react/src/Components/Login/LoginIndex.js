@@ -17,7 +17,6 @@ function LoginIndex() {
           <Route path="/step-2" component={step2} />
           <Route path="/authorize/github" component={AuthorizeGitHub} />
         </Switch>
-
         <Redirect to="/login" />
       </BrowserRouter>
     </>
