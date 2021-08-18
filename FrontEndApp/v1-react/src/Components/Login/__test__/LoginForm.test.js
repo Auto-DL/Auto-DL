@@ -1,7 +1,10 @@
 import { fireEvent, render, waitFor } from "@testing-library/react";
 import LoginForm from "../LoginForm";
 import { React } from "react";
-import { server, rest } from "./testServer";
+import { setupServer } from "msw/node";
+import { handlers, rest } from "../../../mocks/handlers.js";
+
+const server = setupServer(...handlers);
 
 // mock window location
 const mockWinAssign = jest.fn();
