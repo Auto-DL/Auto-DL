@@ -1,4 +1,4 @@
-# Auto-DL (A-DL)
+# Get Started with Auto-DL (A-DL)
 
 <img src="_static/logo.png" width=30%>
 
