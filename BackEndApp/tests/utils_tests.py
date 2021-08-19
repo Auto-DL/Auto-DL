@@ -14,7 +14,7 @@ class TestSession:
             ),
         )
     )
-    def mock_session(self):
+    def create_session(self):
         collection = mongomock.MongoClient().db.collection
         user = MockUser()
         mock_user = user.mock_user()
@@ -23,7 +23,7 @@ class TestSession:
         session_obj.collection = collection
         return session_obj
 
-    def mock_none_session(self):
+    def create_none_session(self):
         collection = mongomock.MongoClient().db.collection
         user = MockUser()
         mock_none_user = user.mock_none_user()
