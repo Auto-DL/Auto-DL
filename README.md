@@ -89,6 +89,11 @@ npm install
 
 * Clone the sample.env to create .env in both BackEndApp/ and FrontEndApp/v1-react/ and configure the necessary environment variables
 
+__Getting the .env File__
+* Auto-DL team has created an environment file for its contributers.
+* Download [the file](https://drive.google.com/file/d/15zGH1D_Uy3ZBWy4s873L9We5arpI7ls6/view?usp=sharing) and paste it in `Auto-DL/BackEndApp` directory.
+* **NOTE:** Make sure the name of the file is `.env` (that " . " is important)
+
 
 * Only after all requriements from requirements.txt are installed
 
