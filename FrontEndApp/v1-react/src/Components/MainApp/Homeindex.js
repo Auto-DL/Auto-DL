@@ -222,16 +222,6 @@ function Home() {
     setOpenDeployModal(true);
   };
 
-  const handleCloseDeployModal = () => {
-    setOpenDeployModal(false);
-    setDeployStep(0);
-    setDeployOptions({
-      localDeploy: false,
-      awsDeploy: false,
-      gcpDeploy: false,
-    });
-  };
-
   const shareProject = async (username, project_id, share_with) => {
     const data = { username, project_id, share_with };
     const res = await HomeService.share_project(token, data);
@@ -281,9 +271,10 @@ function Home() {
       {/* Deploy Trained Projects */}
 
       <DeployProjectModal
-        handleCloseDeployModal={handleCloseDeployModal}
         openDeployModal={openDeployModal}
+        setOpenDeployModal={setOpenDeployModal}
         deployStep={deployStep}
+        setDeployOptions={setDeployOptions}
         handleChange={handleChange}
         values={values}
         classes={classes}

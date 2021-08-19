@@ -701,3 +701,29 @@ def share_project(request):
     except:
         status, success, message = 500, False, "Failed"
     return JsonResponse({"success": success, "message": message}, status=status)
+
+
+@api_view(["POST"])
+@is_authenticated
+def deploy_project(request):
+    try:
+        username = request.data.get("username")
+        user = User(username=username, password=None)
+        user = user.find()
+
+        store_obj = Store(user)
+        project_id = request.data.get("project_id")
+
+        if not store_obj.exist(project_id):
+            raise Exception("No such project exists")
+
+        project_dir = store_obj.path + os.sep + project_id
+        deployment_dir = os.path.join(project_dir, "deployment")
+
+        os.mkdir(deployment_dir)
+
+        status, success, message = 200, True, "Deployment Successful"
+
+    except Exception as e:
+        status, success, message = 500, False, "Deployment Failed"
+    return JsonResponse({"success": success, "message": message}, status=status)

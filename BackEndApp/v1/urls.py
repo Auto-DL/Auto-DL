@@ -34,4 +34,6 @@ urlpatterns = [
     path("hyperparams/save/", views.save_hyperparams, name="save-hyperparams"),
     # post-processing routes
     path("code/download/", views.download_code, name="dowload-code"),
+    # deployment routes
+    path("project/deploy/", views.deploy_project, name="deploy-project"),
 ]

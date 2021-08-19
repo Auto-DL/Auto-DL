@@ -3,7 +3,19 @@ import { handleCloseModalSave } from "../operations/UpsertProject";
 import { DialogActions, DialogTitle, DialogContent } from "./styles";
 
 const UpsertProjectModal = ({ handleCloseModal, openModal, IsEdit, values, handleChange, classes, setalert, setOpen, setOpenModal, SelectedProject, username, token }) => {
-    return (
+  const handleDataDirPicker = async () => {
+    const dirHandle = await window.showDirectoryPicker();
+    console.log(dirHandle.name);
+
+    for await (const entry of dirHandle.values()) {
+      if ((entry.kind === "directory" && entry.name === "train") ||
+        (entry.kind === "directory" && entry.name === "test")) {
+        console.log(entry.kind, entry.name);
+      }
+    }
+  }
+
+  return (
       <Dialog
         onClose={handleCloseModal}
         aria-labelledby="customized-dialog-title"
@@ -157,33 +169,6 @@ const UpsertProjectModal = ({ handleCloseModal, openModal, IsEdit, values, handl
                 <MenuItem value={"Unsupervised"}>Unsupervised</MenuItem>
               </Select>
             </FormControl>
-          )}
-
-          {IsEdit ? (
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              label="Data directory"
-              size="small"
-              defaultValue={values.data_dir}
-              autoComplete="Data directory"
-              data-testid="edit-project-input-datadir"
-              onChange={handleChange("data_dir")}
-            />
-          ) : (
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              label="Data directory"
-              size="small"
-              autoComplete="Data directory"
-              data-testid="create-project-input-datadir"
-              onChange={handleChange("data_dir")}
-            />
           )}
 
           {IsEdit ? (

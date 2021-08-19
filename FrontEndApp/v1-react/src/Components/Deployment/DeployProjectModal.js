@@ -4,12 +4,9 @@ import { DialogActions, DialogTitle, DialogContent, StyledCheckbox, useStyles } 
 import LaptopMacIcon from '@material-ui/icons/LaptopMac';
 import CloudIcon from '@material-ui/icons/Cloud';
 import CloudDoneIcon from '@material-ui/icons/CloudDone';
+import DeploymentService from "./DeploymentService";
 
-
-const DeployProjectStepOne = ({ handleCloseDeployModal, handleChange, setDeployStep, values, classes }) => {
-    const [currentPklFile, setCurrentPklFile] = useState("");
-    const [pklFileName, setPklFileName] = useState("");
-
+const DeployProjectStepOne = ({ handleCloseDeployModal, handleChange, setDeployStep, values, classes, currentPklFile, setCurrentPklFile, pklFileName, setPklFileName }) => {
     const handlePklUpload = async () => {
         const pklHandle = await window.showOpenFilePicker({
             types: [
@@ -88,7 +85,7 @@ const DeployProjectStepOne = ({ handleCloseDeployModal, handleChange, setDeployS
     );
 };
 
-const DeployProjectStepTwo = ({ handleCloseDeployModal, handleDeployChange, localDeploy, awsDeploy, gcpDeploy, setDeployStep, setalert, setOpen, values, username, token, classes }) => {
+const DeployProjectStepTwo = ({ handleCloseDeployModal, handleDeployChange, localDeploy, awsDeploy, gcpDeploy, setDeployStep, classes, handleDeployment }) => {
     return (
         <div>
             <DialogTitle
@@ -131,7 +128,7 @@ const DeployProjectStepTwo = ({ handleCloseDeployModal, handleDeployChange, loca
                                 />
                             }
                             label="Deploy To AWS"
-                            disabled
+                            // disabled
                         />
                         <FormControlLabel
                             control={
@@ -145,7 +142,7 @@ const DeployProjectStepTwo = ({ handleCloseDeployModal, handleDeployChange, loca
                                 />
                             }
                             label="Deploy To GCP"
-                            disabled
+                            // disabled
                         />
                     </FormGroup>
                 </FormControl>
@@ -161,11 +158,7 @@ const DeployProjectStepTwo = ({ handleCloseDeployModal, handleDeployChange, loca
                 {(localDeploy || awsDeploy || gcpDeploy) && (
                     <Button
                         variant="contained"
-                        onClick={() => {
-                            handleCloseDeployModal();
-                            setalert({ ...values, msg: "Deployment Started Successfully", severity: "success" });
-                            setOpen(true);
-                        }}
+                        onClick={handleDeployment}
                         color="primary"
                     >
                         Initiate Deployment
@@ -176,8 +169,43 @@ const DeployProjectStepTwo = ({ handleCloseDeployModal, handleDeployChange, loca
     );
 };
 
-const DeployProjectModal = ({ handleCloseDeployModal, handleDeployChange, localDeploy, awsDeploy, gcpDeploy,  openDeployModal, deployStep, handleChange, setDeployStep, values, setalert, username, token, setOpen }) => {
+const DeployProjectModal = ({ setOpenDeployModal, setDeployStep, setDeployOptions, handleDeployChange, localDeploy, awsDeploy, gcpDeploy,  openDeployModal, deployStep, handleChange, values, setalert, token, setOpen }) => {
     const classes = useStyles();
+
+    const [currentPklFile, setCurrentPklFile] = useState("");
+    const [pklFileName, setPklFileName] = useState("");
+
+    const handleCloseDeployModal = () => {
+        setCurrentPklFile("");
+        setPklFileName("");
+        setOpenDeployModal(false);
+        setDeployStep(0);
+        setDeployOptions({
+            localDeploy: false,
+            awsDeploy: false,
+            gcpDeploy: false,
+        });
+    };
+
+    const handleDeployment = async () => {
+        handleCloseDeployModal();
+
+        const data = {
+            pklFileName: pklFileName,
+            pklFileContent: currentPklFile,
+        }
+
+        const res = await DeploymentService.deploy_project(token, data);
+
+        if (res.status === 200) {
+            setalert({ ...values, msg: res.data.message, severity: "success" });
+            localStorage.setItem("deployment_data", JSON.stringify(data));
+        } else {
+            setalert({ ...values, msg: res.data.message, severity: "error" });
+        }
+
+        setOpen(true);
+    }
 
     return (
         <Dialog
@@ -192,6 +220,10 @@ const DeployProjectModal = ({ handleCloseDeployModal, handleDeployChange, localD
                     setDeployStep={setDeployStep}
                     values={values}
                     classes={classes}
+                    currentPklFile={currentPklFile}
+                    setCurrentPklFile={setCurrentPklFile}
+                    pklFileName={pklFileName}
+                    setPklFileName={setPklFileName}
                 />
             )}
             {deployStep === 1 && (
@@ -202,12 +234,8 @@ const DeployProjectModal = ({ handleCloseDeployModal, handleDeployChange, localD
                     awsDeploy={awsDeploy}
                     gcpDeploy={gcpDeploy}
                     setDeployStep={setDeployStep}
-                    setalert={setalert}
-                    setOpen={setOpen}
-                    values={values}
-                    username={username}
-                    token={token}
                     classes={classes}
+                    handleDeployment={handleDeployment}
                 />
             )}
         </Dialog>
