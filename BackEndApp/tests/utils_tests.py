@@ -23,6 +23,14 @@ class TestSession:
         session_obj.collection = collection
         return session_obj
 
+    @mongomock.patch(
+        servers=(
+            (
+                os.getenv("MONGODB_URI"),
+                27017,
+            ),
+        )
+    )
     def create_none_session(self):
         collection = mongomock.MongoClient().db.collection
         user = MockUser()
