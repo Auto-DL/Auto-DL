@@ -5,18 +5,6 @@ import AddCircleIcon from "@material-ui/icons/AddCircle";
 const Deployment = () => {
     const classes = useStyles();
 
-    const handleCategoryPicker = async () => {
-        const dirHandle = await window.showDirectoryPicker();
-        const newDirHandle = await dirHandle.getDirectoryHandle("train", { create: false });
-        for await (const entry of newDirHandle.values()) {
-            if (entry.kind === "directory") {
-                console.log(entry.kind, entry.name);
-            } else {
-                console.log("Select Correct Data Directory");
-            }
-        }
-    }
-
     return (
         <Grid container>
             <Grid item lg={1} md={1} sm={1} xs={1}></Grid>

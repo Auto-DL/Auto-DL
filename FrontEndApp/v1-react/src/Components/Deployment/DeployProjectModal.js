@@ -6,7 +6,7 @@ import CloudIcon from '@material-ui/icons/Cloud';
 import CloudDoneIcon from '@material-ui/icons/CloudDone';
 import DeploymentService from "./DeploymentService";
 
-const DeployProjectStepOne = ({ handleCloseDeployModal, handleChange, setDeployStep, values, classes, currentPklFile, setCurrentPklFile, pklFileName, setPklFileName }) => {
+const DeployProjectStepOne = ({ handleCloseDeployModal, setDeployStep, values, classes, currentPklFile, setCurrentPklFile, pklFileName, setPklFileName }) => {
     const handlePklUpload = async () => {
         const pklHandle = await window.showOpenFilePicker({
             types: [
@@ -18,9 +18,12 @@ const DeployProjectStepOne = ({ handleCloseDeployModal, handleChange, setDeployS
                 },
             ]
         });
-        const pklFile = await pklHandle[0].getFile()
+        const pklFile = await pklHandle[0].getFile();
+
+        // Get the chunks somehow
+
         const contents = await pklFile.text();
-        setCurrentPklFile(JSON.stringify(contents));
+        setCurrentPklFile(contents);
         setPklFileName(pklHandle[0].name);
     }
 
@@ -42,8 +45,6 @@ const DeployProjectStepOne = ({ handleCloseDeployModal, handleChange, setDeployS
                     disabled
                     fullWidth
                     defaultValue={"Project Name: " + values.project_name}
-                    onChange={handleChange("project_name")}
-                    onFocus={handleChange("project_name")}
                     gutterBottom
                 />
                 <TextField
@@ -51,9 +52,7 @@ const DeployProjectStepOne = ({ handleCloseDeployModal, handleChange, setDeployS
                     margin="normal"
                     disabled
                     fullWidth
-                    defaultValue={"Task: " + values.task}
-                    onChange={handleChange("task")}
-                    onFocus={handleChange("task")}
+                    defaultValue={"Description: " + values.project_description}
                     gutterBottom
                 />
                 <Button
@@ -85,7 +84,93 @@ const DeployProjectStepOne = ({ handleCloseDeployModal, handleChange, setDeployS
     );
 };
 
-const DeployProjectStepTwo = ({ handleCloseDeployModal, handleDeployChange, localDeploy, awsDeploy, gcpDeploy, setDeployStep, classes, handleDeployment }) => {
+const DeployProjectStepTwo = ({ handleCloseDeployModal, setDeployStep, values, classes, pklFileName, setModelDeployCategories, modelDeployCategories }) => {
+    const handleCategoryPicker = async () => {
+        const dirHandle = await window.showDirectoryPicker();
+        const newDirHandle = await dirHandle.getDirectoryHandle("train", { create: false });
+        for await (const entry of newDirHandle.values()) {
+            if (entry.kind === "directory") {
+                // console.log(entry.kind, entry.name);
+                setModelDeployCategories(category => [...category, entry.name]);
+            } else {
+                console.log("Select Correct Data Directory");
+            }
+        }
+    }
+
+    return (
+        <div>
+            <DialogTitle
+                id="project-cloning-dialog"
+                onClose={handleCloseDeployModal}
+            >
+                Deploy Project - Select Data Directory
+            </DialogTitle>
+            <DialogContent dividers>
+                <Typography variant="body1" gutterBottom>
+                    Step 2: Choose the data directory for the project deployment.
+                </Typography>
+                <TextField
+                    variant="outlined"
+                    margin="normal"
+                    disabled
+                    fullWidth
+                    defaultValue={"Pickle File Name: " + pklFileName}
+                    gutterBottom
+                />
+                <TextField
+                    variant="outlined"
+                    margin="normal"
+                    disabled
+                    fullWidth
+                    defaultValue={"Task: " + values.task}
+                    gutterBottom
+                />
+                <Button
+                    size="small"
+                    variant="contained"
+                    color="primary"
+                    component="span"
+                    gutterBottom
+                    disableElevation
+                    onClick={handleCategoryPicker}
+                    className={classes.dataDirUploadBtn}
+                >
+                    Choose Directory
+                </Button>
+                <Typography variant="body2" gutterBottom className={classes.categories}>
+                    You have the following categories: <b><i>{
+                        modelDeployCategories.map((category, index) => (
+                            <div key={index}>
+                                <span>{category} </span>
+                            </div>
+                        ))
+                    }</i></b>
+                </Typography>
+            </DialogContent>
+            <DialogActions style={{ justifyContent: "space-evenly" }}>
+                <Button
+                    variant="contained"
+                    onClick={() => setDeployStep(0)}
+                    color="secondary"
+                >
+                    Previous Step
+                </Button>
+                {modelDeployCategories.length != 0 && (
+                    <Button
+                        variant="contained"
+                        onClick={() => setDeployStep(2)}
+                        color="primary"
+                    >
+                        Proceed to Step 3
+                    </Button>
+                )}
+            </DialogActions>
+        </div>
+    );
+};
+
+const DeployProjectStepThree = ({ handleCloseDeployModal, handleDeployChange, localDeploy, awsDeploy, gcpDeploy, setDeployStep, classes, handleDeployment }) => {
     return (
         <div>
             <DialogTitle
@@ -96,7 +181,7 @@ const DeployProjectStepTwo = ({ handleCloseDeployModal, handleDeployChange, loca
             </DialogTitle>
             <DialogContent dividers>
                 <Typography variant="body1" gutterBottom style={{ marginRight: "30px" }}>
-                    Step 2: Select an appropriate platform to deploy the project.
+                    Step 3: Select an appropriate platform to deploy the project.
                 </Typography>
                 <FormControl
                     component="fieldset"
@@ -150,7 +235,7 @@ const DeployProjectStepTwo = ({ handleCloseDeployModal, handleDeployChange, loca
             <DialogActions style={{ justifyContent: "space-evenly" }}>
                 <Button
                     variant="contained"
-                    onClick={() => setDeployStep(0)}
+                    onClick={() => setDeployStep(1)}
                     color="secondary"
                 >
                     Previous Step
@@ -169,15 +254,17 @@ const DeployProjectStepTwo = ({ handleCloseDeployModal, handleDeployChange, loca
     );
 };
 
-const DeployProjectModal = ({ setOpenDeployModal, setDeployStep, setDeployOptions, handleDeployChange, localDeploy, awsDeploy, gcpDeploy,  openDeployModal, deployStep, handleChange, values, setalert, token, setOpen }) => {
+const DeployProjectModal = ({ setOpenDeployModal, setDeployStep, deployOptions, setDeployOptions, handleDeployChange, localDeploy, awsDeploy, gcpDeploy,  openDeployModal, deployStep, values, SelectedProject, setalert, username, token, setOpen }) => {
     const classes = useStyles();
 
     const [currentPklFile, setCurrentPklFile] = useState("");
     const [pklFileName, setPklFileName] = useState("");
+    const [modelDeployCategories, setModelDeployCategories] = useState([]);
 
     const handleCloseDeployModal = () => {
         setCurrentPklFile("");
         setPklFileName("");
+        setModelDeployCategories([]);
         setOpenDeployModal(false);
         setDeployStep(0);
         setDeployOptions({
@@ -191,8 +278,11 @@ const DeployProjectModal = ({ setOpenDeployModal, setDeployStep, setDeployOption
         handleCloseDeployModal();
 
         const data = {
-            pklFileName: pklFileName,
-            pklFileContent: currentPklFile,
+            username: username,
+            project_id: SelectedProject.project_id,
+            deployment_options: deployOptions,
+            pkl_file_content: currentPklFile,
+            model_categories: modelDeployCategories,
         }
 
         const res = await DeploymentService.deploy_project(token, data);
@@ -216,7 +306,6 @@ const DeployProjectModal = ({ setOpenDeployModal, setDeployStep, setDeployOption
             {deployStep === 0 && (
                 <DeployProjectStepOne
                     handleCloseDeployModal={handleCloseDeployModal}
-                    handleChange={handleChange}
                     setDeployStep={setDeployStep}
                     values={values}
                     classes={classes}
@@ -228,6 +317,17 @@ const DeployProjectModal = ({ setOpenDeployModal, setDeployStep, setDeployOption
             )}
             {deployStep === 1 && (
                 <DeployProjectStepTwo
+                    handleCloseDeployModal={handleCloseDeployModal}
+                    setDeployStep={setDeployStep}
+                    values={values}
+                    classes={classes}
+                    pklFileName={pklFileName}
+                    setModelDeployCategories={setModelDeployCategories}
+                    modelDeployCategories={modelDeployCategories}
+                />
+            )}
+            {deployStep === 2 && (
+                <DeployProjectStepThree
                     handleCloseDeployModal={handleCloseDeployModal}
                     handleDeployChange={handleDeployChange}
                     localDeploy={localDeploy}

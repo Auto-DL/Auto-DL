@@ -274,8 +274,8 @@ function Home() {
         openDeployModal={openDeployModal}
         setOpenDeployModal={setOpenDeployModal}
         deployStep={deployStep}
+        deployOptions={deployOptions}
         setDeployOptions={setDeployOptions}
-        handleChange={handleChange}
         values={values}
         classes={classes}
         handleDeployChange={handleDeployChange}
@@ -284,6 +284,7 @@ function Home() {
         gcpDeploy={gcpDeploy}
         setDeployStep={setDeployStep}
         values={values}
+        SelectedProject={SelectedProject}
         setOpen={setOpen}
         setalert={setalert}
         username={username}

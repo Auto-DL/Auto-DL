@@ -88,7 +88,14 @@ export const useStyles = makeStyles({
     pklUploadBtn: {
         marginTop: "10px",
     },
+    dataDirUploadBtn: {
+        marginTop: "10px",
+    },
     pklFileName: {
+        paddingTop: "15px",
+        fontSize: "105%",
+    },
+    categories: {
         paddingTop: "15px",
         fontSize: "105%",
     },

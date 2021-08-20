@@ -1,3 +1,4 @@
+from genericpath import isdir
 from django.shortcuts import render
 from django.http import JsonResponse, HttpResponse
 from rest_framework.decorators import api_view
@@ -6,6 +7,9 @@ import sys
 import os
 import json
 import importlib
+import stat
+import git
+import pickle
 
 from authv1.store import Store
 from authv1.models import User
@@ -13,9 +17,11 @@ from authv1.decorators import is_authenticated
 from v1.models import UserData
 from dlmml.utils import json_to_dict
 from dlmml.parser import *
-
+from dotenv import load_dotenv
 
 from .utils import generate_uid, copy_file, format_code, delete_broken_symlinks
+
+load_dotenv()
 
 
 @api_view(["POST"])
@@ -718,12 +724,64 @@ def deploy_project(request):
             raise Exception("No such project exists")
 
         project_dir = store_obj.path + os.sep + project_id
-        deployment_dir = os.path.join(project_dir, "deployment")
 
-        os.mkdir(deployment_dir)
+        deployment_options = request.data.get("deployment_options")
+        localhost_deployment = deployment_options["localDeploy"]
+        aws_deployment = deployment_options["awsDeploy"]
+        gcp_deployment = deployment_options["gcpDeploy"]
 
-        status, success, message = 200, True, "Deployment Successful"
+        if localhost_deployment:
+
+            # Get Pickle File through some other way
+
+            pkl_file_content = request.data.get("pkl_file_content")
+            model_categories = request.data.get("model_categories")
+
+            deployment_dir = os.path.join(project_dir, "deployment")
+            flask_app_url = os.getenv("FLASK_APP_HTTPS_URL")
+
+            if os.path.exists(deployment_dir) and os.path.isdir(deployment_dir):
+                for root, dirs, files in os.walk(deployment_dir, topdown=False):
+                    for name in files:
+                        filename = os.path.join(root, name)
+                        os.chmod(filename, stat.S_IWUSR)
+                        os.remove(filename)
+                    for name in dirs:
+                        os.rmdir(os.path.join(root, name))
+                os.rmdir(deployment_dir)
+
+            print(f"\n{username} initiated deployment on Localhost")
+            print(f"\nCloning into {deployment_dir}\n")
+            git.Repo.clone_from(f"{flask_app_url}", f"{deployment_dir}", branch="main")
+
+            program_path = os.path.join(deployment_dir, "app.py")
+            pkl_path = os.path.join(deployment_dir, "model.pkl")
+            modified_flask_lines = []
+
+            with open(program_path, "r") as flask_fh, open(pkl_path, "wb") as pkl_fh:
+                pickle.dump(pkl_file_content, pkl_fh)
+
+                flask_lines = flask_fh.readlines()
+
+                model_path = 'MODEL_PATH = ""\n'
+                categories = "CATEGORIES = []\n"
+
+                modified_model_path = 'MODEL_PATH = "./model.pkl"\n'
+                modified_categories = f"CATEGORIES = {model_categories}\n"
+
+                for line in flask_lines:
+                    if line == model_path:
+                        modified_flask_lines.append(modified_model_path)
+                    elif line == categories:
+                        modified_flask_lines.append(modified_categories)
+                    else:
+                        modified_flask_lines.append(line)
+
+            with open(program_path, "w") as flask_fh:
+                flask_fh.writelines(modified_flask_lines)
+
+        status, success, message = 200, True, "Deployment Started Successfully"
 
     except Exception as e:
-        status, success, message = 500, False, "Deployment Failed"
+        status, success, message = 500, False, "Deployment Attempt Failed"
     return JsonResponse({"success": success, "message": message}, status=status)
