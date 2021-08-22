@@ -711,7 +711,7 @@ def share_project(request):
 
 @api_view(["POST"])
 @is_authenticated
-def deploy_project(request):
+def local_deploy(request):
     try:
         username = request.data.get("username")
         user = User(username=username, password=None)
@@ -725,62 +725,133 @@ def deploy_project(request):
 
         project_dir = store_obj.path + os.sep + project_id
 
-        deployment_options = request.data.get("deployment_options")
-        localhost_deployment = deployment_options["localDeploy"]
-        aws_deployment = deployment_options["awsDeploy"]
-        gcp_deployment = deployment_options["gcpDeploy"]
+        model_categories = request.data.get("model_categories")
 
-        if localhost_deployment:
+        deployment_dir = os.path.join(project_dir, "deployment")
+        flask_app_url = os.getenv("FLASK_APP_HTTPS_URL")
 
-            # Get Pickle File through some other way
+        if os.path.exists(deployment_dir) and os.path.isdir(deployment_dir):
+            for root, dirs, files in os.walk(deployment_dir, topdown=False):
+                for name in files:
+                    filename = os.path.join(root, name)
+                    os.chmod(filename, stat.S_IWUSR)
+                    os.remove(filename)
+                for name in dirs:
+                    os.rmdir(os.path.join(root, name))
+            os.rmdir(deployment_dir)
 
-            pkl_file_content = request.data.get("pkl_file_content")
-            model_categories = request.data.get("model_categories")
+        print(f"\n{username} initiated deployment on Localhost")
+        print(f"\nCloning into {deployment_dir}\n")
+        git.Repo.clone_from(f"{flask_app_url}", f"{deployment_dir}", branch="main")
 
-            deployment_dir = os.path.join(project_dir, "deployment")
-            flask_app_url = os.getenv("FLASK_APP_HTTPS_URL")
+        program_path = os.path.join(deployment_dir, "app.py")
+        modified_flask_lines = []
 
-            if os.path.exists(deployment_dir) and os.path.isdir(deployment_dir):
-                for root, dirs, files in os.walk(deployment_dir, topdown=False):
-                    for name in files:
-                        filename = os.path.join(root, name)
-                        os.chmod(filename, stat.S_IWUSR)
-                        os.remove(filename)
-                    for name in dirs:
-                        os.rmdir(os.path.join(root, name))
-                os.rmdir(deployment_dir)
+        with open(program_path, "r") as flask_fh:
 
-            print(f"\n{username} initiated deployment on Localhost")
-            print(f"\nCloning into {deployment_dir}\n")
-            git.Repo.clone_from(f"{flask_app_url}", f"{deployment_dir}", branch="main")
+            flask_lines = flask_fh.readlines()
 
-            program_path = os.path.join(deployment_dir, "app.py")
-            pkl_path = os.path.join(deployment_dir, "model.pkl")
-            modified_flask_lines = []
+            categories = "CATEGORIES = []\n"
+            modified_categories = f"CATEGORIES = {model_categories}\n"
 
-            with open(program_path, "r") as flask_fh, open(pkl_path, "wb") as pkl_fh:
+            for line in flask_lines:
+                if line == categories:
+                    modified_flask_lines.append(modified_categories)
+                else:
+                    modified_flask_lines.append(line)
+
+        with open(program_path, "w") as flask_fh:
+            flask_fh.writelines(modified_flask_lines)
+
+        status, success, message = 200, True, "Deployment Initiated Successfully"
+
+    except Exception as e:
+        status, success, message = 500, False, "Deployment Attempt Failed"
+    return JsonResponse({"success": success, "message": message}, status=status)
+
+
+@api_view(["POST"])
+@is_authenticated
+def cloud_deploy(request):
+    try:
+        username = request.data.get("username")
+        user = User(username=username, password=None)
+        user = user.find()
+
+        store_obj = Store(user)
+        project_id = request.data.get("project_id")
+
+        if not store_obj.exist(project_id):
+            raise Exception("No such project exists")
+
+        project_dir = store_obj.path + os.sep + project_id
+
+        model_categories = request.data.get("model_categories")
+
+        # Create separate file for each chunk of pickle data
+
+        pkl_file_content = request.data.get("pkl_file_content")
+        current_chunk = request.data.get("current_chunk")
+        total_chunks = request.data.get("total_chunks")
+
+        pkl_dir = os.path.join(project_dir, "pickle")
+        pkl_path = os.path.join(pkl_dir, f"model_{current_chunk}.pkl")
+
+        if os.path.exists(pkl_dir) and os.path.isdir(pkl_dir):
+            with open(pkl_path, "wb") as pkl_fh:
+                pickle.dump(pkl_file_content, pkl_fh)
+        else:
+            os.mkdir(pkl_dir)
+            with open(pkl_path, "wb") as pkl_fh:
                 pickle.dump(pkl_file_content, pkl_fh)
 
-                flask_lines = flask_fh.readlines()
+        # deployment_dir = os.path.join(project_dir, "deployment")
+        # flask_app_url = os.getenv("FLASK_APP_HTTPS_URL")
 
-                model_path = 'MODEL_PATH = ""\n'
-                categories = "CATEGORIES = []\n"
+        # if os.path.exists(deployment_dir) and os.path.isdir(deployment_dir):
+        #     for root, dirs, files in os.walk(deployment_dir, topdown=False):
+        #         for name in files:
+        #             filename = os.path.join(root, name)
+        #             os.chmod(filename, stat.S_IWUSR)
+        #             os.remove(filename)
+        #         for name in dirs:
+        #             os.rmdir(os.path.join(root, name))
+        #     os.rmdir(deployment_dir)
 
-                modified_model_path = 'MODEL_PATH = "./model.pkl"\n'
-                modified_categories = f"CATEGORIES = {model_categories}\n"
+        # print(f"\n{username} initiated deployment on Localhost")
+        # print(f"\nCloning into {deployment_dir}\n")
+        # git.Repo.clone_from(f"{flask_app_url}", f"{deployment_dir}", branch="main")
 
-                for line in flask_lines:
-                    if line == model_path:
-                        modified_flask_lines.append(modified_model_path)
-                    elif line == categories:
-                        modified_flask_lines.append(modified_categories)
-                    else:
-                        modified_flask_lines.append(line)
+        # program_path = os.path.join(deployment_dir, "app.py")
+        # pkl_path = os.path.join(deployment_dir, "model.pkl")
+        # modified_flask_lines = []
 
-            with open(program_path, "w") as flask_fh:
-                flask_fh.writelines(modified_flask_lines)
+        # with open(program_path, "r") as flask_fh, open(pkl_path, "wb") as pkl_fh:
+        #     pickle.dump(pkl_file_content, pkl_fh)
 
-        status, success, message = 200, True, "Deployment Started Successfully"
+        #     flask_lines = flask_fh.readlines()
+
+        #     model_path = 'MODEL_PATH = ""\n'
+        #     categories = "CATEGORIES = []\n"
+
+        #     modified_model_path = 'MODEL_PATH = "./model.pkl"\n'
+        #     modified_categories = f"CATEGORIES = {model_categories}\n"
+
+        #     for line in flask_lines:
+        #         if line == model_path:
+        #             modified_flask_lines.append(modified_model_path)
+        #         elif line == categories:
+        #             modified_flask_lines.append(modified_categories)
+        #         else:
+        #             modified_flask_lines.append(line)
+
+        # with open(program_path, "w") as flask_fh:
+        #     flask_fh.writelines(modified_flask_lines)
+
+        if current_chunk == total_chunks:
+            status, success, message = 200, True, "Cloud Deployment Successful"
+        else:
+            pass
 
     except Exception as e:
         status, success, message = 500, False, "Deployment Attempt Failed"

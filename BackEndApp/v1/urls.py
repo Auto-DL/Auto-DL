@@ -35,5 +35,6 @@ urlpatterns = [
     # post-processing routes
     path("code/download/", views.download_code, name="dowload-code"),
     # deployment routes
-    path("project/deploy/", views.deploy_project, name="deploy-project"),
+    path("deploy/local", views.local_deploy, name="local-deploy"),
+    path("deploy/cloud", views.cloud_deploy, name="cloud-deploy"),
 ]

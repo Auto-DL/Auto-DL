@@ -54,7 +54,6 @@ function Home() {
   const [openModal, setOpenModal] = useState(false);
   const [cloneStep, setCloneStep] = useState(0);
   const [openCloneModal, setOpenCloneModal] = useState(false);
-  const [deployStep, setDeployStep] = useState(0);
   const [openDeployModal, setOpenDeployModal] = useState(false);
 
   const [cloneOptions, setCloneOptions] = useState({
@@ -273,16 +272,14 @@ function Home() {
       <DeployProjectModal
         openDeployModal={openDeployModal}
         setOpenDeployModal={setOpenDeployModal}
-        deployStep={deployStep}
         deployOptions={deployOptions}
         setDeployOptions={setDeployOptions}
-        values={values}
-        classes={classes}
-        handleDeployChange={handleDeployChange}
         localDeploy={localDeploy}
         awsDeploy={awsDeploy}
         gcpDeploy={gcpDeploy}
-        setDeployStep={setDeployStep}
+        values={values}
+        classes={classes}
+        handleDeployChange={handleDeployChange}
         values={values}
         SelectedProject={SelectedProject}
         setOpen={setOpen}
