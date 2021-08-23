@@ -1,12 +1,12 @@
 import { useRouter } from "next/router";
 import Main from "layouts/Main";
 
-export default function ProjectHome() {
+export default function Hub() {
   const router = useRouter();
   const projectName = router.query.projectName;
   return (
-    <Main projectName={projectName} activeTab="Dashboard">
-      DASHBOARD
+    <Main projectName={projectName} activeTab="Hub">
+      HUB
     </Main>
   );
 }

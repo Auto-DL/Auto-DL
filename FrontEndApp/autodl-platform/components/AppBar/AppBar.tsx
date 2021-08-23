@@ -1,5 +1,7 @@
 import React from 'react';
-import { fade, makeStyles, Theme, createStyles } from '@material-ui/core/styles';
+import Link from 'next/link';
+import Image from 'next/image';
+import { alpha, makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
@@ -8,21 +10,23 @@ import InputBase from '@material-ui/core/InputBase';
 import Badge from '@material-ui/core/Badge';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
-import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
 import AccountCircle from '@material-ui/icons/AccountCircle';
-import MailIcon from '@material-ui/icons/Mail';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import MoreIcon from '@material-ui/icons/MoreVert';
+import logo from 'public/icon.png';
 
 type Prop = {
-  projectName: string
-}
+  projectName?: string | string[] | undefined;
+};
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     bar: {
-      zIndex: theme.zIndex.drawer + 1
+      zIndex: theme.zIndex.drawer + 1,
+    },
+    logo: {
+      margin: '0px',
     },
     grow: {
       flexGrow: 1,
@@ -52,9 +56,9 @@ const useStyles = makeStyles((theme: Theme) =>
     search: {
       position: 'relative',
       borderRadius: theme.shape.borderRadius,
-      backgroundColor: fade(theme.palette.common.white, 0.15),
+      backgroundColor: alpha(theme.palette.common.white, 0.15),
       '&:hover': {
-        backgroundColor: fade(theme.palette.common.white, 0.25),
+        backgroundColor: alpha(theme.palette.common.white, 0.25),
       },
       marginRight: theme.spacing(2),
       marginLeft: 0,
@@ -185,7 +189,9 @@ export default function PrimaryAppBar({ projectName }: Prop) {
             color="inherit"
             aria-label="open drawer"
           >
-            <MenuIcon />
+            <Link href="/">
+              <Image src={logo} width="30" height="30" />
+            </Link>
           </IconButton>
           <Typography className={classes.brand} variant="h6" noWrap>
             AutoDL

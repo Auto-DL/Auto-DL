@@ -9,12 +9,13 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Settings from '@material-ui/icons/Settings';
-import dashboardRoutes from '../../utils/routes';
+import Routes from 'utils/routes';
 import Router from 'next/router';
 
-type Prop = {
-  projectName: string,
-}
+type Props = {
+  activeTab?: string;
+  projectName?: string | string[] | undefined;
+};
 
 const drawerWidth = 240;
 
@@ -34,6 +35,11 @@ const useStyles = makeStyles((theme: Theme) =>
     active: {
       color: '#FFFFFF',
       opacity: '1',
+      fontSize: '20px'
+    },
+    inactive: {
+      color: '#FFFFFF',
+      opacity: '0.5',
       fontSize: '20px'
     },
     drawer: {
@@ -64,7 +70,7 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-export default function SideBar({ projectName }: Prop) {
+export default function SideBar({ activeTab, projectName }: Props) {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
 
@@ -94,13 +100,14 @@ export default function SideBar({ projectName }: Prop) {
     >
       <Toolbar />
       <List>
-        {dashboardRoutes.map((route) => (
+        {Routes.map((route) => (
           <ListItem
             button
             key={route.name}
-            onClick={() => Router.push(route.path)}
+            onClick={() => Router.push(`/project${route.path}?projectName=${projectName}`)}
             className={clsx(classes.icon, {
-              [classes.active]: route.name == ""
+              [classes.active]: route.name == activeTab,
+              [classes.inactive]: route.name != activeTab,
             })}
           >
             <ListItemIcon style={{ color: 'inherit' }}><route.icon /></ListItemIcon>

@@ -11,6 +11,7 @@
   "dependencies": {
     "@material-ui/core": "^4.12.3",
     "@material-ui/icons": "^4.11.2",
+    "clsx": "^1.1.1",
     "next": "11.0.1",
     "react": "17.0.2",
     "react-dom": "17.0.2",

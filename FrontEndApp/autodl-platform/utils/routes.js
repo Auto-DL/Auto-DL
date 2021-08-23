@@ -1,31 +1,37 @@
 // @material-ui/icons
-import Dashboard from "@material-ui/icons/Dashboard";
+import AccountTreeRoundedIcon from '@material-ui/icons/AccountTree';
 import Assignment from "@material-ui/icons/Assignment";
+import BuildIcon from '@material-ui/icons/Build';
+import Dashboard from "@material-ui/icons/Dashboard";
 import HistoryOutlinedIcon from '@material-ui/icons/HistoryOutlined';
 import { IoRocketSharp } from 'react-icons/io5';
-import AccountTreeRoundedIcon from '@material-ui/icons/AccountTree';
 
-const ProjectRoutes = [
+const Routes = [
   {
-    path: "/project/",
+    path: "/",
     name: "Dashboard",
     icon: Dashboard
   },
   {
-    path: "/project/hub",
+    path: "/hub",
     name: "Hub",
     icon: AccountTreeRoundedIcon
   },
   {
-    path: "/project/deployments",
+    path: "/configurations",
+    name: "Configurations",
+    icon: BuildIcon
+  },
+  {
+    path: "/deployments",
     name: "Deployments",
     icon: IoRocketSharp,
   },
   {
-    path: "/project/",
+    path: "/recent",
     name: "Recent",
     icon: HistoryOutlinedIcon,
   },
 ];
 
-export default ProjectRoutes;
+export default Routes;
