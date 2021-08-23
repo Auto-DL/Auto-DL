@@ -18,6 +18,9 @@ export const CloudDeployStepThree = ({ handleCloseDeployModal, setDeployStep, va
         setNumberOfChunks(Math.ceil(pklFile.size / pklChunkSize));
 
         const contents = await pklFile.text();
+        // GET BYTES
+        const contentBytes = await pklFile.arrayBuffer();
+        console.log(contentBytes);
         setCurrentPklFile(contents);
     }
 

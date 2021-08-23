@@ -795,15 +795,31 @@ def cloud_deploy(request):
         total_chunks = request.data.get("total_chunks")
 
         pkl_dir = os.path.join(project_dir, "pickle")
-        pkl_path = os.path.join(pkl_dir, f"model_{current_chunk}.pkl")
+        pkl_path = os.path.join(pkl_dir, f"model.pkl")
+        # pkl_path = os.path.join(pkl_dir, f"model_{current_chunk}.pkl")
 
-        if os.path.exists(pkl_dir) and os.path.isdir(pkl_dir):
-            with open(pkl_path, "wb") as pkl_fh:
-                pickle.dump(pkl_file_content, pkl_fh)
-        else:
-            os.mkdir(pkl_dir)
-            with open(pkl_path, "wb") as pkl_fh:
-                pickle.dump(pkl_file_content, pkl_fh)
+        print(pkl_file_content)
+        print(type(pkl_file_content))
+
+        os.mkdir(pkl_dir)
+        print("Directory created")
+
+        try:
+            with open(pkl_path, "wb+") as pkl_fh:
+                pkl_fh.write(pkl_file_content)
+                # pickle.dump(pkl_file_content, pkl_fh)
+
+            print("File created")
+        except Exception as e:
+            print(e)
+
+        # if os.path.exists(pkl_dir) and os.path.isdir(pkl_dir):
+        #     with open(pkl_path, "wb") as pkl_fh:
+        #         pickle.dump(pkl_file_content, pkl_fh)
+        # else:
+        #     os.mkdir(pkl_dir)
+        #     with open(pkl_path, "wb") as pkl_fh:
+        #         pickle.dump(pkl_file_content, pkl_fh)
 
         # deployment_dir = os.path.join(project_dir, "deployment")
         # flask_app_url = os.getenv("FLASK_APP_HTTPS_URL")
@@ -848,10 +864,10 @@ def cloud_deploy(request):
         # with open(program_path, "w") as flask_fh:
         #     flask_fh.writelines(modified_flask_lines)
 
-        if current_chunk == total_chunks:
-            status, success, message = 200, True, "Cloud Deployment Successful"
-        else:
-            pass
+        # if current_chunk == total_chunks:
+        status, success, message = 200, True, "Cloud Deployment Successful"
+        # else:
+        #     pass
 
     except Exception as e:
         status, success, message = 500, False, "Deployment Attempt Failed"
