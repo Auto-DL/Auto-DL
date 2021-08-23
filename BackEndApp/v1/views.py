@@ -713,24 +713,115 @@ def get_git_access_token(request):
     print("in get access token")
     code = request.data.get("code")
     print("code is", code, type(code))
-    
-    try:
-        git_access_token = generate_git_access_token(code)
-    except:
-        git_access_token = None
+
+    git_access_token = generate_git_access_token(code)
 
     if git_access_token:
-        publish_to_github(git_access_token)
-        return JsonResponse(
-            {
-                "success": True,
-                "message": "Access Token Fetched",
-                "git_access_token": git_access_token,
-            },
-            status=200,
-        )
+        try:
+            publish_to_github(git_access_token)
+            status, success, message = 200, True, "Access Token Fetched"
+        except:
+            status, success, message = 500, False, "Failed"
+    else:
+        status, success, message = 500, False, "Something went wrong"
 
     return JsonResponse(
-        {"success": True, "message": "Something went wrong", "git_access_token": ""},
-        status=400,
+        {"success": success, "message": message},
+        status=status,
+    )
+
+
+@api_view(["POST"])
+@is_authenticated
+def set_git_access_token(request):
+    print("in set access token")
+    username = request.data.get("username")
+    code = request.data.get("code")
+    print("code is", code, type(code))
+    user = User(username=username, password=None)
+    this_user = user.find()
+    print()
+    print()
+
+    # print(this_user.get("GitAccessToken"))
+    print()
+
+    print()
+
+    if this_user.get("GitAccessToken") is None:
+        try:
+            git_access_token = generate_git_access_token(code)
+            if git_access_token is not None:
+                user.update("GitAccessToken", git_access_token)
+            else:
+                status, success, message = 500, False, "Something went wrong"
+                return JsonResponse(
+                    {
+                        "success": success,
+                        "message": message,
+                    },
+                    status=status,
+                )
+        except:
+            message = "Something went wrong"
+            print(message)
+    else:
+        print("token in db is", this_user.get("GitAccessToken"))
+
+    print("hereeeeeeeeeeeeee")
+    try:
+        print("going to publish")
+
+        status, message = publish_to_github(this_user.get("GitAccessToken"))
+
+        if status == 200:
+            status, success, message = 200, True, "Successfully Published"
+        else:
+            status, success, message = 500, False, "Something went wrong"
+    except:
+        status, success, message = 500, False, "Something went wrong"
+
+    return JsonResponse(
+        {
+            "success": success,
+            "message": message,
+        },
+        status=status,
+    )
+
+
+@api_view(["POST"])
+@is_authenticated
+def set_git_access_token2(request):
+    print("in set access token")
+    username = request.data.get("username")
+    code = request.data.get("code")
+    print(username, code)
+    # add key 'access token' in mongo database
+    user = User(username=username, password=None)
+    this_user = user.find()
+
+    if this_user.get("GitAccessToken") is None:
+        try:
+            git_access_token = generate_git_access_token(code)
+            if git_access_token:
+                user.update("GitAccessToken", git_access_token)
+            message = "Access token set"
+        except:
+            message = "Something went wrong"
+            print(message)
+    else:
+        print("token in db is", this_user.get("GitAccessToken"))
+    # print(user.getGitAccessToken())
+    # print(user.getGitAccessToken())
+    # git_access_token = generate_git_access_token(code)
+    # user.set_git_access_token(git_access_token)
+    # user.save()
+    return JsonResponse(
+        {
+            "success": True,
+            # "message": "Access Token Fetched",
+            "message": "done",
+        },
+        status=200,
     )

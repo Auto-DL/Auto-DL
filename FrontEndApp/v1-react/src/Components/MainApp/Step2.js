@@ -2761,13 +2761,12 @@ function Step2() {
           <Button variant="contained" onClick={download_code} color="primary">
             Download Code
           </Button>
-          {/* <Link to="https://github.com/login/oauth/authorize?client_id=cf38877318e6d0fb3c51"> */}
           <Button variant="contained" onClick={(e) => {
             e.preventDefault();
             window.location.href = 'https://github.com/login/oauth/authorize?client_id=cf38877318e6d0fb3c51&scope=public_repo';
           }} color="primary">
-            {git_access_token ? "Publish to GitHub" : "Authorize GitHub"}
-
+            {/* {git_access_token ? "Publish to GitHub" : "Authorize GitHub"} */}
+            Publish to GitHub
           </Button>
           {/* </Link> */}
         </DialogActions>

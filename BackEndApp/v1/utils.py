@@ -1,8 +1,9 @@
 from uuid import uuid4 as uid
 import os
 from github import Github
+from dotenv import load_dotenv
 
-# g = Github("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")
+load_dotenv()
 g = Github()
 
 
@@ -52,14 +53,17 @@ def delete_broken_symlinks(path):
 
 
 def generate_git_access_token(code):
-    clientID = "cf38877318e6d0fb3c51"
-    secret = "fe4a30a8712d3621ad02799e739ef913d660cc53"
-    oauth = g.get_oauth_application(clientID, secret)
-    # url = oauth.get_login_url()
-    access_token = oauth.get_access_token(code=code)
-    tokenID = access_token.token
-    print("token is")
-    print(tokenID)
+    print("generating access token")
+    clientID = os.getenv("GITHUB_CLIENT_ID")
+    secret = os.getenv("GITHUB_CLIENT_SECRET")
+    try:
+        oauth = g.get_oauth_application(clientID, secret)
+
+        access_token = oauth.get_access_token(code=code)
+        tokenID = access_token.token
+        print("token is")
+        print(tokenID)
+
     # gnew = Github(tokenID)
     # repos = gnew.get_user().get_repos()
     # print("curret repos are")
@@ -76,23 +80,35 @@ def generate_git_access_token(code):
     # print("current new repos are")
     # for i in repos:
     #     print(i)
+    except:
+        print("exception has occured in generating token")
+        tokenID = None
     return tokenID
 
 
 def publish_to_github(
     tokenID, repo_name="audo-dl", proj_name="audo-dl first project.py"
 ):
+    print("publishing")
     try:
         g = Github(tokenID)
         repo = g.get_user().create_repo(repo_name)
         file_name = proj_name
+        print(file_name)
         with open(
             "/home/rajtiwari/.autodl/raj/2a5d611ae8f942daa7047a27a4af9192/test.py"
         ) as f:
             file_content = f.read()
         file = repo.create_file(file_name, "inital commit", file_content)
+
+        status, message = 200, "Success"
+
     except Exception as e:
-        print(e)
+        print("exception has occured")
+
+        status, message = 401, "Internal Server Error"
+
+    return status, message
 
 
 # print(t.objects)

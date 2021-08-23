@@ -76,6 +76,25 @@ class User:
         # check if token for this guy exits
         # do stuff
 
+    # def addGitAccessToken(self, token):
+    #     """Add a Git Access token to the user."""
+    #     try:
+    #         self.collection.update(
+    #             {"username": self.username}, {"$set": {"GitAccessToken": token}}
+    #         )
+    #         return 0, None
+    #     except:
+    #         return 1, "Could not add Git Access Token."
+
+    # def getGitAccessToken(self):
+    #     """Get the Git Access token of the user."""
+    #     try:
+    #         return self.collection.find_one({"username": self.username})[
+    #             "GitAccessToken"
+    #         ]
+    #     except:
+    #         return None
+
 
 class Session:
     def __init__(self, user, **kwargs):
@@ -99,7 +118,6 @@ class Session:
             return None
 
     def delete(self, token):
-
         if not self.verify(token):
             return False
 

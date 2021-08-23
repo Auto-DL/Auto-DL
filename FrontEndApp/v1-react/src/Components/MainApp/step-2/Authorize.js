@@ -9,28 +9,35 @@ const AuthorizeGitHub = () => {
     const search = window.location.search;
     const params = new URLSearchParams(search);
     const code = params.get("code");
-    localStorage.setItem("code", code);
+    localStorage.setItem("code", JSON.stringify(code));
 
     const get_git_accesss_token = async () => {
-        const code = localStorage.getItem("code");
-        const username = localStorage.getItem("username");
-        const token = localStorage.getItem("token");
+        const code = JSON.parse(localStorage.getItem("code"));
+        const username = JSON.parse(localStorage.getItem("username"));
+        const token = JSON.parse(localStorage.getItem("token"));
         if (code && username) {
             const data = { username, code };
             console.log("data is", data);
-
-            const res = await HomeService.get_git_access_token(token, data);
+            const res = await HomeService.set_git_access_token(token, data);
             if (res.status === 200) {
-                // localStorage.setItem("git_access_token", );
-                localStorage.setItem("git_access_token", JSON.stringify(res.data.git_access_token));
-                // localStorage.setItem("git_access_token", JSON.stringify(res.git_access_token.user));
-                // setalert({ ...values, msg: res.data.message, severity: "success" });
-                localStorage.removeItem("code");
-                history.push("/home");
+                console.log("doneeeeeeeeeeee");
+            
+                history.push({
+                    pathname: '/github/publish',
+                    state: {
+                        message: "success"
+                    }
+                });
             }
             else {
                 // setalert({ ...values, msg: res.data.message, severity: "error" });
-                history.push("/home");
+                // history.push("/home");
+                history.push({
+                    pathname: '/github/publish',
+                    state: {
+                        message: "failed"
+                    }
+                });
             }
 
         } else {
@@ -39,6 +46,7 @@ const AuthorizeGitHub = () => {
 
     const git_access_token = localStorage.getItem("git_access_token");
     if (git_access_token) {
+        console.log("got the token");
     } else {
         get_git_accesss_token();
     }
