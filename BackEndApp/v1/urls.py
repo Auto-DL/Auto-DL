@@ -36,8 +36,8 @@ urlpatterns = [
     path("code/download/", views.download_code, name="dowload-code"),
     # publish to github routes
     path(
-        "authorize/github/accesstoken/set/",
-        views.set_git_access_token,
-        name="set-git-access-token",
+        "github/publish/",
+        views.publish_on_github,
+        name="publish-on-github",
     ),
 ]

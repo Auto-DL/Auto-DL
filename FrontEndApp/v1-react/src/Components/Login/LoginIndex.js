@@ -16,7 +16,7 @@ function LoginIndex() {
           <Route path="/login" exact component={LoginForm} />
           <Route path="/home" component={Homeindex} />
           <Route path="/step-2" component={step2} />
-          <Route path="/authorize/github" component={AuthorizeGitHub} />
+          <Route path="/github/authorize" component={AuthorizeGitHub} />
           <Route path="/github/publish" component={GitHubResponse} />
 
         </Switch>

@@ -2,6 +2,8 @@ from uuid import uuid4 as uid
 import os
 from github import Github
 from dotenv import load_dotenv
+from cryptography.fernet import Fernet
+import base64
 
 load_dotenv()
 g = Github()
@@ -48,12 +50,7 @@ def delete_broken_symlinks(path):
             os.remove(os.path.join(path, f.name))
 
 
-# if __name__ == "__main__":
-#     print(generate_uid())
-
-
 def generate_git_access_token(code):
-    print("generating access token")
     clientID = os.getenv("GITHUB_CLIENT_ID")
     secret = os.getenv("GITHUB_CLIENT_SECRET")
     try:
@@ -61,45 +58,35 @@ def generate_git_access_token(code):
 
         access_token = oauth.get_access_token(code=code)
         tokenID = access_token.token
-        print("token is")
-        print(tokenID)
-
-    # gnew = Github(tokenID)
-    # repos = gnew.get_user().get_repos()
-    # print("curret repos are")
-    # for i in repos:
-    #     print(i)
-    # print("adding new repo")
-    # repo = gnew.get_user().create_repo("myrepo")
-    # # add a file to the repository
-    # file_name = "myfile.txt"
-    # file_content = "my file content"
-    # file = repo.create_file(file_name, "inital commit", file_content)
-    # print("file added")
-
-    # print("current new repos are")
-    # for i in repos:
-    #     print(i)
     except:
         print("exception has occured in generating token")
         tokenID = None
     return tokenID
 
 
-def publish_to_github(
-    tokenID, repo_name="audo-dl", proj_name="audo-dl first project.py"
+def push_to_github(
+    tokenID, repo_name, filename, commit_message, make_private, project_dir
 ):
-    print("publishing")
+
     try:
         g = Github(tokenID)
-        repo = g.get_user().create_repo(repo_name)
-        file_name = proj_name
-        print(file_name)
-        with open(
-            "/home/rajtiwari/.autodl/raj/2a5d611ae8f942daa7047a27a4af9192/test.py"
-        ) as f:
+
+        filename = filename
+        filename = filename.replace(" ", "_")
+        if not filename.endswith(".py"):
+            filename += ".py"
+        print(make_private)
+        if make_private == True:
+            make_private = True
+        else:
+            make_private = False
+
+        print(filename, project_dir)
+        print(make_private)
+        repo = g.get_user().create_repo(repo_name, private=make_private)
+        with open(project_dir + os.sep + "test.py") as f:
             file_content = f.read()
-        file = repo.create_file(file_name, "inital commit", file_content)
+        file = repo.create_file(filename, commit_message, file_content)
 
         status, message = 200, "Success"
 
@@ -113,3 +100,25 @@ def publish_to_github(
 
 # print(t.objects)
 # return t
+
+
+def encrypt(txt):
+    try:
+        txt = str(txt)
+        cipher_suite = Fernet(os.getenv("ENCRYPT_KEY"))  # key should be byte
+        encrypted_text = cipher_suite.encrypt(txt.encode("ascii"))
+
+        encrypted_text = base64.urlsafe_b64encode(encrypted_text).decode("ascii")
+        return encrypted_text
+    except Exception:
+        return None
+
+
+def decrypt(txt):
+    try:
+        txt = base64.urlsafe_b64decode(txt)
+        cipher_suite = Fernet(os.getenv("ENCRYPT_KEY"))
+        decoded_text = cipher_suite.decrypt(txt).decode("ascii")
+        return decoded_text
+    except Exception:
+        return None

@@ -251,11 +251,11 @@ class HomeService {
   //   }
   // }
 
-  async set_git_access_token(token, data) {
+  async publish_to_github(token, data) {
     try {
       console.log("dataaaaaaaaaa in service is", data);
       console.log("token is ", token);
-      const response = await axios.post(`v1/authorize/github/accesstoken/set/`, data, {
+      const response = await axios.post(`v1/github/publish/`, data, {
         headers: {
           "Content-Type": "application/json",
           token: `${token}`,

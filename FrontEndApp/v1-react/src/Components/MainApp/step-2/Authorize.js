@@ -9,19 +9,18 @@ const AuthorizeGitHub = () => {
     const search = window.location.search;
     const params = new URLSearchParams(search);
     const code = params.get("code");
-    localStorage.setItem("code", JSON.stringify(code));
 
-    const get_git_accesss_token = async () => {
-        const code = JSON.parse(localStorage.getItem("code"));
+    const publish_code_to_github = async () => {
+        console.log("publishingggggggg");
         const username = JSON.parse(localStorage.getItem("username"));
         const token = JSON.parse(localStorage.getItem("token"));
-        if (code && username) {
-            const data = { username, code };
+        const details = JSON.parse(localStorage.getItem("publish_details"));
+        if (code && username && details) {
+            const data = { username, code, details };
             console.log("data is", data);
-            const res = await HomeService.set_git_access_token(token, data);
+            const res = await HomeService.publish_to_github(token, data);
             if (res.status === 200) {
                 console.log("doneeeeeeeeeeee");
-            
                 history.push({
                     pathname: '/github/publish',
                     state: {
@@ -30,8 +29,7 @@ const AuthorizeGitHub = () => {
                 });
             }
             else {
-                // setalert({ ...values, msg: res.data.message, severity: "error" });
-                // history.push("/home");
+
                 history.push({
                     pathname: '/github/publish',
                     state: {
@@ -39,17 +37,13 @@ const AuthorizeGitHub = () => {
                     }
                 });
             }
+            // localStorage.removeItem("publish_details");
 
         } else {
         }
     };
 
-    const git_access_token = localStorage.getItem("git_access_token");
-    if (git_access_token) {
-        console.log("got the token");
-    } else {
-        get_git_accesss_token();
-    }
+    publish_code_to_github();
 
     return (
         <div className="container">

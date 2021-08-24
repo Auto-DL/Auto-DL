@@ -1,7 +1,5 @@
 from cryptography.fernet import Fernet
 import base64
-import logging
-import traceback
 import os
 
 from dotenv import load_dotenv
@@ -17,8 +15,7 @@ def encrypt(txt):
 
         encrypted_text = base64.urlsafe_b64encode(encrypted_text).decode("ascii")
         return encrypted_text
-    except Exception as e:
-        logging.getLogger("error_logger").error(traceback.format_exc())
+    except Exception:
         return None
 
 
@@ -28,6 +25,5 @@ def decrypt(txt):
         cipher_suite = Fernet(os.getenv("ENCRYPT_KEY"))
         decoded_text = cipher_suite.decrypt(txt).decode("ascii")
         return decoded_text
-    except Exception as e:
-        logging.getLogger("error_logger").error(traceback.format_exc())
+    except Exception:
         return None

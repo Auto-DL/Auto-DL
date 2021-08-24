@@ -21,7 +21,9 @@ from .utils import (
     format_code,
     delete_broken_symlinks,
     generate_git_access_token,
-    publish_to_github,
+    push_to_github,
+    encrypt,
+    decrypt,
 )
 
 
@@ -707,52 +709,73 @@ def share_project(request):
     return JsonResponse({"success": success, "message": message}, status=status)
 
 
+# @api_view(["POST"])
+# @is_authenticated
+# def get_git_access_token(request):
+#     print("in get access token")
+#     code = request.data.get("code")
+#     print("code is", code, type(code))
+
+#     git_access_token = generate_git_access_token(code)
+
+#     if git_access_token:
+#         try:
+#             publish_to_github(git_access_token)
+#             status, success, message = 200, True, "Access Token Fetched"
+#         except:
+#             status, success, message = 500, False, "Failed"
+#     else:
+#         status, success, message = 500, False, "Something went wrong"
+
+#     return JsonResponse(
+#         {"success": success, "message": message},
+#         status=status,
+#     )
+
+
 @api_view(["POST"])
 @is_authenticated
-def get_git_access_token(request):
-    print("in get access token")
-    code = request.data.get("code")
-    print("code is", code, type(code))
-
-    git_access_token = generate_git_access_token(code)
-
-    if git_access_token:
-        try:
-            publish_to_github(git_access_token)
-            status, success, message = 200, True, "Access Token Fetched"
-        except:
-            status, success, message = 500, False, "Failed"
-    else:
-        status, success, message = 500, False, "Something went wrong"
-
-    return JsonResponse(
-        {"success": success, "message": message},
-        status=status,
-    )
-
-
-@api_view(["POST"])
-@is_authenticated
-def set_git_access_token(request):
-    print("in set access token")
+def publish_on_github(request):
     username = request.data.get("username")
     code = request.data.get("code")
-    print("code is", code, type(code))
+    details = request.data.get("details")
+    project_id = details.get("project_id")
+    commit_message = details.get("git_commit_message")
+    filename = details.get("git_file_name")
+    repo_name = details.get("git_repo_name")
+    make_private = details.get("make_private")
+
     user = User(username=username, password=None)
     this_user = user.find()
+
+    print()
+    print()
+    print(filename, repo_name, commit_message, project_id)
+    print(details)
     print()
     print()
 
-    # print(this_user.get("GitAccessToken"))
-    print()
-
-    print()
+    store_obj = Store(this_user)
+    project_dir = store_obj.path + os.sep + project_id
 
     if this_user.get("GitAccessToken") is None:
         try:
             git_access_token = generate_git_access_token(code)
             if git_access_token is not None:
-                user.update("GitAccessToken", git_access_token)
+                encrypted_git_access_token = encrypt(git_access_token)
+
+                if encrypted_git_access_token is not None:
+                    user.update("GitAccessToken", encrypted_git_access_token)
+
+                else:
+                    status, success, message = 500, False, "Something went wrong"
+                    return JsonResponse(
+                        {
+                            "success": success,
+                            "message": message,
+                        },
+                        status=status,
+                    )
             else:
                 status, success, message = 500, False, "Something went wrong"
                 return JsonResponse(
@@ -763,16 +786,16 @@ def set_git_access_token(request):
                     status=status,
                 )
         except:
-            message = "Something went wrong"
-            print(message)
-    else:
-        print("token in db is", this_user.get("GitAccessToken"))
+            status, success, message = 500, False, "Something went wrong"
 
-    print("hereeeeeeeeeeeeee")
+    this_user = user.find()
+    git_access_token = decrypt(this_user.get("GitAccessToken"))
+
     try:
         print("going to publish")
-
-        status, message = publish_to_github(this_user.get("GitAccessToken"))
+        status, message = push_to_github(
+            git_access_token, repo_name, filename, commit_message, make_private,project_dir
+        )
 
         if status == 200:
             status, success, message = 200, True, "Successfully Published"
@@ -812,11 +835,7 @@ def set_git_access_token2(request):
             print(message)
     else:
         print("token in db is", this_user.get("GitAccessToken"))
-    # print(user.getGitAccessToken())
-    # print(user.getGitAccessToken())
-    # git_access_token = generate_git_access_token(code)
-    # user.set_git_access_token(git_access_token)
-    # user.save()
+
     return JsonResponse(
         {
             "success": True,

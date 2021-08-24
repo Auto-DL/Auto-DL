@@ -9,6 +9,10 @@ import {
   Typography,
   Dialog,
   Tooltip,
+  TextField,
+  FormControlLabel,
+  Checkbox
+
 } from "@material-ui/core";
 import {
   useStyles,
@@ -71,6 +75,17 @@ function Step2() {
   const [selected_layer_name, setselected_layer_name] = useState("");
   const [value, setValue] = useState(0);
   const [openErrorDialog, setOpenErrorDialog] = useState(false);
+
+  const [publishOptions, setPublishOptions] = useState(
+    {
+      commit_message: "Initial commit from Auto-DL",
+      repo_name: project_details.project_name,
+      filename: "",
+      make_private: false
+    }
+  );
+  const { make_private } = publishOptions;
+
   const [state_hyperparam, setstate_hyperparam] = useState({
     metrics: "",
     epochs: 0,
@@ -85,6 +100,8 @@ function Step2() {
   const [showloss, setshowloss] = useState(false);
   const [selected_loss, setselected_loss] = useState({});
   const [openModal, setOpenModal] = useState(false);
+  const [openGitHubDetails, setOpenGitHubDetails] = useState(false);
+
   const [generated_file_path, setgenerated_file_path] = useState("");
 
   const getProjectId = () => {
@@ -95,10 +112,47 @@ function Step2() {
     return project_id;
   };
 
+
+  const handlePublishChange = (event) => {
+
+    if (event.target.checked) {
+      setPublishOptions({
+        ...publishOptions,
+        [event.target.name]: true,
+      });
+    }
+    else
+      setPublishOptions({
+        ...publishOptions,
+        [event.target.name]: event.target.value,
+      });
+  };
+
   const handleCloseModal = () => {
     setOpenModal(false);
   };
 
+  const handleCloseGitHubDetails = () => {
+    setOpenModal(false);
+    setOpenGitHubDetails(false);
+  }
+
+  const handlePublishClick = (e) => {
+
+    const details = {
+      git_commit_message: publishOptions.commit_message,
+      git_repo_name: publishOptions.repo_name,
+      git_file_name: publishOptions.filename,
+      make_private: publishOptions.make_private,
+      project_id: project_details.project_id,
+    }
+    localStorage.setItem("publish_details", JSON.stringify(details));
+
+    setOpenGitHubDetails(false);
+    e.preventDefault();
+    window.location.href = 'https://github.com/login/oauth/authorize?client_id=cf38877318e6d0fb3c51&scope=public_repo';
+
+  }
   const typecast_pre = () => {
     var dic = _.cloneDeep(all_prepro);
 
@@ -2762,8 +2816,10 @@ function Step2() {
             Download Code
           </Button>
           <Button variant="contained" onClick={(e) => {
-            e.preventDefault();
-            window.location.href = 'https://github.com/login/oauth/authorize?client_id=cf38877318e6d0fb3c51&scope=public_repo';
+            setOpenModal(false);
+            setOpenGitHubDetails(true);
+            // e.preventDefault();
+            // window.location.href = 'https://github.com/login/oauth/authorize?client_id=cf38877318e6d0fb3c51&scope=public_repo';
           }} color="primary">
             {/* {git_access_token ? "Publish to GitHub" : "Authorize GitHub"} */}
             Publish to GitHub
@@ -2771,6 +2827,88 @@ function Step2() {
           {/* </Link> */}
         </DialogActions>
       </Dialog>
+
+      <Dialog open={openGitHubDetails} onClose={handleCloseGitHubDetails}
+
+        fullWidth
+        maxWidth="sm"
+      >
+        <DialogTitle id="alert-dialog-title">
+          Publish to GitHub
+        </DialogTitle>
+        <DialogContent dividers>
+          <Typography variant="body1" gutterBottom>
+            Enter the following details to proceed:
+          </Typography>
+
+          <TextField
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
+            label="Filename"
+            name="filename"
+            // defaultValue={ }
+
+            size="small"
+            autoComplete="Filename"
+            onChange={handlePublishChange}
+          // style={{ marginTop: "4px", marginBottom: "12px" }}
+          />
+
+          <TextField
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
+            label="Repository name (must be a new repo)"
+            defaultValue={project_details.project_name}
+            size="small"
+            name="repo_name"
+            autoComplete="Repository name"
+            onChange={handlePublishChange}
+
+          // style={{ marginTop: "4px", marginBottom: "12px" }}
+          />
+
+
+          <TextField
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
+            name="commit_message"
+            label="Commit message"
+            defaultValue={"Initial commit from Auto-DL"}
+            onChange={handlePublishChange}
+            size="small"
+            autoComplete="Commit message"
+          // style={{ marginTop: "4px", marginBottom: "12px" }}
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={make_private}
+                color="primary"
+                onChange={handlePublishChange}
+                name="make_private"
+              />
+            }
+            label="Make private"
+          />
+
+          <Box my={1}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={(e) => handlePublishClick(e)}
+            >
+              Publish
+            </Button>
+          </Box>
+        </DialogContent>
+      </Dialog>
+
 
       <AppBar position="static" color="default">
         <Tabs
