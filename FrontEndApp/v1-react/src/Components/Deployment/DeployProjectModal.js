@@ -236,42 +236,36 @@ const DeployProjectModal = ({ setOpenDeployModal, deployOptions, setDeployOption
 
         // Working code
 
-        const data = {
-            username: username,
-            project_id: SelectedProject.project_id,
-            deployment_options: deployOptions,
-            pkl_file_content: currentPklFile,
-            // current_chunk: i + 1,
-            // total_chunks: numberOfChunks,
-            model_categories: modelDeployCategories,
-        }
-
-        console.log(data.pkl_file_content)
-
-        const res = await DeploymentService.cloud_deploy(token, data);
-
-        // if (res.status === 200) {
-        //     setalert({ ...values, msg: res.data.message, severity: "success" });
-        // } else {
-        //     setalert({ ...values, msg: res.data.message, severity: "error" });
+        // const data = {
+        //     username: username,
+        //     project_id: SelectedProject.project_id,
+        //     deployment_options: deployOptions,
+        //     pkl_file_content: currentPklFile,
+        //     // current_chunk: i + 1,
+        //     // total_chunks: numberOfChunks,
+        //     model_categories: modelDeployCategories,
         // }
+
+        // console.log(data.pkl_file_content);
+
+        // const res = await DeploymentService.cloud_deploy(token, data);
 
         // Working Chunk Code
 
-        // let res = {};
+        let res = {};
 
-        // for (let i = 0; i < numberOfChunks; i++) {
-        //     const data = {
-        //         username: username,
-        //         project_id: SelectedProject.project_id,
-        //         pkl_file_content: pklChunks[i],
-        //         current_chunk: i + 1,
-        //         total_chunks: numberOfChunks,
-        //         model_categories: modelDeployCategories,
-        //     }
+        for (let i = 0; i < numberOfChunks; i++) {
+            const data = {
+                username: username,
+                project_id: SelectedProject.project_id,
+                pkl_file_bytes: pklChunks[i],
+                current_chunk: i + 1,
+                total_chunks: numberOfChunks,
+                model_categories: modelDeployCategories,
+            }
 
-        //     res = await DeploymentService.cloud_deploy(token, data);
-        // };
+            res = await DeploymentService.cloud_deploy(token, data);
+        };
 
         if (res.status === 200) {
             setalert({ ...values, msg: res.data.message, severity: "success" });

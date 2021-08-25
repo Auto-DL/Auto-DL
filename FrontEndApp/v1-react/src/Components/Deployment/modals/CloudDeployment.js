@@ -17,11 +17,10 @@ export const CloudDeployStepThree = ({ handleCloseDeployModal, setDeployStep, va
         setPklFileName(pklHandle[0].name);
         setNumberOfChunks(Math.ceil(pklFile.size / pklChunkSize));
 
-        const contents = await pklFile.text();
-        // GET BYTES
-        const contentBytes = await pklFile.arrayBuffer();
-        console.log(contentBytes);
-        setCurrentPklFile(contents);
+        const contents = await pklFile.arrayBuffer();
+        const contentBytes = new Uint8Array(contents);
+        // console.log(contentBytes);
+        setCurrentPklFile(contentBytes);
     }
 
     return (

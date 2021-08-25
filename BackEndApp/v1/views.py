@@ -790,22 +790,24 @@ def cloud_deploy(request):
 
         # Create separate file for each chunk of pickle data
 
-        pkl_file_content = request.data.get("pkl_file_content")
+        pkl_file_bytes = request.data.get("pkl_file_bytes")
+        pkl_file_content = bytearray(pkl_file_bytes.values())
+
         current_chunk = request.data.get("current_chunk")
         total_chunks = request.data.get("total_chunks")
 
         pkl_dir = os.path.join(project_dir, "pickle")
         pkl_path = os.path.join(pkl_dir, f"model.pkl")
-        # pkl_path = os.path.join(pkl_dir, f"model_{current_chunk}.pkl")
-
-        print(pkl_file_content)
-        print(type(pkl_file_content))
-
-        os.mkdir(pkl_dir)
-        print("Directory created")
+        pkl_path = os.path.join(pkl_dir, f"model_{current_chunk}.pkl")
 
         try:
-            with open(pkl_path, "wb+") as pkl_fh:
+            os.mkdir(pkl_dir)
+            print("Directory created")
+
+            print(pkl_file_content)
+            print(type(pkl_file_content))
+
+            with open(pkl_path, "wb") as pkl_fh:
                 pkl_fh.write(pkl_file_content)
                 # pickle.dump(pkl_file_content, pkl_fh)
 
