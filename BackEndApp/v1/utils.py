@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 from cryptography.fernet import Fernet
 import base64
 
+
 load_dotenv()
 g = Github()
 
@@ -75,25 +76,27 @@ def push_to_github(
         filename = filename.replace(" ", "_")
         if not filename.endswith(".py"):
             filename += ".py"
-        print(make_private)
+
         if make_private == True:
             make_private = True
         else:
             make_private = False
 
-        print(filename, project_dir)
-        print(make_private)
         repo = g.get_user().create_repo(repo_name, private=make_private)
+        print()
+        print("made the repo")
+        print()
+
         with open(project_dir + os.sep + "test.py") as f:
             file_content = f.read()
-        file = repo.create_file(filename, commit_message, file_content)
+        repo.create_file(filename, commit_message, file_content)
 
         status, message = 200, "Success"
 
     except Exception as e:
-        print("exception has occured")
-
-        status, message = 401, "Internal Server Error"
+        print(e)
+        res = list(str(e).split(" ", 1))
+        status, message = int(res[0]), eval(res[1])["message"]
 
     return status, message
 
@@ -103,22 +106,16 @@ def push_to_github(
 
 
 def encrypt(txt):
-    try:
-        txt = str(txt)
-        cipher_suite = Fernet(os.getenv("ENCRYPT_KEY"))  # key should be byte
-        encrypted_text = cipher_suite.encrypt(txt.encode("ascii"))
 
-        encrypted_text = base64.urlsafe_b64encode(encrypted_text).decode("ascii")
-        return encrypted_text
-    except Exception:
-        return None
+    txt = str(txt)
+    cipher_suite = Fernet(os.getenv("ENCRYPT_KEY"))  # key should be byte
+    encrypted_text = cipher_suite.encrypt(txt.encode("ascii"))
+    encrypted_text = base64.urlsafe_b64encode(encrypted_text).decode("ascii")
+    return encrypted_text
 
 
 def decrypt(txt):
-    try:
-        txt = base64.urlsafe_b64decode(txt)
-        cipher_suite = Fernet(os.getenv("ENCRYPT_KEY"))
-        decoded_text = cipher_suite.decrypt(txt).decode("ascii")
-        return decoded_text
-    except Exception:
-        return None
+    txt = base64.urlsafe_b64decode(txt)
+    cipher_suite = Fernet(os.getenv("ENCRYPT_KEY"))
+    decoded_text = cipher_suite.decrypt(txt).decode("ascii")
+    return decoded_text

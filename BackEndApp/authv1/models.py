@@ -65,6 +65,17 @@ class User:
         except Exception as e:
             return 1, "Could not update."
 
+    def delete_field(self, field_name, value, **kwargs):
+        try:
+            self.collection.update(
+                {"username": self.username},
+                {"$unset": {field_name: value}},
+            )
+
+            return 0, None
+        except Exception as e:
+            return 1, "Could not delete ."
+
     def delete(self):
 
         delete_result = self.collection.delete_one({"username": self.username})

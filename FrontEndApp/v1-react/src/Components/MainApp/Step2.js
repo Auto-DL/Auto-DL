@@ -150,7 +150,7 @@ function Step2() {
 
     setOpenGitHubDetails(false);
     e.preventDefault();
-    window.location.href = 'https://github.com/login/oauth/authorize?client_id=cf38877318e6d0fb3c51&scope=public_repo';
+    window.location.href = 'https://github.com/login/oauth/authorize?client_id=cf38877318e6d0fb3c51&scope=repo';
 
   }
   const typecast_pre = () => {

@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect } from "react";
+
 // import HomeService from "./HomeService";
 
 import { useHistory } from "react-router-dom";
@@ -10,40 +11,46 @@ const AuthorizeGitHub = () => {
     const params = new URLSearchParams(search);
     const code = params.get("code");
 
-    const publish_code_to_github = async () => {
-        console.log("publishingggggggg");
-        const username = JSON.parse(localStorage.getItem("username"));
-        const token = JSON.parse(localStorage.getItem("token"));
-        const details = JSON.parse(localStorage.getItem("publish_details"));
-        if (code && username && details) {
-            const data = { username, code, details };
-            console.log("data is", data);
-            const res = await HomeService.publish_to_github(token, data);
-            if (res.status === 200) {
-                console.log("doneeeeeeeeeeee");
-                history.push({
-                    pathname: '/github/publish',
-                    state: {
-                        message: "success"
-                    }
-                });
-            }
-            else {
+    useEffect(() => {
+        async function publish_code_to_github() {
+            console.log("publishingggggggg");
+            const username = JSON.parse(localStorage.getItem("username"));
+            const token = JSON.parse(localStorage.getItem("token"));
+            const details = JSON.parse(localStorage.getItem("publish_details"));
+            if (code && username && details) {
+                const data = { username, code, details };
+                console.log("data is", data);
+                const res = await HomeService.publish_to_github(token, data);
+                if (res.status === 200) {
+                    console.log("doneeeeeeeeeeee");
+                    history.push({
+                        pathname: '/github/publish',
+                        state: {
+                            message: "success"
+                        }
+                    });
+                }
+                else {
 
-                history.push({
-                    pathname: '/github/publish',
-                    state: {
-                        message: "failed"
-                    }
-                });
-            }
-            // localStorage.removeItem("publish_details");
+                    history.push({
+                        pathname: '/github/publish',
+                        state: {
+                            message: "failed"
+                        }
+                    });
+                }
 
-        } else {
+            } else {
+            }
+
+
         }
-    };
 
-    publish_code_to_github();
+        publish_code_to_github();
+
+    });
+
+
 
     return (
         <div className="container">

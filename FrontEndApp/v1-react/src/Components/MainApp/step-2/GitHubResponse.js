@@ -6,9 +6,9 @@ import { useHistory } from "react-router-dom";
 import { Grid } from "@material-ui/core";
 
 const GitHubResponse = (response) => {
-
+    var message = "";
     if (response && response.location && response.location.state) {
-        var message = response.location.state.message;
+        message = response.location.state.message;
     }
 
 
@@ -22,7 +22,7 @@ const GitHubResponse = (response) => {
                 justify="center"
             >
                 <Grid item xs={3}>
-                    {message === "success" ? <h1 > Successfully published </h1> : <h1 > Failed to publish </h1>}
+                    {message === "success" ? <h1 h1 > Successfully published </h1> : <h1 > Failed to publish </h1>}
 
                 </Grid>
 

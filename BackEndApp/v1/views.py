@@ -736,6 +736,7 @@ def share_project(request):
 @api_view(["POST"])
 @is_authenticated
 def publish_on_github(request):
+
     username = request.data.get("username")
     code = request.data.get("code")
     details = request.data.get("details")
@@ -748,34 +749,22 @@ def publish_on_github(request):
     user = User(username=username, password=None)
     this_user = user.find()
 
-    print()
-    print()
-    print(filename, repo_name, commit_message, project_id)
-    print(details)
-    print()
-    print()
-
     store_obj = Store(this_user)
     project_dir = store_obj.path + os.sep + project_id
 
-    if this_user.get("GitAccessToken") is None:
-        try:
+    git_access_token = this_user.get("GitAccessToken")
+    try:
+        if git_access_token is None:
+            print()
+            print()
+            print("generating new token")
+            print()
+            print()
             git_access_token = generate_git_access_token(code)
             if git_access_token is not None:
                 encrypted_git_access_token = encrypt(git_access_token)
-
-                if encrypted_git_access_token is not None:
-                    user.update("GitAccessToken", encrypted_git_access_token)
-
-                else:
-                    status, success, message = 500, False, "Something went wrong"
-                    return JsonResponse(
-                        {
-                            "success": success,
-                            "message": message,
-                        },
-                        status=status,
-                    )
+                user.update("GitAccessToken", encrypted_git_access_token)
+                git_access_token = encrypted_git_access_token
             else:
                 status, success, message = 500, False, "Something went wrong"
                 return JsonResponse(
@@ -785,17 +774,21 @@ def publish_on_github(request):
                     },
                     status=status,
                 )
-        except:
-            status, success, message = 500, False, "Something went wrong"
 
-    this_user = user.find()
-    git_access_token = decrypt(this_user.get("GitAccessToken"))
+        git_access_token = decrypt(git_access_token)
 
-    try:
-        print("going to publish")
         status, message = push_to_github(
-            git_access_token, repo_name, filename, commit_message, make_private,project_dir
+            git_access_token,
+            repo_name,
+            filename,
+            commit_message,
+            make_private,
+            project_dir,
         )
+        
+        if status == 401:
+            print("deleting field")
+            user.delete_field("GitAccessToken", git_access_token)
 
         if status == 200:
             status, success, message = 200, True, "Successfully Published"
@@ -803,44 +796,10 @@ def publish_on_github(request):
             status, success, message = 500, False, "Something went wrong"
     except:
         status, success, message = 500, False, "Something went wrong"
-
     return JsonResponse(
         {
             "success": success,
             "message": message,
         },
         status=status,
-    )
-
-
-@api_view(["POST"])
-@is_authenticated
-def set_git_access_token2(request):
-    print("in set access token")
-    username = request.data.get("username")
-    code = request.data.get("code")
-    print(username, code)
-    # add key 'access token' in mongo database
-    user = User(username=username, password=None)
-    this_user = user.find()
-
-    if this_user.get("GitAccessToken") is None:
-        try:
-            git_access_token = generate_git_access_token(code)
-            if git_access_token:
-                user.update("GitAccessToken", git_access_token)
-            message = "Access token set"
-        except:
-            message = "Something went wrong"
-            print(message)
-    else:
-        print("token in db is", this_user.get("GitAccessToken"))
-
-    return JsonResponse(
-        {
-            "success": True,
-            # "message": "Access Token Fetched",
-            "message": "done",
-        },
-        status=200,
     )
