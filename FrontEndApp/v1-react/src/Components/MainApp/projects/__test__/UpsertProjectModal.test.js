@@ -1,11 +1,12 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import UpsertProjectModal from "../UpsertProjectModal";
 
-const handleChange = jest.fn();
-const classes = jest.fn();
-const setalert = jest.fn();
-const setOpen = jest.fn();
-const setOpenModal = jest.fn();
+const mockedHandleChange = jest.fn();
+const mockedHandleCloseModalSave = jest.fn();
+const mockedClasses = jest.fn();
+const mockedSetalert = jest.fn();
+const mockedSetOpen = jest.fn();
+const mockedSetOpenModal = jest.fn();
 
 const createMockData = {
     project_name: "",
@@ -27,24 +28,25 @@ const editMockData = {
     output_file_name: "first.py",
 };
 
-const SelectedProject = {
+const mockedSelectedProject = {
     username: "Tester",
     project_id: "123456789"
 }
 
 describe("Create and Edit project modal renders", () => {
-    test("should render create project modal", async () => {
+    test("should create new project", async () => {
         render(
             <UpsertProjectModal
-                handleChange={handleChange}
-                classes={classes}
+                handleChange={mockedHandleChange}
+                handleCloseModalSave={mockedHandleCloseModalSave}
+                classes={mockedClasses}
                 values={createMockData}
                 openModal={true}
                 IsEdit={false}
-                setalert={setalert}
-                setOpen={setOpen}
-                setOpenModal={setOpenModal}
-                SelectedProject={SelectedProject}
+                setalert={mockedSetalert}
+                setOpen={mockedSetOpen}
+                setOpenModal={mockedSetOpenModal}
+                SelectedProject={mockedSelectedProject}
             />
         );
 
@@ -65,21 +67,24 @@ describe("Create and Edit project modal renders", () => {
         fireEvent.change(inputElement, { target: { value: "test.py" } });
 
         const btnElement = screen.getByText(/Save Changes/i);
-        expect(btnElement).toBeInTheDocument();
+        fireEvent.click(btnElement);
+
+        expect(mockedHandleCloseModalSave).toHaveBeenCalledTimes(1);
     });
 
-    test("should render edit project modal", async () => {
+    test("should edit existing project", async () => {
         render(
             <UpsertProjectModal
-                handleChange={handleChange}
-                classes={classes}
+                handleChange={mockedHandleChange}
+                handleCloseModalSave={mockedHandleCloseModalSave}
+                classes={mockedClasses}
                 values={editMockData}
                 openModal={true}
                 IsEdit={true}
-                setalert={setalert}
-                setOpen={setOpen}
-                setOpenModal={setOpenModal}
-                SelectedProject={SelectedProject}
+                setalert={mockedSetalert}
+                setOpen={mockedSetOpen}
+                setOpenModal={mockedSetOpenModal}
+                SelectedProject={mockedSelectedProject}
             />
         );
 
@@ -100,6 +105,8 @@ describe("Create and Edit project modal renders", () => {
         fireEvent.change(inputElement, { target: { value: "test.py" } });
 
         const btnElement = screen.getByText(/Save Changes/i);
-        expect(btnElement).toBeInTheDocument();
+        fireEvent.click(btnElement);
+
+        expect(mockedHandleCloseModalSave).toHaveBeenCalledTimes(1);
     });
 });
