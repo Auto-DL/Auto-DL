@@ -1,9 +1,17 @@
 from datetime import datetime
+import sys
 
 from .utils_tests import TestOTP
 
+sys.path.append("..")
 
-def test_create():
+from tests.mocks import MockOS
+
+mock_os_obj = MockOS()
+
+
+def test_create(mocker):
+    mock_os_obj.mock_mongodb_uri(mocker)
     otp_test = TestOTP()
     otp = otp_test.create_otp()
 
@@ -18,7 +26,8 @@ def test_create():
     assert stored_otp != generted_otp and stored_otp == second_genereted_otp
 
 
-def test_find():
+def test_find(mocker):
+    mock_os_obj.mock_mongodb_uri(mocker)
     otp_test = TestOTP()
     otp = otp_test.create_otp()
 
@@ -29,7 +38,8 @@ def test_find():
     assert otp.find() == collection.find_one({"username": username})
 
 
-def test_verify():
+def test_verify(mocker):
+    mock_os_obj.mock_mongodb_uri(mocker)
     otp_test = TestOTP()
     otp = otp_test.create_otp()
 
@@ -47,7 +57,8 @@ def test_verify():
     assert otp.verify(collection.find_one({"username": username}).get("otp")) == False
 
 
-def test_delete():
+def test_delete(mocker):
+    mock_os_obj.mock_mongodb_uri(mocker)
     otp_test = TestOTP()
     otp = otp_test.create_otp()
 

@@ -5,18 +5,12 @@ import mongomock
 sys.path.append("..")
 
 from authv1.auth import OTP
-from tests.mocks import MockUser
+from tests.mocks import MockUser, MockOS
+
+mock_os_obj = MockOS()
 
 
 class TestOTP:
-    @mongomock.patch(
-        servers=(
-            (
-                os.getenv("MONGODB_URI"),
-                27017,
-            ),
-        )
-    )
     def create_otp(self):
         collection = mongomock.MongoClient().db.collection
         user = MockUser()
