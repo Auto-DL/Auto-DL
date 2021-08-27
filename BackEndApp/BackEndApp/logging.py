@@ -1,5 +1,4 @@
 import logging
-import logging.config
 
 
 class AutoreloadLogFilter(logging.Filter):
@@ -51,4 +50,3 @@ LOGGING = {
         "django.template": {"level": "ERROR", "handlers": ["console", "file"]},
     },
 }
-logging.config.dictConfig(LOGGING)

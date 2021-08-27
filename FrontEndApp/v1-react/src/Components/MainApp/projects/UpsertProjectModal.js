@@ -1,8 +1,7 @@
 import { Select, MenuItem, Button, TextField, InputLabel, FormControl, Dialog } from "@material-ui/core";
-import { handleCloseModalSave } from "../operations/UpsertProject";
 import { DialogActions, DialogTitle, DialogContent } from "./styles";
 
-const UpsertProjectModal = ({ handleCloseModal, openModal, IsEdit, values, handleChange, classes, setalert, setOpen, setOpenModal, SelectedProject, username, token }) => {
+const UpsertProjectModal = ({ handleCloseModal, handleCloseModalSave, openModal, IsEdit, values, handleChange, classes, setalert, setOpen, setOpenModal, SelectedProject, username, token }) => {
     return (
       <Dialog
         onClose={handleCloseModal}

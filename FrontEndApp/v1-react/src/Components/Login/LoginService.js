@@ -14,7 +14,10 @@ class LoginService {
 
   async register(data) {
     try {
-      const response = await axios.post(`${BACKEND_API_URL}/auth/register/`, data);
+      const response = await axios.post(
+        `${BACKEND_API_URL}/auth/register/`,
+        data
+      );
       return response;
     } catch (error) {
       return error.response;
