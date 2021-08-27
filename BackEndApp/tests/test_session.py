@@ -1,11 +1,15 @@
 # unit tests for methods in Session class
 
 from .utils_tests import TestSession
+from tests.mocks import MockOS
 
+mock_os_obj = MockOS()
 test_session = TestSession()
 
 
-def test_create():
+def test_create(mocker):
+    mock_os_obj.mock_mongodb_uri(mocker)
+
     session_obj = test_session.create_session()
     test_token = session_obj.create()
     assert test_token is not None
@@ -15,7 +19,9 @@ def test_create():
     assert test_token_none is None
 
 
-def test_delete():
+def test_delete(mocker):
+    mock_os_obj.mock_mongodb_uri(mocker)
+
     session_obj = test_session.create_session()
     test_token = session_obj.create()
     return_value = session_obj.delete(test_token)
@@ -27,7 +33,9 @@ def test_delete():
     assert return_value == False
 
 
-def test_find():
+def test_find(mocker):
+    mock_os_obj.mock_mongodb_uri(mocker)
+
     session_obj = test_session.create_session()
     test_token = session_obj.create()
     return_token = session_obj.find(test_token)
@@ -39,7 +47,9 @@ def test_find():
     assert return_token_none == None
 
 
-def test_verify():
+def test_verify(mocker):
+    mock_os_obj.mock_mongodb_uri(mocker)
+
     session_obj = test_session.create_session()
     test_token = session_obj.create()
     return_value = session_obj.verify(test_token)
