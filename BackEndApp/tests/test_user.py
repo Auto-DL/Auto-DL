@@ -1,10 +1,17 @@
 # unit tests for User class methods
 
 import pytest
+import sys
+
+sys.path.append("..")
 from .utils_tests import TestUser
+from .mocks import MockOS
+
+mock_os_obj = MockOS()
 
 
-def test_create():
+def test_create(mocker):
+    mock_os_obj.mock_mongodb_uri(mocker)
     # No email attribute
     with pytest.raises(KeyError) as e:
         user = TestUser()
@@ -61,7 +68,8 @@ def test_create():
     assert collection.find_one({"username": "test_user"}) is not None
 
 
-def test_find():
+def test_find(mocker):
+    mock_os_obj.mock_mongodb_uri(mocker)
     user = TestUser()
     mock_user = user.user_test()
     collection = mock_user.collection
@@ -72,7 +80,8 @@ def test_find():
     )
 
 
-def test_update():
+def test_update(mocker):
+    mock_os_obj.mock_mongodb_uri(mocker)
     user = TestUser()
     mock_user = user.user_test()
     collection = mock_user.collection
@@ -81,7 +90,8 @@ def test_update():
     assert collection.find_one({"email": "test@gmail.com"}) is not None
 
 
-def test_delete():
+def test_delete(mocker):
+    mock_os_obj.mock_mongodb_uri(mocker)
     user = TestUser()
     mock_user = user.user_test()
     collection = mock_user.collection
