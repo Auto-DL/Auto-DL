@@ -11,6 +11,7 @@ import {
   TextField,
   FormControlLabel,
   Checkbox,
+
 } from "@material-ui/core";
 import {
   useStyles,
@@ -21,7 +22,7 @@ import {
 import _ from "lodash";
 import PropTypes from "prop-types";
 import fileDownload from "js-file-download";
-import { validate_layers } from "./validation.js";
+import { validate_layers } from "./validation";
 import HomeService from "./HomeService";
 import PreprocessingTab from "./step-2/PreprocessingTab";
 import LayerTab from "./step-2/LayerTab";
@@ -29,6 +30,7 @@ import HyperparameterTab from "./step-2/HyperparameterTab";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
+
 
   return (
     <div
@@ -745,6 +747,7 @@ function Step2() {
           Default: "",
           Required: 1,
           DataType: "number",
+
           Options: [],
           Description: " size of each input sample",
         },
@@ -2149,6 +2152,10 @@ function Step2() {
   const [show_pre, setshow_pre] = useState(false);
   const [jsondata, setjsondata] = useState(temp_json);
 
+
+  const [invalidLayerIndices, setInvalidLayerIndices] = useState(new Set());
+  const [validLayerIndices, setValidLayerIndices] = useState([]);
+
   useEffect(() => {
     async function fetchData() {
       const data = {
@@ -2160,6 +2167,11 @@ function Step2() {
 
       if (res.status === 200) {
         setcomponents(res.data.components);
+        let tempArr = res.data.components;
+        const { invalidIndices, validIndices } = validate_layers(tempArr);
+        setInvalidLayerIndices(invalidIndices);
+        setValidLayerIndices(validIndices);
+
       } else {
       }
     }
@@ -2203,9 +2215,12 @@ function Step2() {
     }
 
     fetchDataHyper();
+
   }, [getProjectId(), token, username]);
 
   const handleDragEnd = ({ destination, source }) => {
+    let tempArr = _.cloneDeep(components);
+
     if (!destination) {
       return;
     }
@@ -2218,36 +2233,71 @@ function Step2() {
     }
 
     if (destination.droppableId === "source") {
+      console.log("dropping in  source", tempArr);
       return;
     }
+
     if (
       destination.droppableId === "delete" &&
       source.droppableId === "target"
     ) {
-      const element = components[source.index];
-      var temp = components.filter((item) => item !== element);
-      setcomponents(temp);
+      console.log("deleting from target");
+      const element = tempArr[source.index];
+
+
+      var temp = tempArr.filter((item) => item !== element);
+      tempArr = temp;
+
+
       setselected_layer(-1);
       setselected_layer_name("");
       setselected_layer_type("");
+
     }
     if (
       destination.droppableId === "target" &&
       source.droppableId === "target"
     ) {
-      components.splice(
-        destination.index,
-        0,
-        components.splice(source.index, 1)[0]
-      );
-      for (var i = 0; i < components.length; i++) {
-        components[i]["id"] = components[i]["id"] + i;
+      // It means the layer which is draggged is selected
+      let dragLayerIsSelcted = false;
+      console.log('tempArr["id"] selected_layer_type["id"]', tempArr[source.index]["id"], selected_layer_type["id"]);
+
+      if (tempArr[source.index]["id"] === selected_layer_type["id"]) {
+
+        dragLayerIsSelcted = true;
+      }
+
+
+
+
+      tempArr.splice(destination.index, 0, tempArr.splice(source.index, 1)[0]);
+      // console.log("source and des index are",source.index,destination.index);
+
+      if (dragLayerIsSelcted) {
+        setselected_layer_type(tempArr[destination.index]);
+        setselected_layer(destination.index);
+        console.log("selected_layer_type on drag and id is  ", selected_layer_type, selected_layer_type["id"]);
+      }
+      else {
+        setselected_layer_type("");
+        setselected_layer(-1);
+
+      }
+
+
+
+
+
+
+      // console.log("compinents after splice is ",components);
+      for (var i = 0; i < tempArr.length; i++) {
+        tempArr[i]["id"] = tempArr[i]["id"] + i;
         if (i === 0) {
           if (
-            !("input_size" in components[i]) ||
-            !("input_shape" in components[i])
+            !("input_size" in tempArr[i]) ||
+            !("input_shape" in tempArr[i])
           ) {
-            components[i]["input_shape"] = {
+            tempArr[i]["input_shape"] = {
               Example: [200, 200, 3],
               Default: "NA",
               Required: 1,
@@ -2258,66 +2308,44 @@ function Step2() {
           }
         } else {
           try {
-            delete components[i]["input_shape"];
-          } catch (err) {}
+            delete tempArr[i]["input_shape"];
+          } catch (err) { }
         }
       }
-      setcomponents(components);
+      // setcomponents(components);
     }
     if (
       destination.droppableId === "target" &&
       source.droppableId === "source"
     ) {
+      console.log("dropping from source to target");
+
+
       const list_names_of_source = Object.keys(jsondata);
-      console.log(
-        "list of keys is and source index :",
-        list_names_of_source,
-        source.index
-      );
+
       const temp = jsondata[list_names_of_source[source.index]];
-      console.log("temp is ", temp);
 
       var dic = _.cloneDeep(temp);
-      console.log("dictionary after ", dic);
 
-      // if (Array.isArray(components) && components.length === 0) {
-      // }
 
-      // for (var key1 in dic) {
-      //   console.log("key 1 is  ",key1);
-      //   for (var key2 in dic[key1]) {
-      //     if (key2 === "value") {
-      //       console.log("key 2 is  ",key2);
-      //       console.log("dic is  ",dic[key1][key2]);
 
-      //       delete dic[key1][key2];
+      dic["id"] = `${list_names_of_source[source.index]}-${source.index}-${destination.index
+        }`;
 
-      //     }
-      //   }
-      // }
-
-      //getting the id
-      dic["id"] = `${list_names_of_source[source.index]}-${source.index}-${
-        destination.index
-      }`;
-      // console.log("we are getting the id ",dic["id"]);
       dic["name"] = list_names_of_source[source.index];
 
-      console.log("components before", components);
 
-      components.splice(destination.index, 0, dic);
+      tempArr.splice(destination.index, 0, dic);
 
-      console.log("components after", components);
+      for (i = 0; i < tempArr.length; i++) {
+        tempArr[i]["id"] = tempArr[i]["id"] + i;
 
-      for (i = 0; i < components.length; i++) {
-        components[i]["id"] = components[i]["id"] + i;
-        console.log("inside loop id", components[i]["id"]);
         if (i === 0) {
           if (
-            !("input_size" in components[i]) ||
-            !("input_shape" in components[i])
+            !("input_size" in tempArr[i]) ||
+            !("input_shape" in tempArr[i])
           ) {
-            components[i]["input_shape"] = {
+            tempArr[i]["input_shape"] = {
               Example: [200, 200, 3],
               Default: "NA",
               Required: 1,
@@ -2328,21 +2356,56 @@ function Step2() {
           }
         } else {
           try {
-            delete components[i]["input_shape"];
-          } catch (err) {}
+            delete tempArr[i]["input_shape"];
+          } catch (err) { }
         }
       }
 
-      setcomponents(components);
     }
-    const validate_res = validate_layers(source, destination, components);
+
+
+
+
+    const { invalidIndices, validIndices } = validate_layers(tempArr);
+    // console.log("val res is",invalidIndices,validIndices);
+    setInvalidLayerIndices(invalidIndices);
+    setValidLayerIndices(validIndices);
+
+    setcomponents(tempArr);
+
+
+
+
+
+
+
+
+
   };
+
+
+  const handleInvalidLayers = (validate_res) => {
+    const indexSet = new Set();
+    //extracting indices of invalid layers and collecting them in a set
+    for (let i = 0; i < validate_res.length; i++) {
+      for (let j = 0; j < validate_res[i].indices.length; j++) {
+        indexSet.add(validate_res[i].indices[j]);
+      }
+    }
+    return indexSet;
+
+  }
+
+
+
 
   const showdetails = (element) => {
     setselected_layer_type(element);
+    console.log("selected layer type is ", selected_layer_type);
 
     var ele = components;
     var index = ele.lastIndexOf(element);
+    console.log("index is ", index);
 
     setselected_layer(index);
   };
@@ -2578,7 +2641,6 @@ function Step2() {
         // history.push("/login");
       }
     } else {
-      // alert("please fill all the required fileds in layers");
       //states for dialog box which is triggered if necessary details are blank
       //before generating code.
       setOpenErrorDialog(true);
@@ -2727,16 +2789,19 @@ function Step2() {
     setall_prepro(dic);
   };
 
+
   const handleCloneLayer = (layer) => {
     // handleChangetabs();
 
-    //getting source names of all layers
+    //getting source names of all layers 
     const list_names_of_source = Object.keys(jsondata);
     let source_index;
 
     //where to place layer in UI
     let destination_index = Number(layer.id[layer.id.length - 1]) + 1;
-    console.log("destination index  is ", destination_index);
+    // console.log("destination index  is ",destination_index);
+
+
 
     //finding layer in source array for id framing
     for (let i = 0; i < list_names_of_source.length; i++) {
@@ -2745,6 +2810,7 @@ function Step2() {
         break;
       }
     }
+
 
     //cloning the layer
     let clonedLayer = _.cloneDeep(layer);
@@ -2775,7 +2841,7 @@ function Step2() {
       } else {
         try {
           delete components[i]["input_shape"];
-        } catch (err) {}
+        } catch (err) { }
       }
       // console.log("inside loop id",components[i]["id"]);
     }
@@ -2883,7 +2949,7 @@ function Step2() {
             onChange={handlePublishChange}
             size="small"
             autoComplete="Commit message"
-            // style={{ marginTop: "4px", marginBottom: "12px" }}
+          // style={{ marginTop: "4px", marginBottom: "12px" }}
           />
           <FormControlLabel
             control={
@@ -2946,6 +3012,9 @@ function Step2() {
         showdetails={showdetails}
         save_value={save_value}
         handleCloneLayer={handleCloneLayer}
+        invalidLayerIndices={invalidLayerIndices}
+        validLayerIndices={validLayerIndices}
+
       />
 
       <HyperparameterTab

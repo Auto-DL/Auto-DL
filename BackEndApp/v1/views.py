@@ -371,8 +371,9 @@ def clone_project(request):
 
         project_dir = store_obj.path + os.sep + project_id
 
-        if model_layers:
-            with open(project_dir + os.sep + "layers.json", "r") as f:
+        project_json = project_dir + os.sep + "layers.json"
+        if model_layers and os.path.isfile(project_json):
+            with open(model_layers) as f:
                 layers = json.load(f)
                 with open(clone_dir + os.sep + "layers.json", "w") as f:
                     json.dump(layers, f)
@@ -382,14 +383,16 @@ def clone_project(request):
                 with open(clone_dir + os.sep + "components.json", "w") as f:
                     json.dump(components, f)
 
-        if preprocessing_parameters:
-            with open(project_dir + os.sep + "preprocessing.json", "r") as f:
+        project_preprocessing = project_dir + os.sep + "preprocessing.json"
+        if preprocessing_parameters and os.path.isfile(project_preprocessing):
+            with open(project_preprocessing, "r") as f:
                 preprocessing = json.load(f)
                 with open(clone_dir + os.sep + "preprocessing.json", "w") as f:
                     json.dump(preprocessing, f)
 
-        if hyper_parameters:
-            with open(project_dir + os.sep + "hyperparams.json", "r") as f:
+        project_hyperparameters = project_dir + os.sep + "hyperparams.json"
+        if hyper_parameters and os.path.isfile(project_hyperparameters):
+            with open(project_hyperparameters, "r") as f:
                 hyperparams = json.load(f)
                 with open(clone_dir + os.sep + "hyperparams.json", "w") as f:
                     json.dump(hyperparams, f)
