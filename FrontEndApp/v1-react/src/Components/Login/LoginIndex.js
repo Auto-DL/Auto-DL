@@ -16,10 +16,11 @@ function LoginIndex() {
           <Route path="/login" exact component={LoginForm} />
           <Route path="/home" component={Homeindex} />
           <Route path="/step-2" component={step2} />
-          <Route path="/github/publish" component={AuthorizeGitHub} />
-          <Route path="/github/status" component={GitHubResponse} />
+          <Route path="/github/authorize" component={AuthorizeGitHub} />
+          <Route path="/github/status/" component={GitHubResponse} />
+          <Redirect to="/login" />
         </Switch>
-        <Redirect to="/login" />
+
       </BrowserRouter>
     </>
   );

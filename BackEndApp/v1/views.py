@@ -739,7 +739,7 @@ def share_project(request):
 @api_view(["POST"])
 @is_authenticated
 def publish_on_github(request):
-
+    print("insideeeeeeeeeeee")
     username = request.data.get("username")
     code = request.data.get("code")
     details = request.data.get("details")

@@ -259,7 +259,7 @@ class HomeService {
   }
   async share_project(token, data) {
     try {
-      const response = await axios.post(`v1/project/share/`, data, {
+      const response = await axios.post(`${BACKEND_API_URL}/v1/project/share/`, data, {
         headers: {
           "Content-Type": "application/json",
           token: `${token}`,
@@ -273,7 +273,7 @@ class HomeService {
 
   async get_all_users(token) {
     try {
-      const response = await axios.get(`v1/users/all/`, {
+      const response = await axios.get(`${BACKEND_API_URL}/v1/users/all/`, {
         headers: {
           "Content-Type": "application/json",
           token: `${token}`,
@@ -287,7 +287,10 @@ class HomeService {
 
   async publish_to_github(token, data) {
     try {
-      const response = await axios.post(`v1/github/publish/`, data, {
+      console.log("senfingggggggggg");
+
+      const response = await axios.post(`${BACKEND_API_URL}/v1/github/publish/`, data, {
+
         headers: {
           "Content-Type": "application/json",
           token: `${token}`,
