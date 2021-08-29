@@ -726,6 +726,7 @@ def local_deploy(request):
         project_dir = store_obj.path + os.sep + project_id
 
         model_categories = request.data.get("model_categories")
+        deployment_variant = request.data.get("deployment_variant")
 
         deployment_dir = os.path.join(project_dir, "deployment")
         flask_app_url = os.getenv("FLASK_APP_HTTPS_URL")
@@ -789,39 +790,31 @@ def cloud_deploy(request):
         model_categories = request.data.get("model_categories")
 
         # Create separate file for each chunk of pickle data
-
+        current_chunk = request.data.get("current_chunk")
+        total_chunks = request.data.get("total_chunks")
         pkl_file_bytes = request.data.get("pkl_file_bytes")
         pkl_file_content = bytearray(pkl_file_bytes.values())
 
-        current_chunk = request.data.get("current_chunk")
-        total_chunks = request.data.get("total_chunks")
-
         pkl_dir = os.path.join(project_dir, "pickle")
         pkl_path = os.path.join(pkl_dir, f"model.pkl")
-        pkl_path = os.path.join(pkl_dir, f"model_{current_chunk}.pkl")
 
-        try:
+        # os.mkdir(pkl_dir)
+        # print("Directory created")
+
+        # with open(pkl_path, "wb") as pkl_fh:
+        #     pkl_fh.write(pkl_file_content)
+
+        # print("File created")
+
+        if os.path.exists(pkl_dir) and os.path.isdir(pkl_dir):
+            with open(pkl_path, "ab") as pkl_fh:
+                pkl_fh.write(pkl_file_content)
+        else:
             os.mkdir(pkl_dir)
-            print("Directory created")
-
-            print(pkl_file_content)
-            print(type(pkl_file_content))
-
             with open(pkl_path, "wb") as pkl_fh:
                 pkl_fh.write(pkl_file_content)
-                # pickle.dump(pkl_file_content, pkl_fh)
 
-            print("File created")
-        except Exception as e:
-            print(e)
-
-        # if os.path.exists(pkl_dir) and os.path.isdir(pkl_dir):
-        #     with open(pkl_path, "wb") as pkl_fh:
-        #         pickle.dump(pkl_file_content, pkl_fh)
-        # else:
-        #     os.mkdir(pkl_dir)
-        #     with open(pkl_path, "wb") as pkl_fh:
-        #         pickle.dump(pkl_file_content, pkl_fh)
+        print("File created")
 
         # deployment_dir = os.path.join(project_dir, "deployment")
         # flask_app_url = os.getenv("FLASK_APP_HTTPS_URL")

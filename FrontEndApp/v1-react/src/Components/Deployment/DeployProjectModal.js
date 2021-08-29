@@ -182,7 +182,7 @@ const DeployProjectModal = ({ setOpenDeployModal, deployOptions, setDeployOption
     const [currentPklFile, setCurrentPklFile] = useState("");
     const [pklFileName, setPklFileName] = useState("");
     const [numberOfChunks, setNumberOfChunks] = useState(0);
-    const [pklChunkSize, setPklChunkSize] = useState(50);
+    const [pklChunkSize, setPklChunkSize] = useState(20);
     // Specify constant pklChunkSize = 10MB
     // const pklChunkSize = 1048576 * 10;
     let pklChunks = [];
@@ -241,8 +241,6 @@ const DeployProjectModal = ({ setOpenDeployModal, deployOptions, setDeployOption
         //     project_id: SelectedProject.project_id,
         //     deployment_options: deployOptions,
         //     pkl_file_content: currentPklFile,
-        //     // current_chunk: i + 1,
-        //     // total_chunks: numberOfChunks,
         //     model_categories: modelDeployCategories,
         // }
 
