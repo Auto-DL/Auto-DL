@@ -11,6 +11,7 @@ from tests.mocks import MockUser, MockOS
 
 mock_os_obj = MockOS()
 
+
 class TestUser:
     def user_test(self):
         collection = mongomock.MongoClient().db.collection
@@ -43,6 +44,7 @@ class TestUser:
         }
         user.collection = collection
         return user
+
 
 class TestOTP:
     def create_otp(self):
