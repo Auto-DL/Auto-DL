@@ -1,28 +1,6 @@
 import React, { useState, Fragment } from "react";
 import { withStyles, makeStyles } from "@material-ui/core/styles";
-import {
-  Typography,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  Dialog,
-  DialogActions,
-  DialogTitle,
-  DialogContent,
-  Button,
-  IconButton,
-  Menu,
-  TextField,
-  MenuItem,
-  Box,
-  Grid,
-  Popover,
-} from "@material-ui/core";
-
+import { Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Dialog, DialogActions, DialogTitle, DialogContent, Button, IconButton, Menu, TextField, MenuItem, Box, Grid, Popover } from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
@@ -30,7 +8,7 @@ import ShareIcon from "@material-ui/icons/Share";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import AddCircleIcon from "@material-ui/icons/AddCircle";
 import FileCopyIcon from "@material-ui/icons/FileCopy";
-import HomeService from "./HomeService";
+import HomeService from "../HomeService";
 import PeopleAltIcon from "@material-ui/icons/PeopleAlt";
 
 const StyledTableCell = withStyles((theme) => ({
@@ -114,24 +92,6 @@ export default function Project_table(props) {
     setOpen(true);
   };
 
-  const handleDeleteYes = async () => {
-    setOpen(false);
-    const project_id =
-      currentProject.username !== username
-        ? "shared_" + currentProject.project_id
-        : currentProject.project_id;
-    const data = {
-      username: username,
-      project_id: project_id,
-      project_name: currentProject.project_name,
-      project_description: currentProject.project_description,
-      owner: currentProject.username,
-    };
-    const res = await HomeService.delete_project(token, data);
-    // console.log(res);
-    props.parent_call_on_delete();
-  };
-
   //share handlers
   const handleShareActionsOpen = (project, event) => {
     setAnchorElShared(event.currentTarget);
@@ -188,6 +148,9 @@ export default function Project_table(props) {
   const openPop = Boolean(anchorElPop);
   const id = openPop ? "simple-popover" : undefined;
 
+  const parentCallOnDelete = () => props.parent_call_on_delete();
+  const setCloseDeleteModal = () => setOpen(false);
+
   return (
     <>
       <Dialog open={open} onClose={handleClose}>
@@ -198,11 +161,15 @@ export default function Project_table(props) {
           <Button onClick={handleClose} color="primary">
             No
           </Button>
-          <Button onClick={handleDeleteYes} color="secondary">
+          <Button
+            onClick={() => props.handleDeleteYes(setCloseDeleteModal, currentProject, username, token, parentCallOnDelete)}
+            color="secondary"
+          >
             Yes
           </Button>
         </DialogActions>
       </Dialog>
+
       <Dialog open={openShare} onClose={handleClose}>
         <DialogTitle id="alert-dialog-title">
           Share Project ({currentProject ? currentProject.project_name : ""})
@@ -235,6 +202,7 @@ export default function Project_table(props) {
           </Box>
         </DialogContent>
       </Dialog>
+
       <Popover
         id={id}
         open={openPop}
@@ -257,6 +225,7 @@ export default function Project_table(props) {
           ))}
         </Box>
       </Popover>
+
       {props.projects.length === 0 ? (
         <>
           <div>
@@ -428,6 +397,7 @@ export default function Project_table(props) {
                                   aria-controls="customized-menu"
                                   aria-label="options"
                                   aria-haspopup="true"
+                                  data-testid={`project-actions-btn-${index}`}
                                   onClick={(e) =>
                                     handleActionsOpen(project[p], e)
                                   }
@@ -448,7 +418,7 @@ export default function Project_table(props) {
                                   <MenuItem onClick={handleClone}>
                                     <FileCopyIcon /> &nbsp; Clone
                                   </MenuItem>
-                                  <MenuItem onClick={handleDelete}>
+                                  <MenuItem onClick={handleDelete} data-testid={`delete-project-btn-${index}`}>
                                     <DeleteIcon /> &nbsp; Delete
                                   </MenuItem>
                                   <MenuItem onClick={handleShare}>
