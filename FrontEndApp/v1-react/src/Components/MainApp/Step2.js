@@ -11,7 +11,6 @@ import {
   TextField,
   FormControlLabel,
   Checkbox,
-
 } from "@material-ui/core";
 import {
   useStyles,
@@ -30,7 +29,6 @@ import HyperparameterTab from "./step-2/HyperparameterTab";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
-
 
   return (
     <div
@@ -2152,7 +2150,6 @@ function Step2() {
   const [show_pre, setshow_pre] = useState(false);
   const [jsondata, setjsondata] = useState(temp_json);
 
-
   const [invalidLayerIndices, setInvalidLayerIndices] = useState(new Set());
   const [validLayerIndices, setValidLayerIndices] = useState([]);
 
@@ -2171,7 +2168,6 @@ function Step2() {
         const { invalidIndices, validIndices } = validate_layers(tempArr);
         setInvalidLayerIndices(invalidIndices);
         setValidLayerIndices(validIndices);
-
       } else {
       }
     }
@@ -2215,7 +2211,6 @@ function Step2() {
     }
 
     fetchDataHyper();
-
   }, [getProjectId(), token, username]);
 
   const handleDragEnd = ({ destination, source }) => {
@@ -2244,15 +2239,12 @@ function Step2() {
       console.log("deleting from target");
       const element = tempArr[source.index];
 
-
       var temp = tempArr.filter((item) => item !== element);
       tempArr = temp;
-
 
       setselected_layer(-1);
       setselected_layer_name("");
       setselected_layer_type("");
-
     }
     if (
       destination.droppableId === "target" &&
@@ -2260,15 +2252,15 @@ function Step2() {
     ) {
       // It means the layer which is draggged is selected
       let dragLayerIsSelcted = false;
-      console.log('tempArr["id"] selected_layer_type["id"]', tempArr[source.index]["id"], selected_layer_type["id"]);
+      console.log(
+        'tempArr["id"] selected_layer_type["id"]',
+        tempArr[source.index]["id"],
+        selected_layer_type["id"]
+      );
 
       if (tempArr[source.index]["id"] === selected_layer_type["id"]) {
-
         dragLayerIsSelcted = true;
       }
-
-
-
 
       tempArr.splice(destination.index, 0, tempArr.splice(source.index, 1)[0]);
       // console.log("source and des index are",source.index,destination.index);
@@ -2276,27 +2268,21 @@ function Step2() {
       if (dragLayerIsSelcted) {
         setselected_layer_type(tempArr[destination.index]);
         setselected_layer(destination.index);
-        console.log("selected_layer_type on drag and id is  ", selected_layer_type, selected_layer_type["id"]);
-      }
-      else {
+        console.log(
+          "selected_layer_type on drag and id is  ",
+          selected_layer_type,
+          selected_layer_type["id"]
+        );
+      } else {
         setselected_layer_type("");
         setselected_layer(-1);
-
       }
-
-
-
-
-
 
       // console.log("compinents after splice is ",components);
       for (var i = 0; i < tempArr.length; i++) {
         tempArr[i]["id"] = tempArr[i]["id"] + i;
         if (i === 0) {
-          if (
-            !("input_size" in tempArr[i]) ||
-            !("input_shape" in tempArr[i])
-          ) {
+          if (!("input_size" in tempArr[i]) || !("input_shape" in tempArr[i])) {
             tempArr[i]["input_shape"] = {
               Example: [200, 200, 3],
               Default: "NA",
@@ -2309,7 +2295,7 @@ function Step2() {
         } else {
           try {
             delete tempArr[i]["input_shape"];
-          } catch (err) { }
+          } catch (err) {}
         }
       }
       // setcomponents(components);
@@ -2320,20 +2306,17 @@ function Step2() {
     ) {
       console.log("dropping from source to target");
 
-
       const list_names_of_source = Object.keys(jsondata);
 
       const temp = jsondata[list_names_of_source[source.index]];
 
       var dic = _.cloneDeep(temp);
 
-
-
-      dic["id"] = `${list_names_of_source[source.index]}-${source.index}-${destination.index
-        }`;
+      dic["id"] = `${list_names_of_source[source.index]}-${source.index}-${
+        destination.index
+      }`;
 
       dic["name"] = list_names_of_source[source.index];
-
 
       tempArr.splice(destination.index, 0, dic);
 
@@ -2341,10 +2324,7 @@ function Step2() {
         tempArr[i]["id"] = tempArr[i]["id"] + i;
 
         if (i === 0) {
-          if (
-            !("input_size" in tempArr[i]) ||
-            !("input_shape" in tempArr[i])
-          ) {
+          if (!("input_size" in tempArr[i]) || !("input_shape" in tempArr[i])) {
             tempArr[i]["input_shape"] = {
               Example: [200, 200, 3],
               Default: "NA",
@@ -2357,14 +2337,10 @@ function Step2() {
         } else {
           try {
             delete tempArr[i]["input_shape"];
-          } catch (err) { }
+          } catch (err) {}
         }
       }
-
     }
-
-
-
 
     const { invalidIndices, validIndices } = validate_layers(tempArr);
     // console.log("val res is",invalidIndices,validIndices);
@@ -2372,17 +2348,7 @@ function Step2() {
     setValidLayerIndices(validIndices);
 
     setcomponents(tempArr);
-
-
-
-
-
-
-
-
-
   };
-
 
   const handleInvalidLayers = (validate_res) => {
     const indexSet = new Set();
@@ -2393,11 +2359,7 @@ function Step2() {
       }
     }
     return indexSet;
-
-  }
-
-
-
+  };
 
   const showdetails = (element) => {
     setselected_layer_type(element);
@@ -2789,19 +2751,16 @@ function Step2() {
     setall_prepro(dic);
   };
 
-
   const handleCloneLayer = (layer) => {
     // handleChangetabs();
 
-    //getting source names of all layers 
+    //getting source names of all layers
     const list_names_of_source = Object.keys(jsondata);
     let source_index;
 
     //where to place layer in UI
     let destination_index = Number(layer.id[layer.id.length - 1]) + 1;
     // console.log("destination index  is ",destination_index);
-
-
 
     //finding layer in source array for id framing
     for (let i = 0; i < list_names_of_source.length; i++) {
@@ -2810,7 +2769,6 @@ function Step2() {
         break;
       }
     }
-
 
     //cloning the layer
     let clonedLayer = _.cloneDeep(layer);
@@ -2841,7 +2799,7 @@ function Step2() {
       } else {
         try {
           delete components[i]["input_shape"];
-        } catch (err) { }
+        } catch (err) {}
       }
       // console.log("inside loop id",components[i]["id"]);
     }
@@ -2949,7 +2907,7 @@ function Step2() {
             onChange={handlePublishChange}
             size="small"
             autoComplete="Commit message"
-          // style={{ marginTop: "4px", marginBottom: "12px" }}
+            // style={{ marginTop: "4px", marginBottom: "12px" }}
           />
           <FormControlLabel
             control={
@@ -3014,7 +2972,6 @@ function Step2() {
         handleCloneLayer={handleCloneLayer}
         invalidLayerIndices={invalidLayerIndices}
         validLayerIndices={validLayerIndices}
-
       />
 
       <HyperparameterTab
