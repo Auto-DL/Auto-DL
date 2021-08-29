@@ -849,7 +849,7 @@ def cloud_deploy(request):
                 flask_fh.writelines(modified_flask_lines)
             status, success, message = 200, True, "Cloud Deployment Successful"
         else:
-            status, success, message = 204, True, "Deployment Underway"
+            status, success, message = 204, True, "Cloud Deployment Underway"
 
     except Exception as e:
         status, success, message = 500, False, "Deployment Attempt Failed"

@@ -61,7 +61,6 @@ export const StyledCheckbox = withStyles({
     checked: {},
 })((props) => <Checkbox color="default" {...props} />);
 
-
 export const useStyles = makeStyles({
     table: {
         minWidth: 700,

@@ -171,7 +171,7 @@ const DeployProjectStepTwo = ({ handleCloseDeployModal, setDeployStep, values, c
     );
 };
 
-const DeployProjectModal = ({ setOpenDeployModal, deployOptions, setDeployOptions, localDeploy, awsDeploy, gcpDeploy, handleDeployChange,  openDeployModal, values, SelectedProject, setalert, username, token, setOpen }) => {
+const DeployProjectModal = ({ setOpenDeployModal, setDeployOptions, localDeploy, awsDeploy, gcpDeploy, handleDeployChange,  openDeployModal, values, SelectedProject, setalert, username, token, setOpen }) => {
     const classes = useStyles();
 
     const [deployStep, setDeployStep] = useState(0);
@@ -186,6 +186,7 @@ const DeployProjectModal = ({ setOpenDeployModal, deployOptions, setDeployOption
     // Specify constant pklChunkSize = 10MB
     // const pklChunkSize = 1048576 * 10;
     let pklChunks = [];
+    let uploadStatus = 0;
 
     const handleCloseDeployModal = () => {
         setDeployStep(0);
@@ -246,12 +247,16 @@ const DeployProjectModal = ({ setOpenDeployModal, deployOptions, setDeployOption
                 model_categories: modelDeployCategories,
             }
 
+            uploadStatus = Math.round(((i + 1) / numberOfChunks) * 100);
+
             res = await DeploymentService.cloud_deploy(token, data);
 
             if (res.status === 200) {
                 setalert({ ...values, msg: res.data.message, severity: "success" });
             } else if (res.status === 204) {
-                console.log("Underway?!");
+                uploadStatus = uploadStatus + "% Pickle Uploaded"
+                setalert({ ...values, msg: uploadStatus, severity: "info", title: "Deployment Underway" });
+                setOpen(true);
             } else {
                 setalert({ ...values, msg: res.data.message, severity: "error" });
             }

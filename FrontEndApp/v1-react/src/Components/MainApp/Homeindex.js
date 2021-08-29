@@ -3,6 +3,7 @@ import { useHistory } from "react-router-dom";
 import { Grid, CircularProgress, Backdrop, Snackbar } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import MuiAlert from "@material-ui/lab/Alert";
+import { AlertTitle } from '@material-ui/lab';
 import HomeService from "./HomeService";
 import ProjectTable from "./projects/ProjectTable";
 import UpsertProjectModal from "./projects/UpsertProjectModal";
@@ -103,6 +104,7 @@ function Home() {
   const [alert, setalert] = useState({
     msg: "This is alert msg",
     severity: "warning",
+    title: "",
   });
 
   const handleCloseAlert = (event, reason) => {
@@ -323,8 +325,9 @@ function Home() {
 
         <Grid item lg={1} md={1} sm={1} xs={1}></Grid>
       </Grid>
-      <Snackbar open={open} autoHideDuration={6000} onClose={handleCloseAlert}>
+      <Snackbar open={open} autoHideDuration={8000} onClose={handleCloseAlert}>
         <Alert onClose={handleCloseAlert} severity={alert.severity}>
+          {alert.title !== "" && (<AlertTitle>{alert.title}</AlertTitle>)}
           {alert.msg}
         </Alert>
       </Snackbar>

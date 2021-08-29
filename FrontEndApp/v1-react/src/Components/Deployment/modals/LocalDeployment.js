@@ -16,8 +16,8 @@ export const LocalDeployStepThree = ({ handleCloseDeployModal, setDeployStep, cl
                 </Typography>
                 <FormControl component="fieldset">
                     <RadioGroup aria-label="gender" name="localDeployVariant" value={localDeployVariant} onChange={(e) => setLocalDeployVariant(e.target.value)}>
-                        <FormControlLabel value="executable" control={<Radio />} label="Receive an Executable" />
-                        <FormControlLabel value="zip" disabled control={<Radio />} label="Receive a Zipped Folder" />
+                        <FormControlLabel value="executable" control={<Radio />} label="Download an Executable" />
+                        <FormControlLabel value="zip" disabled control={<Radio />} label="Download a Zipped Folder" />
                     </RadioGroup>
                 </FormControl>
             </DialogContent>
