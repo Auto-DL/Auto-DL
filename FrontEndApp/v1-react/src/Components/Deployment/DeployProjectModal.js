@@ -234,22 +234,6 @@ const DeployProjectModal = ({ setOpenDeployModal, deployOptions, setDeployOption
             i++;
         }
 
-        // Working code
-
-        // const data = {
-        //     username: username,
-        //     project_id: SelectedProject.project_id,
-        //     deployment_options: deployOptions,
-        //     pkl_file_content: currentPklFile,
-        //     model_categories: modelDeployCategories,
-        // }
-
-        // console.log(data.pkl_file_content);
-
-        // const res = await DeploymentService.cloud_deploy(token, data);
-
-        // Working Chunk Code
-
         let res = {};
 
         for (let i = 0; i < numberOfChunks; i++) {
@@ -263,15 +247,15 @@ const DeployProjectModal = ({ setOpenDeployModal, deployOptions, setDeployOption
             }
 
             res = await DeploymentService.cloud_deploy(token, data);
-        };
 
-        if (res.status === 200) {
-            setalert({ ...values, msg: res.data.message, severity: "success" });
-        } else if (res.status === 204) {
-            console.log("Underway?!");
-        } else {
-            setalert({ ...values, msg: res.data.message, severity: "error" });
-        }
+            if (res.status === 200) {
+                setalert({ ...values, msg: res.data.message, severity: "success" });
+            } else if (res.status === 204) {
+                console.log("Underway?!");
+            } else {
+                setalert({ ...values, msg: res.data.message, severity: "error" });
+            }
+        };
 
         handleCloseDeployModal();
         setOpen(true);
