@@ -56,7 +56,8 @@ class TestOTP:
         otp_obj = OTP(mock_user)
         otp_obj.collection = collection
         return otp_obj
-      
+
+
 class TestSession:
     def create_session(self):
         collection = mongomock.MongoClient().db.collection
@@ -75,4 +76,3 @@ class TestSession:
         session_obj_none = Session(mock_none_user)
         session_obj_none.collection = collection
         return session_obj_none
-
