@@ -459,7 +459,6 @@ function Home() {
                 component="fieldset"
                 className={classes.cloneFormControl}
               >
-                
                 <FormGroup>
                   <FormControlLabel
                     control={
@@ -722,7 +721,11 @@ function Home() {
           )}
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseModalSave} color="primary" data-testid="project-save-button">
+          <Button
+            onClick={handleCloseModalSave}
+            color="primary"
+            data-testid="project-save-button"
+          >
             Save Changes
           </Button>
         </DialogActions>

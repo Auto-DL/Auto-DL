@@ -4,7 +4,7 @@ import LoginForm from "./LoginForm";
 import Homeindex from "../MainApp/Homeindex";
 import Layout from "../MainApp/Layout";
 import step2 from "../MainApp/Step2";
-import AuthorizeGitHub from "../MainApp/step-2/Authorize"
+import AuthorizeGitHub from "../MainApp/step-2/PublishToGithub";
 import GitHubResponse from "../MainApp/step-2/GitHubResponse";
 
 function LoginIndex() {
@@ -16,12 +16,10 @@ function LoginIndex() {
           <Route path="/login" exact component={LoginForm} />
           <Route path="/home" component={Homeindex} />
           <Route path="/step-2" component={step2} />
-          <Route path="/github/authorize" component={AuthorizeGitHub} />
-          <Route path="/github/publish" component={GitHubResponse} />
-
+          <Route path="/github/publish" component={AuthorizeGitHub} />
+          <Route path="/github/status" component={GitHubResponse} />
         </Switch>
         <Redirect to="/login" />
-
       </BrowserRouter>
     </>
   );

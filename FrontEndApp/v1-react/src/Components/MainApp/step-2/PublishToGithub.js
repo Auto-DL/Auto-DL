@@ -1,11 +1,10 @@
 import React, { useEffect } from "react";
-
-// import HomeService from "./HomeService";
-
 import { useHistory } from "react-router-dom";
 import HomeService from "../HomeService";
+import { Grid } from "@material-ui/core";
 
-const AuthorizeGitHub = () => {
+
+const PublishToGithub = () => {
     const history = useHistory();
     const search = window.location.search;
     const params = new URLSearchParams(search);
@@ -17,33 +16,33 @@ const AuthorizeGitHub = () => {
             const username = JSON.parse(localStorage.getItem("username"));
             const token = JSON.parse(localStorage.getItem("token"));
             const details = JSON.parse(localStorage.getItem("publish_details"));
-            if (code && username && details) {
+            if (code && username && token && details) {
                 const data = { username, code, details };
-                console.log("data is", data);
                 const res = await HomeService.publish_to_github(token, data);
                 if (res.status === 200) {
-                    console.log("doneeeeeeeeeeee");
                     history.push({
-                        pathname: '/github/publish',
+                        pathname: '/github/status',
                         state: {
-                            message: "success"
+                            message: "success",
+                            repo_full_name: res.data.repo_full_name
                         }
                     });
                 }
                 else {
-
                     history.push({
-                        pathname: '/github/publish',
+                        pathname: '/github/status',
                         state: {
-                            message: "failed"
+                            message: "failed",
+                            repo_link: res.repo_full_name
+
                         }
                     });
                 }
-
-            } else {
             }
-
-
+            else {
+                history.push("/home");
+            }
+            localStorage.removeItem("publish_details");
         }
 
         publish_code_to_github();
@@ -54,13 +53,19 @@ const AuthorizeGitHub = () => {
 
     return (
         <div className="container">
-            <div className="row">
-                <div className="col-md-12">
-                    <h1>Authorize GitHub</h1>
-                </div>
-            </div>
-        </div>
+            <Grid
+                container
+                direction="column"
+                alignItems="center"
+                justify="center"
+            >
+                <Grid item xs={5}>
+                    Publish to Github
+                </Grid>
+
+            </Grid>
+        </div >
     );
 };
 
-export default AuthorizeGitHub;
+export default PublishToGithub;

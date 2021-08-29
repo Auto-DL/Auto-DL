@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { Link } from 'react-router-dom';
 import {
   Button,
   AppBar,
@@ -11,8 +10,7 @@ import {
   Tooltip,
   TextField,
   FormControlLabel,
-  Checkbox
-
+  Checkbox,
 } from "@material-ui/core";
 import {
   useStyles,
@@ -67,7 +65,8 @@ function Step2() {
   var project_details = JSON.parse(localStorage.getItem("project_details"));
   var username = JSON.parse(localStorage.getItem("username"));
   var token = JSON.parse(localStorage.getItem("token"));
-  var git_access_token = JSON.parse(localStorage.getItem("git_access_token")) || "";
+  var git_access_token =
+    JSON.parse(localStorage.getItem("git_access_token")) || "";
 
   const [components, setcomponents] = useState([]);
   const [selected_layer_type, setselected_layer_type] = useState("");
@@ -76,14 +75,12 @@ function Step2() {
   const [value, setValue] = useState(0);
   const [openErrorDialog, setOpenErrorDialog] = useState(false);
 
-  const [publishOptions, setPublishOptions] = useState(
-    {
-      commit_message: "Initial commit from Auto-DL",
-      repo_name: project_details.project_name,
-      filename: "",
-      make_private: false
-    }
-  );
+  const [publishOptions, setPublishOptions] = useState({
+    commit_message: "Initial commit from Auto-DL",
+    repo_name: project_details.project_name,
+    filename: "",
+    make_private: false,
+  });
   const { make_private } = publishOptions;
 
   const [state_hyperparam, setstate_hyperparam] = useState({
@@ -112,16 +109,13 @@ function Step2() {
     return project_id;
   };
 
-
   const handlePublishChange = (event) => {
-
     if (event.target.checked) {
       setPublishOptions({
         ...publishOptions,
         [event.target.name]: true,
       });
-    }
-    else
+    } else
       setPublishOptions({
         ...publishOptions,
         [event.target.name]: event.target.value,
@@ -135,24 +129,33 @@ function Step2() {
   const handleCloseGitHubDetails = () => {
     setOpenModal(false);
     setOpenGitHubDetails(false);
-  }
+  };
 
   const handlePublishClick = (e) => {
-
-    const details = {
-      git_commit_message: publishOptions.commit_message,
-      git_repo_name: publishOptions.repo_name,
-      git_file_name: publishOptions.filename,
-      make_private: publishOptions.make_private,
-      project_id: project_details.project_id,
-    }
-    localStorage.setItem("publish_details", JSON.stringify(details));
-
-    setOpenGitHubDetails(false);
     e.preventDefault();
-    window.location.href = 'https://github.com/login/oauth/authorize?client_id=cf38877318e6d0fb3c51&scope=repo';
 
-  }
+    if (
+      publishOptions.commit_message &&
+      publishOptions.commit_message.trim() !== "" &&
+      publishOptions.repo_name &&
+      publishOptions.repo_name.trim() !== "" &&
+      publishOptions.filename &&
+      publishOptions.filename.trim() !== "" &&
+      publishOptions.make_private !== undefined
+    ) {
+      const details = {
+        git_commit_message: publishOptions.commit_message.trim(),
+        git_repo_name: publishOptions.repo_name.trim(),
+        git_file_name: publishOptions.filename.trim(),
+        make_private: publishOptions.make_private,
+        project_id: project_details.project_id,
+      };
+      localStorage.setItem("publish_details", JSON.stringify(details));
+      setOpenGitHubDetails(false);
+      window.location.href =
+        "https://github.com/login/oauth/authorize?client_id=cf38877318e6d0fb3c51&scope=repo";
+    }
+  };
   const typecast_pre = () => {
     var dic = _.cloneDeep(all_prepro);
 
@@ -2172,7 +2175,6 @@ function Step2() {
       const res = await HomeService.get_pre(token, data);
 
       if (res.status === 200) {
-
         setall_prepro(res.data.preprocessing);
         // console.log("all_prepro1",all_prepro);
 
@@ -2257,7 +2259,7 @@ function Step2() {
         } else {
           try {
             delete components[i]["input_shape"];
-          } catch (err) { }
+          } catch (err) {}
         }
       }
       setcomponents(components);
@@ -2295,8 +2297,9 @@ function Step2() {
       // }
 
       //getting the id
-      dic["id"] = `${list_names_of_source[source.index]}-${source.index}-${destination.index
-        }`;
+      dic["id"] = `${list_names_of_source[source.index]}-${source.index}-${
+        destination.index
+      }`;
       // console.log("we are getting the id ",dic["id"]);
       dic["name"] = list_names_of_source[source.index];
 
@@ -2326,7 +2329,7 @@ function Step2() {
         } else {
           try {
             delete components[i]["input_shape"];
-          } catch (err) { }
+          } catch (err) {}
         }
       }
 
@@ -2772,7 +2775,7 @@ function Step2() {
       } else {
         try {
           delete components[i]["input_shape"];
-        } catch (err) { }
+        } catch (err) {}
       }
       // console.log("inside loop id",components[i]["id"]);
     }
@@ -2815,12 +2818,16 @@ function Step2() {
           <Button variant="contained" onClick={download_code} color="primary">
             Download Code
           </Button>
-          <Button variant="contained" onClick={(e) => {
-            setOpenModal(false);
-            setOpenGitHubDetails(true);
-            // e.preventDefault();
-            // window.location.href = 'https://github.com/login/oauth/authorize?client_id=cf38877318e6d0fb3c51&scope=public_repo';
-          }} color="primary">
+          <Button
+            variant="contained"
+            onClick={(e) => {
+              setOpenModal(false);
+              setOpenGitHubDetails(true);
+              // e.preventDefault();
+              // window.location.href = 'https://github.com/login/oauth/authorize?client_id=cf38877318e6d0fb3c51&scope=public_repo';
+            }}
+            color="primary"
+          >
             {/* {git_access_token ? "Publish to GitHub" : "Authorize GitHub"} */}
             Publish to GitHub
           </Button>
@@ -2828,14 +2835,13 @@ function Step2() {
         </DialogActions>
       </Dialog>
 
-      <Dialog open={openGitHubDetails} onClose={handleCloseGitHubDetails}
-
+      <Dialog
+        open={openGitHubDetails}
+        onClose={handleCloseGitHubDetails}
         fullWidth
         maxWidth="sm"
       >
-        <DialogTitle id="alert-dialog-title">
-          Publish to GitHub
-        </DialogTitle>
+        <DialogTitle id="alert-dialog-title">Publish to GitHub</DialogTitle>
         <DialogContent dividers>
           <Typography variant="body1" gutterBottom>
             Enter the following details to proceed:
@@ -2848,12 +2854,9 @@ function Step2() {
             fullWidth
             label="Filename"
             name="filename"
-            // defaultValue={ }
-
             size="small"
             autoComplete="Filename"
             onChange={handlePublishChange}
-          // style={{ marginTop: "4px", marginBottom: "12px" }}
           />
 
           <TextField
@@ -2867,10 +2870,7 @@ function Step2() {
             name="repo_name"
             autoComplete="Repository name"
             onChange={handlePublishChange}
-
-          // style={{ marginTop: "4px", marginBottom: "12px" }}
           />
-
 
           <TextField
             variant="outlined"
@@ -2883,7 +2883,7 @@ function Step2() {
             onChange={handlePublishChange}
             size="small"
             autoComplete="Commit message"
-          // style={{ marginTop: "4px", marginBottom: "12px" }}
+            // style={{ marginTop: "4px", marginBottom: "12px" }}
           />
           <FormControlLabel
             control={
@@ -2908,7 +2908,6 @@ function Step2() {
           </Box>
         </DialogContent>
       </Dialog>
-
 
       <AppBar position="static" color="default">
         <Tabs
@@ -2970,7 +2969,7 @@ function Step2() {
         setOpenErrorDialog={setOpenErrorDialog}
         hyper={hyper}
       />
-    </div >
+    </div>
   );
 }
 
