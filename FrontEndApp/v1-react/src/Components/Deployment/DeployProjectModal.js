@@ -176,7 +176,7 @@ const DeployProjectModal = ({ setOpenDeployModal, setDeployOptions, localDeploy,
 
     const [deployStep, setDeployStep] = useState(0);
     const [modelDeployCategories, setModelDeployCategories] = useState([]);
-    const [localDeployVariant, setLocalDeployVariant] = useState("executable");
+    const [localDeployVariant, setLocalDeployVariant] = useState("zip");
 
     // States to handle Pickle File for CLoud Deployments
     const [currentPklFile, setCurrentPklFile] = useState("");
@@ -191,7 +191,7 @@ const DeployProjectModal = ({ setOpenDeployModal, setDeployOptions, localDeploy,
     const handleCloseDeployModal = () => {
         setDeployStep(0);
         setModelDeployCategories([]);
-        setLocalDeployVariant("executable");
+        setLocalDeployVariant("zip");
         setCurrentPklFile("");
         setPklFileName("");
         setNumberOfChunks(0);
@@ -215,7 +215,15 @@ const DeployProjectModal = ({ setOpenDeployModal, setDeployOptions, localDeploy,
         const res = await DeploymentService.local_deploy(token, data);
 
         if (res.status === 200) {
-            setalert({ ...values, msg: res.data.message, severity: "success" });
+            const { data } = await res;
+            const downloadUrl = window.URL.createObjectURL(new Blob([data]));
+            const link = document.createElement('a');
+            link.href = downloadUrl;
+            link.setAttribute('download', 'deployment.zip');
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            setalert({ ...values, msg: "Local Deployment Successful", severity: "success" });
         } else {
             setalert({ ...values, msg: res.data.message, severity: "error" });
         }

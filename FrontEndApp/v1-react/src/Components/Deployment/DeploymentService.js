@@ -10,6 +10,7 @@ class DeploymentService {
                     "Content-Type": "application/json",
                     token: `${token}`,
                 },
+                responseType: 'blob',
             });
             return response;
         } catch (error) {

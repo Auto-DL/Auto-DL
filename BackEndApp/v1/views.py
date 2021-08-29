@@ -1,6 +1,6 @@
 from genericpath import isdir
 from django.shortcuts import render
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse, HttpResponse, FileResponse
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 import sys
@@ -9,7 +9,7 @@ import json
 import importlib
 import stat
 import git
-import pickle
+import zipfile
 
 from authv1.store import Store
 from authv1.models import User
@@ -712,6 +712,20 @@ def share_project(request):
 @api_view(["POST"])
 @is_authenticated
 def local_deploy(request):
+    # Function to return all file paths of a particular directory
+    def retrieve_file_paths(dirName):
+        filePaths = []
+
+        # Read all directory, subdirectories and file lists
+        for root, directories, files in os.walk(dirName):
+            for filename in files:
+                # Create the full filepath by using os module.
+                filePath = os.path.join(root, filename)
+                filePaths.append(filePath)
+
+        # return all paths
+        return filePaths
+
     try:
         username = request.data.get("username")
         user = User(username=username, password=None)
@@ -749,7 +763,6 @@ def local_deploy(request):
         modified_flask_lines = []
 
         with open(program_path, "r") as flask_fh:
-
             flask_lines = flask_fh.readlines()
 
             categories = "CATEGORIES = []\n"
@@ -764,11 +777,49 @@ def local_deploy(request):
         with open(program_path, "w") as flask_fh:
             flask_fh.writelines(modified_flask_lines)
 
-        status, success, message = 200, True, "Deployment Initiated Successfully"
+        if deployment_variant == "zip":
+            current_dir = os.getcwd()
+            os.chdir(deployment_dir)
+
+            filePaths = retrieve_file_paths(".")
+            zip_dir = os.path.join(project_dir, "deployment.zip")
+            zip_file = zipfile.ZipFile(zip_dir, "w")
+            with zip_file:
+                for file in filePaths:
+                    zip_file.write(file)
+
+            os.chdir(current_dir)
+            print("Zip file created successfully!\n")
+
+            response = HttpResponse(
+                open(zip_dir, "rb"),
+                headers={
+                    "Content-Type": "application/zip",
+                    "Content-Disposition": "attachment; filename=deployment.zip",
+                },
+            )
+
+            if os.path.exists(deployment_dir) and os.path.isdir(deployment_dir):
+                for root, dirs, files in os.walk(deployment_dir, topdown=False):
+                    for name in files:
+                        filename = os.path.join(root, name)
+                        os.chmod(filename, stat.S_IWUSR)
+                        os.remove(filename)
+                    for name in dirs:
+                        os.rmdir(os.path.join(root, name))
+                os.rmdir(deployment_dir)
+
+            os.remove(zip_dir)
+
+            return response
+
+        else:
+            status, success, message = 200, True, "Executable Downloaded Successfully"
+            return JsonResponse({"success": success, "message": message}, status=status)
 
     except Exception as e:
         status, success, message = 500, False, "Deployment Attempt Failed"
-    return JsonResponse({"success": success, "message": message}, status=status)
+        return JsonResponse({"success": success, "message": message}, status=status)
 
 
 @api_view(["POST"])
@@ -847,6 +898,7 @@ def cloud_deploy(request):
 
             with open(program_path, "w") as flask_fh:
                 flask_fh.writelines(modified_flask_lines)
+
             status, success, message = 200, True, "Cloud Deployment Successful"
         else:
             status, success, message = 204, True, "Cloud Deployment Underway"
