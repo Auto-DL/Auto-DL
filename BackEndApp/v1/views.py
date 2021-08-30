@@ -768,8 +768,6 @@ def local_deploy(request):
                     os.rmdir(os.path.join(root, name))
             os.rmdir(deployment_dir)
 
-        print(f"\n{username} initiated deployment on Localhost")
-        print(f"\nCloning into {deployment_dir}\n")
         git.Repo.clone_from(f"{flask_app_url}", f"{deployment_dir}", branch="main")
 
         program_path = os.path.join(deployment_dir, "app.py")
@@ -802,7 +800,6 @@ def local_deploy(request):
                     zip_file.write(file)
 
             os.chdir(current_dir)
-            print("Zip file created successfully!\n")
 
             response = HttpResponse(
                 open(zip_dir, "rb"),
@@ -897,8 +894,6 @@ def cloud_deploy(request):
                         os.rmdir(os.path.join(root, name))
                 os.rmdir(deployment_dir)
 
-            print(f"\n{username} initiated deployment on Localhost")
-            print(f"\nCloning into {deployment_dir}\n")
             git.Repo.clone_from(f"{flask_app_url}", f"{deployment_dir}", branch="main")
 
             new_pkl_path = os.path.join(deployment_dir, "model.pkl")
@@ -1022,8 +1017,6 @@ def hybrid_deploy(request):
                         os.rmdir(os.path.join(root, name))
                 os.rmdir(deployment_dir)
 
-            print(f"\n{username} initiated deployment on Localhost")
-            print(f"\nCloning into {deployment_dir}\n")
             git.Repo.clone_from(f"{flask_app_url}", f"{deployment_dir}", branch="main")
 
             new_pkl_path = os.path.join(deployment_dir, "model.pkl")
@@ -1077,7 +1070,6 @@ def hybrid_deploy(request):
                         zip_file.write(file)
 
                 os.chdir(current_dir)
-                print("Zip file created successfully!\n")
 
                 response = HttpResponse(
                     open(zip_dir, "rb"),
