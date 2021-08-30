@@ -30,6 +30,20 @@ class DeploymentService {
             return error.response;
         }
     }
+    async hybrid_deploy(token, data) {
+        try {
+            const response = await axios.post(`${BACKEND_API_URL}/v1/deploy/hybrid`, data, {
+                headers: {
+                    "Content-Type": "application/json",
+                    token: `${token}`,
+                },
+                responseType: 'blob',
+            });
+            return response;
+        } catch (error) {
+            return error.response;
+        }
+    }
 }
 
 export default new DeploymentService();

@@ -37,4 +37,5 @@ urlpatterns = [
     # deployment routes
     path("deploy/local", views.local_deploy, name="local-deploy"),
     path("deploy/cloud", views.cloud_deploy, name="cloud-deploy"),
+    path("deploy/hybrid", views.hybrid_deploy, name="hybrid-deploy"),
 ]
