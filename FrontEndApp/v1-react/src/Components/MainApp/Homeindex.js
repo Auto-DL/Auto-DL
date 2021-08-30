@@ -7,8 +7,11 @@ import { AlertTitle } from '@material-ui/lab';
 import HomeService from "./HomeService";
 import ProjectTable from "./projects/ProjectTable";
 import UpsertProjectModal from "./projects/UpsertProjectModal";
+import { handleCloseModalSave } from "./operations/UpsertProject";
 import CloneProjectModal from "./projects/CloneProjectModal";
 import DeployProjectModal from "../Deployment/DeployProjectModal";
+import { handleSaveClone } from "./operations/CloneProject";
+import { handleDeleteYes } from "./operations/DeleteProject";
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -249,6 +252,7 @@ function Home() {
 
       <CloneProjectModal
         handleCloseCloneModal={handleCloseCloneModal}
+        handleSaveClone={handleSaveClone}
         openCloneModal={openCloneModal}
         cloneStep={cloneStep}
         handleChange={handleChange}
@@ -294,6 +298,7 @@ function Home() {
 
       <UpsertProjectModal
         handleCloseModal={handleCloseModal}
+        handleCloseModalSave={handleCloseModalSave}
         openModal={openModal}
         IsEdit={IsEdit}
         values={values}
@@ -315,6 +320,7 @@ function Home() {
             projects={AllProjects}
             editproject={editproject}
             parent_call_on_delete={parent_call_on_delete}
+            handleDeleteYes={handleDeleteYes}
             handlestep={handlestep}
             create_new_project={create_new_project}
             shareProject={shareProject}

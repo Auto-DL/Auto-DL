@@ -48,7 +48,6 @@ class User:
 
     def find(self, by_email=False):
         """Returns user object is exists else returns None."""
-
         if by_email:
             return self.collection.find_one({"email": self.attributes.get("email")})
 
@@ -88,6 +87,10 @@ class Session:
     def create(self):
         token_obj = Token(self.user)
         token = token_obj.create()
+
+        if token is None:
+            return None
+
         token = str(token, "utf-8")
         expire = token_obj.expire.strftime(DATE_FORMAT)
 

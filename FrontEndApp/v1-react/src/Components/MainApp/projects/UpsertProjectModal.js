@@ -1,21 +1,8 @@
 import { Select, MenuItem, Button, TextField, InputLabel, FormControl, Dialog } from "@material-ui/core";
-import { handleCloseModalSave } from "../operations/UpsertProject";
 import { DialogActions, DialogTitle, DialogContent } from "./styles";
 
-const UpsertProjectModal = ({ handleCloseModal, openModal, IsEdit, values, handleChange, classes, setalert, setOpen, setOpenModal, SelectedProject, username, token }) => {
-  const handleDataDirPicker = async () => {
-    const dirHandle = await window.showDirectoryPicker();
-    console.log(dirHandle.name);
-
-    for await (const entry of dirHandle.values()) {
-      if ((entry.kind === "directory" && entry.name === "train") ||
-        (entry.kind === "directory" && entry.name === "test")) {
-        console.log(entry.kind, entry.name);
-      }
-    }
-  }
-
-  return (
+const UpsertProjectModal = ({ handleCloseModal, handleCloseModalSave, openModal, IsEdit, values, handleChange, classes, setalert, setOpen, setOpenModal, SelectedProject, username, token }) => {
+    return (
       <Dialog
         onClose={handleCloseModal}
         aria-labelledby="customized-dialog-title"
