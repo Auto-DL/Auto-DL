@@ -75,6 +75,8 @@ function Step2() {
   const [value, setValue] = useState(0);
   const [openErrorDialog, setOpenErrorDialog] = useState(false);
 
+
+  const CLIENT_ID = process.env.GITHUB_APP_CLIENT_ID || "cf38877318e6d0fb3c51";
   const [publishOptions, setPublishOptions] = useState({
     commit_message: "Initial commit from Auto-DL",
     repo_name: project_details.project_name,
@@ -153,7 +155,7 @@ function Step2() {
       localStorage.setItem("publish_details", JSON.stringify(details));
       setOpenGitHubDetails(false);
       window.location.href =
-        "https://github.com/login/oauth/authorize?client_id=cf38877318e6d0fb3c51&scope=repo";
+        `https://github.com/login/oauth/authorize?client_id=${CLIENT_ID}&scope=repo`;
     }
   };
   const typecast_pre = () => {
@@ -2295,7 +2297,7 @@ function Step2() {
         } else {
           try {
             delete tempArr[i]["input_shape"];
-          } catch (err) {}
+          } catch (err) { }
         }
       }
       // setcomponents(components);
@@ -2312,9 +2314,8 @@ function Step2() {
 
       var dic = _.cloneDeep(temp);
 
-      dic["id"] = `${list_names_of_source[source.index]}-${source.index}-${
-        destination.index
-      }`;
+      dic["id"] = `${list_names_of_source[source.index]}-${source.index}-${destination.index
+        }`;
 
       dic["name"] = list_names_of_source[source.index];
 
@@ -2337,7 +2338,7 @@ function Step2() {
         } else {
           try {
             delete tempArr[i]["input_shape"];
-          } catch (err) {}
+          } catch (err) { }
         }
       }
     }
@@ -2799,7 +2800,7 @@ function Step2() {
       } else {
         try {
           delete components[i]["input_shape"];
-        } catch (err) {}
+        } catch (err) { }
       }
       // console.log("inside loop id",components[i]["id"]);
     }
@@ -2847,15 +2848,11 @@ function Step2() {
             onClick={(e) => {
               setOpenModal(false);
               setOpenGitHubDetails(true);
-              // e.preventDefault();
-              // window.location.href = 'https://github.com/login/oauth/authorize?client_id=cf38877318e6d0fb3c51&scope=public_repo';
             }}
             color="primary"
           >
-            {/* {git_access_token ? "Publish to GitHub" : "Authorize GitHub"} */}
             Publish to GitHub
           </Button>
-          {/* </Link> */}
         </DialogActions>
       </Dialog>
 
@@ -2907,7 +2904,7 @@ function Step2() {
             onChange={handlePublishChange}
             size="small"
             autoComplete="Commit message"
-            // style={{ marginTop: "4px", marginBottom: "12px" }}
+          // style={{ marginTop: "4px", marginBottom: "12px" }}
           />
           <FormControlLabel
             control={

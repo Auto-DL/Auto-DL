@@ -287,8 +287,6 @@ class HomeService {
 
   async publish_to_github(token, data) {
     try {
-      console.log("senfingggggggggg");
-
       const response = await axios.post(`${BACKEND_API_URL}/v1/github/publish/`, data, {
 
         headers: {

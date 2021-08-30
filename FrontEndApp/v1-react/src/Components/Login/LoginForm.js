@@ -71,7 +71,6 @@ function LoginForm() {
   var username = JSON.parse(localStorage.getItem("username"));
 
   if (username !== null) {
-    console.log("in login home");
     history.push("/home");
   }
 

@@ -120,21 +120,8 @@ function Home() {
       }
     }
 
-    // async function setToken() {
-    //   const data = {
-    //     username: username,
-    //   };
-    //   if (username) {
-    //     const res = await HomeService.has_authorized_github(token, data);
-
-    //     if (res.status === 200) {
-    //       localStorage.setItem("hasGitAuthorized", JSON.stringify("yes"));
-    //     }
-    //   }
-    // }
-
     fetchData();
-    // setToken();
+
   }, [openModal, openCloneModal, history, token, username]);
 
   const handlestep = async (proj) => {

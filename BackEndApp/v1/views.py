@@ -712,30 +712,6 @@ def share_project(request):
     return JsonResponse({"success": success, "message": message}, status=status)
 
 
-# @api_view(["POST"])
-# @is_authenticated
-# def get_git_access_token(request):
-#     print("in get access token")
-#     code = request.data.get("code")
-#     print("code is", code, type(code))
-
-#     git_access_token = generate_git_access_token(code)
-
-#     if git_access_token:
-#         try:
-#             publish_to_github(git_access_token)
-#             status, success, message = 200, True, "Access Token Fetched"
-#         except:
-#             status, success, message = 500, False, "Failed"
-#     else:
-#         status, success, message = 500, False, "Something went wrong"
-
-#     return JsonResponse(
-#         {"success": success, "message": message},
-#         status=status,
-#     )
-
-
 @api_view(["POST"])
 @is_authenticated
 def publish_on_github(request):

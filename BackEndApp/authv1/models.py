@@ -48,7 +48,6 @@ class User:
 
     def find(self, by_email=False):
         """Returns user object is exists else returns None."""
-
         if by_email:
             return self.collection.find_one({"email": self.attributes.get("email")})
 
@@ -76,25 +75,6 @@ class User:
         # check if token for this guy exits
         # do stuff
 
-    # def addGitAccessToken(self, token):
-    #     """Add a Git Access token to the user."""
-    #     try:
-    #         self.collection.update(
-    #             {"username": self.username}, {"$set": {"GitAccessToken": token}}
-    #         )
-    #         return 0, None
-    #     except:
-    #         return 1, "Could not add Git Access Token."
-
-    # def getGitAccessToken(self):
-    #     """Get the Git Access token of the user."""
-    #     try:
-    #         return self.collection.find_one({"username": self.username})[
-    #             "GitAccessToken"
-    #         ]
-    #     except:
-    #         return None
-
 
 class Session:
     def __init__(self, user, **kwargs):
@@ -107,7 +87,11 @@ class Session:
     def create(self):
         token_obj = Token(self.user)
         token = token_obj.create()
-        # token = str(token, "utf-8")
+
+        if token is None:
+            return None
+
+        token = str(token, "utf-8")
         expire = token_obj.expire.strftime(DATE_FORMAT)
 
         session_document = {"token": token, "expire": expire, "user": self.user}
