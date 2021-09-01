@@ -1,8 +1,10 @@
-name: "Linting Checks"
+name: Linting Checks
+
 on: [push, pull_request]
+
 jobs:
-  python-lint:
-    name: "Python black linting check"
+  backend-lint:
+    name: Python black linting check
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -17,3 +19,30 @@ jobs:
         run: pip install black
       - name: Run black --check .
         run: black --check .
+
+  frontend-lint:
+    name: AutoDL-platform linting check
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [12.x]
+    defaults:
+      run:
+        working-directory: ./FrontEndApp/autodl-platform
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+      - uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - name: Install package.json
+        run: npm ci
+      - name: Run lint check
+        run: npm run lint

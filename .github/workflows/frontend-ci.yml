@@ -1,14 +1,17 @@
-name: "Frontend CI"
+name: Frontend CI
+
 on: [push, pull_request]
+
 jobs:
   build:
+    name: Build AutoDL-platform
     runs-on: ubuntu-latest
     strategy:
       matrix:
         node-version: [12.x]
     defaults:
       run:
-        working-directory: ./FrontEndApp/v1-react
+        working-directory: ./FrontEndApp/autodl-platform
 
     steps:
       - uses: actions/checkout@v2
@@ -22,8 +25,7 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
-      - run: npm ci
-      # CI=true treats warnings as error
-      # TODO: remove CI=false after all warnings are resolved
-      - run: CI=false npm run build --if-present
-      - run: npm test
+      - name: Instal package.json
+        run: npm ci
+      - name: Build NextJS app
+        run: npm run build
