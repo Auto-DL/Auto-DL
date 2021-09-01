@@ -2161,7 +2161,7 @@ function Step2() {
     
   }, [getProjectId(), token, username]);
 
-  const handleDragEnd = ({ destination, source }) => {
+  const handleDragEnd = async({ destination, source }) => {
     let tempArr=_.cloneDeep(components);
     
     if (!destination) {
