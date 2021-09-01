@@ -5,7 +5,7 @@ const BACKEND_API_URL = process.env.REACT_APP_BACKEND_API_URL || baseurl;
 class DeploymentService {
     async local_deploy(token, data) {
         try {
-            const response = await axios.post(`${BACKEND_API_URL}/v1/deploy/local`, data, {
+            const response = await axios.post(`${BACKEND_API_URL}/deployments/local`, data, {
                 headers: {
                     "Content-Type": "application/json",
                     token: `${token}`,
@@ -19,7 +19,7 @@ class DeploymentService {
     }
     async cloud_deploy(token, data) {
         try {
-            const response = await axios.post(`${BACKEND_API_URL}/v1/deploy/cloud`, data, {
+            const response = await axios.post(`${BACKEND_API_URL}/deployments/cloud`, data, {
                 headers: {
                     "Content-Type": "application/json",
                     token: `${token}`,
@@ -32,7 +32,7 @@ class DeploymentService {
     }
     async hybrid_deploy(token, data) {
         try {
-            const response = await axios.post(`${BACKEND_API_URL}/v1/deploy/hybrid`, data, {
+            const response = await axios.post(`${BACKEND_API_URL}/deployments/hybrid`, data, {
                 headers: {
                     "Content-Type": "application/json",
                     token: `${token}`,

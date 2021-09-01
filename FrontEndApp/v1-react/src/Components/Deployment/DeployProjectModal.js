@@ -95,7 +95,7 @@ const DeployProjectStepTwo = ({ handleCloseDeployModal, setDeployStep, values, c
                 // console.log(entry.kind, entry.name);
                 setModelDeployCategories(category => [...category, entry.name]);
             } else {
-                console.log("Select Correct Data Directory");
+                alert("Select Correct Data Directory");
             }
         }
     }
@@ -118,7 +118,6 @@ const DeployProjectStepTwo = ({ handleCloseDeployModal, setDeployStep, values, c
                     disabled
                     fullWidth
                     defaultValue={"Project Name: " + values.project_name}
-                    gutterBottom
                 />
                 <TextField
                     variant="outlined"
@@ -126,7 +125,6 @@ const DeployProjectStepTwo = ({ handleCloseDeployModal, setDeployStep, values, c
                     disabled
                     fullWidth
                     defaultValue={"Task: " + values.task}
-                    gutterBottom
                 />
                 <Button
                     size="small"
