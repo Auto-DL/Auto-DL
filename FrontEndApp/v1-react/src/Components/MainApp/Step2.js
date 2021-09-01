@@ -24,6 +24,7 @@ import HomeService from "./HomeService";
 import PreprocessingTab from "./step-2/PreprocessingTab";
 import LayerTab from "./step-2/LayerTab";
 import HyperparameterTab from "./step-2/HyperparameterTab";
+import axios from 'axios';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -2318,15 +2319,24 @@ function Step2() {
 
     setcomponents(tempArr);
 
+    const recommendations = await getRecommendations(tempArr)
+		console.log(recommendations)
+	}
 
+	const getRecommendations = layersArr => {
+		let recommendationArr = layersArr.map(x => x.name)
 
-
-
-    
-   
-
-
-  };
+		return axios
+			.post("http://localhost:8080/predict", {
+				layers: recommendationArr,
+			})
+			.then(function (response) {
+				return response.data.predictions
+			})
+			.catch(function (error) {
+				console.log(error)
+			})
+	}
 
 
   const handleInvalidLayers= (validate_res) =>{
