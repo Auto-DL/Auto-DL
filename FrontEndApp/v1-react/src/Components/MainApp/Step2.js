@@ -2325,9 +2325,9 @@ function Step2() {
 
 	const getRecommendations = layersArr => {
 		let recommendationArr = layersArr.map(x => x.name)
-
+    const FASTAPI_URL = process.env.REACT_APP_FASTAPI_URL
 		return axios
-			.post("http://localhost:8080/predict", {
+			.post(`${FASTAPI_URL}/predict`, {
 				layers: recommendationArr,
 			})
 			.then(function (response) {
@@ -2336,6 +2336,7 @@ function Step2() {
 			.catch(function (error) {
 				console.log(error)
 			})
+    return  1
 	}
 
 
