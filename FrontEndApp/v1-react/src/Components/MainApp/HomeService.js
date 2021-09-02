@@ -285,9 +285,40 @@ class HomeService {
     }
   }
 
+
+  async gitUsername(token, data) {
+    try {
+      const response = await axios.post(`${BACKEND_API_URL}/v1/github/getusername/`, data, {
+
+        headers: {
+          "Content-Type": "application/json",
+          token: `${token}`,
+        },
+      });
+      return response;
+    } catch (error) {
+      return error.response;
+    }
+  }
+
   async publish_to_github(token, data) {
     try {
       const response = await axios.post(`${BACKEND_API_URL}/v1/github/publish/`, data, {
+        headers: {
+          "Content-Type": "application/json",
+          token: `${token}`,
+        },
+      });
+      return response;
+    } catch (error) {
+      return error.response;
+    }
+  }
+
+
+  async authorize_github(token, data) {
+    try {
+      const response = await axios.post(`${BACKEND_API_URL}/v1/github/authorize/`, data, {
 
         headers: {
           "Content-Type": "application/json",

@@ -4,7 +4,7 @@ import LoginForm from "./LoginForm";
 import Homeindex from "../MainApp/Homeindex";
 import Layout from "../MainApp/Layout";
 import step2 from "../MainApp/Step2";
-import AuthorizeGitHub from "../MainApp/step-2/PublishToGithub";
+import AuthorizeGitHub from "../MainApp/step-2/AuthorizeGithub.js";
 import GitHubResponse from "../MainApp/step-2/GitHubResponse";
 
 function LoginIndex() {

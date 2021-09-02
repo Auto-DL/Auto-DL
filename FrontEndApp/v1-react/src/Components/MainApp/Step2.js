@@ -12,6 +12,14 @@ import {
   FormControlLabel,
   Checkbox,
 } from "@material-ui/core";
+import ClickAwayListener from '@material-ui/core/ClickAwayListener';
+import Grow from '@material-ui/core/Grow';
+import Paper from '@material-ui/core/Paper';
+import Popper from '@material-ui/core/Popper';
+import MenuItem from '@material-ui/core/MenuItem';
+import MenuList from '@material-ui/core/MenuList';
+import { useHistory } from "react-router-dom";
+
 import {
   useStyles,
   DialogTitle,
@@ -26,6 +34,8 @@ import HomeService from "./HomeService";
 import PreprocessingTab from "./step-2/PreprocessingTab";
 import LayerTab from "./step-2/LayerTab";
 import HyperparameterTab from "./step-2/HyperparameterTab";
+
+
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -62,21 +72,20 @@ function a11yProps(index) {
 
 function Step2() {
   const classes = useStyles();
+  const [open, setOpen] = React.useState(false);
+  const anchorRef = React.useRef(null);
   var project_details = JSON.parse(localStorage.getItem("project_details"));
   var username = JSON.parse(localStorage.getItem("username"));
   var token = JSON.parse(localStorage.getItem("token"));
-  var git_access_token =
-    JSON.parse(localStorage.getItem("git_access_token")) || "";
-
   const [components, setcomponents] = useState([]);
   const [selected_layer_type, setselected_layer_type] = useState("");
   const [selected_layer, setselected_layer] = useState(-1);
   const [selected_layer_name, setselected_layer_name] = useState("");
   const [value, setValue] = useState(0);
   const [openErrorDialog, setOpenErrorDialog] = useState(false);
+  const [gitusername, setGitusername] = useState("");
 
-
-  const CLIENT_ID = process.env.GITHUB_APP_CLIENT_ID || "cf38877318e6d0fb3c51";
+  const CLIENT_ID = process.env.GITHUB_APP_CLIENT_ID || "9adf20ee6041c141e897";
   const [publishOptions, setPublishOptions] = useState({
     commit_message: "Initial commit from Auto-DL",
     repo_name: project_details.project_name,
@@ -102,6 +111,36 @@ function Step2() {
   const [openGitHubDetails, setOpenGitHubDetails] = useState(false);
 
   const [generated_file_path, setgenerated_file_path] = useState("");
+
+  const handleToggle = () => {
+    setOpen((prevOpen) => !prevOpen);
+  };
+
+  const handleClose = (event) => {
+    if (anchorRef.current && anchorRef.current.contains(event.target)) {
+      return;
+    }
+
+    setOpen(false);
+  };
+
+  const handleGitLogout = async (event) => {
+
+    const data = {
+      username: username,
+    };
+    window.location.href = `https://github.com/settings/connections/applications/${CLIENT_ID}`;
+
+  };
+
+
+
+  function handleListKeyDown(event) {
+    if (event.key === 'Tab') {
+      event.preventDefault();
+      setOpen(false);
+    }
+  }
 
   const getProjectId = () => {
     const project_id =
@@ -132,8 +171,34 @@ function Step2() {
     setOpenModal(false);
     setOpenGitHubDetails(false);
   };
+  const handleAuthorize = async () => {
 
-  const handlePublishClick = (e) => {
+    window.location.href =
+      `https://github.com/login/oauth/authorize?client_id=${CLIENT_ID}&scope=repo`;
+
+  }
+
+  const handlePublishModalClick = async (e) => {
+
+
+    const data = { "username": username }
+    const res = await HomeService.gitUsername(token, data);
+    if (res.status === 200) {
+      console.log(res);
+      console.log(res.data.git_username);
+      setGitusername(res.data.git_username);
+      console.log(gitusername);
+    }
+    else {
+      setGitusername("");
+    }
+    setOpenModal(false);
+    setOpenGitHubDetails(true);
+
+
+  }
+
+  const handlePublishClick = async (e) => {
     e.preventDefault();
 
     if (
@@ -152,10 +217,34 @@ function Step2() {
         make_private: publishOptions.make_private,
         project_id: project_details.project_id,
       };
-      localStorage.setItem("publish_details", JSON.stringify(details));
+      // localStorage.setItem("publish_details", JSON.stringify(details));
       setOpenGitHubDetails(false);
-      window.location.href =
-        `https://github.com/login/oauth/authorize?client_id=${CLIENT_ID}&scope=repo`;
+      // const history = useHistory();
+      const data = { username, details };
+      const res = await HomeService.publish_to_github(token, data);
+      if (res.status === 200) {
+        history.push({
+          pathname: "/github/status",
+          state: {
+            message: "success",
+            repo_full_name: res.data.repo_full_name,
+            response_from: "publish"
+          },
+        });
+      } else {
+        history.push({
+          pathname: "/github/status",
+          state: {
+            message: "failed",
+            repo_link: res.repo_full_name,
+            response_from: "publish"
+
+          },
+        });
+      }
+
+
+
     }
   };
   const typecast_pre = () => {
@@ -2143,7 +2232,7 @@ function Step2() {
       },
     };
   }
-
+  const history = useHistory();
   const [all_optimizer, setall_optimizer] = useState(temp_optimizer);
   const [all_loss, setall_loss] = useState(temp_loss);
   const [all_prepro, setall_prepro] = useState({});
@@ -2845,14 +2934,12 @@ function Step2() {
           </Button>
           <Button
             variant="contained"
-            onClick={(e) => {
-              setOpenModal(false);
-              setOpenGitHubDetails(true);
-            }}
+            onClick={(e) => handlePublishModalClick(e)}
             color="primary"
           >
             Publish to GitHub
           </Button>
+
         </DialogActions>
       </Dialog>
 
@@ -2862,7 +2949,42 @@ function Step2() {
         fullWidth
         maxWidth="sm"
       >
-        <DialogTitle id="alert-dialog-title">Publish to GitHub</DialogTitle>
+        <DialogTitle id="alert-dialog-title">Publish to GitHub
+
+          {gitusername ?
+            <>
+              <Button variant="outlined" color="primary" style={{ float: "right" }} ref={anchorRef}
+                aria-controls={open ? 'menu-list-grow' : undefined}
+                aria-haspopup="true"
+                onClick={handleToggle} >{gitusername}</Button>
+              <Popper open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal>
+                {({ TransitionProps, placement }) => (
+                  <Grow
+                    {...TransitionProps}
+                    style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}
+                  >
+                    <Paper>
+                      <ClickAwayListener onClickAway={handleClose}>
+                        <MenuList autoFocusItem={open} id="menu-list-grow" onKeyDown={handleListKeyDown}>
+                          <MenuItem onClick={handleGitLogout}>Logout</MenuItem>
+                        </MenuList>
+                      </ClickAwayListener>
+                    </Paper>
+                  </Grow>
+                )}
+              </Popper>
+            </>
+            :
+
+            <Button variant="contained" color="secondary" style={{ float: "right" }} ref={anchorRef}
+              aria-controls={open ? 'menu-list-grow' : undefined}
+              aria-haspopup="true"
+              onClick={handleAuthorize} >Authorize</Button>
+          }
+
+
+
+        </DialogTitle>
         <DialogContent dividers>
           <Typography variant="body1" gutterBottom>
             Enter the following details to proceed:
@@ -2923,6 +3045,7 @@ function Step2() {
               variant="contained"
               color="primary"
               onClick={(e) => handlePublishClick(e)}
+              disabled={gitusername ? false : true}
             >
               Publish
             </Button>
