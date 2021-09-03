@@ -1,12 +1,9 @@
 from uuid import uuid4 as uid
 import os
 from github import Github
-from dotenv import load_dotenv
+
 from cryptography.fernet import Fernet
 import base64
-
-load_dotenv()
-g = Github()
 
 
 def generate_uid():
