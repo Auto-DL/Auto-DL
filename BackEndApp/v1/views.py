@@ -716,6 +716,16 @@ def share_project(request):
 @api_view(["POST"])
 @is_authenticated
 def get_github_username(request):
+    """
+    Endpoint to get the username of the authorized github account
+    Inputs:
+    -------
+    request:
+        Requires:  username in request data
+    Returns:
+    --------
+    response: JsonResponse having the username of the authorized github account on success else None if the user has not authorized the app or something goes wrong
+    """
     username = request.data.get("username")
     user = User(username=username, password=None)
     user = user.find()
@@ -743,6 +753,16 @@ def get_github_username(request):
 @api_view(["POST"])
 @is_authenticated
 def github_logout(request):
+    """
+    Endpoint to get the  logout of the authorized github account( deletes the stored token from the database)
+    Inputs:
+    -------
+    request:
+        Requires:  username in request data
+    Returns:
+    --------
+    response: JsonResponse describing success or failure
+    """
     username = request.data.get("username")
     try:
         user = User(username=username, password=None)
@@ -760,6 +780,17 @@ def github_logout(request):
 @api_view(["POST"])
 @is_authenticated
 def publish_on_github(request):
+    """
+    Endpoint to push the code to github
+
+    Inputs:
+    -------
+    request:
+        Requires:  username,project_id, details (commit_message,filename,reponame) in request data
+    Returns:
+    --------
+    response: JsonResponse describing success or failure
+    """
     username = request.data.get("username")
     details = request.data.get("details")
     project_id = details.get("project_id")
@@ -818,6 +849,17 @@ def publish_on_github(request):
 @api_view(["POST"])
 @is_authenticated
 def authorize_github(request):
+    """
+    Endpoint to authorize the github account of the user
+    Generates a new access token, encrypts it and stores it in the database
+    Inputs:
+    -------
+    request:
+        Requires:  username, code(to generate new access token) in request data
+    Returns:
+    --------
+    response: JsonResponse describing success or failure
+    """
     code = request.data.get("code")
     username = request.data.get("username")
     user = User(username=username, password=None)

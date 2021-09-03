@@ -39,7 +39,7 @@ const GithubPublishModal = ({
 
   const anchorRef = React.useRef(null);
   const [spinner, setSpinner] = useState(false);
-  const CLIENT_ID = process.env.GITHUB_APP_CLIENT_ID || "9adf20ee6041c141e897";
+  const CLIENT_ID = process.env.REACT_APP_GITHUB_APP_CLIENT_ID;
   const [publishOptions, setPublishOptions] = useState({
     commit_message: "Initial commit from Auto-DL",
     repo_name: project_details.project_name,
@@ -52,7 +52,6 @@ const GithubPublishModal = ({
     const data = {
       username: username,
     };
-    // window.location.href = `https://github.com/settings/connections/applications/${CLIENT_ID}`;
     const res = await HomeService.logout_github(token, data);
     if (res.status === 200) {
       setalert({ msg: res.data.message, severity: "success" });

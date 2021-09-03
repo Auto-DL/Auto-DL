@@ -52,7 +52,7 @@ def delete_broken_symlinks(path):
 
 def encrypt(txt):
     txt = str(txt)
-    cipher_suite = Fernet(os.getenv("ENCRYPT_KEY"))
+    cipher_suite = Fernet(os.getenv("ENCRYPTION_KEY"))
     encrypted_text = cipher_suite.encrypt(txt.encode("ascii"))
     encrypted_text = base64.urlsafe_b64encode(encrypted_text).decode("ascii")
     return encrypted_text
@@ -60,7 +60,7 @@ def encrypt(txt):
 
 def decrypt(txt):
     txt = base64.urlsafe_b64decode(txt)
-    cipher_suite = Fernet(os.getenv("ENCRYPT_KEY"))
+    cipher_suite = Fernet(os.getenv("ENCRYPTION_KEY"))
     decoded_text = cipher_suite.decrypt(txt).decode("ascii")
     return decoded_text
 

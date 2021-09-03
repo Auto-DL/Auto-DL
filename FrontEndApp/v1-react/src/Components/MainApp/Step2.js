@@ -2288,7 +2288,7 @@ function Step2() {
         } else {
           try {
             delete tempArr[i]["input_shape"];
-          } catch (err) {}
+          } catch (err) { }
         }
       }
       // setcomponents(components);
@@ -2305,9 +2305,8 @@ function Step2() {
 
       var dic = _.cloneDeep(temp);
 
-      dic["id"] = `${list_names_of_source[source.index]}-${source.index}-${
-        destination.index
-      }`;
+      dic["id"] = `${list_names_of_source[source.index]}-${source.index}-${destination.index
+        }`;
 
       dic["name"] = list_names_of_source[source.index];
 
@@ -2330,7 +2329,7 @@ function Step2() {
         } else {
           try {
             delete tempArr[i]["input_shape"];
-          } catch (err) {}
+          } catch (err) { }
         }
       }
     }
@@ -2792,7 +2791,7 @@ function Step2() {
       } else {
         try {
           delete components[i]["input_shape"];
-        } catch (err) {}
+        } catch (err) { }
       }
       // console.log("inside loop id",components[i]["id"]);
     }
