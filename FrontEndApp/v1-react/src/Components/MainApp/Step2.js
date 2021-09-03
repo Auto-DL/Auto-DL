@@ -8,17 +8,8 @@ import {
   Typography,
   Dialog,
   Tooltip,
-  TextField,
-  FormControlLabel,
-  Checkbox,
+  Snackbar,
 } from "@material-ui/core";
-import ClickAwayListener from '@material-ui/core/ClickAwayListener';
-import Grow from '@material-ui/core/Grow';
-import Paper from '@material-ui/core/Paper';
-import Popper from '@material-ui/core/Popper';
-import MenuItem from '@material-ui/core/MenuItem';
-import MenuList from '@material-ui/core/MenuList';
-import { useHistory } from "react-router-dom";
 
 import {
   useStyles,
@@ -34,9 +25,11 @@ import HomeService from "./HomeService";
 import PreprocessingTab from "./step-2/PreprocessingTab";
 import LayerTab from "./step-2/LayerTab";
 import HyperparameterTab from "./step-2/HyperparameterTab";
-
-
-
+import MuiAlert from "@material-ui/lab/Alert";
+import GithubPublishModal from "./step-2/GithubPublishModal";
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -73,7 +66,10 @@ function a11yProps(index) {
 function Step2() {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
+  const [alertopen, setAlertopen] = React.useState(false);
   const anchorRef = React.useRef(null);
+  const [openErrorDialog, setOpenErrorDialog] = useState(false);
+
   var project_details = JSON.parse(localStorage.getItem("project_details"));
   var username = JSON.parse(localStorage.getItem("username"));
   var token = JSON.parse(localStorage.getItem("token"));
@@ -82,17 +78,7 @@ function Step2() {
   const [selected_layer, setselected_layer] = useState(-1);
   const [selected_layer_name, setselected_layer_name] = useState("");
   const [value, setValue] = useState(0);
-  const [openErrorDialog, setOpenErrorDialog] = useState(false);
   const [gitusername, setGitusername] = useState("");
-
-  const CLIENT_ID = process.env.GITHUB_APP_CLIENT_ID || "9adf20ee6041c141e897";
-  const [publishOptions, setPublishOptions] = useState({
-    commit_message: "Initial commit from Auto-DL",
-    repo_name: project_details.project_name,
-    filename: "",
-    make_private: false,
-  });
-  const { make_private } = publishOptions;
 
   const [state_hyperparam, setstate_hyperparam] = useState({
     metrics: "",
@@ -112,6 +98,11 @@ function Step2() {
 
   const [generated_file_path, setgenerated_file_path] = useState("");
 
+  const [alert, setalert] = React.useState({
+    msg: "This is alert msg",
+    severity: "warning",
+  });
+
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);
   };
@@ -120,27 +111,8 @@ function Step2() {
     if (anchorRef.current && anchorRef.current.contains(event.target)) {
       return;
     }
-
     setOpen(false);
   };
-
-  const handleGitLogout = async (event) => {
-
-    const data = {
-      username: username,
-    };
-    window.location.href = `https://github.com/settings/connections/applications/${CLIENT_ID}`;
-
-  };
-
-
-
-  function handleListKeyDown(event) {
-    if (event.key === 'Tab') {
-      event.preventDefault();
-      setOpen(false);
-    }
-  }
 
   const getProjectId = () => {
     const project_id =
@@ -150,103 +122,34 @@ function Step2() {
     return project_id;
   };
 
-  const handlePublishChange = (event) => {
-    if (event.target.checked) {
-      setPublishOptions({
-        ...publishOptions,
-        [event.target.name]: true,
-      });
-    } else
-      setPublishOptions({
-        ...publishOptions,
-        [event.target.name]: event.target.value,
-      });
-  };
-
   const handleCloseModal = () => {
     setOpenModal(false);
+  };
+
+  const handleCloseAlert = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setAlertopen(false);
   };
 
   const handleCloseGitHubDetails = () => {
     setOpenModal(false);
     setOpenGitHubDetails(false);
   };
-  const handleAuthorize = async () => {
-
-    window.location.href =
-      `https://github.com/login/oauth/authorize?client_id=${CLIENT_ID}&scope=repo`;
-
-  }
 
   const handlePublishModalClick = async (e) => {
-
-
-    const data = { "username": username }
+    const data = { username: username };
     const res = await HomeService.gitUsername(token, data);
     if (res.status === 200) {
-      console.log(res);
-      console.log(res.data.git_username);
       setGitusername(res.data.git_username);
-      console.log(gitusername);
-    }
-    else {
+    } else {
       setGitusername("");
     }
     setOpenModal(false);
     setOpenGitHubDetails(true);
-
-
-  }
-
-  const handlePublishClick = async (e) => {
-    e.preventDefault();
-
-    if (
-      publishOptions.commit_message &&
-      publishOptions.commit_message.trim() !== "" &&
-      publishOptions.repo_name &&
-      publishOptions.repo_name.trim() !== "" &&
-      publishOptions.filename &&
-      publishOptions.filename.trim() !== "" &&
-      publishOptions.make_private !== undefined
-    ) {
-      const details = {
-        git_commit_message: publishOptions.commit_message.trim(),
-        git_repo_name: publishOptions.repo_name.trim(),
-        git_file_name: publishOptions.filename.trim(),
-        make_private: publishOptions.make_private,
-        project_id: project_details.project_id,
-      };
-      // localStorage.setItem("publish_details", JSON.stringify(details));
-      setOpenGitHubDetails(false);
-      // const history = useHistory();
-      const data = { username, details };
-      const res = await HomeService.publish_to_github(token, data);
-      if (res.status === 200) {
-        history.push({
-          pathname: "/github/status",
-          state: {
-            message: "success",
-            repo_full_name: res.data.repo_full_name,
-            response_from: "publish"
-          },
-        });
-      } else {
-        history.push({
-          pathname: "/github/status",
-          state: {
-            message: "failed",
-            repo_link: res.repo_full_name,
-            response_from: "publish"
-
-          },
-        });
-      }
-
-
-
-    }
   };
+
   const typecast_pre = () => {
     var dic = _.cloneDeep(all_prepro);
 
@@ -2232,7 +2135,7 @@ function Step2() {
       },
     };
   }
-  const history = useHistory();
+
   const [all_optimizer, setall_optimizer] = useState(temp_optimizer);
   const [all_loss, setall_loss] = useState(temp_loss);
   const [all_prepro, setall_prepro] = useState({});
@@ -2275,7 +2178,6 @@ function Step2() {
 
       if (res.status === 200) {
         setall_prepro(res.data.preprocessing);
-        // console.log("all_prepro1",all_prepro);
 
         if ("dataset-type" in res.data.preprocessing) {
           setshow_pre(true);
@@ -2386,7 +2288,7 @@ function Step2() {
         } else {
           try {
             delete tempArr[i]["input_shape"];
-          } catch (err) { }
+          } catch (err) {}
         }
       }
       // setcomponents(components);
@@ -2403,8 +2305,9 @@ function Step2() {
 
       var dic = _.cloneDeep(temp);
 
-      dic["id"] = `${list_names_of_source[source.index]}-${source.index}-${destination.index
-        }`;
+      dic["id"] = `${list_names_of_source[source.index]}-${source.index}-${
+        destination.index
+      }`;
 
       dic["name"] = list_names_of_source[source.index];
 
@@ -2427,7 +2330,7 @@ function Step2() {
         } else {
           try {
             delete tempArr[i]["input_shape"];
-          } catch (err) { }
+          } catch (err) {}
         }
       }
     }
@@ -2889,7 +2792,7 @@ function Step2() {
       } else {
         try {
           delete components[i]["input_shape"];
-        } catch (err) { }
+        } catch (err) {}
       }
       // console.log("inside loop id",components[i]["id"]);
     }
@@ -2939,7 +2842,6 @@ function Step2() {
           >
             Publish to GitHub
           </Button>
-
         </DialogActions>
       </Dialog>
 
@@ -2949,108 +2851,20 @@ function Step2() {
         fullWidth
         maxWidth="sm"
       >
-        <DialogTitle id="alert-dialog-title">Publish to GitHub
-
-          {gitusername ?
-            <>
-              <Button variant="outlined" color="primary" style={{ float: "right" }} ref={anchorRef}
-                aria-controls={open ? 'menu-list-grow' : undefined}
-                aria-haspopup="true"
-                onClick={handleToggle} >{gitusername}</Button>
-              <Popper open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal>
-                {({ TransitionProps, placement }) => (
-                  <Grow
-                    {...TransitionProps}
-                    style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}
-                  >
-                    <Paper>
-                      <ClickAwayListener onClickAway={handleClose}>
-                        <MenuList autoFocusItem={open} id="menu-list-grow" onKeyDown={handleListKeyDown}>
-                          <MenuItem onClick={handleGitLogout}>Logout</MenuItem>
-                        </MenuList>
-                      </ClickAwayListener>
-                    </Paper>
-                  </Grow>
-                )}
-              </Popper>
-            </>
-            :
-
-            <Button variant="contained" color="secondary" style={{ float: "right" }} ref={anchorRef}
-              aria-controls={open ? 'menu-list-grow' : undefined}
-              aria-haspopup="true"
-              onClick={handleAuthorize} >Authorize</Button>
-          }
-
-
-
-        </DialogTitle>
-        <DialogContent dividers>
-          <Typography variant="body1" gutterBottom>
-            Enter the following details to proceed:
-          </Typography>
-
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            label="Filename"
-            name="filename"
-            size="small"
-            autoComplete="Filename"
-            onChange={handlePublishChange}
-          />
-
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            label="Repository name (must be a new repo)"
-            defaultValue={project_details.project_name}
-            size="small"
-            name="repo_name"
-            autoComplete="Repository name"
-            onChange={handlePublishChange}
-          />
-
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            name="commit_message"
-            label="Commit message"
-            defaultValue={"Initial commit from Auto-DL"}
-            onChange={handlePublishChange}
-            size="small"
-            autoComplete="Commit message"
-          // style={{ marginTop: "4px", marginBottom: "12px" }}
-          />
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={make_private}
-                color="primary"
-                onChange={handlePublishChange}
-                name="make_private"
-              />
-            }
-            label="Make private"
-          />
-
-          <Box my={1}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={(e) => handlePublishClick(e)}
-              disabled={gitusername ? false : true}
-            >
-              Publish
-            </Button>
-          </Box>
-        </DialogContent>
+        <GithubPublishModal
+          username={username}
+          gitusername={gitusername}
+          token={token}
+          project_details={project_details}
+          handleClose={handleClose}
+          setOpenModal={setOpenModal}
+          handleToggle={handleToggle}
+          setalert={setalert}
+          setAlertopen={setAlertopen}
+          open={open}
+          setOpen={setOpen}
+          setOpenGitHubDetails={setOpenGitHubDetails}
+        />
       </Dialog>
 
       <AppBar position="static" color="default">
@@ -3115,6 +2929,16 @@ function Step2() {
         setOpenErrorDialog={setOpenErrorDialog}
         hyper={hyper}
       />
+
+      <Snackbar
+        open={alertopen}
+        autoHideDuration={6000}
+        onClose={handleCloseAlert}
+      >
+        <Alert onClose={handleCloseAlert} severity={alert.severity}>
+          {alert.msg}
+        </Alert>
+      </Snackbar>
     </div>
   );
 }

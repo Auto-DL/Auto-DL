@@ -37,7 +37,6 @@ function Home() {
   const history = useHistory();
   const classes = useStyles();
 
-
   var token = JSON.parse(localStorage.getItem("token"));
   var username = JSON.parse(localStorage.getItem("username"));
 
@@ -92,7 +91,6 @@ function Home() {
     if (reason === "clickaway") {
       return;
     }
-
     setOpen(false);
   };
 
@@ -121,7 +119,6 @@ function Home() {
     }
 
     fetchData();
-
   }, [openModal, openCloneModal, history, token, username]);
 
   const handlestep = async (proj) => {
@@ -228,7 +225,6 @@ function Home() {
         preprocessingParameters={preprocessingParameters}
         hyperParameters={hyperParameters}
         setCloneStep={setCloneStep}
-        values={values}
         SelectedProject={SelectedProject}
         cloneOptions={cloneOptions}
         setOpen={setOpen}

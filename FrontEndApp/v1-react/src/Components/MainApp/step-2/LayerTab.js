@@ -26,9 +26,9 @@ const LayerTab = ({
 }) => {
   const theme = useTheme();
   const classes = useStyles();
-  const [selected_InputFieldDesc,setselected_InputFieldDesc]=useState("");
-  const [selectedWarnLayer,setSelectedWarnLayer]=useState("");
-  const [suggestDesc,setSuggestDesc]=useState("");
+  const [selected_InputFieldDesc, setselected_InputFieldDesc] = useState("");
+  const [selectedWarnLayer, setSelectedWarnLayer] = useState("");
+  const [suggestDesc, setSuggestDesc] = useState("");
 
   // console.log("selected_layer_type in layer tab is : " ,selected_layer_type);
 
@@ -57,29 +57,29 @@ const LayerTab = ({
                             {(provided, snapshot) => {
                               return (
                                 <div
-                                className={classes.item}
+                                  className={classes.item}
                                   ref={provided.innerRef}
                                   {...provided.draggableProps}
                                   {...provided.dragHandleProps}
                                 >
                                   {el}
                                   {validLayerIndices.includes(index)
-                                   && 
-                                   <Button
+                                    &&
+                                    <Button
                                       size="small"
                                       color="primary"
                                       onClick={() => {
                                         setSuggestDesc(index);
-                                        setTimeout(()=>setSuggestDesc(""),3000);
-                                        }}
+                                        setTimeout(() => setSuggestDesc(""), 3000);
+                                      }}
                                       className={classes.cloneBtn}
                                     >
                                       <CheckCircleIcon fontSize="small" />
                                     </Button>
 
                                   }
-                                  {suggestDesc===index &&
-                                    <div style={{fontSize:"60%",marginTop:"1px",fontWeight:"100",color:"#a2a4a8",textAlign:"left",color:"black"}}>
+                                  {suggestDesc === index &&
+                                    <div style={{ fontSize: "60%", marginTop: "1px", fontWeight: "100", textAlign: "left", color: "black" }}>
                                       Tip : Valid layer to be added.
                                     </div>
                                   }
@@ -111,7 +111,7 @@ const LayerTab = ({
                       className={classes.droppableColtarget}
                     >
                       {components.map((el, index) => {
-                        
+
                         return (
                           <Draggable
                             key={el.id}
@@ -127,13 +127,13 @@ const LayerTab = ({
                                   {...provided.dragHandleProps}
                                 >
                                   <div
-                                  
+
                                     className={
-                                      
-                                      invalidLayerIndices.has(index) && selected_layer===index ? classes.item1Error 
-                                      : selected_layer===index ? 
-                                      classes.item1selected 
-                                      :classes.item1
+
+                                      invalidLayerIndices.has(index) && selected_layer === index ? classes.item1Error
+                                        : selected_layer === index ?
+                                          classes.item1selected
+                                          : classes.item1
                                     }
                                     onClick={() => showdetails(el)}
                                   >
@@ -148,28 +148,28 @@ const LayerTab = ({
                                       <FileCopySharpIcon fontSize="small" />
                                     </Button>
                                     {invalidLayerIndices.has(index) &&
-                                     
+
                                       <Button
                                         size="small"
                                         color="primary"
                                         onClick={() => {
                                           setSelectedWarnLayer(index);
-                                          setTimeout(()=>setSelectedWarnLayer(""),3000)
-                                          }}
+                                          setTimeout(() => setSelectedWarnLayer(""), 3000)
+                                        }}
                                         className={classes.cloneBtn}
                                       >
-                                        <WarningIcon  fontSize="small" />
+                                        <WarningIcon fontSize="small" />
                                       </Button>
                                     }
                                     {
-                                  selectedWarnLayer===index &&
-                                  <div style={{fontSize:"60%",marginTop:"1px",fontWeight:"100",color:"#a2a4a8",textAlign:"left",color:"black"}}>
-                                    Warning : highlited layer is wrongly placed 
+                                      selectedWarnLayer === index &&
+                                      <div style={{ fontSize: "60%", marginTop: "1px", fontWeight: "100", textAlign: "left", color: "black" }}>
+                                        Warning : highlited layer is wrongly placed
+                                      </div>
+                                    }
                                   </div>
-                                  }
-                                  </div>
-                                  
-                                    
+
+
                                 </div>
                               );
                             }}
@@ -210,11 +210,11 @@ const LayerTab = ({
                                 {" "}
                                 {key}
                                 &nbsp;{" "}
-                                {selected_layer_type[key]? selected_layer_type[key]["Required"] === 1 ? (
+                                {selected_layer_type[key] ? selected_layer_type[key]["Required"] === 1 ? (
                                   <span>*</span>
                                 ) : (
                                   <span></span>
-                                ):null }
+                                ) : null}
                                 {/* {console.log('selected_layer_type[key]["Required"]',selected_layer_type[key]["Required"] )} */}
                               </div>
 
@@ -224,11 +224,11 @@ const LayerTab = ({
                                   components[selected_layer][key]["Description"]
                                 }
                               >
-                               <HelpOutlineIcon
-                                  fontSize="small" 
+                                <HelpOutlineIcon
+                                  fontSize="small"
                                   onClick={() => {
                                     setselected_InputFieldDesc(key);
-                                    setTimeout(()=> setselected_InputFieldDesc(""),3000);
+                                    setTimeout(() => setselected_InputFieldDesc(""), 3000);
                                   }}
 
 

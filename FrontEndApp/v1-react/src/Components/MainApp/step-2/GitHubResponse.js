@@ -10,7 +10,6 @@ const GitHubResponse = (response) => {
   var response_from = "";
 
   if (response && response.location && response.location.state) {
-
     if (response.location.state.response === "authorize") {
       response_from = "authorize";
       message = response.location.state.message;
@@ -22,7 +21,6 @@ const GitHubResponse = (response) => {
     }
   }
 
-  console.log("response_from", response_from);
   const linkHandler = (event) => {
     event.preventDefault();
     window.open(repo_link, "_blank");

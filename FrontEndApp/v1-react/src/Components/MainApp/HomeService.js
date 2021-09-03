@@ -1,5 +1,5 @@
 import axios from "axios";
-const baseurl = process.env.NODE_ENV == "production" ? "/api" : "";
+const baseurl = process.env.NODE_ENV === "production" ? "/api" : "";
 const BACKEND_API_URL = process.env.REACT_APP_BACKEND_API_URL || baseurl;
 
 class HomeService {
@@ -259,12 +259,16 @@ class HomeService {
   }
   async share_project(token, data) {
     try {
-      const response = await axios.post(`${BACKEND_API_URL}/v1/project/share/`, data, {
-        headers: {
-          "Content-Type": "application/json",
-          token: `${token}`,
-        },
-      });
+      const response = await axios.post(
+        `${BACKEND_API_URL}/v1/project/share/`,
+        data,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            token: `${token}`,
+          },
+        }
+      );
       return response;
     } catch (error) {
       return error.response;
@@ -285,16 +289,18 @@ class HomeService {
     }
   }
 
-
   async gitUsername(token, data) {
     try {
-      const response = await axios.post(`${BACKEND_API_URL}/v1/github/getusername/`, data, {
-
-        headers: {
-          "Content-Type": "application/json",
-          token: `${token}`,
-        },
-      });
+      const response = await axios.post(
+        `${BACKEND_API_URL}/v1/github/getusername/`,
+        data,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            token: `${token}`,
+          },
+        }
+      );
       return response;
     } catch (error) {
       return error.response;
@@ -303,28 +309,52 @@ class HomeService {
 
   async publish_to_github(token, data) {
     try {
-      const response = await axios.post(`${BACKEND_API_URL}/v1/github/publish/`, data, {
-        headers: {
-          "Content-Type": "application/json",
-          token: `${token}`,
-        },
-      });
+      const response = await axios.post(
+        `${BACKEND_API_URL}/v1/github/publish/`,
+        data,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            token: `${token}`,
+          },
+        }
+      );
       return response;
     } catch (error) {
       return error.response;
     }
   }
 
-
   async authorize_github(token, data) {
     try {
-      const response = await axios.post(`${BACKEND_API_URL}/v1/github/authorize/`, data, {
+      const response = await axios.post(
+        `${BACKEND_API_URL}/v1/github/authorize/`,
+        data,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            token: `${token}`,
+          },
+        }
+      );
+      return response;
+    } catch (error) {
+      return error.response;
+    }
+  }
 
-        headers: {
-          "Content-Type": "application/json",
-          token: `${token}`,
-        },
-      });
+  async logout_github(token, data) {
+    try {
+      const response = await axios.post(
+        `${BACKEND_API_URL}/v1/github/logout/`,
+        data,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            token: `${token}`,
+          },
+        }
+      );
       return response;
     } catch (error) {
       return error.response;

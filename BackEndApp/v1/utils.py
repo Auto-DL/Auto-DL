@@ -4,7 +4,6 @@ from github import Github
 from dotenv import load_dotenv
 from cryptography.fernet import Fernet
 import base64
-import requests
 
 load_dotenv()
 g = Github()
@@ -83,42 +82,11 @@ def get_git_username(tokenID):
     try:
         g = Github(tokenID)
         user = g.get_user()
-        print(user)
-        print(user.login)
         username = user.login
     except Exception as e:
         print(e)
         username = None
     return username
-
-
-import json
-
-
-def git_logout(tokenID):
-    print("in util logout")
-    try:
-        clientID = os.getenv("GITHUB_CLIENT_ID")
-        headers = {
-            "Content-Type": "application/json",
-        }
-
-        data = {"client_id": clientID, "access_token": tokenID}
-        data = json.dumps(data)
-        print("https://api.github.com/applications/" + clientID + "/grant")
-        print(data)
-        response = requests.delete(
-            "https://api.github.com/applications/" + clientID + "/grant",
-            data=data,
-        )
-        print("res is")
-        print(response.text, response.status_code, response.headers)
-        if response.status_code == 404:
-            return None
-        return response.status_code, response.text
-    except Exception as e:
-        print(e)
-        return None
 
 
 def push_to_github(
@@ -136,13 +104,10 @@ def push_to_github(
             file_content = f.read()
 
         repo_full_name = repo.full_name
-
         repo.create_file(filename, commit_message, file_content)
-
         status, message, repo_full_name = 200, "Success", repo_full_name
 
     except Exception as e:
-
         res = list(str(e).split(" ", 1))
         status, message, repo_full_name = int(res[0]), eval(res[1])["message"], ""
 

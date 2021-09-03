@@ -25,7 +25,6 @@ from .utils import (
     encrypt,
     decrypt,
     get_git_username,
-    git_logout,
 )
 
 
@@ -744,23 +743,16 @@ def get_github_username(request):
 @api_view(["POST"])
 @is_authenticated
 def github_logout(request):
-    print("in git logout")
     username = request.data.get("username")
     try:
         user = User(username=username, password=None)
         this_user = user.find()
-        print("printing username")
-        print(this_user)
         if this_user.get("GitAccessToken"):
-            git_access_token = decrypt(this_user.get("GitAccessToken"))
-            assert git_access_token is not None
-            assert git_logout(git_access_token) is not None
             user.update("GitAccessToken", None)
 
-        status, success, message = 200, True, "Access token deleted"
+        status, success, message = 200, True, "Logged out"
     except Exception as e:
         print(e)
-
         status, success, message = 500, False, "Something went wrong"
     return JsonResponse({"success": success, "message": message}, status=status)
 
@@ -768,9 +760,7 @@ def github_logout(request):
 @api_view(["POST"])
 @is_authenticated
 def publish_on_github(request):
-    print("in publishhhh")
     username = request.data.get("username")
-    # code = request.data.get("code")
     details = request.data.get("details")
     project_id = details.get("project_id")
     commit_message = details.get("git_commit_message")
@@ -787,13 +777,6 @@ def publish_on_github(request):
     git_access_token = this_user.get("GitAccessToken")
 
     try:
-        # if git_access_token is None:
-        #     git_access_token = generate_git_access_token(code)
-        #     assert git_access_token is not None
-        #     print(git_access_token)
-        #     encrypted_git_access_token = encrypt(git_access_token)
-        #     user.update("GitAccessToken", encrypted_git_access_token)
-        #     git_access_token = encrypted_git_access_token
 
         git_access_token = decrypt(git_access_token)
         assert git_access_token is not None
@@ -805,25 +788,6 @@ def publish_on_github(request):
             make_private,
             project_dir,
         )
-
-        # if push_status == 401:
-        #     # token has been revoked /expired , so generate a new one and try again.
-        #     user.update("GitAccessToken", None)
-        #     git_access_token = generate_git_access_token(code)
-
-        #     assert git_access_token is not None
-        #     encrypted_git_access_token = encrypt(git_access_token)
-        #     user.update("GitAccessToken", encrypted_git_access_token)
-
-        #     push_status, message, repo_full_name = push_to_github(
-        #         git_access_token,
-        #         repo_name,
-        #         filename,
-        #         commit_message,
-        #         make_private,
-        #         project_dir,
-        #     )
-
         if push_status == 200:
             status, success, message, repo_full_name = (
                 200,
@@ -854,19 +818,15 @@ def publish_on_github(request):
 @api_view(["POST"])
 @is_authenticated
 def authorize_github(request):
-    print("in authorize_github")
     code = request.data.get("code")
     username = request.data.get("username")
     user = User(username=username, password=None)
-    this_user = user.find()
-    print(code)
     try:
         git_access_token = generate_git_access_token(code)
         assert git_access_token is not None
-        print(git_access_token)
         encrypted_git_access_token = encrypt(git_access_token)
+        assert encrypted_git_access_token is not None
         user.update("GitAccessToken", encrypted_git_access_token)
-        git_access_token = encrypted_git_access_token
         status, success, message = (
             200,
             True,
