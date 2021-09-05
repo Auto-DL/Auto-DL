@@ -1,4 +1,5 @@
 from uuid import uuid4 as uid
+import os
 
 
 def generate_uid():
@@ -14,9 +15,33 @@ def get_augument_params():
         "image-augment-horizontal_flip": "True",
         "image-augment-rescale": 0.0039215,
         "image-params-target_size": [200, 200],
-	    "image-params-batch_size": 64
+        "image-params-batch_size": 64,
     }
 
 
-if __name__ == "__main__":
-    print(generate_uid())
+def copy_file(dest, filename="test.py"):
+    if not filename.endswith(".py"):
+        filename += ".py"
+    os.system('cp -f {} "{}"/{}'.format(filename, dest, filename))
+
+
+def format_code(file):
+    """
+    Takes in the parser generated file and cleans the code.
+    """
+    os.system(
+        "autoflake --in-place --remove-unused-variables --remove-all-unused-imports {}".format(
+            file
+        )
+    )
+    os.system("black {}".format(file))
+
+
+def delete_broken_symlinks(path):
+    for f in os.scandir(path):
+        if os.path.islink(f) and not os.path.exists(f):
+            os.remove(os.path.join(path, f.name))
+
+
+# if __name__ == "__main__":
+#     print(generate_uid())

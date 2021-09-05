@@ -1,0 +1,29 @@
+version: "3.0"
+
+services:
+  backend:
+    build:
+      context: BackEndApp
+      dockerfile: Dockerfile
+    image: autodlhub/backend:v1-beta
+    container_name: autodl_backend
+    ports:
+      - 8000:8000
+    environment:
+      - MONGODB_URI= # mongodb://localhost:27017
+      - JWT_SECRET= # qwerty1234
+      - FRONTEND_HOST= # http://localhost:3000
+      - HOST= # http://localhost:8000
+    restart: on-failure
+
+  frontend:
+    build:
+      context: FrontEndApp/v1-react
+      dockerfile: Dockerfile
+      args:
+        - REACT_APP_BACKEND_API_URL= # http://localhost:8000
+    image: autodlhub/frontend:v1-beta
+    container_name: autodl_frontend
+    ports:
+      - 3000:80
+    restart: on-failure
