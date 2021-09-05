@@ -71,6 +71,9 @@ def register(request):
         message = "Some error occurred!! Please try again."
         status = 401
         token = None
+        return JsonResponse(
+            {"message": message, "username": None, "token": token}, status=status
+        )
     return JsonResponse(
         {"message": message, "username": username, "token": token}, status=status
     )
