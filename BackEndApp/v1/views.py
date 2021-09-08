@@ -14,11 +14,8 @@ from authv1.decorators import is_authenticated
 from v1.models import UserData
 from dlmml.utils import json_to_dict
 from dlmml.parser import *
-from dotenv import load_dotenv
 
 from .utils import generate_uid, copy_file, format_code, delete_broken_symlinks
-
-load_dotenv()
 
 
 @api_view(["POST"])
