@@ -24,7 +24,7 @@ import HomeService from "./HomeService";
 import PreprocessingTab from "./step-2/PreprocessingTab";
 import LayerTab from "./step-2/LayerTab";
 import HyperparameterTab from "./step-2/HyperparameterTab";
-import axios from 'axios';
+import RecommendationService from "../RecommendationService.js"
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -2319,25 +2319,13 @@ function Step2() {
 
     setcomponents(tempArr);
 
-    const recommendations = await getRecommendations(tempArr)
-		console.log(recommendations)
+    const recommendations = await RecommendationService.getRecommendations(tempArr);
+    if (recommendations) {
+      console.log(recommendations.data.predictions);
+    }
 	}
 
-	const getRecommendations = layersArr => {
-		let recommendationArr = layersArr.map(x => x.name)
-    const FASTAPI_URL = process.env.REACT_APP_FASTAPI_URL
-		return axios
-			.post(`${FASTAPI_URL}/predict`, {
-				layers: recommendationArr,
-			})
-			.then(function (response) {
-				return response.data.predictions
-			})
-			.catch(function (error) {
-				console.log(error)
-			})
-    return  1
-	}
+	
 
 
   const handleInvalidLayers= (validate_res) =>{
