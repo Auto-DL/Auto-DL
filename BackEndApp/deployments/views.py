@@ -65,27 +65,31 @@ def local_deploy(request):
         )
 
         deployment.clone_flask_app()
+        logger.debug("Cloned Flask App to be deployed")
+
         deployment.edit_flask_app()
+        logger.debug("Modified Flask App to be deployed")
 
         response = deployment.download_app()
 
     except ProjectNotFound:
-        logger.debug("Unable to find the Project")
+        logger.error("Unable to find the Project")
         raise
 
     except CloneGenerationFailed:
-        logger.debug("Unable to clone the Flask App")
+        logger.error("Unable to clone the Flask App")
         raise
 
     except AppUpsertionFailed:
-        logger.debug("Unable to modify the Flask App")
+        logger.error("Unable to modify the Flask App")
         raise
 
     except AppDownloadFailed:
-        logger.debug("Unable to download the Flask App")
+        logger.error("Unable to download the Flask App")
         raise
 
     else:
+        logger.info("Local Deployment successful")
         return response
 
 
@@ -131,6 +135,7 @@ def cloud_deploy(request):
         append_pkl_contents(pkl_dir, pkl_path, pkl_file_content)
 
         if current_chunk == total_chunks:
+            logger.info("Pickle file uploaded successfully")
             model_categories = request.data.get("model_categories")
 
             deployment_dir = os.path.join(project_dir, "deployment")
@@ -138,43 +143,46 @@ def cloud_deploy(request):
 
             deployment = Deployment(project_dir, deployment_dir, model_categories)
             deployment.clone_flask_app()
+            logger.debug("Cloned Flask App to be deployed")
 
             deployment.copy_pkl_file(pkl_path)
             remove_dir(pkl_dir)
 
             deployment.edit_flask_app()
+            logger.debug("Modified Flask App to be deployed")
 
             status, success, message = 200, True, "Cloud Deployment Successful"
         else:
             status, success, message = 204, True, "Cloud Deployment Underway"
 
     except ProjectNotFound:
-        logger.debug("Unable to find the Project")
+        logger.error("Unable to find the Project")
         raise
 
     except PickleAppendFailed:
-        logger.debug("Unable to append Pickle file contents")
+        logger.error("Unable to append Pickle file contents")
         remove_dir(pkl_dir)
         raise
 
     except CloneGenerationFailed:
-        logger.debug("Unable to clone the Flask App")
+        logger.error("Unable to clone the Flask App")
         remove_dir(pkl_dir)
         raise
 
     except PickleCopyFailed:
-        logger.debug("Unable to copy pickle file into deployment directory")
+        logger.error("Unable to copy pickle file into deployment directory")
         remove_dir(deployment_dir)
         remove_dir(pkl_dir)
         raise
 
     except AppUpsertionFailed:
-        logger.debug("Unable to modify the Flask App")
+        logger.error("Unable to modify the Flask App")
         remove_dir(deployment_dir)
         remove_dir(pkl_dir)
         raise
 
     else:
+        logger.info("Cloud Deployment Successful")
         return JsonResponse({"success": success, "message": message}, status=status)
 
 
@@ -221,6 +229,7 @@ def hybrid_deploy(request):
         append_pkl_contents(pkl_dir, pkl_path, pkl_file_content)
 
         if current_chunk == total_chunks:
+            logger.info("Pickle file upload successful")
             model_categories = request.data.get("model_categories")
             model_download_type = request.data.get("model_download_type")
 
@@ -231,11 +240,13 @@ def hybrid_deploy(request):
                 project_dir, deployment_dir, model_categories, model_download_type
             )
             deployment.clone_flask_app()
+            logger.debug("Cloned Flask App to be deployed")
 
             deployment.copy_pkl_file(pkl_path)
             remove_dir(pkl_dir)
 
             deployment.edit_flask_app()
+            logger.debug("Modified Flask App to be deployed")
 
             response = deployment.download_app()
 
@@ -244,35 +255,36 @@ def hybrid_deploy(request):
             return JsonResponse({"success": success, "message": message}, status=status)
 
     except ProjectNotFound:
-        logger.debug("Unable to find the Project")
+        logger.error("Unable to find the Project")
         raise
 
     except PickleAppendFailed:
-        logger.debug("Unable to append Pickle file contents")
+        logger.error("Unable to append Pickle file contents")
         remove_dir(pkl_dir)
         raise
 
     except CloneGenerationFailed:
-        logger.debug("Unable to clone the Flask App")
+        logger.error("Unable to clone the Flask App")
         remove_dir(pkl_dir)
         raise
 
     except PickleCopyFailed:
-        logger.debug("Unable to copy file into deployment directory")
+        logger.error("Unable to copy file into deployment directory")
         remove_dir(deployment_dir)
         remove_dir(pkl_dir)
         raise
 
     except AppUpsertionFailed:
-        logger.debug("Unable to modify the Flask App")
+        logger.error("Unable to modify the Flask App")
         remove_dir(deployment_dir)
         remove_dir(pkl_dir)
         raise
 
     except AppDownloadFailed:
-        logger.debug("Unable to download the Flask App")
+        logger.error("Unable to download the Flask App")
         remove_dir(pkl_dir)
         raise
 
     else:
+        logger.info("Hybrid Deployment successful")
         return response
