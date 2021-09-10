@@ -1,21 +1,17 @@
 from genericpath import isdir
 from django.shortcuts import render
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse
 from rest_framework.decorators import api_view
 import os
-import git
-import shutil
 
 from authv1.store import Store
 from authv1.models import User
 from authv1.decorators import is_authenticated
+from deployments.models import Deployment
 
 from dlmml.parser import *
-from dotenv import load_dotenv
 
-from .utils import remove_dir, edit_flask_app, zip_flask_app
-
-load_dotenv()
+from .utils import remove_dir, append_pkl_contents
 
 
 @api_view(["POST"])
@@ -47,39 +43,19 @@ def local_deploy(request):
 
         project_dir = store_obj.path + os.sep + project_id
         deployment_dir = os.path.join(project_dir, "deployment")
+        remove_dir(deployment_dir)
 
         model_categories = request.data.get("model_categories")
         model_download_type = request.data.get("model_download_type")
 
-        # Cloning the Flask App to be deployed
-        flask_app_url = os.getenv("FLASK_APP_HTTPS_URL")
-        git.Repo.clone_from(f"{flask_app_url}", f"{deployment_dir}", branch="main")
+        deployment = Deployment(
+            project_dir, deployment_dir, model_categories, model_download_type
+        )
+        deployment.clone_flask_app()
+        deployment.edit_flask_app()
 
-        # Editing the Flask App to be deployed
-        program_path = os.path.join(deployment_dir, "app.py")
-        edit_flask_app(program_path, model_categories)
-
-        if model_download_type == "zip":
-            # Zipping the Flask App Repo
-            zip_dir = os.path.join(project_dir, "deployment.zip")
-            zip_flask_app(deployment_dir, zip_dir)
-
-            response = HttpResponse(
-                open(zip_dir, "rb"),
-                headers={
-                    "Content-Type": "application/zip",
-                    "Content-Disposition": "attachment; filename=deployment.zip",
-                },
-            )
-
-            remove_dir(deployment_dir)
-            os.remove(zip_dir)
-
-            return response
-
-        else:
-            status, success, message = 200, True, "Executable Downloaded Successfully"
-            return JsonResponse({"success": success, "message": message}, status=status)
+        response = deployment.download_app()
+        return response
 
     except Exception as e:
         status, success, message = 500, False, "Deployment Attempt Failed"
@@ -123,31 +99,22 @@ def cloud_deploy(request):
         pkl_dir = os.path.join(project_dir, "pickle")
         pkl_path = os.path.join(pkl_dir, f"model.pkl")
 
-        if os.path.exists(pkl_dir) and os.path.isdir(pkl_dir):
-            with open(pkl_path, "ab") as pkl_fh:
-                pkl_fh.write(pkl_file_content)
-        else:
-            os.mkdir(pkl_dir)
-            with open(pkl_path, "wb") as pkl_fh:
-                pkl_fh.write(pkl_file_content)
+        # Appending pickle chunks
+        append_pkl_contents(pkl_dir, pkl_path, pkl_file_content)
 
         if current_chunk == total_chunks:
+            model_categories = request.data.get("model_categories")
+
             deployment_dir = os.path.join(project_dir, "deployment")
             remove_dir(deployment_dir)
 
-            # Clone Flask App once upload complete
-            flask_app_url = os.getenv("FLASK_APP_HTTPS_URL")
-            git.Repo.clone_from(f"{flask_app_url}", f"{deployment_dir}", branch="main")
+            deployment = Deployment(project_dir, deployment_dir, model_categories)
+            deployment.clone_flask_app()
 
-            # Copy pickle file into Cloned Flask Repo
-            new_pkl_path = os.path.join(deployment_dir, "model.pkl")
-            shutil.copy(pkl_path, new_pkl_path)
+            deployment.copy_pkl_file(pkl_path)
             remove_dir(pkl_dir)
 
-            # Editing the Flask App to be deployed
-            program_path = os.path.join(deployment_dir, "app.py")
-            model_categories = request.data.get("model_categories")
-            edit_flask_app(program_path, model_categories)
+            deployment.edit_flask_app()
 
             status, success, message = 200, True, "Cloud Deployment Successful"
         else:
@@ -197,59 +164,28 @@ def hybrid_deploy(request):
         pkl_dir = os.path.join(project_dir, "pickle")
         pkl_path = os.path.join(pkl_dir, f"model.pkl")
 
-        if os.path.exists(pkl_dir) and os.path.isdir(pkl_dir):
-            with open(pkl_path, "ab") as pkl_fh:
-                pkl_fh.write(pkl_file_content)
-        else:
-            os.mkdir(pkl_dir)
-            with open(pkl_path, "wb") as pkl_fh:
-                pkl_fh.write(pkl_file_content)
+        # Appending pickle chunks
+        append_pkl_contents(pkl_dir, pkl_path, pkl_file_content)
 
         if current_chunk == total_chunks:
-            deployment_dir = os.path.join(project_dir, "deployment")
-            remove_dir(deployment_dir)
-
-            # Clone Flask App once upload complete
-            flask_app_url = os.getenv("FLASK_APP_HTTPS_URL")
-            git.Repo.clone_from(f"{flask_app_url}", f"{deployment_dir}", branch="main")
-
-            # Copy pickle file into Cloned Flask Repo
-            new_pkl_path = os.path.join(deployment_dir, "model.pkl")
-            shutil.copy(pkl_path, new_pkl_path)
-            remove_dir(pkl_dir)
-
             model_categories = request.data.get("model_categories")
             model_download_type = request.data.get("model_download_type")
 
-            program_path = os.path.join(deployment_dir, "app.py")
-            edit_flask_app(program_path, model_categories)
+            deployment_dir = os.path.join(project_dir, "deployment")
+            remove_dir(deployment_dir)
 
-            if model_download_type == "zip":
-                # Zipping the Flask App Repo
-                zip_dir = os.path.join(project_dir, "deployment.zip")
-                zip_flask_app(deployment_dir, zip_dir)
+            deployment = Deployment(
+                project_dir, deployment_dir, model_categories, model_download_type
+            )
+            deployment.clone_flask_app()
 
-                response = HttpResponse(
-                    open(zip_dir, "rb"),
-                    headers={
-                        "Content-Type": "application/zip",
-                        "Content-Disposition": "attachment; filename=deployment.zip",
-                    },
-                )
+            deployment.copy_pkl_file(pkl_path)
+            remove_dir(pkl_dir)
 
-                os.remove(zip_dir)
+            deployment.edit_flask_app()
 
-                return response
-
-            else:
-                status, success, message = (
-                    200,
-                    True,
-                    "Executable Downloaded Successfully",
-                )
-                return JsonResponse(
-                    {"success": success, "message": message}, status=status
-                )
+            response = deployment.download_app()
+            return response
 
         else:
             status, success, message = 204, True, "Hybrid Deployment Underway"

@@ -26,30 +26,6 @@ def remove_dir(deployment_dir):
         os.rmdir(deployment_dir)
 
 
-def edit_flask_app(program_path, model_categories):
-    modified_flask_lines = []
-
-    with open(program_path, "r") as flask_fh:
-        flask_lines = flask_fh.readlines()
-
-        model_path = 'MODEL_PATH = ""\n'
-        categories = "CATEGORIES = []\n"
-
-        modified_model_path = 'MODEL_PATH = "./model.pkl"\n'
-        modified_categories = f"CATEGORIES = {model_categories}\n"
-
-        for line in flask_lines:
-            if line == model_path:
-                modified_flask_lines.append(modified_model_path)
-            elif line == categories:
-                modified_flask_lines.append(modified_categories)
-            else:
-                modified_flask_lines.append(line)
-
-    with open(program_path, "w") as flask_fh:
-        flask_fh.writelines(modified_flask_lines)
-
-
 def zip_flask_app(deployment_dir, zip_dir):
     current_dir = os.getcwd()
     os.chdir(deployment_dir)
@@ -61,3 +37,13 @@ def zip_flask_app(deployment_dir, zip_dir):
             zip_file.write(file)
 
     os.chdir(current_dir)
+
+
+def append_pkl_contents(pkl_dir, pkl_path, pkl_file_content):
+    if os.path.exists(pkl_dir) and os.path.isdir(pkl_dir):
+        with open(pkl_path, "ab") as pkl_fh:
+            pkl_fh.write(pkl_file_content)
+    else:
+        os.mkdir(pkl_dir)
+        with open(pkl_path, "wb") as pkl_fh:
+            pkl_fh.write(pkl_file_content)
