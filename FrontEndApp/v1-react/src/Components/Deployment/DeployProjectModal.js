@@ -181,9 +181,8 @@ const DeployProjectModal = ({ setOpenDeployModal, setDeployOptions, localDeploy,
     const [currentPklFile, setCurrentPklFile] = useState("");
     const [pklFileName, setPklFileName] = useState("");
     const [numberOfChunks, setNumberOfChunks] = useState(0);
-    const [pklChunkSize, setPklChunkSize] = useState(20);
-    // Specify constant pklChunkSize = 10MB
-    // const pklChunkSize = 1048576 * 10;
+    // const pklChunkSize = 1048576; // 1MB size
+    const pklChunkSize = 20; // Smaller Chunk Size for demonstration purposes only
     let pklChunks = [];
     let uploadStatus = 0;
 
@@ -224,7 +223,7 @@ const DeployProjectModal = ({ setOpenDeployModal, setDeployOptions, localDeploy,
             link.remove();
             setalert({ ...values, msg: "Local Deployment Successful", severity: "success" });
         } else {
-            setalert({ ...values, msg: res.data.message, severity: "error" });
+            setalert({ ...values, msg: "Deployment Attempt Failed", severity: "error" });
         }
 
         handleCloseDeployModal();
@@ -242,8 +241,6 @@ const DeployProjectModal = ({ setOpenDeployModal, setDeployOptions, localDeploy,
             i++;
         }
 
-        let res = {};
-
         for (let i = 0; i < numberOfChunks; i++) {
             const data = {
                 username: username,
@@ -256,7 +253,7 @@ const DeployProjectModal = ({ setOpenDeployModal, setDeployOptions, localDeploy,
 
             uploadStatus = Math.round(((i + 1) / numberOfChunks) * 100);
 
-            res = await DeploymentService.cloud_deploy(token, data);
+            let res = await DeploymentService.cloud_deploy(token, data);
 
             if (res.status === 200) {
                 setalert({ ...values, msg: res.data.message, severity: "success" });
@@ -265,7 +262,7 @@ const DeployProjectModal = ({ setOpenDeployModal, setDeployOptions, localDeploy,
                 setalert({ ...values, msg: uploadStatus, severity: "info", title: "Deployment Underway" });
                 setOpen(true);
             } else {
-                setalert({ ...values, msg: res.data.message, severity: "error" });
+                setalert({ ...values, msg: "Deployment Attempt Failed", severity: "error" });
             }
         };
 
@@ -284,8 +281,6 @@ const DeployProjectModal = ({ setOpenDeployModal, setDeployOptions, localDeploy,
             i++;
         }
 
-        let res = {};
-
         for (let i = 0; i < numberOfChunks; i++) {
             const data = {
                 username: username,
@@ -299,7 +294,7 @@ const DeployProjectModal = ({ setOpenDeployModal, setDeployOptions, localDeploy,
 
             uploadStatus = Math.round(((i + 1) / numberOfChunks) * 100);
 
-            res = await DeploymentService.hybrid_deploy(token, data);
+            let res = await DeploymentService.hybrid_deploy(token, data);
 
             if (res.status === 200) {
                 const { data } = await res;
@@ -316,7 +311,7 @@ const DeployProjectModal = ({ setOpenDeployModal, setDeployOptions, localDeploy,
                 setalert({ ...values, msg: uploadStatus, severity: "info", title: "Deployment Underway" });
                 setOpen(true);
             } else {
-                setalert({ ...values, msg: res.data.message, severity: "error" });
+                setalert({ ...values, msg: "Deployment Attempt Failed", severity: "error" });
             }
         };
 

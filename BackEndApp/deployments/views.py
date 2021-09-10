@@ -12,6 +12,18 @@ from deployments.models import Deployment
 from dlmml.parser import *
 
 from .utils import remove_dir, append_pkl_contents
+from .exceptions import (
+    AppDownloadFailed,
+    AppUpsertionFailed,
+    CloneGenerationFailed,
+    PickleAppendFailed,
+    PickleCopyFailed,
+    ProjectNotFound,
+)
+
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 @api_view(["POST"])
@@ -30,16 +42,16 @@ def local_deploy(request):
               (Yes, not JsonResponse like other views)
     """
 
+    username = request.data.get("username")
+    user = User(username=username, password=None)
+    user = user.find()
+
+    store_obj = Store(user)
+
     try:
-        username = request.data.get("username")
-        user = User(username=username, password=None)
-        user = user.find()
-
-        store_obj = Store(user)
         project_id = request.data.get("project_id")
-
         if not store_obj.exist(project_id):
-            raise Exception("No such project exists")
+            raise ProjectNotFound(project_id)
 
         project_dir = store_obj.path + os.sep + project_id
         deployment_dir = os.path.join(project_dir, "deployment")
@@ -51,15 +63,30 @@ def local_deploy(request):
         deployment = Deployment(
             project_dir, deployment_dir, model_categories, model_download_type
         )
+
         deployment.clone_flask_app()
         deployment.edit_flask_app()
 
         response = deployment.download_app()
-        return response
 
-    except Exception as e:
-        status, success, message = 500, False, "Deployment Attempt Failed"
-        return JsonResponse({"success": success, "message": message}, status=status)
+    except ProjectNotFound:
+        logger.debug("Unable to find the Project")
+        raise
+
+    except CloneGenerationFailed:
+        logger.debug("Unable to clone the Flask App")
+        raise
+
+    except AppUpsertionFailed:
+        logger.debug("Unable to modify the Flask App")
+        raise
+
+    except AppDownloadFailed:
+        logger.debug("Unable to download the Flask App")
+        raise
+
+    else:
+        return response
 
 
 @api_view(["POST"])
@@ -77,12 +104,13 @@ def cloud_deploy(request):
     response: JsonResponse for Cloud Deployment describing Success or Failure
     """
 
-    try:
-        username = request.data.get("username")
-        user = User(username=username, password=None)
-        user = user.find()
+    username = request.data.get("username")
+    user = User(username=username, password=None)
+    user = user.find()
 
-        store_obj = Store(user)
+    store_obj = Store(user)
+
+    try:
         project_id = request.data.get("project_id")
 
         if not store_obj.exist(project_id):
@@ -120,10 +148,34 @@ def cloud_deploy(request):
         else:
             status, success, message = 204, True, "Cloud Deployment Underway"
 
-    except Exception as e:
-        status, success, message = 500, False, "Deployment Attempt Failed"
+    except ProjectNotFound:
+        logger.debug("Unable to find the Project")
+        raise
 
-    return JsonResponse({"success": success, "message": message}, status=status)
+    except PickleAppendFailed:
+        logger.debug("Unable to append Pickle file contents")
+        remove_dir(pkl_dir)
+        raise
+
+    except CloneGenerationFailed:
+        logger.debug("Unable to clone the Flask App")
+        remove_dir(pkl_dir)
+        raise
+
+    except PickleCopyFailed:
+        logger.debug("Unable to copy pickle file into deployment directory")
+        remove_dir(deployment_dir)
+        remove_dir(pkl_dir)
+        raise
+
+    except AppUpsertionFailed:
+        logger.debug("Unable to modify the Flask App")
+        remove_dir(deployment_dir)
+        remove_dir(pkl_dir)
+        raise
+
+    else:
+        return JsonResponse({"success": success, "message": message}, status=status)
 
 
 @api_view(["POST"])
@@ -142,12 +194,13 @@ def hybrid_deploy(request):
               JsonResponse for Cloud Deployment describing Success or Failure
     """
 
-    try:
-        username = request.data.get("username")
-        user = User(username=username, password=None)
-        user = user.find()
+    username = request.data.get("username")
+    user = User(username=username, password=None)
+    user = user.find()
 
-        store_obj = Store(user)
+    store_obj = Store(user)
+
+    try:
         project_id = request.data.get("project_id")
 
         if not store_obj.exist(project_id):
@@ -185,12 +238,41 @@ def hybrid_deploy(request):
             deployment.edit_flask_app()
 
             response = deployment.download_app()
-            return response
 
         else:
             status, success, message = 204, True, "Hybrid Deployment Underway"
+            return JsonResponse({"success": success, "message": message}, status=status)
 
-    except Exception as e:
-        status, success, message = 500, False, "Deployment Attempt Failed"
+    except ProjectNotFound:
+        logger.debug("Unable to find the Project")
+        raise
 
-    return JsonResponse({"success": success, "message": message}, status=status)
+    except PickleAppendFailed:
+        logger.debug("Unable to append Pickle file contents")
+        remove_dir(pkl_dir)
+        raise
+
+    except CloneGenerationFailed:
+        logger.debug("Unable to clone the Flask App")
+        remove_dir(pkl_dir)
+        raise
+
+    except PickleCopyFailed:
+        logger.debug("Unable to copy file into deployment directory")
+        remove_dir(deployment_dir)
+        remove_dir(pkl_dir)
+        raise
+
+    except AppUpsertionFailed:
+        logger.debug("Unable to modify the Flask App")
+        remove_dir(deployment_dir)
+        remove_dir(pkl_dir)
+        raise
+
+    except AppDownloadFailed:
+        logger.debug("Unable to download the Flask App")
+        remove_dir(pkl_dir)
+        raise
+
+    else:
+        return response
