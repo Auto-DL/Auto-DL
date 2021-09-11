@@ -1,6 +1,5 @@
 import os
 import sys
-import pytest
 
 sys.path.append("..")
 
@@ -8,6 +7,9 @@ sys.path.append("..")
 class MockOS:
     def mock_jwt_secret(self, mocker):
         mocker.patch.dict(os.environ, {"JWT_SECRET": "secret"})
+
+    def mock_mongodb_uri(self, mocker):
+        mocker.patch.dict(os.environ, {"MONGODB_URI": "some_uri"})
 
 
 class MockUser:

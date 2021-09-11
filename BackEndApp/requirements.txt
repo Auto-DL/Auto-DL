@@ -18,3 +18,5 @@ black
 autoflake
 pytest
 pytest-mock
+mongomock
+
