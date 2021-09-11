@@ -43,6 +43,7 @@ class User:
             "last_name": self.attributes.get("last_name", ""),
             "email": self.attributes.get("email").lower(),
             "is_verified": False,
+        }
         return self.collection.insert_one(user_document)
 
     def find(self, by_email=False):
