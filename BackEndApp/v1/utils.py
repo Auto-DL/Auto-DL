@@ -1,6 +1,8 @@
 from uuid import uuid4 as uid
 import os
 
+from shutil import copyfile
+
 
 def generate_uid():
     id = uid()
@@ -22,7 +24,10 @@ def get_augument_params():
 def copy_file(dest, filename="test.py"):
     if not filename.endswith(".py"):
         filename += ".py"
-    os.system('cp -f {} "{}"/{}'.format(filename, dest, filename))
+    fsource = os.path.join(os.getcwd(), filename)
+    fdestination = os.path.join(dest, filename)
+
+    copyfile(fsource, fdestination)
 
 
 def format_code(file):
