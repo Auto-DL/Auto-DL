@@ -102,7 +102,6 @@ class Session:
             return None
 
     def delete(self, token):
-
         if not self.verify(token):
             return False
 

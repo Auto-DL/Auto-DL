@@ -8,8 +8,9 @@ import {
   Typography,
   Dialog,
   Tooltip,
-
+  Snackbar,
 } from "@material-ui/core";
+
 import {
   useStyles,
   DialogTitle,
@@ -24,10 +25,13 @@ import HomeService from "./HomeService";
 import PreprocessingTab from "./step-2/PreprocessingTab";
 import LayerTab from "./step-2/LayerTab";
 import HyperparameterTab from "./step-2/HyperparameterTab";
-
+import MuiAlert from "@material-ui/lab/Alert";
+import GithubPublishModal from "./step-2/GithubPublishModal";
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
-  
 
   return (
     <div
@@ -61,16 +65,21 @@ function a11yProps(index) {
 
 function Step2() {
   const classes = useStyles();
+  const [open, setOpen] = React.useState(false);
+  const [alertopen, setAlertopen] = React.useState(false);
+  const anchorRef = React.useRef(null);
+  const [openErrorDialog, setOpenErrorDialog] = useState(false);
+
   var project_details = JSON.parse(localStorage.getItem("project_details"));
   var username = JSON.parse(localStorage.getItem("username"));
   var token = JSON.parse(localStorage.getItem("token"));
-
   const [components, setcomponents] = useState([]);
   const [selected_layer_type, setselected_layer_type] = useState("");
   const [selected_layer, setselected_layer] = useState(-1);
   const [selected_layer_name, setselected_layer_name] = useState("");
   const [value, setValue] = useState(0);
-  const [openErrorDialog, setOpenErrorDialog] = useState(false);
+  const [gitusername, setGitusername] = useState("");
+
   const [state_hyperparam, setstate_hyperparam] = useState({
     metrics: "",
     epochs: 0,
@@ -85,7 +94,25 @@ function Step2() {
   const [showloss, setshowloss] = useState(false);
   const [selected_loss, setselected_loss] = useState({});
   const [openModal, setOpenModal] = useState(false);
+  const [openGitHubDetails, setOpenGitHubDetails] = useState(false);
+
   const [generated_file_path, setgenerated_file_path] = useState("");
+
+  const [alert, setalert] = React.useState({
+    msg: "This is alert msg",
+    severity: "warning",
+  });
+
+  const handleToggle = () => {
+    setOpen((prevOpen) => !prevOpen);
+  };
+
+  const handleClose = (event) => {
+    if (anchorRef.current && anchorRef.current.contains(event.target)) {
+      return;
+    }
+    setOpen(false);
+  };
 
   const getProjectId = () => {
     const project_id =
@@ -97,6 +124,30 @@ function Step2() {
 
   const handleCloseModal = () => {
     setOpenModal(false);
+  };
+
+  const handleCloseAlert = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setAlertopen(false);
+  };
+
+  const handleCloseGitHubDetails = () => {
+    setOpenModal(false);
+    setOpenGitHubDetails(false);
+  };
+
+  const handlePublishModalClick = async (e) => {
+    const data = { username: username };
+    const res = await HomeService.gitUsername(token, data);
+    if (res.status === 200) {
+      setGitusername(res.data.git_username);
+    } else {
+      setGitusername("");
+    }
+    setOpenModal(false);
+    setOpenGitHubDetails(true);
   };
 
   const typecast_pre = () => {
@@ -688,7 +739,7 @@ function Step2() {
           Default: "",
           Required: 1,
           DataType: "number",
-          
+
           Options: [],
           Description: " size of each input sample",
         },
@@ -2093,9 +2144,8 @@ function Step2() {
   const [show_pre, setshow_pre] = useState(false);
   const [jsondata, setjsondata] = useState(temp_json);
 
-  
-  const [invalidLayerIndices,setInvalidLayerIndices]=useState(new Set());
-  const [validLayerIndices,setValidLayerIndices]=useState([]);
+  const [invalidLayerIndices, setInvalidLayerIndices] = useState(new Set());
+  const [validLayerIndices, setValidLayerIndices] = useState([]);
 
   useEffect(() => {
     async function fetchData() {
@@ -2108,11 +2158,10 @@ function Step2() {
 
       if (res.status === 200) {
         setcomponents(res.data.components);
-        let tempArr=res.data.components;
-        const {invalidIndices,validIndices}=validate_layers( tempArr);
+        let tempArr = res.data.components;
+        const { invalidIndices, validIndices } = validate_layers(tempArr);
         setInvalidLayerIndices(invalidIndices);
         setValidLayerIndices(validIndices);
-
       } else {
       }
     }
@@ -2128,9 +2177,7 @@ function Step2() {
       const res = await HomeService.get_pre(token, data);
 
       if (res.status === 200) {
-        
         setall_prepro(res.data.preprocessing);
-        // console.log("all_prepro1",all_prepro);
 
         if ("dataset-type" in res.data.preprocessing) {
           setshow_pre(true);
@@ -2157,12 +2204,11 @@ function Step2() {
     }
 
     fetchDataHyper();
-    
   }, [getProjectId(), token, username]);
 
   const handleDragEnd = ({ destination, source }) => {
-    let tempArr=_.cloneDeep(components);
-    
+    let tempArr = _.cloneDeep(components);
+
     if (!destination) {
       return;
     }
@@ -2175,72 +2221,61 @@ function Step2() {
     }
 
     if (destination.droppableId === "source") {
-      console.log("dropping in  source",tempArr);
+      console.log("dropping in  source", tempArr);
       return;
     }
-    
+
     if (
       destination.droppableId === "delete" &&
       source.droppableId === "target"
     ) {
       console.log("deleting from target");
       const element = tempArr[source.index];
-      
-      
+
       var temp = tempArr.filter((item) => item !== element);
-      tempArr=temp;
-      
-    
+      tempArr = temp;
+
       setselected_layer(-1);
       setselected_layer_name("");
       setselected_layer_type("");
-      
     }
     if (
       destination.droppableId === "target" &&
       source.droppableId === "target"
     ) {
       // It means the layer which is draggged is selected
-      let dragLayerIsSelcted=false;
-      console.log('tempArr["id"] selected_layer_type["id"]',tempArr[source.index]["id"],selected_layer_type["id"]);
+      let dragLayerIsSelcted = false;
+      console.log(
+        'tempArr["id"] selected_layer_type["id"]',
+        tempArr[source.index]["id"],
+        selected_layer_type["id"]
+      );
 
-      if(tempArr[source.index]["id"]===selected_layer_type["id"]){
-
-        dragLayerIsSelcted=true;
+      if (tempArr[source.index]["id"] === selected_layer_type["id"]) {
+        dragLayerIsSelcted = true;
       }
-     
-      
 
-
-      tempArr.splice(destination.index,0,tempArr.splice(source.index, 1)[0]);
+      tempArr.splice(destination.index, 0, tempArr.splice(source.index, 1)[0]);
       // console.log("source and des index are",source.index,destination.index);
 
-      if(dragLayerIsSelcted)
-      {
+      if (dragLayerIsSelcted) {
         setselected_layer_type(tempArr[destination.index]);
         setselected_layer(destination.index);
-        console.log("selected_layer_type on drag and id is  ",selected_layer_type,selected_layer_type["id"]); 
-      }
-      else
-      {
+        console.log(
+          "selected_layer_type on drag and id is  ",
+          selected_layer_type,
+          selected_layer_type["id"]
+        );
+      } else {
         setselected_layer_type("");
         setselected_layer(-1);
-
       }
-
-      
-     
-     
-
 
       // console.log("compinents after splice is ",components);
       for (var i = 0; i < tempArr.length; i++) {
         tempArr[i]["id"] = tempArr[i]["id"] + i;
         if (i === 0) {
-          if (
-            !("input_size" in tempArr[i]) ||
-            !("input_shape" in tempArr[i])
-          ) {
+          if (!("input_size" in tempArr[i]) || !("input_shape" in tempArr[i])) {
             tempArr[i]["input_shape"] = {
               Example: [200, 200, 3],
               Default: "NA",
@@ -2253,7 +2288,7 @@ function Step2() {
         } else {
           try {
             delete tempArr[i]["input_shape"];
-          } catch (err) {}
+          } catch (err) { }
         }
       }
       // setcomponents(components);
@@ -2264,32 +2299,24 @@ function Step2() {
     ) {
       console.log("dropping from source to target");
 
-
       const list_names_of_source = Object.keys(jsondata);
-      
-      const temp = jsondata[list_names_of_source[source.index]];
-      
-      var dic = _.cloneDeep(temp);
-     
 
-      
-      dic["id"] = `${list_names_of_source[source.index]}-${source.index}-${
-        destination.index
-      }`;
-      
+      const temp = jsondata[list_names_of_source[source.index]];
+
+      var dic = _.cloneDeep(temp);
+
+      dic["id"] = `${list_names_of_source[source.index]}-${source.index}-${destination.index
+        }`;
+
       dic["name"] = list_names_of_source[source.index];
 
-     
       tempArr.splice(destination.index, 0, dic);
 
       for (i = 0; i < tempArr.length; i++) {
         tempArr[i]["id"] = tempArr[i]["id"] + i;
-        
+
         if (i === 0) {
-          if (
-            !("input_size" in tempArr[i]) ||
-            !("input_shape" in tempArr[i])
-          ) {
+          if (!("input_size" in tempArr[i]) || !("input_shape" in tempArr[i])) {
             tempArr[i]["input_shape"] = {
               Example: [200, 200, 3],
               Default: "NA",
@@ -2302,57 +2329,37 @@ function Step2() {
         } else {
           try {
             delete tempArr[i]["input_shape"];
-          } catch (err) {}
+          } catch (err) { }
         }
       }
-
     }
-    
- 
 
-    
-    const {invalidIndices,validIndices}=validate_layers( tempArr);
+    const { invalidIndices, validIndices } = validate_layers(tempArr);
     // console.log("val res is",invalidIndices,validIndices);
     setInvalidLayerIndices(invalidIndices);
     setValidLayerIndices(validIndices);
 
     setcomponents(tempArr);
-
-
-
-
-
-    
-   
-
-
   };
 
-
-  const handleInvalidLayers= (validate_res) =>{
-    const indexSet=new Set();
+  const handleInvalidLayers = (validate_res) => {
+    const indexSet = new Set();
     //extracting indices of invalid layers and collecting them in a set
-    for(let i=0;i<validate_res.length;i++)
-    {
-      for(let j=0;j<validate_res[i].indices.length;j++)
-      {
+    for (let i = 0; i < validate_res.length; i++) {
+      for (let j = 0; j < validate_res[i].indices.length; j++) {
         indexSet.add(validate_res[i].indices[j]);
       }
     }
     return indexSet;
-
-  }
-
-
-
+  };
 
   const showdetails = (element) => {
     setselected_layer_type(element);
-    console.log("selected layer type is ",selected_layer_type);
+    console.log("selected layer type is ", selected_layer_type);
 
     var ele = components;
     var index = ele.lastIndexOf(element);
-    console.log("index is ",index);
+    console.log("index is ", index);
 
     setselected_layer(index);
   };
@@ -2736,31 +2743,25 @@ function Step2() {
     setall_prepro(dic);
   };
 
-
-   const handleCloneLayer = (layer) => {
+  const handleCloneLayer = (layer) => {
     // handleChangetabs();
-    
-      //getting source names of all layers 
-        const list_names_of_source=Object.keys(jsondata);
-        let source_index;
 
-        //where to place layer in UI
-        let destination_index=Number(layer.id[layer.id.length-1])+1;
-        // console.log("destination index  is ",destination_index);
-        
+    //getting source names of all layers
+    const list_names_of_source = Object.keys(jsondata);
+    let source_index;
 
-    
-        //finding layer in source array for id framing
-        for(let i=0;i<list_names_of_source.length;i++)
-        {
-          if(layer.name === list_names_of_source[i] )
-          {
-            source_index=i;
-            break;
-          }
-        }
+    //where to place layer in UI
+    let destination_index = Number(layer.id[layer.id.length - 1]) + 1;
+    // console.log("destination index  is ",destination_index);
 
-    
+    //finding layer in source array for id framing
+    for (let i = 0; i < list_names_of_source.length; i++) {
+      if (layer.name === list_names_of_source[i]) {
+        source_index = i;
+        break;
+      }
+    }
+
     //cloning the layer
     let clonedLayer = _.cloneDeep(layer);
 
@@ -2790,7 +2791,7 @@ function Step2() {
       } else {
         try {
           delete components[i]["input_shape"];
-        } catch (err) {}
+        } catch (err) { }
       }
       // console.log("inside loop id",components[i]["id"]);
     }
@@ -2833,7 +2834,36 @@ function Step2() {
           <Button variant="contained" onClick={download_code} color="primary">
             Download Code
           </Button>
+          <Button
+            variant="contained"
+            onClick={(e) => handlePublishModalClick(e)}
+            color="primary"
+          >
+            Publish to GitHub
+          </Button>
         </DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={openGitHubDetails}
+        onClose={handleCloseGitHubDetails}
+        fullWidth
+        maxWidth="sm"
+      >
+        <GithubPublishModal
+          username={username}
+          gitusername={gitusername}
+          token={token}
+          project_details={project_details}
+          handleClose={handleClose}
+          setOpenModal={setOpenModal}
+          handleToggle={handleToggle}
+          setalert={setalert}
+          setAlertopen={setAlertopen}
+          open={open}
+          setOpen={setOpen}
+          setOpenGitHubDetails={setOpenGitHubDetails}
+        />
       </Dialog>
 
       <AppBar position="static" color="default">
@@ -2875,7 +2905,6 @@ function Step2() {
         handleCloneLayer={handleCloneLayer}
         invalidLayerIndices={invalidLayerIndices}
         validLayerIndices={validLayerIndices}
-        
       />
 
       <HyperparameterTab
@@ -2899,6 +2928,16 @@ function Step2() {
         setOpenErrorDialog={setOpenErrorDialog}
         hyper={hyper}
       />
+
+      <Snackbar
+        open={alertopen}
+        autoHideDuration={6000}
+        onClose={handleCloseAlert}
+      >
+        <Alert onClose={handleCloseAlert} severity={alert.severity}>
+          {alert.msg}
+        </Alert>
+      </Snackbar>
     </div>
   );
 }

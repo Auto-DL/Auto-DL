@@ -114,7 +114,6 @@ function Home() {
     if (reason === "clickaway") {
       return;
     }
-
     setOpen(false);
   };
 
@@ -141,6 +140,7 @@ function Home() {
         history.push("/login");
       }
     }
+
     fetchData();
   }, [openModal, openCloneModal, openDeployModal, history, token, username]);
 
@@ -263,7 +263,6 @@ function Home() {
         preprocessingParameters={preprocessingParameters}
         hyperParameters={hyperParameters}
         setCloneStep={setCloneStep}
-        values={values}
         SelectedProject={SelectedProject}
         cloneOptions={cloneOptions}
         setOpen={setOpen}
