@@ -132,6 +132,18 @@ function LoginForm() {
     values.showLoginPassword = false;
   };
 
+  const handleLogin = (event) => {
+    if (event.key === "Enter") {
+      login();
+    }
+  }
+
+  const handleRegister = (event) => {
+    if (event.key === "Enter") {
+      register();
+    }
+  }
+
   const login = async () => {
     const data = {
       username: values.username,
@@ -241,14 +253,20 @@ function LoginForm() {
                     name="Username"
                     autoComplete="Username"
                     autoFocus
+                    onKeyDown={(event) => handleLogin(event)}
                     onChange={handleChange("username")}
                     data-testid={"loginUsername"}
                   />
 
-                  <FormControl fullWidth margin="normal" variant="outlined">
+                  <FormControl
+                    fullWidth
+                    margin="normal"
+                    variant="outlined"
+                    onKeyDown={(event) => handleLogin(event)}
+                  >
                     <InputLabel
                       htmlFor="outlined-adornment-password"
-                      style={{ backgroundColor: "white", padding: "0px 5px" }}
+                      style={{backgroundColor: "white",padding:"0px 5px"}}
                     >
                       Password *
                     </InputLabel>
@@ -308,16 +326,19 @@ function LoginForm() {
                     autoFocus
                     data-testid={"registerUsername"}
                     onChange={handleChange("username")}
+                    onKeyDown={(event) => handleRegister(event)}
                   />
+
                   <TextField
                     variant="outlined"
                     margin="normal"
                     required
                     fullWidth
-                    label="First name"
+                    label="First Name"
                     autoComplete="First name"
                     data-testid={"fname"}
                     onChange={handleChange("first_name")}
+                    onKeyDown={(event) => handleRegister(event)}
                   />
 
                   <TextField
@@ -325,10 +346,11 @@ function LoginForm() {
                     margin="normal"
                     required
                     fullWidth
-                    label="Last name"
+                    label="Last Name"
                     autoComplete="Last name"
                     data-testid={"lname"}
                     onChange={handleChange("last_name")}
+                    onKeyDown={(event) => handleRegister(event)}
                   />
 
                   <TextField
@@ -336,13 +358,19 @@ function LoginForm() {
                     margin="normal"
                     required
                     fullWidth
-                    label="email"
+                    label="Email"
                     autoComplete="email"
                     data-testid={"email"}
                     onChange={handleChange("email")}
+                    onKeyDown={(event) => handleRegister(event)}
                   />
 
-                  <FormControl fullWidth margin="normal" variant="outlined">
+                  <FormControl
+                    fullWidth
+                    margin="normal"
+                    variant="outlined"
+                    onKeyDown={(event) => handleRegister(event)}
+                  >
                     <InputLabel
                       variant="outlined"
                       htmlFor="outlined-adornment-password"
@@ -374,10 +402,15 @@ function LoginForm() {
                     />
                   </FormControl>
 
-                  <FormControl fullWidth margin="normal" variant="outlined">
+                  <FormControl
+                    fullWidth
+                    margin="normal"
+                    variant="outlined"
+                    onKeyDown={(event) => handleRegister(event)}
+                  >
                     <InputLabel
                       htmlFor="outlined-adornment-password"
-                      style={{ backgroundColor: "white", padding: "0px 5px" }}
+                      style={{backgroundColor:"white",padding:"0px 5px"}}
                     >
                       Confirm Password *
                     </InputLabel>
