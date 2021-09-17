@@ -64,7 +64,7 @@ export const useStyles = makeStyles((theme) => ({
     padding: "0px",
     width:"80%",
     height:"60%",
-    margin:"1%",
+   
     textAlign:"center",
   },
   column3: {
@@ -257,14 +257,14 @@ export const useStyles = makeStyles((theme) => ({
     delete: {
       
         width: "97%",
-          backgroundColor: "#D8D8D8",
-          padding: "10px",
-          borderRadius: "7px",
-          minHeight: "90px",
-          maxHeight:"60px",
-          minWeight: "60px",
-          margin: "10px",
-          textAlign: "center",
+        backgroundColor: "#D8D8D8",
+        padding: "10px",
+        borderRadius: "7px",
+        minHeight: "90px",
+        maxHeight:"60px",
+        minWeight: "60px",
+        margin: "10px",
+        textAlign: "center",
     },
     sel: {
         // width: "200px",
