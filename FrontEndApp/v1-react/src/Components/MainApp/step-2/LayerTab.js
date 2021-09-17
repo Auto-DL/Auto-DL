@@ -100,7 +100,7 @@ const LayerTab = ({
 
           <Grid item lg={5} md={5} sm={4} xs={4} className={classes.grid2}>
             <div key="target" className={classes.column2}>
-              <span className={classes.spancss}>Model</span>
+              <span style={{marginLeft:"20%"}}>Model</span>
 
               <Droppable droppableId="target">
                 {(provided, snapshot) => {
