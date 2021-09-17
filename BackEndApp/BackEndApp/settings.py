@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "authv1",
     "v1",
+    "deployments",
 ]
 
 MIDDLEWARE = [

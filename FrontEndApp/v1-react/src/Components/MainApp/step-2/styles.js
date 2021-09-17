@@ -117,25 +117,25 @@ export const useStyles = makeStyles((theme) => ({
     textAlign: "center",
     marginBottom: "10px",
 
-        backgroundColor: "#adbce6",
-        color: "black",
-        border: "1px solid black",
-        padding: "5px",
-        borderRadius: "7px",
-    },
-    itemValid: {
-        textAlign: "center",
-        marginBottom: "10px",
+    backgroundColor: "#adbce6",
+    color: "black",
+    border: "1px solid black",
+    padding: "5px",
+    borderRadius: "7px",
+  },
+  itemValid: {
+    textAlign: "center",
+    marginBottom: "10px",
 
-        backgroundColor: "#00ff00",
-        color: "black",
-        border: "1px solid black",
-        padding: "5px",
-        borderRadius: "7px",
-    },
-    item1selected: {
-        textAlign: "center",
-        marginBottom: "10px",
+    backgroundColor: "#00ff00",
+    color: "black",
+    border: "1px solid black",
+    padding: "5px",
+    borderRadius: "7px",
+  },
+  item1selected: {
+    textAlign: "center",
+    marginBottom: "10px",
 
         backgroundColor: "rgb(115,194,251)",
         color: "black",
@@ -158,9 +158,9 @@ export const useStyles = makeStyles((theme) => ({
       item1Error: {
         textAlign: "center",
         marginBottom: "10px",
-        padding:"2px",
+        padding:"5px",
         backgroundColor: "rgb(115,194,251)",
-        padding: "5px",
+
         color: "black",
         border: "1px solid black",
         borderRadius: "7px 7px 7px 7px",

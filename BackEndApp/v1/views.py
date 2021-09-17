@@ -1,3 +1,4 @@
+from genericpath import isdir
 from django.shortcuts import render
 from django.http import JsonResponse, HttpResponse
 from rest_framework.decorators import api_view
@@ -14,8 +15,17 @@ from v1.models import UserData
 from dlmml.utils import json_to_dict
 from dlmml.parser import *
 
-
-from .utils import generate_uid, copy_file, format_code, delete_broken_symlinks
+from .utils import (
+    generate_uid,
+    copy_file,
+    format_code,
+    delete_broken_symlinks,
+    generate_git_access_token,
+    push_to_github,
+    encrypt,
+    decrypt,
+    get_git_username,
+)
 
 
 @api_view(["POST"])
@@ -701,3 +711,177 @@ def share_project(request):
     except:
         status, success, message = 500, False, "Failed"
     return JsonResponse({"success": success, "message": message}, status=status)
+
+
+@api_view(["POST"])
+@is_authenticated
+def get_github_username(request):
+    """
+    Endpoint to get the username of the authorized github account
+    Inputs:
+    -------
+    request:
+        Requires:  username in request data
+    Returns:
+    --------
+    response: JsonResponse having the username of the authorized github account on success else None if the user has not authorized the app or something goes wrong
+    """
+    username = request.data.get("username")
+    user = User(username=username, password=None)
+    user = user.find()
+
+    if user["GitAccessToken"]:
+        print(user["GitAccessToken"])
+        decrypted_token = decrypt(user["GitAccessToken"])
+        assert decrypted_token is not None
+        git_username = get_git_username(decrypted_token)
+        assert git_username is not None
+        status, success, message = 200, True, "Github username fetched"
+    else:
+        git_username = None
+        status, success, message = 200, True, "Github access token not set"
+    return JsonResponse(
+        {
+            "success": success,
+            "message": message,
+            "git_username": git_username,
+        },
+        status=status,
+    )
+
+
+@api_view(["POST"])
+@is_authenticated
+def github_logout(request):
+    """
+    Endpoint to get the  logout of the authorized github account( deletes the stored token from the database)
+    Inputs:
+    -------
+    request:
+        Requires:  username in request data
+    Returns:
+    --------
+    response: JsonResponse describing success or failure
+    """
+    username = request.data.get("username")
+    try:
+        user = User(username=username, password=None)
+        this_user = user.find()
+        if this_user.get("GitAccessToken"):
+            user.update("GitAccessToken", None)
+
+        status, success, message = 200, True, "Logged out"
+    except Exception as e:
+        print(e)
+        status, success, message = 500, False, "Something went wrong"
+    return JsonResponse({"success": success, "message": message}, status=status)
+
+
+@api_view(["POST"])
+@is_authenticated
+def publish_on_github(request):
+    """
+    Endpoint to push the code to github
+
+    Inputs:
+    -------
+    request:
+        Requires:  username,project_id, details (commit_message,filename,reponame) in request data
+    Returns:
+    --------
+    response: JsonResponse describing success or failure
+    """
+    username = request.data.get("username")
+    details = request.data.get("details")
+    project_id = details.get("project_id")
+    commit_message = details.get("git_commit_message")
+    filename = details.get("git_file_name")
+    repo_name = details.get("git_repo_name")
+    make_private = details.get("make_private")
+
+    user = User(username=username, password=None)
+    this_user = user.find()
+
+    store_obj = Store(this_user)
+    project_dir = store_obj.path + os.sep + project_id
+
+    git_access_token = this_user.get("GitAccessToken")
+
+    try:
+
+        git_access_token = decrypt(git_access_token)
+        assert git_access_token is not None
+        push_status, message, repo_full_name = push_to_github(
+            git_access_token,
+            repo_name,
+            filename,
+            commit_message,
+            make_private,
+            project_dir,
+        )
+        if push_status == 200:
+            status, success, message, repo_full_name = (
+                200,
+                True,
+                "Successfully Published",
+                repo_full_name,
+            )
+        else:
+            status, success, message, repo_full_name = (
+                500,
+                False,
+                "Something went wrong",
+                "",
+            )
+    except:
+        status, success, message, repo_full_name = (
+            500,
+            False,
+            "Something went wrong",
+            "",
+        )
+    return JsonResponse(
+        {"success": success, "message": message, "repo_full_name": repo_full_name},
+        status=status,
+    )
+
+
+@api_view(["POST"])
+@is_authenticated
+def authorize_github(request):
+    """
+    Endpoint to authorize the github account of the user
+    Generates a new access token, encrypts it and stores it in the database
+    Inputs:
+    -------
+    request:
+        Requires:  username, code(to generate new access token) in request data
+    Returns:
+    --------
+    response: JsonResponse describing success or failure
+    """
+    code = request.data.get("code")
+    username = request.data.get("username")
+    user = User(username=username, password=None)
+    try:
+        git_access_token = generate_git_access_token(code)
+        assert git_access_token is not None
+        encrypted_git_access_token = encrypt(git_access_token)
+        assert encrypted_git_access_token is not None
+        user.update("GitAccessToken", encrypted_git_access_token)
+        status, success, message = (
+            200,
+            True,
+            "Successfully authorized",
+        )
+    except Exception as e:
+        print(e)
+        status, success, message = (
+            500,
+            False,
+            "Something went wrong",
+        )
+    return JsonResponse(
+        {"success": success, "message": message},
+        status=status,
+    )
