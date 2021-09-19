@@ -1,5 +1,5 @@
 import axios from "axios";
-const baseurl = process.env.NODE_ENV == "production" ? "/api" : "";
+const baseurl = process.env.NODE_ENV === "production" ? "/api" : "";
 const BACKEND_API_URL = process.env.REACT_APP_BACKEND_API_URL || baseurl;
 
 class LoginService {

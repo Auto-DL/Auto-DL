@@ -60,7 +60,12 @@ export const useStyles = makeStyles((theme) => ({
     padding: "0px",
   },
   column2: {
+   
     padding: "0px",
+    width:"80%",
+    height:"60%",
+   
+    textAlign:"center",
   },
   column3: {
     width: "95%",
@@ -72,7 +77,7 @@ export const useStyles = makeStyles((theme) => ({
   grid2: {},
   grid3: {},
   droppableColsource: {
-    width: "95%",
+    width: "98%",
     backgroundColor: "#c5e4ed",
     padding: "10px 10px 0 10px",
     borderRadius: "7px",
@@ -95,6 +100,7 @@ export const useStyles = makeStyles((theme) => ({
     maxWidth: "100%",
     overflowY: "auto",
     border: "1px solid black",
+    marginLeft:"12%"
   },
   body3: {
     width: "100%",
@@ -111,25 +117,25 @@ export const useStyles = makeStyles((theme) => ({
     textAlign: "center",
     marginBottom: "10px",
 
-        backgroundColor: "#adbce6",
-        color: "black",
-        border: "1px solid black",
-        padding: "5px",
-        borderRadius: "7px",
-    },
-    itemValid: {
-        textAlign: "center",
-        marginBottom: "10px",
+    backgroundColor: "#adbce6",
+    color: "black",
+    border: "1px solid black",
+    padding: "5px",
+    borderRadius: "7px",
+  },
+  itemValid: {
+    textAlign: "center",
+    marginBottom: "10px",
 
-        backgroundColor: "#00ff00",
-        color: "black",
-        border: "1px solid black",
-        padding: "5px",
-        borderRadius: "7px",
-    },
-    item1selected: {
-        textAlign: "center",
-        marginBottom: "10px",
+    backgroundColor: "#00ff00",
+    color: "black",
+    border: "1px solid black",
+    padding: "5px",
+    borderRadius: "7px",
+  },
+  item1selected: {
+    textAlign: "center",
+    marginBottom: "10px",
 
         backgroundColor: "rgb(115,194,251)",
         color: "black",
@@ -141,7 +147,7 @@ export const useStyles = makeStyles((theme) => ({
     item1: {
         textAlign: "center",
         marginBottom: "10px",
-        padding:"2px",
+        padding:"5px",
         backgroundColor: "#adbce6",
         color: "black",
         border: "1px solid black",
@@ -152,9 +158,9 @@ export const useStyles = makeStyles((theme) => ({
       item1Error: {
         textAlign: "center",
         marginBottom: "10px",
-        padding:"2px",
+        padding:"5px",
         backgroundColor: "rgb(115,194,251)",
-        padding: "5px",
+
         color: "black",
         border: "1px solid black",
         borderRadius: "7px 7px 7px 7px",
@@ -249,11 +255,13 @@ export const useStyles = makeStyles((theme) => ({
     },
 
     delete: {
+      
         width: "97%",
         backgroundColor: "#D8D8D8",
         padding: "10px",
         borderRadius: "7px",
-        minHeight: "80px",
+        minHeight: "90px",
+        maxHeight:"60px",
         minWeight: "60px",
         margin: "10px",
         textAlign: "center",
