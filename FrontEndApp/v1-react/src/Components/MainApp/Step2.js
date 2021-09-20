@@ -25,6 +25,8 @@ import HomeService from "./HomeService";
 import PreprocessingTab from "./step-2/PreprocessingTab";
 import LayerTab from "./step-2/LayerTab";
 import HyperparameterTab from "./step-2/HyperparameterTab";
+import RecommendationService from "../RecommendationService.js"
+
 import MuiAlert from "@material-ui/lab/Alert";
 import GithubPublishModal from "./step-2/GithubPublishModal";
 function Alert(props) {
@@ -2206,7 +2208,7 @@ function Step2() {
     fetchDataHyper();
   }, [getProjectId(), token, username]);
 
-  const handleDragEnd = ({ destination, source }) => {
+  const handleDragEnd = async({ destination, source }) => {
     let tempArr = _.cloneDeep(components);
 
     if (!destination) {
@@ -2340,7 +2342,14 @@ function Step2() {
     setValidLayerIndices(validIndices);
 
     setcomponents(tempArr);
-  };
+
+    const recommendations = await RecommendationService.getRecommendations(tempArr);
+    if (recommendations) {
+      console.log(recommendations.data.predictions);
+    }
+	}
+
+	
 
   const handleInvalidLayers = (validate_res) => {
     const indexSet = new Set();
