@@ -1,10 +1,12 @@
-# Auto-DL (A-DL)
+<p align=center>
+  <img src="static/Logo.png" width=40% align=center>
+</p>
 
-<img src="static/logo.png" width=30%>
+<div align=center>
+  <h4>The TensorFlow and Pytorch supported no code Deep Learning Automation web framework</h4>
+</div>  
+<br/>
 
-## About
-
-----
 [![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
 ![Contributions welcome](https://img.shields.io/badge/contributions-welcome-orange.svg)
 [![GitHub issues](https://img.shields.io/github/issues-raw/Auto-DL/Generator?color=red)](https://github.com/Auto-DL/Generator/issues?q=is%3Aopen+is%3Aissue)
@@ -14,9 +16,8 @@
 [![Slack](https://img.shields.io/badge/Join%20Our%20Community-Slack-blue)](https://join.slack.com/t/autodl/shared_invite/zt-qagxiwub-ywRM_oBvvF~F7YNtlBqy_Q)
 [![Documentation Status](https://readthedocs.org/projects/auto-dl/badge/?version=latest)](https://auto-dl.readthedocs.io/en/latest/?badge=latest)
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.0-4baaaa.svg)](code_of_conduct.md)
+  
 
-
-In a nutshell, Auto-DL is a futuristic way of building deep learning models nearly 10X faster than the usual process.
 
 ## What to Use Auto-DL for and When to Use It
 
