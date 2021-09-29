@@ -16,20 +16,19 @@
 [![Slack](https://img.shields.io/badge/Join%20Our%20Community-Slack-blue)](https://join.slack.com/t/autodl/shared_invite/zt-qagxiwub-ywRM_oBvvF~F7YNtlBqy_Q)
 [![Documentation Status](https://readthedocs.org/projects/auto-dl/badge/?version=latest)](https://auto-dl.readthedocs.io/en/latest/?badge=latest)
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.0-4baaaa.svg)](code_of_conduct.md)
+<hr/>
   
 
 
-## What to Use Auto-DL for and When to Use It
+## AutoDL is just DL but without code.
+Building deep learning models may take a lot of time. But not with AutoDL.   
+Automate your **meta-work** so that you can focus on building your models without the hassle of writing code.  
 
+- **Use our interactive model builder and AI powered suggestion system to quickly whip out a working DL model.**  
 
-Building deep learning models takes a lot of time. 
-Use automate your "meta-work" so that you can focus on building your models without worrying about writing code.
+- **Trained your model for multiple hours and found out that it's bugged? Not anymore. With AutoDL's AI ecosystem validate your model before you train it.**  
 
-- Building models
-- Model Validation
-- Easy App Deployment
-
-Execute repetitive tasks, save time, and optimize your development process with Auto-DL.
+- **Host your model just as easily as you created it.** 
 
 ## Get started with Auto-DL
 
