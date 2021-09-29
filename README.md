@@ -1,6 +1,11 @@
-<p align="center"><img width=30% src="static/adl_generator.png"></p>
+<p align=center>
+  <img src="static/Logo.png" width=40% align=center>
+</p>
 
-<center>
+<div align=center>
+  <h4>The TensorFlow and Pytorch supported no code Deep Learning Automation web framework</h4>
+</div>  
+<br/>
 
 [![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
 ![Contributions welcome](https://img.shields.io/badge/contributions-welcome-orange.svg)
@@ -12,106 +17,44 @@
 [![Documentation Status](https://readthedocs.org/projects/auto-dl/badge/?version=latest)](https://auto-dl.readthedocs.io/en/latest/?badge=latest)
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.0-4baaaa.svg)](code_of_conduct.md)
 
-</center>
+<hr/>
 
-# Auto-DL
 
-The interface section of Auto-DL contains front-end and back-end servers based on React and Django Rest Framework respectively.
+## AutoDL is just DL but without code.
 
-## Demo
+Building deep learning models may take a lot of time. But not with AutoDL.  
+Automate your **meta-work** so that you can focus on building your models without the hassle of writing code.
 
-<img src="static/v1-alpha.gif">
+- **Use our interactive model builder and AI powered suggestion system to quickly whip out a working DL model.**
+<p align=center>
+  <img src="static/4.png" width=80% align=center>
+</p>
 
-<br>
-<br>
+- **Trained your model for multiple hours and found out that it's bugged? Not anymore. With AutoDL's AI ecosystem validate your model before you train it.**
+<p align=center>
+  <img src="static/2.png" width=80% align=center>
+</p>
 
-## Setup
+- **Host your model just as easily as you created it.**
 
-1. Install all the necessary libraries and binaries
-```sh
-sudo ./scripts/install.sh
-```
+## User Guidelines
 
-2. Follow the [instructions](#how-to-run) to run `BackEndApp` and `FrontEndApp` locally or Let it RIP!
-```sh
-./scripts/run.sh
-# or you can pass --install to perform both step 1 and 2
-./scripts/run.sh --install
-```
+The [Docs](https://auto-dl.readthedocs.io/en/latest/index.html) are the perfect place for you to start getting used to Auto-DL
 
-## How to run
+## Developer Guidelines
 
-1.  ```sh
-    # clone the repo
-    git clone https://github.com/Auto-DL/Auto-DL.git
-    ```
-2. ***Activate your environment** (not necessary but highly recommended).*
+The [community repository](https://github.com/Auto-DL/Auto-DL/blob/v1-beta/CONTRIBUTING.md) hosts all information about building Auto-DL from source, how to contribute code and documentation, who to contact about what, etc.
 
-3.  ```sh
-    # install the requirements, this might take some time, be patient
-    pip install -r requirements.txt
-    ```
+## Get started with Auto-DL (For Developers)
 
-4.  ```sh
-    # If you think your machine can handle a simulatenous installation of node modules, open another terminal
+Setup Auto-DL:
 
-    cd FrontEndApp
-    npm install
+- [Bare-metal way](Setup.md#setup-using-github)
+- [Using Docker](Setup.md#setup-using-docker)
 
-    # go grab a cup of coffee (or tea), it takes an eternity XD
-    ```
-5. Place data in the `./data` directory.
+---
 
-    Your data should be divided into classes for classification, for example, if you're classifying "Cats V/s Dogs", then your `./data` directory would look like:
-    ```sh
-    data
-    └───dogs_and_cats
-        ├───test
-        │   ├───cats
-        │   └───dogs
-        └───train
-            ├───cats
-            └───dogs
-    ```
-
-6. Clone the `sample.env` to create `.env` in both `BackEndApp/` and `FrontEndApp/v1-react/` and configure the necessary environment variables
-
-7.  ```sh
-    # run the backend
-    # only after all requriements from requirements.txt are installed
-    cd BackEndApp
-    mkdir logs
-    python manage.py runserver
-    # you can ignore any migration warnings
-    ```
-
-8.  ```sh
-    # finally, run the react frontend
-    # on a new terminal tab
-    cd FrontEndApp/v1-react
-    npm start
-    ```
-
-**Note:**  For detailed instruction on data directory (point 5) please read [DLMML's User Guide](https://github.com/Auto-DL/DLMML/blob/master/docs/userguide.md).
-
-### Using Docker
-
-Configure the necessary environment variables in `docker-compose.yml` and run `docker-compose up`. This will setup a development server, so instead if you want to setup a production server you can replace the dockerfile context in `docker-compose.yml` for each container to include the production **Dockerfile** instead of **Dockerfile.dev**.
-
-> Note: Before running the production docker containers modify the **nginx** configuration if needed in `nginx/nginx.conf` as the FrontEndApp docker container uses **nginx** in production
-
-## Where to go next?
-
-#### To know more about the project and initiative, please visit our [website](https://auto-dl.github.io/)
-
-## Note
-- To know more about the technicalities of the project, read our [developer guidelines](https://github.com/Auto-DL/Generator/blob/master/docs/devguide.md).
-- For more detailed instructions to run the Generator module, Read our [User guidelines](https://github.com/Auto-DL/Generator/blob/master/docs/userguide.md)
-
-## Contributing
-Please take a look at our [contributing guidelines](CONTRIBUTING.md) if you're interested in helping!
-
-#### Features/Enhancements Planned
+### Features/Enhancements planned
 
 - Improve the UI and UX.
 
@@ -120,3 +63,37 @@ Please take a look at our [contributing guidelines](CONTRIBUTING.md) if you're i
 - Visualization and data preprocessing steps.
 
 - Model Explainability.
+
+## Contact
+
+<!-- Actual text -->
+
+#### You can find us on [![Twitter][1.2]][1] or on [![LinkedIn][2.2]][2] or join our community on [Slack].
+
+<!-- Icons -->
+
+[1.2]: http://i.imgur.com/wWzX9uB.png "Twitter"
+[2.2]: https://raw.githubusercontent.com/MartinHeinz/MartinHeinz/master/linkedin-3-16.png "LinkedIn"
+
+<!-- Links to our social media accounts -->
+
+[1]: https://twitter.com/auto_dl
+[2]: https://www.linkedin.com/company/autodl/
+
+#### Have doubts?
+
+Read the [FAQ]() or send us a mail at info@auto-dl.tech
+
+For more details, visit our [website](https://auto-dl.tech/)
+
+---
+
+## Contributors
+
+<a href="https://github.com/Auto-DL/Auto-DL/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=Auto-DL/Auto-DL" />
+</a>
+
+## Copyright and Licensing
+
+[GNU General Public License v3.0](https://github.com/Auto-DL/Auto-DL/blob/v1-beta/LICENSE)
