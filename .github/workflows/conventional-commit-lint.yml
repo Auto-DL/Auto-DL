@@ -15,8 +15,8 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - name: Install dependencies
-        run: npm install -g @commitlint/cli @commitlint/config-conventional -V
+        run: npm install -g @commitlint/cli @commitlint/config-conventional
       - name: Run commitlint
-        run: commitlint --config $CONFIG_FILE --from FETCH_HEAD --to HEAD
+        run: commitlint --config $CONFIG_FILE --from FETCH_HEAD --to HEAD -V
         env:
           CONFIG_FILE: .github/configurations/commitlint.config.js
