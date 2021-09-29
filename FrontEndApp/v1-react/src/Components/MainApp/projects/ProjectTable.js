@@ -1,28 +1,6 @@
 import React, { useState, Fragment } from "react";
 import { withStyles, makeStyles } from "@material-ui/core/styles";
-import {
-  Typography,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  Dialog,
-  DialogActions,
-  DialogTitle,
-  DialogContent,
-  Button,
-  IconButton,
-  Menu,
-  TextField,
-  MenuItem,
-  Box,
-  Grid,
-  Popover,
-} from "@material-ui/core";
-
+import { Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Dialog, DialogActions, DialogTitle, DialogContent, Button, IconButton, Menu, TextField, MenuItem, Box, Grid, Popover } from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
@@ -30,7 +8,9 @@ import ShareIcon from "@material-ui/icons/Share";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import AddCircleIcon from "@material-ui/icons/AddCircle";
 import FileCopyIcon from "@material-ui/icons/FileCopy";
-import HomeService from "./HomeService";
+import Icon from "@material-ui/core/Icon";
+import SvgIcon from "@material-ui/core/SvgIcon";
+import HomeService from "../HomeService";
 import PeopleAltIcon from "@material-ui/icons/PeopleAlt";
 
 const StyledTableCell = withStyles((theme) => ({
@@ -106,30 +86,18 @@ export default function Project_table(props) {
     props.cloneProject(currentProject);
   };
 
+  const handleDeploy = () => {
+    // console.log(currentProject.project_id);
+    handleActionsClose();
+    props.deployProject(currentProject);
+  };
+
   const handleDelete = () => {
     // console.log("current proj is", currentProject);
     handleActionsClose();
     handleShareActionsClose();
     setCurrentProject(currentProject);
     setOpen(true);
-  };
-
-  const handleDeleteYes = async () => {
-    setOpen(false);
-    const project_id =
-      currentProject.username !== username
-        ? "shared_" + currentProject.project_id
-        : currentProject.project_id;
-    const data = {
-      username: username,
-      project_id: project_id,
-      project_name: currentProject.project_name,
-      project_description: currentProject.project_description,
-      owner: currentProject.username,
-    };
-    const res = await HomeService.delete_project(token, data);
-    // console.log(res);
-    props.parent_call_on_delete();
   };
 
   //share handlers
@@ -188,6 +156,9 @@ export default function Project_table(props) {
   const openPop = Boolean(anchorElPop);
   const id = openPop ? "simple-popover" : undefined;
 
+  const parentCallOnDelete = () => props.parent_call_on_delete();
+  const setCloseDeleteModal = () => setOpen(false);
+
   return (
     <>
       <Dialog open={open} onClose={handleClose}>
@@ -198,11 +169,15 @@ export default function Project_table(props) {
           <Button onClick={handleClose} color="primary">
             No
           </Button>
-          <Button onClick={handleDeleteYes} color="secondary">
+          <Button
+            onClick={() => props.handleDeleteYes(setCloseDeleteModal, currentProject, username, token, parentCallOnDelete)}
+            color="secondary"
+          >
             Yes
           </Button>
         </DialogActions>
       </Dialog>
+
       <Dialog open={openShare} onClose={handleClose}>
         <DialogTitle id="alert-dialog-title">
           Share Project ({currentProject ? currentProject.project_name : ""})
@@ -235,6 +210,7 @@ export default function Project_table(props) {
           </Box>
         </DialogContent>
       </Dialog>
+
       <Popover
         id={id}
         open={openPop}
@@ -257,6 +233,7 @@ export default function Project_table(props) {
           ))}
         </Box>
       </Popover>
+
       {props.projects.length === 0 ? (
         <>
           <div>
@@ -428,6 +405,7 @@ export default function Project_table(props) {
                                   aria-controls="customized-menu"
                                   aria-label="options"
                                   aria-haspopup="true"
+                                  data-testid={`project-actions-btn-${index}`}
                                   onClick={(e) =>
                                     handleActionsOpen(project[p], e)
                                   }
@@ -448,11 +426,18 @@ export default function Project_table(props) {
                                   <MenuItem onClick={handleClone}>
                                     <FileCopyIcon /> &nbsp; Clone
                                   </MenuItem>
-                                  <MenuItem onClick={handleDelete}>
+                                  <MenuItem onClick={handleDelete} data-testid={`delete-project-btn-${index}`}>
                                     <DeleteIcon /> &nbsp; Delete
                                   </MenuItem>
                                   <MenuItem onClick={handleShare}>
                                     <ShareIcon /> &nbsp; Share
+                                  </MenuItem>
+                                  <MenuItem onClick={handleDeploy}>
+                                    <Icon aria-label="deploy">
+                                      <SvgIcon viewBox="0 0 24 24">
+                                        <path fill="currentColor" d="M20 22L16.14 20.45C16.84 18.92 17.34 17.34 17.65 15.73L20 22M7.86 20.45L4 22L6.35 15.73C6.66 17.34 7.16 18.92 7.86 20.45M12 2C12 2 17 4 17 12C17 15.1 16.25 17.75 15.33 19.83C15 20.55 14.29 21 13.5 21H10.5C9.71 21 9 20.55 8.67 19.83C7.76 17.75 7 15.1 7 12C7 4 12 2 12 2M12 12C13.1 12 14 11.1 14 10C14 8.9 13.1 8 12 8C10.9 8 10 8.9 10 10C10 11.1 10.9 12 12 12Z" />
+                                      </SvgIcon>
+                                    </Icon> &nbsp; Deploy
                                   </MenuItem>
                                 </Menu>
                               </StyledTableCell>

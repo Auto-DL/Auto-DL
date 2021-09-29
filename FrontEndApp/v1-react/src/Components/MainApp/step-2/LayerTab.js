@@ -1,4 +1,4 @@
-import { Fragment ,useState} from "react";
+import { Fragment, useState } from "react";
 import { Grid, TextField, FormControl, Select } from "@material-ui/core";
 import { useTheme } from "@material-ui/core/styles";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
@@ -6,6 +6,9 @@ import { useStyles } from "./styles.js";
 import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
 import FileCopySharpIcon from "@material-ui/icons/FileCopySharp";
 import Button from "@material-ui/core/Button";
+import WarningIcon from '@material-ui/icons/Warning';
+import CheckCircleIcon from '@material-ui/icons/CheckCircle';
+
 
 const LayerTab = ({
   TabPanel,
@@ -18,15 +21,19 @@ const LayerTab = ({
   showdetails,
   save_value,
   handleCloneLayer,
+  invalidLayerIndices,
+  validLayerIndices
 }) => {
   const theme = useTheme();
   const classes = useStyles();
-  const [selected_InputFieldDesc,setselected_InputFieldDesc]=useState("");
+  const [selected_InputFieldDesc, setselected_InputFieldDesc] = useState("");
+  const [selectedWarnLayer, setSelectedWarnLayer] = useState("");
+  const [suggestDesc, setSuggestDesc] = useState("");
 
-  const handleDescriptionLayer =(index)=>{
-    setselected_InputFieldDesc(index);
-    // console.log(index);
-  }
+  // console.log("selected_layer_type in layer tab is : " ,selected_layer_type);
+
+
+
 
   return (
     <TabPanel value={value} index={1} dir={theme.direction}>
@@ -56,6 +63,27 @@ const LayerTab = ({
                                   {...provided.dragHandleProps}
                                 >
                                   {el}
+                                  {validLayerIndices.includes(index)
+                                    &&
+                                    <Button
+                                      size="small"
+                                      color="primary"
+                                      onClick={() => {
+                                        setSuggestDesc(index);
+                                        setTimeout(() => setSuggestDesc(""), 3000);
+                                      }}
+                                      className={classes.cloneBtn}
+                                    >
+                                      <CheckCircleIcon fontSize="small" />
+                                    </Button>
+
+                                  }
+                                  {suggestDesc === index &&
+                                    <div style={{ fontSize: "60%", marginTop: "1px", fontWeight: "100", textAlign: "left", color: "black" }}>
+                                      Tip : Valid layer to be added.
+                                    </div>
+                                  }
+
                                 </div>
                               );
                             }}
@@ -72,7 +100,7 @@ const LayerTab = ({
 
           <Grid item lg={5} md={5} sm={4} xs={4} className={classes.grid2}>
             <div key="target" className={classes.column2}>
-              <span className={classes.spancss}>Model</span>
+              <span style={{marginLeft:"20%"}}>Model</span>
 
               <Droppable droppableId="target">
                 {(provided, snapshot) => {
@@ -83,6 +111,7 @@ const LayerTab = ({
                       className={classes.droppableColtarget}
                     >
                       {components.map((el, index) => {
+
                         return (
                           <Draggable
                             key={el.id}
@@ -98,14 +127,17 @@ const LayerTab = ({
                                   {...provided.dragHandleProps}
                                 >
                                   <div
+
                                     className={
-                                      selected_layer ===
-                                      el.id.charAt(el.id.length - 1)
-                                        ? classes.item1selected
-                                        : classes.item1
+
+                                      invalidLayerIndices.has(index) && selected_layer === index ? classes.item1Error
+                                        : selected_layer === index ?
+                                          classes.item1selected
+                                          : classes.item1
                                     }
                                     onClick={() => showdetails(el)}
                                   >
+
                                     {el.name}
                                     <Button
                                       size="small"
@@ -115,7 +147,29 @@ const LayerTab = ({
                                     >
                                       <FileCopySharpIcon fontSize="small" />
                                     </Button>
+                                    {invalidLayerIndices.has(index) &&
+
+                                      <Button
+                                        size="small"
+                                        color="primary"
+                                        onClick={() => {
+                                          setSelectedWarnLayer(index);
+                                          setTimeout(() => setSelectedWarnLayer(""), 3000)
+                                        }}
+                                        className={classes.cloneBtn}
+                                      >
+                                        <WarningIcon fontSize="small" />
+                                      </Button>
+                                    }
+                                    {
+                                      selectedWarnLayer === index &&
+                                      <div style={{ fontSize: "60%", marginTop: "1px", fontWeight: "100", textAlign: "left", color: "black" }}>
+                                        Warning : highlited layer is wrongly placed
+                                      </div>
+                                    }
                                   </div>
+
+
                                 </div>
                               );
                             }}
@@ -141,7 +195,7 @@ const LayerTab = ({
               </span>
 
               <div className={classes.body3}>
-                {Object.keys(selected_layer_type).length === 0 ? (
+                {selected_layer_type === "" ? (
                   <h3>please select some layer first</h3>
                 ) : (
                   <div className={classes.innerpad}>
@@ -149,18 +203,19 @@ const LayerTab = ({
                       (key, index) => (
                         <Fragment key={index}>
                           {key === "name" ||
-                          key === "id" ||
-                          key === "type" ? null : (
+                            key === "id" ||
+                            key === "type" ? null : (
                             <div className={classes.batch}>
                               <div className={classes.title}>
                                 {" "}
                                 {key}
                                 &nbsp;{" "}
-                                {selected_layer_type[key]["Required"] === 1 ? (
+                                {selected_layer_type[key] ? selected_layer_type[key]["Required"] === 1 ? (
                                   <span>*</span>
                                 ) : (
                                   <span></span>
-                                )}
+                                ) : null}
+                                {/* {console.log('selected_layer_type[key]["Required"]',selected_layer_type[key]["Required"] )} */}
                               </div>
 
                               <div
@@ -169,19 +224,18 @@ const LayerTab = ({
                                   components[selected_layer][key]["Description"]
                                 }
                               >
-                               <HelpOutlineIcon
-                                  fontSize="small" 
-                                  cl
+                                <HelpOutlineIcon
+                                  fontSize="small"
                                   onClick={() => {
-                                    handleDescriptionLayer(key);
-                                    setTimeout(()=> setselected_InputFieldDesc(""),3000);
+                                    setselected_InputFieldDesc(key);
+                                    setTimeout(() => setselected_InputFieldDesc(""), 3000);
                                   }}
 
 
-                                 />
+                                />
                               </div>
                               {components[selected_layer][key]["Datatype"] ===
-                              "select" ? (
+                                "select" ? (
                                 <div className={classes.value}>
                                   <FormControl
                                     fullWidth
@@ -193,11 +247,11 @@ const LayerTab = ({
                                       value={
                                         components[selected_layer][key]["value"]
                                           ? components[selected_layer][key][
-                                              "value"
-                                            ]
+                                          "value"
+                                          ]
                                           : components[selected_layer][key][
-                                              "Default"
-                                            ]
+                                          "Default"
+                                          ]
                                       }
                                       onChange={save_value(key)}
                                     >
@@ -210,14 +264,14 @@ const LayerTab = ({
                                       ))}{" "}
                                     </Select>
                                     {
-                                          selected_InputFieldDesc===key?
-                                          <p style={{fontSize:"80%",marginTop:"1px",fontWeight:"100",color:"#a2a4a8",marginLeft:"5%"}}>
+                                      selected_InputFieldDesc === key ?
+                                        <p style={{ fontSize: "80%", marginTop: "1px", fontWeight: "100", color: "#a2a4a8", marginLeft: "5%" }}>
                                           {components[selected_layer][key]["Description"]}
-                                          </p>
-                                          :<p style={{fontSize:"80%",marginTop:"1px",fontWeight:"100",color:"#a2a4a8",marginLeft:"5%"}}>
-                                            Example-{components[selected_layer][key]["Example"]}
-                                          </p>
-                                        }
+                                        </p>
+                                        : <p style={{ fontSize: "80%", marginTop: "1px", fontWeight: "100", color: "#a2a4a8", marginLeft: "5%" }}>
+                                          Example-{components[selected_layer][key]["Example"]}
+                                        </p>
+                                    }
                                   </FormControl>
                                 </div>
                               ) : (
@@ -228,27 +282,26 @@ const LayerTab = ({
                                     value={
                                       components[selected_layer][key]["value"]
                                         ? components[selected_layer][key][
-                                            "value"
-                                          ]
+                                        "value"
+                                        ]
                                         : components[selected_layer][key][
-                                            "Default"
-                                          ] === "NA"
-                                        ? ""
-                                        : components[selected_layer][key][
-                                            "Default"
+                                          "Default"
+                                        ] === "NA"
+                                          ? ""
+                                          : components[selected_layer][key][
+                                          "Default"
                                           ]
                                     }
                                     variant="outlined"
                                     onChange={save_value(key)}
                                     helperText={
                                       // `Example - ${components[selected_layer][key]["Example"]}`
-                                      `${
-                                          selected_InputFieldDesc===key ?
-                                          components[selected_layer][key]["Description"]
-                                          :`Example-${components[selected_layer][key]["Example"]}`
-                                        }`
+                                      `${selected_InputFieldDesc === key ?
+                                        components[selected_layer][key]["Description"]
+                                        : `Example-${components[selected_layer][key]["Example"]}`
+                                      }`
 
-                                      }
+                                    }
                                   />
                                 </div>
                               )}

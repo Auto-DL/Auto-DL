@@ -14,7 +14,9 @@ import os
 from urllib.parse import urlparse
 from corsheaders.defaults import default_headers
 
-from . import logging
+import logging
+import logging.config
+from .logging import LOGGING
 
 HOST = os.getenv("HOST", "http://localhost:8000")
 FRONTEND_HOST = os.getenv("FRONTEND_HOST", "http://localhost:3000")
@@ -47,6 +49,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "authv1",
     "v1",
+    "deployments",
 ]
 
 MIDDLEWARE = [
@@ -142,3 +145,6 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
+
+# Logging
+logging.config.dictConfig(LOGGING)

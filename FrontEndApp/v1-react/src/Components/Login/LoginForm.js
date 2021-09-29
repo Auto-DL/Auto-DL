@@ -69,6 +69,7 @@ function Alert(props) {
 function LoginForm() {
   const history = useHistory();
   var username = JSON.parse(localStorage.getItem("username"));
+
   if (username !== null) {
     history.push("/home");
   }
@@ -81,10 +82,10 @@ function LoginForm() {
     first_name: "",
     last_name: "",
     loginPassword: "",
-    registerPassword:"",
+    registerPassword: "",
     confirmpassword: "",
     showLoginPassword: false,
-    showRegisterPassword:false,
+    showRegisterPassword: false,
   });
 
   const [open, setOpen] = React.useState(false);
@@ -110,7 +111,10 @@ function LoginForm() {
   };
 
   const handleClickShowRegisterPassword = () => {
-    setValues({ ...values, showRegisterPassword: !values.showRegisterPassword });
+    setValues({
+      ...values,
+      showRegisterPassword: !values.showRegisterPassword,
+    });
   };
 
   const handleMouseDownPassword = (event) => {
@@ -124,16 +128,28 @@ function LoginForm() {
     values.registerPassword = "";
     values.confirmpassword = "";
     values.loginPassword = "";
-    values.showRegisterPassword=false;
-    values.showLoginPassword=false;
-
+    values.showRegisterPassword = false;
+    values.showLoginPassword = false;
   };
+
+  const handleLogin = (event) => {
+    if (event.key === "Enter") {
+      login();
+    }
+  }
+
+  const handleRegister = (event) => {
+    if (event.key === "Enter") {
+      register();
+    }
+  }
 
   const login = async () => {
     const data = {
       username: values.username,
       password: values.loginPassword,
     };
+
     // vallidation
     if (values.username !== "" && values.loginPassword !== "") {
       const res = await LoginService.login(data);
@@ -154,6 +170,7 @@ function LoginForm() {
         severity: "warning",
       });
     }
+
     setOpen(true);
   };
 
@@ -231,22 +248,33 @@ function LoginForm() {
                     margin="normal"
                     required
                     fullWidth
-                    id="Username"
+                    id="login-username"
                     label="Username"
                     name="Username"
                     autoComplete="Username"
                     autoFocus
+                    onKeyDown={(event) => handleLogin(event)}
                     onChange={handleChange("username")}
+                    data-testid={"loginUsername"}
                   />
 
-                  <FormControl fullWidth margin="normal" variant="outlined">
-                    <InputLabel htmlFor="outlined-adornment-password" style={{backgroundColor: "white",padding:"0px 5px"}}>
+                  <FormControl
+                    fullWidth
+                    margin="normal"
+                    variant="outlined"
+                    onKeyDown={(event) => handleLogin(event)}
+                  >
+                    <InputLabel
+                      htmlFor="outlined-adornment-password"
+                      style={{backgroundColor: "white",padding:"0px 5px"}}
+                    >
                       Password *
                     </InputLabel>
                     <OutlinedInput
                       type={values.showLoginPassword ? "text" : "password"}
                       value={values.loginPassword}
                       onChange={handleChange("loginPassword")}
+                      data-testid={"loginPassword"}
                       endAdornment={
                         <InputAdornment position="end">
                           <IconButton
@@ -277,6 +305,7 @@ function LoginForm() {
                     fullWidth
                     variant="contained"
                     color="primary"
+                    data-testid={"loginButton"}
                     onClick={login}
                   >
                     LOGIN
@@ -295,16 +324,21 @@ function LoginForm() {
                     label="Username"
                     autoComplete="Username"
                     autoFocus
+                    data-testid={"registerUsername"}
                     onChange={handleChange("username")}
+                    onKeyDown={(event) => handleRegister(event)}
                   />
+
                   <TextField
                     variant="outlined"
                     margin="normal"
                     required
                     fullWidth
-                    label="First name"
+                    label="First Name"
                     autoComplete="First name"
+                    data-testid={"fname"}
                     onChange={handleChange("first_name")}
+                    onKeyDown={(event) => handleRegister(event)}
                   />
 
                   <TextField
@@ -312,9 +346,11 @@ function LoginForm() {
                     margin="normal"
                     required
                     fullWidth
-                    label="Last name"
+                    label="Last Name"
                     autoComplete="Last name"
+                    data-testid={"lname"}
                     onChange={handleChange("last_name")}
+                    onKeyDown={(event) => handleRegister(event)}
                   />
 
                   <TextField
@@ -322,19 +358,31 @@ function LoginForm() {
                     margin="normal"
                     required
                     fullWidth
-                    label="email"
+                    label="Email"
                     autoComplete="email"
+                    data-testid={"email"}
                     onChange={handleChange("email")}
+                    onKeyDown={(event) => handleRegister(event)}
                   />
 
-                  <FormControl fullWidth margin="normal" variant="outlined" >
-                    <InputLabel variant="outlined" htmlFor="outlined-adornment-password"  style={{backgroundColor: "white",padding:"0px 5px"}}>
+                  <FormControl
+                    fullWidth
+                    margin="normal"
+                    variant="outlined"
+                    onKeyDown={(event) => handleRegister(event)}
+                  >
+                    <InputLabel
+                      variant="outlined"
+                      htmlFor="outlined-adornment-password"
+                      style={{ backgroundColor: "white", padding: "0px 5px" }}
+                    >
                       Password *
                     </InputLabel>
                     <OutlinedInput
                       type={values.showRegisterPassword ? "text" : "password"}
                       value={values.registerPassword}
                       onChange={handleChange("registerPassword")}
+                      data-testid={"registerPassword"}
                       endAdornment={
                         <InputAdornment position="end">
                           <IconButton
@@ -354,14 +402,23 @@ function LoginForm() {
                     />
                   </FormControl>
 
-                  <FormControl fullWidth margin="normal" variant="outlined">
-                    <InputLabel htmlFor="outlined-adornment-password"  style={{backgroundColor:"white",padding:"0px 5px"}}>
+                  <FormControl
+                    fullWidth
+                    margin="normal"
+                    variant="outlined"
+                    onKeyDown={(event) => handleRegister(event)}
+                  >
+                    <InputLabel
+                      htmlFor="outlined-adornment-password"
+                      style={{backgroundColor:"white",padding:"0px 5px"}}
+                    >
                       Confirm Password *
                     </InputLabel>
                     <OutlinedInput
                       type={values.showRegisterPassword ? "text" : "password"}
                       value={values.confirmpassword}
                       onChange={handleChange("confirmpassword")}
+                      data-testid={"confirmPassword"}
                       endAdornment={
                         <InputAdornment position="end">
                           <IconButton
@@ -380,7 +437,6 @@ function LoginForm() {
                       }
                     />
                   </FormControl>
-
                   <Grid container>
                     <Grid item lg={12} md={12} sm={12} xs={12}>
                       <br />
@@ -393,6 +449,7 @@ function LoginForm() {
                     variant="contained"
                     color="primary"
                     onClick={register}
+                    data-testid={"registerButton"}
                   >
                     Register
                   </Button>
@@ -404,7 +461,12 @@ function LoginForm() {
         <Grid item lg={4} md={4} sm={1} xs={1}></Grid>
       </Grid>
 
-      <Snackbar open={open} autoHideDuration={6000} onClose={handleCloseAlert}>
+      <Snackbar
+        open={open}
+        data-testid={"warning"}
+        autoHideDuration={60000}
+        onClose={handleCloseAlert}
+      >
         <Alert onClose={handleCloseAlert} severity={alert.severity}>
           {alert.msg}
         </Alert>

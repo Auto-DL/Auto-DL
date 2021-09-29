@@ -28,7 +28,7 @@ class User:
             raise ValueError("Email invalid")
 
         regex = "^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$"
-        if not re.search(regex, self.attributes.get("email")):
+        if not re.search(regex, self.attributes.get("email").lower()):
             raise ValueError("Invalid email or email already exists")
 
         if self.find():
@@ -41,14 +41,13 @@ class User:
             "password": hashed_password,
             "first_name": self.attributes.get("first_name", ""),
             "last_name": self.attributes.get("last_name", ""),
-            "email": self.attributes.get("email"),
+            "email": self.attributes.get("email").lower(),
             "is_verified": False,
         }
         return self.collection.insert_one(user_document)
 
     def find(self, by_email=False):
         """Returns user object is exists else returns None."""
-
         if by_email:
             return self.collection.find_one({"email": self.attributes.get("email")})
 
@@ -88,6 +87,10 @@ class Session:
     def create(self):
         token_obj = Token(self.user)
         token = token_obj.create()
+
+        if token is None:
+            return None
+
         token = str(token, "utf-8")
         expire = token_obj.expire.strftime(DATE_FORMAT)
 
@@ -99,7 +102,6 @@ class Session:
             return None
 
     def delete(self, token):
-
         if not self.verify(token):
             return False
 
