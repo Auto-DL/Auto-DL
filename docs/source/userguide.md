@@ -1,6 +1,8 @@
 # Auto-DL (A-DL)
 
-<img src="_static/logo.png" width=30%>
+<p align=center>
+  <img src="_static/Logo.png" width=40% align=center>
+</p>
 
 - We hope you have installed Auto-DL successfully, if not please go to the [installation](https://auto-dl.readthedocs.io/en/latest/installing.html) process 
 
@@ -17,5 +19,3 @@
 !["alt"](./_static/4.png)
 !["alt"](./_static/5.png)
 
-# Demo
-!["alt"](./_static/)
