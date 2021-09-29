@@ -96,3 +96,10 @@ brew ./scripts/run.sh
 </details>
 
 ---
+
+## Setup using Docker
+Configure the necessary environment variables in `docker-compose.yml` and run `docker-compose up`.   
+This will setup a development server, so instead if you want to setup a production server you can replace the dockerfile context in `docker-compose.yml` for each container to include the production **Dockerfile** instead of **Dockerfile.dev**.
+
+> Note: Before running the production docker containers modify the nginx configuration if needed in `nginx/nginx.conf` as the FrontEndApp docker container uses nginx in production
+
