@@ -16,30 +16,30 @@
 [![Slack](https://img.shields.io/badge/Join%20Our%20Community-Slack-blue)](https://join.slack.com/t/autodl/shared_invite/zt-qagxiwub-ywRM_oBvvF~F7YNtlBqy_Q)
 [![Documentation Status](https://readthedocs.org/projects/auto-dl/badge/?version=latest)](https://auto-dl.readthedocs.io/en/latest/?badge=latest)
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.0-4baaaa.svg)](code_of_conduct.md)
+
 <hr/>
-  
 
 
 ## AutoDL is just DL but without code.
-Building deep learning models may take a lot of time. But not with AutoDL.   
-Automate your **meta-work** so that you can focus on building your models without the hassle of writing code.  
 
-- **Use our interactive model builder and AI powered suggestion system to quickly whip out a working DL model.**  
+Building deep learning models may take a lot of time. But not with AutoDL.  
+Automate your **meta-work** so that you can focus on building your models without the hassle of writing code.
 
-- **Trained your model for multiple hours and found out that it's bugged? Not anymore. With AutoDL's AI ecosystem validate your model before you train it.**  
+- **Use our interactive model builder and AI powered suggestion system to quickly whip out a working DL model.**
 
-- **Host your model just as easily as you created it.** 
+- **Trained your model for multiple hours and found out that it's bugged? Not anymore. With AutoDL's AI ecosystem validate your model before you train it.**
+
+- **Host your model just as easily as you created it.**
 
 ## Get started with Auto-DL
 
 Install Auto-DL:
 
-* [Bare-metal way](https://auto-dl.readthedocs.io/en/latest/installing.html)
-* [Using Docker]() 
-
-
+- [Bare-metal way](Setup.md#setup-using-github)
+- [Using Docker](Setup.md#setup-using-docker)
 
 ## User Guidelines
+
 The [Docs]() are the perfect place for you to start getting used to Auto-DL
 
 ## Developer Guidelines
@@ -48,24 +48,26 @@ The [community repository](https://github.com/Auto-DL/Auto-DL/blob/v1-beta/CONTR
 
 ### Features/Enhancements planned
 
-* Improve the UI and UX.
+- Improve the UI and UX.
 
-* Show model training realted stats on the frontend.
+- Show model training realted stats on the frontend.
 
-* Visualization and data preprocessing steps.
+- Visualization and data preprocessing steps.
 
-* Model Explainability.
+- Model Explainability.
 
 ---
+
 ## Contact
+
 <!-- Actual text -->
 
 You can find us on [![Twitter][1.2]][1], or on [![LinkedIn][2.2]][2].
 
 <!-- Icons -->
 
-[1.2]: http://i.imgur.com/wWzX9uB.png (Twitter)
-[2.2]: https://raw.githubusercontent.com/MartinHeinz/MartinHeinz/master/linkedin-3-16.png (LinkedIn)
+[1.2]: http://i.imgur.com/wWzX9uB.png "Twitter"
+[2.2]: https://raw.githubusercontent.com/MartinHeinz/MartinHeinz/master/linkedin-3-16.png "LinkedIn"
 
 <!-- Links to our social media accounts -->
 
@@ -82,7 +84,7 @@ Read the [FAQ]()
 
 For more details, visit our [website](https://auto-dl.tech/)
 
---- 
+---
 
 ## Contributors
 
@@ -93,9 +95,6 @@ For more details, visit our [website](https://auto-dl.tech/)
 ---
 
 ## The Auto-DL Team
-
-
-
 
 ---
 
