@@ -94,10 +94,6 @@ For more details, visit our [website](https://auto-dl.tech/)
   <img src="https://contrib.rocks/image?repo=Auto-DL/Auto-DL" />
 </a>
 
-
-## The Auto-DL Team
-
-
 ## Copyright and Licensing
 
 [GNU General Public License v3.0](https://github.com/Auto-DL/Auto-DL/blob/v1-beta/LICENSE)
