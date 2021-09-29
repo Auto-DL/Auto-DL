@@ -26,25 +26,33 @@ Building deep learning models may take a lot of time. But not with AutoDL.
 Automate your **meta-work** so that you can focus on building your models without the hassle of writing code.
 
 - **Use our interactive model builder and AI powered suggestion system to quickly whip out a working DL model.**
+<p align=center>
+  <img src="static/4.png" width=80% align=center>
+</p>
 
 - **Trained your model for multiple hours and found out that it's bugged? Not anymore. With AutoDL's AI ecosystem validate your model before you train it.**
+<p align=center>
+  <img src="static/2.png" width=80% align=center>
+</p>
 
 - **Host your model just as easily as you created it.**
 
-## Get started with Auto-DL
-
-Install Auto-DL:
-
-- [Bare-metal way](Setup.md#setup-using-github)
-- [Using Docker](Setup.md#setup-using-docker)
-
 ## User Guidelines
 
-The [Docs]() are the perfect place for you to start getting used to Auto-DL
+The [Docs](https://auto-dl.readthedocs.io/en/latest/index.html) are the perfect place for you to start getting used to Auto-DL
 
 ## Developer Guidelines
 
 The [community repository](https://github.com/Auto-DL/Auto-DL/blob/v1-beta/CONTRIBUTING.md) hosts all information about building Auto-DL from source, how to contribute code and documentation, who to contact about what, etc.
+
+## Get started with Auto-DL (For Developers)
+
+Setup Auto-DL:
+
+- [Bare-metal way](Setup.md#setup-using-github)
+- [Using Docker](Setup.md#setup-using-docker)
+
+---
 
 ### Features/Enhancements planned
 
@@ -56,13 +64,11 @@ The [community repository](https://github.com/Auto-DL/Auto-DL/blob/v1-beta/CONTR
 
 - Model Explainability.
 
----
-
 ## Contact
 
 <!-- Actual text -->
 
-You can find us on [![Twitter][1.2]][1], or on [![LinkedIn][2.2]][2].
+#### You can find us on [![Twitter][1.2]][1] or on [![LinkedIn][2.2]][2] or join our community on [Slack].
 
 <!-- Icons -->
 
@@ -74,13 +80,9 @@ You can find us on [![Twitter][1.2]][1], or on [![LinkedIn][2.2]][2].
 [1]: https://twitter.com/auto_dl
 [2]: https://www.linkedin.com/company/autodl/
 
-Email: info@auto-dl.tech
+#### Have doubts?
 
-Join our community on [slack]()
-
-Have doubts?
-
-Read the [FAQ]()
+Read the [FAQ]() or send us a mail at info@auto-dl.tech
 
 For more details, visit our [website](https://auto-dl.tech/)
 
@@ -92,11 +94,9 @@ For more details, visit our [website](https://auto-dl.tech/)
   <img src="https://contrib.rocks/image?repo=Auto-DL/Auto-DL" />
 </a>
 
----
 
 ## The Auto-DL Team
 
----
 
 ## Copyright and Licensing
 
