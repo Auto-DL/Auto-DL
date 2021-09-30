@@ -13,10 +13,7 @@ pymongo==3.11.2
 PyGithub==1.54.0.1
 GitPython==3.1.18
 # requirements-dev
-sphinx-markdown-tables==0.0.15
 pre-commit==2.13.0
-pydata-sphinx-theme==0.5.0
-recommonmark==0.7.1
 black
 autoflake
 pytest

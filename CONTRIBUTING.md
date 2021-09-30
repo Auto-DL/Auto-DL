@@ -68,7 +68,7 @@ If you think you have made appropriate changes to resolve a particular issue, yo
 
 1. Make sure you have followed the [styleguides](#styleguides)
 2. Follow the [template](.github/PULL_REQUEST.md)
-3. Follow the naming convention: `[Fixes #ISSUE_NUMBER] Pull Request Title`
+3. Follow the naming convention mentioned in [conventional commmits specification](https://www.conventionalcommits.org/en/v1.0.0/)
 4. After you submit your pull request, verify that all the status checks are passing.
 <details>
 <summary>What is the status checks fail?</summary>
