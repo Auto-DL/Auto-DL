@@ -1,80 +1,17 @@
 import React, { useState, useEffect } from "react";
-import {
-  BrowserRouter,
-  Switch,
-  useLocation,
-  IndexRoute,
-  Route,
-  Link,
-  Redirect,
-  useParams,
-  useHistory,
-} from "react-router-dom";
-import HomeService from "./HomeService";
-import Project_table from "./Project_table";
-import Grid from "@material-ui/core/Grid";
-import { makeStyles, withStyles, useTheme } from "@material-ui/core/styles";
-import Select from "@material-ui/core/Select";
-import MenuItem from "@material-ui/core/MenuItem";
-import Snackbar from "@material-ui/core/Snackbar";
+import { useHistory } from "react-router-dom";
+import { Grid, CircularProgress, Backdrop, Snackbar } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 import MuiAlert from "@material-ui/lab/Alert";
-import Button from "@material-ui/core/Button";
-import TextField from "@material-ui/core/TextField";
-import InputLabel from "@material-ui/core/InputLabel";
-import FormControl from "@material-ui/core/FormControl";
-import Dialog from "@material-ui/core/Dialog";
-import MuiDialogTitle from "@material-ui/core/DialogTitle";
-import MuiDialogContent from "@material-ui/core/DialogContent";
-import MuiDialogActions from "@material-ui/core/DialogActions";
-import CloseIcon from "@material-ui/icons/Close";
-import Typography from "@material-ui/core/Typography";
-import IconButton from "@material-ui/core/IconButton";
-import Backdrop from "@material-ui/core/Backdrop";
-import CircularProgress from "@material-ui/core/CircularProgress";
-
-const styles = (theme) => ({
-  root: {
-    margin: 0,
-    padding: theme.spacing(2),
-  },
-  closeButton: {
-    position: "absolute",
-    right: theme.spacing(1),
-    top: theme.spacing(1),
-    color: theme.palette.grey[500],
-  },
-});
-
-const DialogTitle = withStyles(styles)((props) => {
-  const { children, classes, onClose, ...other } = props;
-  return (
-    <MuiDialogTitle disableTypography className={classes.root} {...other}>
-      <Typography variant="h6">{children}</Typography>
-      {onClose ? (
-        <IconButton
-          aria-label="close"
-          className={classes.closeButton}
-          onClick={onClose}
-        >
-          <CloseIcon />
-        </IconButton>
-      ) : null}
-    </MuiDialogTitle>
-  );
-});
-
-const DialogContent = withStyles((theme) => ({
-  root: {
-    padding: theme.spacing(2),
-  },
-}))(MuiDialogContent);
-
-const DialogActions = withStyles((theme) => ({
-  root: {
-    margin: 0,
-    padding: theme.spacing(1),
-  },
-}))(MuiDialogActions);
+import { AlertTitle } from '@material-ui/lab';
+import HomeService from "./HomeService";
+import ProjectTable from "./projects/ProjectTable";
+import UpsertProjectModal from "./projects/UpsertProjectModal";
+import { handleCloseModalSave } from "./operations/UpsertProject";
+import CloneProjectModal from "./projects/CloneProjectModal";
+import DeployProjectModal from "../Deployment/DeployProjectModal";
+import { handleSaveClone } from "./operations/CloneProject";
+import { handleDeleteYes } from "./operations/DeleteProject";
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -86,6 +23,12 @@ const useStyles = makeStyles((theme) => ({
     minWidth: "100%",
     marginTop: "20px",
   },
+  cloneFormControl: {
+    margin: theme.spacing(0),
+    minWidth: "100%",
+    marginTop: "20px",
+    marginBottom: "20px",
+  },
   backdrop: {
     zIndex: theme.zIndex.drawer + 1,
     color: "#fff",
@@ -94,89 +37,114 @@ const useStyles = makeStyles((theme) => ({
 
 function Home() {
   const history = useHistory();
+  const classes = useStyles();
+
   var token = JSON.parse(localStorage.getItem("token"));
   var username = JSON.parse(localStorage.getItem("username"));
 
-  const [AllProjects, setAllProjects] = useState([]);
-
-  const Logout = () => {
-    localStorage.clear();
-    history.push("/login");
-  };
-
-  const classes = useStyles();
-  const [values, setValues] = React.useState({
+  const [values, setValues] = useState({
     project_name: "",
+    project_description: "",
     data_dir: "",
-    language: "Python",
+    language: "python",
     task: "Classification",
     library: "Keras",
     output_file_name: "",
   });
-  const [SelectedProject, setSelectedProject] = React.useState({});
-  const [IsEdit, setIsEdit] = React.useState(false);
-  const [openModal, setOpenModal] = React.useState(false);
 
-  const handleClickOpenModal = () => {
-    setOpenModal(true);
+  const [AllProjects, setAllProjects] = useState([]);
+  const [SelectedProject, setSelectedProject] = useState({});
+  const [IsEdit, setIsEdit] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
+  const [cloneStep, setCloneStep] = useState(0);
+  const [openCloneModal, setOpenCloneModal] = useState(false);
+  const [openDeployModal, setOpenDeployModal] = useState(false);
+
+  const [cloneOptions, setCloneOptions] = useState({
+    modelLayers: false,
+    preprocessingParameters: false,
+    hyperParameters: false,
+  });
+
+  const [deployOptions, setDeployOptions] = useState({
+    localDeploy: false,
+    awsDeploy: false,
+    gcpDeploy: false,
+  });
+
+  const {
+    modelLayers,
+    preprocessingParameters,
+    hyperParameters,
+  } = cloneOptions;
+
+  const {
+    localDeploy,
+    awsDeploy,
+    gcpDeploy,
+  } = deployOptions;
+
+  const handleCloneChange = (event) => {
+    setCloneOptions({
+      ...cloneOptions,
+      [event.target.name]: event.target.checked,
+    });
   };
+
+  const handleDeployChange = (event) => {
+    setDeployOptions({
+      ...deployOptions,
+      [event.target.name]: event.target.checked,
+    });
+  };
+
   const handleCloseModal = () => {
     setOpenModal(false);
   };
 
-  const [open, setOpen] = React.useState(false);
-  const [alert, setalert] = React.useState({
+  const [open, setOpen] = useState(false);
+
+  const [alert, setalert] = useState({
     msg: "This is alert msg",
     severity: "warning",
+    title: "",
   });
 
   const handleCloseAlert = (event, reason) => {
     if (reason === "clickaway") {
       return;
     }
-
     setOpen(false);
   };
 
   const handleChange = (prop) => (event) => {
     setValues({ ...values, [prop]: event.target.value });
   };
-  const [open_backdrop, setOpen_backdrop] = React.useState(false);
-  const handleClose_backdrop = () => {
-    setOpen_backdrop(false);
-  };
-  const handleToggle_backdrop = (state) => {
-    setOpen_backdrop(state);
-  };
+
+  const [open_backdrop, setOpen_backdrop] = useState(false);
 
   useEffect(() => {
     async function fetchData() {
       const data = {
         username: username,
       };
-      console.log(token, data);
-      handleToggle_backdrop(true);
+
+      setOpen_backdrop(true);
       const res = await HomeService.get_all(token, data);
 
       if (res.status === 200) {
-        handleToggle_backdrop(false);
+        setOpen_backdrop(false);
         setAllProjects([...res.data.projects]);
       } else {
         localStorage.clear();
         history.push("/login");
       }
     }
+
     fetchData();
-  }, [openModal]);
+  }, [openModal, openCloneModal, openDeployModal, history, token, username]);
 
   const handlestep = async (proj) => {
-    var data = {
-      project_id: proj.project_id,
-      username: username,
-    };
-    var res = await HomeService.get_project(token, data);
-    console.log(res);
-    // localStorage.setItem("json_data", JSON.stringify(res.data.b2f_json));
     localStorage.setItem("project_details", JSON.stringify(proj));
     history.push("/step-2");
   };
@@ -185,12 +153,14 @@ function Home() {
     setOpenModal(true);
     setOpenModal(false);
   };
+
   const create_new_project = () => {
     setOpenModal(true);
     setIsEdit(false);
     setValues({
       ...values,
       project_name: "",
+      project_description: "",
       data_dir: "",
       language: "python",
       task: "Classification",
@@ -198,15 +168,13 @@ function Home() {
       output_file_name: "",
     });
   };
-  const editproject = (proj) => {
-    console.log(proj);
-    console.log(proj.lang);
-    console.log(proj.lib);
 
+  const editproject = (proj) => {
     setSelectedProject(proj);
     setValues({
       ...values,
       project_name: proj.project_name,
+      project_description: proj.project_description,
       data_dir: proj.data_dir,
       language: proj.lang,
       task: proj.task,
@@ -214,56 +182,58 @@ function Home() {
       output_file_name: proj.output_file_name,
     });
     setIsEdit(true);
-    console.log(values);
+
     setOpenModal(true);
   };
 
-  const handleCloseModalSave = async () => {
-    // vallidation
-    if (
-      values.project_name !== "" &&
-      values.path !== "" &&
-      values.output_file_name !== ""
-    ) {
-      if (IsEdit) {
-        var data = {
-          // 'language':values.language,
-          // 'library':values.library,
-          project_name: values.project_name,
-          project_id: SelectedProject.project_id,
-          data_dir: values.data_dir,
-          output_file_name: values.output_file_name,
-          username: username,
-        };
-        console.log(data);
-        var res = await HomeService.edit_project(token, data);
-      } else {
-        var data = {
-          language: values.language,
-          library: values.library,
-          project_name: values.project_name,
-          task: values.task,
-          path: values.data_dir,
-          output_file_name: values.output_file_name,
-          username: username,
-        };
-        var res = await HomeService.create_project(token, data);
-      }
-      if (res.status === 200) {
-        setalert({ ...values, msg: res.data.message, severity: "success" });
-        localStorage.setItem("project_details", JSON.stringify(data));
-        // history.push("/step-2");
-        // history.push("/home");
-      } else {
-        setalert({ ...values, msg: res.data.message, severity: "error" });
-      }
-      setOpenModal(false);
+  const cloneProject = (proj) => {
+    setSelectedProject(proj);
+    setValues({
+      ...values,
+      project_name: proj.project_name,
+      project_description: proj.project_description,
+      data_dir: proj.data_dir,
+      language: proj.lang,
+      task: proj.task,
+      library: proj.lib,
+      output_file_name: proj.output_file_name,
+    });
+    setOpenCloneModal(true);
+  };
+
+  const handleCloseCloneModal = () => {
+    setOpenCloneModal(false);
+    setCloneStep(0);
+    setCloneOptions({
+      hyperParameters: false,
+      preprocessingParameters: false,
+      modelLayers: false,
+    });
+  };
+
+  const deployProject = (proj) => {
+    setSelectedProject(proj);
+    setValues({
+      ...values,
+      project_name: proj.project_name,
+      project_description: proj.project_description,
+      data_dir: proj.data_dir,
+      language: proj.lang,
+      task: proj.task,
+      library: proj.lib,
+      output_file_name: proj.output_file_name,
+    });
+    setOpenDeployModal(true);
+  };
+
+  const shareProject = async (username, project_id, share_with) => {
+    const data = { username, project_id, share_with };
+    const res = await HomeService.share_project(token, data);
+
+    if (res.status === 200) {
+      setalert({ ...values, msg: res.data.message, severity: "success" });
     } else {
-      setalert({
-        ...values,
-        msg: "Please fill all the details",
-        severity: "warning",
-      });
+      setalert({ ...values, msg: res.data.message, severity: "error" });
     }
     setOpen(true);
   };
@@ -273,209 +243,96 @@ function Home() {
       <Backdrop
         className={classes.backdrop}
         open={open_backdrop}
-        onClick={handleClose_backdrop}
+        onClick={() => setOpen_backdrop(false)}
       >
         <CircularProgress color="inherit" />
       </Backdrop>
-      <Dialog
-        onClose={handleCloseModal}
-        aria-labelledby="customized-dialog-title"
-        open={openModal}
-      >
-        <DialogTitle id="customized-dialog-title" onClose={handleCloseModal}>
-          Project details
-        </DialogTitle>
-        <DialogContent dividers>
-          {IsEdit ? (
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              defaultValue={values.project_name}
-              label="Project Name"
-              size="small"
-              autoComplete="Project Name"
-              autoFocus
-              onChange={handleChange("project_name")}
-            />
-          ) : (
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              label="Project Name"
-              size="small"
-              autoComplete="Project Name"
-              autoFocus
-              onChange={handleChange("project_name")}
-            />
-          )}
 
-          {IsEdit ? (
-            <FormControl
-              variant="outlined"
-              disabled
-              className={classes.formControl}
-            >
-              <InputLabel>Language</InputLabel>
-              <Select
-                value={values.language}
-                onChange={handleChange("language")}
-                label="Language"
-              >
-                <MenuItem value={"python"}>Python</MenuItem>
-              </Select>
-            </FormControl>
-          ) : (
-            <FormControl variant="outlined" className={classes.formControl}>
-              <InputLabel>Language</InputLabel>
-              <Select
-                value={values.language}
-                onChange={handleChange("language")}
-                label="Language"
-              >
-                <MenuItem value={"python"}>Python</MenuItem>
-              </Select>
-            </FormControl>
-          )}
+      {/* Clone Existing Projects */}
 
-          {IsEdit ? (
-            <FormControl
-              variant="outlined"
-              disabled
-              className={classes.formControl}
-            >
-              <InputLabel>Library</InputLabel>
-              <Select
-                value={values.library}
-                onChange={handleChange("library")}
-                label="Library"
-              >
-                <MenuItem value={"Keras"}>Keras</MenuItem>
-                {/* <MenuItem value={"Pytorch"}>Pytorch</MenuItem> */}
-              </Select>
-            </FormControl>
-          ) : (
-            <FormControl variant="outlined" className={classes.formControl}>
-              <InputLabel>Library</InputLabel>
-              <Select
-                value={values.library}
-                onChange={handleChange("library")}
-                label="Library"
-              >
-                <MenuItem value={"Keras"}>Keras</MenuItem>
-                {/* <MenuItem value={"Pytorch"}>Pytorch</MenuItem> */}
-              </Select>
-            </FormControl>
-          )}
+      <CloneProjectModal
+        handleCloseCloneModal={handleCloseCloneModal}
+        handleSaveClone={handleSaveClone}
+        openCloneModal={openCloneModal}
+        cloneStep={cloneStep}
+        handleChange={handleChange}
+        values={values}
+        classes={classes}
+        modelLayers={modelLayers}
+        handleCloneChange={handleCloneChange}
+        preprocessingParameters={preprocessingParameters}
+        hyperParameters={hyperParameters}
+        setCloneStep={setCloneStep}
+        SelectedProject={SelectedProject}
+        cloneOptions={cloneOptions}
+        setOpen={setOpen}
+        setOpenCloneModal={setOpenCloneModal}
+        setalert={setalert}
+        username={username}
+        token={token}
+      />
 
-          {IsEdit ? (
-            <FormControl
-              variant="outlined"
-              disabled
-              className={classes.formControl}
-            >
-              <InputLabel>Task</InputLabel>
-              <Select
-                value={values.task}
-                onChange={handleChange("task")}
-                label="Task"
-              >
-                <MenuItem value={"Classification"}>Classification</MenuItem>
-                <MenuItem value={"Regression"}>Regression</MenuItem>
-                <MenuItem value={"Unsupervised"}>Unsupervised</MenuItem>
-              </Select>
-            </FormControl>
-          ) : (
-            <FormControl variant="outlined" className={classes.formControl}>
-              <InputLabel>Task</InputLabel>
-              <Select
-                value={values.task}
-                onChange={handleChange("task")}
-                label="Task"
-              >
-                <MenuItem value={"Classification"}>Classification</MenuItem>
-                <MenuItem value={"Regression"}>Regression</MenuItem>
-                <MenuItem value={"Unsupervised"}>Unsupervised</MenuItem>
-              </Select>
-            </FormControl>
-          )}
+      {/* Deploy Trained Projects */}
 
-          {IsEdit ? (
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              label="Data directory"
-              size="small"
-              defaultValue={values.data_dir}
-              autoComplete="Data directory"
-              onChange={handleChange("data_dir")}
-            />
-          ) : (
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              label="Data directory"
-              size="small"
-              autoComplete="Data directory"
-              onChange={handleChange("data_dir")}
-            />
-          )}
+      <DeployProjectModal
+        openDeployModal={openDeployModal}
+        setOpenDeployModal={setOpenDeployModal}
+        deployOptions={deployOptions}
+        setDeployOptions={setDeployOptions}
+        localDeploy={localDeploy}
+        awsDeploy={awsDeploy}
+        gcpDeploy={gcpDeploy}
+        values={values}
+        classes={classes}
+        handleDeployChange={handleDeployChange}
+        values={values}
+        SelectedProject={SelectedProject}
+        setOpen={setOpen}
+        setalert={setalert}
+        username={username}
+        token={token}
+      />
 
-          {IsEdit ? (
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              defaultValue={values.output_file_name}
-              label="Output File Name"
-              size="small"
-              autoComplete="Output File Name"
-              onChange={handleChange("output_file_name")}
-            />
-          ) : (
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              label="Output File Name"
-              size="small"
-              autoComplete="Output File Name"
-              onChange={handleChange("output_file_name")}
-            />
-          )}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseModalSave} color="primary">
-            Save changes
-          </Button>
-        </DialogActions>
-      </Dialog>
+      {/* Create and Edit Projects */}
+
+      <UpsertProjectModal
+        handleCloseModal={handleCloseModal}
+        handleCloseModalSave={handleCloseModalSave}
+        openModal={openModal}
+        IsEdit={IsEdit}
+        values={values}
+        handleChange={handleChange}
+        classes={classes}
+        setalert={setalert}
+        SelectedProject={SelectedProject}
+        setOpen={setOpen}
+        setOpenModal={setOpenModal}
+        username={username}
+        token={token}
+      />
+
       <Grid container>
         <Grid item lg={1} md={1} sm={1} xs={1}></Grid>
 
         <Grid item lg={10} md={10} sm={10} xs={10}>
-          <Project_table
+          <ProjectTable
             projects={AllProjects}
             editproject={editproject}
             parent_call_on_delete={parent_call_on_delete}
+            handleDeleteYes={handleDeleteYes}
             handlestep={handlestep}
             create_new_project={create_new_project}
+            shareProject={shareProject}
+            cloneProject={cloneProject}
+            deployProject={deployProject}
           />
         </Grid>
 
         <Grid item lg={1} md={1} sm={1} xs={1}></Grid>
       </Grid>
-      <Snackbar open={open} autoHideDuration={6000} onClose={handleCloseAlert}>
+      <Snackbar open={open} autoHideDuration={8000} onClose={handleCloseAlert}>
         <Alert onClose={handleCloseAlert} severity={alert.severity}>
+          {alert.title !== "" && (<AlertTitle>{alert.title}</AlertTitle>)}
           {alert.msg}
         </Alert>
       </Snackbar>

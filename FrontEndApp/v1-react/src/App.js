@@ -1,14 +1,6 @@
-import {
-  BrowserRouter,
-  Link,
-  Route,
-  Switch,
-  withRouter,
-  Redirect,
-  HashRouter,
-} from "react-router-dom";
+import { Route, Switch, Redirect, HashRouter } from "react-router-dom";
 import LoginIndex from "./Components/Login/LoginIndex";
-import React, { useEffect, useState } from "react";
+import React from "react";
 function App() {
   return (
     <div className="App">

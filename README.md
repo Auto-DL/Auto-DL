@@ -1,6 +1,11 @@
-<p align="center"><img width=30% src="static/adl_generator.png"></p>
+<p align=center>
+  <img src="static/Logo.png" width=40% align=center>
+</p>
 
-<center>
+<div align=center>
+  <h4>The TensorFlow and Pytorch supported no code Deep Learning Automation web framework</h4>
+</div>  
+<br/>
 
 [![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
 ![Contributions welcome](https://img.shields.io/badge/contributions-welcome-orange.svg)
@@ -8,94 +13,48 @@
 [![GitHub closed issues](https://img.shields.io/github/issues-closed-raw/Auto-DL/Generator)](https://github.com/Auto-DL/Generator/issues?q=is%3Aissue+is%3Aclosed)
 [![GitHub pull requests](https://img.shields.io/github/issues-pr-raw/Auto-DL/Generator?color=brightgreen)](https://github.com/Auto-DL/Generator/pulls?q=is%3Aopen+is%3Apr)
 [![GitHub closed pull requests](https://img.shields.io/github/issues-pr-closed-raw/Auto-DL/Generator?color=green)](https://github.com/Auto-DL/Generator/pulls?q=is%3Apr+is%3Aclosed)
-[![Slack](https://img.shields.io/badge/Join%20Our%20Community-Slack-blue)](https://join.slack.com/t/autodl/shared_invite/zt-ojj12vud-RHxfCZUmnTu1zS20WJGPlg)
+[![Slack](https://img.shields.io/badge/Join%20Our%20Community-Slack-blue)](https://join.slack.com/t/autodl/shared_invite/zt-qagxiwub-ywRM_oBvvF~F7YNtlBqy_Q)
 [![Documentation Status](https://readthedocs.org/projects/auto-dl/badge/?version=latest)](https://auto-dl.readthedocs.io/en/latest/?badge=latest)
+[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.0-4baaaa.svg)](code_of_conduct.md)
 
-</center>
-
-# Generator
-
-The interface section of Auto-DL contains front-end and back-end servers based on React and Django Rest Framework respectively.
-The backend calls the [DLMML API](https://www.github.com/Auto-DL/DLMML) according to the requests it recieves.
-
-Generator has DLMML as a submodule.
-
-## Demo
-
-<img src="static/v1-alpha.gif">
-
-<br>
-<br>
-
-## How to run
-
-1.  ```sh
-    # clone the repo
-    git clone https://github.com/Auto-DL/Generator.git
-    git submodule init
-    git submodule update
-    ```
-2. ***Activate your environment** (not necessary but highly recommended).*
-
-3.  ```sh
-    # install the requirements, this might take some time, be patient
-    pip install -r requirements.txt
-    ```
-
-4.  ```sh
-    # If you think your machine can handle a simulatenous installation of node modules, open another terminal    
-    
-    cd FrontEndApp
-    npm install
-
-    # go grab a cup of coffee, it takes an eternity XD
-    ```
-5. Place data in the `./data` directory.
-
-    Your data should be divided into classes for classification, for example, if you're classifying "Cats V/s Dogs", then your `./data` directory would look like:
-    ```sh
-    data
-    └───dogs_and_cats
-        ├───test
-        │   ├───cats
-        │   └───dogs
-        └───train
-            ├───cats
-            └───dogs
-    ```
-
-6.  ```sh
-    # run the backend 
-    # only after all requriements from requirements.txt are installed
-    cd BackEndApp
-    python manage.py runserver
-    # you can ignore any migration warnings
-    ```
-
-7.  ```sh
-    # finally, run the react frontend
-    # on a new terminal tab
-    cd FrontEndApp/v1-react
-    npm start
-    ```
-
-**Note:**  For detailed instruction on data directory (point 5) please read [DLMML's User Guide](https://github.com/Auto-DL/DLMML/blob/master/docs/userguide.md).
+<hr/>
 
 
-## Where to go next?
+## AutoDL is just DL but without code.
 
-#### To know more about the project and initiative, please visit our [website](https://auto-dl.github.io/)
+Building deep learning models may take a lot of time. But not with AutoDL.  
+Automate your **meta-work** so that you can focus on building your models without the hassle of writing code.
 
-#### Curious to know about the DLMML API? [Here](https://github.com/Auto-DL/DLMML), Have a look :)
+- **Use our interactive model builder and AI powered suggestion system to quickly whip out a working DL model.**
+<p align=center>
+  <img src="static/4.png" width=80% align=center>
+</p>
 
-## Note
-- To know more about the technicalities of the project, read our [developer guidelines](https://github.com/Auto-DL/Generator/blob/master/docs/devguide.md).
-- For more detailed instructions to run the Generator module, Read our [User guidelines](https://github.com/Auto-DL/Generator/blob/master/docs/userguide.md)
+- **Trained your model for multiple hours and found out that it's bugged? Not anymore. With AutoDL's AI ecosystem validate your model before you train it.**
+<p align=center>
+  <img src="static/2.png" width=80% align=center>
+</p>
 
-## Contributing
-Please take a look at our [contributing guidelines](https://github.com/Auto-DL/Generator/blob/master/docs/contributing.md) if you're interested in helping!
+- **Host your model just as easily as you created it.**
 
-#### Features/Enhancements Planned
+## User Guidelines
+
+The [Docs](https://auto-dl.readthedocs.io/en/latest/index.html) are the perfect place for you to start getting used to Auto-DL
+
+## Developer Guidelines
+
+The [community repository](https://github.com/Auto-DL/Auto-DL/blob/v1-beta/CONTRIBUTING.md) hosts all information about building Auto-DL from source, how to contribute code and documentation, who to contact about what, etc.
+
+## Get started with Auto-DL (For Developers)
+
+Setup Auto-DL:
+
+- [Bare-metal way](Setup.md#setup-using-github)
+- [Using Docker](Setup.md#setup-using-docker)
+
+---
+
+### Features/Enhancements planned
 
 - Improve the UI and UX.
 
@@ -103,4 +62,38 @@ Please take a look at our [contributing guidelines](https://github.com/Auto-DL/G
 
 - Visualization and data preprocessing steps.
 
-- Model Explainability. 
+- Model Explainability.
+
+## Contact
+
+<!-- Actual text -->
+
+#### You can find us on [![Twitter][1.2]][1] or on [![LinkedIn][2.2]][2] or join our community on [Slack].
+
+<!-- Icons -->
+
+[1.2]: http://i.imgur.com/wWzX9uB.png "Twitter"
+[2.2]: https://raw.githubusercontent.com/MartinHeinz/MartinHeinz/master/linkedin-3-16.png "LinkedIn"
+
+<!-- Links to our social media accounts -->
+
+[1]: https://twitter.com/auto_dl
+[2]: https://www.linkedin.com/company/autodl/
+
+#### Have doubts?
+
+Read the [FAQ]() or send us a mail at info@auto-dl.tech
+
+For more details, visit our [website](https://auto-dl.tech/)
+
+---
+
+## Contributors
+
+<a href="https://github.com/Auto-DL/Auto-DL/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=Auto-DL/Auto-DL" />
+</a>
+
+## Copyright and Licensing
+
+[GNU General Public License v3.0](https://github.com/Auto-DL/Auto-DL/blob/v1-beta/LICENSE)

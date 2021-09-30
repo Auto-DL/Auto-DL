@@ -15,21 +15,11 @@ import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
-import InboxIcon from "@material-ui/icons/MoveToInbox";
-import MailIcon from "@material-ui/icons/Mail";
 import PowerSettingsNewIcon from "@material-ui/icons/PowerSettingsNew";
 import HomeIcon from "@material-ui/icons/Home";
-import {
-  BrowserRouter,
-  Switch,
-  useLocation,
-  IndexRoute,
-  Route,
-  Link,
-  Redirect,
-  useParams,
-  useHistory,
-} from "react-router-dom";
+import Icon from "@material-ui/core/Icon";
+import SvgIcon from '@material-ui/core/SvgIcon';
+import { useHistory } from "react-router-dom";
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
@@ -115,11 +105,18 @@ function Layout() {
   const home = () => {
     console.log("home");
     history.push("/home");
+    handleDrawerClose();
+  };
+
+  const deploy = () => {
+    console.log("deployments");
+    history.push("/deploy");
+    handleDrawerClose();
   };
 
   const logout = () => {
     localStorage.clear();
-    // history.push("/login");
+    history.push("/login");
     window.location.reload();
   };
 
@@ -176,7 +173,9 @@ function Layout() {
               )}
             </IconButton>
           </div>
+
           <Divider />
+
           <List>
             <ListItem button onClick={home} key={"Home"}>
               <ListItemIcon>
@@ -185,6 +184,22 @@ function Layout() {
               <ListItemText primary={"Home"} />
             </ListItem>
           </List>
+
+          <Divider />
+
+          <List>
+            <ListItem button onClick={deploy} key={"Deploy"}>
+              <ListItemIcon>
+                <Icon aria-label="deploy">
+                  <SvgIcon viewBox="0 0 24 24">
+                    <path fill="currentColor" d="M20 22L16.14 20.45C16.84 18.92 17.34 17.34 17.65 15.73L20 22M7.86 20.45L4 22L6.35 15.73C6.66 17.34 7.16 18.92 7.86 20.45M12 2C12 2 17 4 17 12C17 15.1 16.25 17.75 15.33 19.83C15 20.55 14.29 21 13.5 21H10.5C9.71 21 9 20.55 8.67 19.83C7.76 17.75 7 15.1 7 12C7 4 12 2 12 2M12 12C13.1 12 14 11.1 14 10C14 8.9 13.1 8 12 8C10.9 8 10 8.9 10 10C10 11.1 10.9 12 12 12Z" />
+                  </SvgIcon>
+                </Icon>
+              </ListItemIcon>
+              <ListItemText primary={"Deploy"} />
+            </ListItem>
+          </List>
+
           <Divider />
 
           <List>
@@ -200,6 +215,7 @@ function Layout() {
               <ListItemText primary={"Logout"} />
             </ListItem>
           </List>
+
         </Drawer>
       ) : null}
       <main className={classes.content}>

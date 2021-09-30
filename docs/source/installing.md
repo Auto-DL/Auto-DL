@@ -1,57 +1,105 @@
-# Installation
-!["alt"](./_static/adl_generator.png "account")
-- To use the application you need to follow the steps below successfully install the application and run it  
+<p align=center>
+  <img src="_static/Logo.png" width=40% align=center>
+</p>
 
-__Downloading the project__
-* Go to the : [Auto-DL project](https://github.com/Auto-DL/Generator) 
-* Click on the green colored Download button (code button)
-  Select option which says ```download as zip``` 
+# Get Started  
 
-__Extracting__
-* After downloading the .zip file, Extract the file using WinZip or any application that can extract the .zip files.  
-  After extracting the file follow the next steps.
+## Prerequisites
 
-__Installation of the required modules__
+* Install [Python](https://www.python.org/downloads/)
+* Install [Node](https://nodejs.org/en/download/)
+* Download [Git](https://git-scm.com/download/) 
 
-* Then go to your Generator folder in the project directory as follows 
-* Right-click on the project folder and open the properties.
-* Copy the path mentioned in the box.
+## Setup using GitHub
+### Clone the Repository
 
-* After copying the path, Go to the terminal of your windows operating system or terminal of the Linux operating system.
-* To go to the terminal use search option in windows.
-  Type 'cmd' in  the search field. 
-* Right-click on the command prompt and select "Run as administrator option" 
+```
+git clone https://github.com/Auto-DL/Auto-DL.git
+```
 
-* then type the following command   
-* <code>cd path</code>
-* paste the path you copied in the above command 
-* Example: 
-```cd C:\Auto-DL\Generator ```
-
-* There will be a requirements.txt file in the generator folder. It contains a list of the required modules for the successful operation of the application.
-
-* To install the required modules type the following command in terminal 
-```pip install -r requirements.txt```
+* Setup a [Python Environment](https://docs.python.org/3/library/venv.html) (Not necessary but highly recomended)
 
 
-__After installation of required modules, you need to install node package manager(npm) to run front end application__
-To install npm follow the following steps 
+### Setup the .env file
+Clone the sample.env to create .env in both BackEndApp/ and FrontEndApp/v1-react/ and configure the necessary environment variables
 
-* Go to [npm](https://nodejs.org/en/download/) site
-* download the package according to your system
-* Install by doing simple next-yes-next yes. 
+**Getting the .env File**
+* Auto-DL team has created an environment file for its contributers.
+* Download [the file](https://drive.google.com/file/d/15zGH1D_Uy3ZBWy4s873L9We5arpI7ls6/view?usp=sharing) and paste it in `Auto-DL/BackEndApp` directory.
+* **NOTE:** Make sure the name of the file is `.env` (that " . " is important)
 
-__after that go to the path in CMD mentioned below and do the following steps to run the application__
 
-* To start the backend server traverse to the path in cmd.
-```\Auto-DL\Generator\BackEnd\```
-* Type 
-```python manage.py server```
-This will start the backend server. 
-```\Auto-DL\Generator\FrontEnd\v1-react```
-* after traversing to this path in cmd type
-```npm install```
-```npm start```
-* This will start front end app
-* type 
-<code>http://127.0.0.1:3000</code> in your browser
+### Installing the Requirements and Running the App
+<details>
+    <summary><b>Windows</b></summary>  
+    <br/>
+For Backend
+
+```
+cd Auto-DL/BackEndApp
+pip install -r requirements.txt
+```
+For Frontend
+```
+cd Auto-DL/FrontEndApp
+npm install
+```
+
+Only after all requriements from requirements.txt are installed
+
+```
+cd BackEndApp
+mkdir logs
+```
+Run the Backend
+```
+python manage.py runserver
+# you can ignore any migration warnings
+```
+
+Finally, run the react frontend
+
+```
+# on a new terminal tab
+cd FrontEndApp/v1-react
+npm start
+```
+    
+</details>
+
+<details>
+    <summary><b>Linux</b></summary>
+
+```
+cd Auto-DL
+```
+```
+sudo ./scripts/install.sh
+```
+```
+sudo ./scripts/run.sh
+```
+</details>
+
+<details>
+    <summary><b>MacOS</b></summary>
+
+```
+cd Auto-DL
+```
+```
+brew ./scripts/install.sh
+```
+```
+brew ./scripts/run.sh
+```
+</details>
+
+---
+
+## Setup using Docker
+Configure the necessary environment variables in `docker-compose.yml` and run `docker-compose up`.   
+This will setup a development server, so instead if you want to setup a production server you can replace the dockerfile context in `docker-compose.yml` for each container to include the production **Dockerfile** instead of **Dockerfile.dev**.
+
+> Note: Before running the production docker containers modify the nginx configuration if needed in `nginx/nginx.conf` as the FrontEndApp docker container uses nginx in production
+

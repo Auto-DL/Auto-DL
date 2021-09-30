@@ -32,7 +32,12 @@ class Store:
             _path = self.path
             if project is not None:
                 _path = posixpath.join(_path, project)
-            shutil.rmtree(_path)
+                if project.startswith("shared_"):
+                    os.remove(_path)
+                else:
+                    shutil.rmtree(_path)
+            else:
+                shutil.rmtree(_path)
             return 0, None
         except Exception as e:
             return 1, str(e)

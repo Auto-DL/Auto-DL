@@ -1,11 +1,12 @@
 import os
+import ssl
 import pymongo
 from dotenv import load_dotenv
 
 load_dotenv()
 
 
-def connect(db_name='auth_db'):
+def connect(db_name="auth_db"):
     """
     Connect to mongodb instance (url) in .env file.
 
@@ -19,7 +20,7 @@ def connect(db_name='auth_db'):
     db : object
         database client connection object
     """
-    client = pymongo.MongoClient(os.getenv("HOST"))
+    client = pymongo.MongoClient(os.getenv("MONGODB_URI"), ssl_cert_reqs=ssl.CERT_NONE)
     db = client[db_name]
     print("MongoDB connected")
     return db

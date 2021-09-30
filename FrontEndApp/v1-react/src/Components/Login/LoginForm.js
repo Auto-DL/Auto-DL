@@ -21,17 +21,7 @@ import Tab from "@material-ui/core/Tab";
 import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
 
-import {
-  BrowserRouter as Router,
-  Switch,
-  useLocation,
-  IndexRoute,
-  Route,
-  Link,
-  Redirect,
-  useParams,
-  useHistory,
-} from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -46,7 +36,7 @@ function TabPanel(props) {
     >
       {value === index && (
         <Box p={5}>
-          <Typography>{children}</Typography>
+          <Typography component={"span"}>{children}</Typography>
         </Box>
       )}
     </div>
@@ -79,6 +69,7 @@ function Alert(props) {
 function LoginForm() {
   const history = useHistory();
   var username = JSON.parse(localStorage.getItem("username"));
+
   if (username !== null) {
     history.push("/home");
   }
@@ -90,9 +81,11 @@ function LoginForm() {
     email: "",
     first_name: "",
     last_name: "",
-    password: "",
+    loginPassword: "",
+    registerPassword: "",
     confirmpassword: "",
-    showPassword: false,
+    showLoginPassword: false,
+    showRegisterPassword: false,
   });
 
   const [open, setOpen] = React.useState(false);
@@ -113,8 +106,15 @@ function LoginForm() {
     setValues({ ...values, [prop]: event.target.value });
   };
 
-  const handleClickShowPassword = () => {
-    setValues({ ...values, showPassword: !values.showPassword });
+  const handleClickShowLoginPassword = () => {
+    setValues({ ...values, showLoginPassword: !values.showLoginPassword });
+  };
+
+  const handleClickShowRegisterPassword = () => {
+    setValues({
+      ...values,
+      showRegisterPassword: !values.showRegisterPassword,
+    });
   };
 
   const handleMouseDownPassword = (event) => {
@@ -125,15 +125,33 @@ function LoginForm() {
 
   const handleChangetabs = (event, newValue) => {
     setValue(newValue);
+    values.registerPassword = "";
+    values.confirmpassword = "";
+    values.loginPassword = "";
+    values.showRegisterPassword = false;
+    values.showLoginPassword = false;
   };
+
+  const handleLogin = (event) => {
+    if (event.key === "Enter") {
+      login();
+    }
+  }
+
+  const handleRegister = (event) => {
+    if (event.key === "Enter") {
+      register();
+    }
+  }
 
   const login = async () => {
     const data = {
       username: values.username,
-      password: values.password,
+      password: values.loginPassword,
     };
+
     // vallidation
-    if (values.username !== "" && values.password !== "") {
+    if (values.username !== "" && values.loginPassword !== "") {
       const res = await LoginService.login(data);
       if (res.status === 200) {
         setalert({ ...values, msg: res.data.message, severity: "success" });
@@ -152,6 +170,7 @@ function LoginForm() {
         severity: "warning",
       });
     }
+
     setOpen(true);
   };
 
@@ -161,16 +180,20 @@ function LoginForm() {
       first_name: values.first_name,
       last_name: values.last_name,
       email: values.email,
-      password: values.password,
+      password: values.registerPassword,
     };
-    // vallidation
+
+    // validation
     if (
-      values.username !== "" &&
-      values.password !== "" &&
-      values.first_name !== "" &&
-      values.last_name !== "" &&
-      values.email !== "" &&
-      values.password === values.confirmpassword
+      values.username &&
+      values.username.trim() &&
+      values.registerPassword &&
+      values.first_name &&
+      values.first_name.trim() &&
+      values.last_name &&
+      values.last_name.trim() &&
+      values.email &&
+      values.registerPassword === values.confirmpassword
     ) {
       const res = await LoginService.register(data);
       if (res.status === 200) {
@@ -225,32 +248,42 @@ function LoginForm() {
                     margin="normal"
                     required
                     fullWidth
-                    id="Username"
+                    id="login-username"
                     label="Username"
                     name="Username"
                     autoComplete="Username"
                     autoFocus
+                    onKeyDown={(event) => handleLogin(event)}
                     onChange={handleChange("username")}
+                    data-testid={"loginUsername"}
                   />
 
-                  <FormControl fullWidth margin="normal" variant="filled">
-                    <InputLabel htmlFor="outlined-adornment-password">
+                  <FormControl
+                    fullWidth
+                    margin="normal"
+                    variant="outlined"
+                    onKeyDown={(event) => handleLogin(event)}
+                  >
+                    <InputLabel
+                      htmlFor="outlined-adornment-password"
+                      style={{backgroundColor: "white",padding:"0px 5px"}}
+                    >
                       Password *
                     </InputLabel>
                     <OutlinedInput
-                      id="outlined-adornment-password"
-                      type={values.showPassword ? "text" : "password"}
-                      value={values.password}
-                      onChange={handleChange("password")}
+                      type={values.showLoginPassword ? "text" : "password"}
+                      value={values.loginPassword}
+                      onChange={handleChange("loginPassword")}
+                      data-testid={"loginPassword"}
                       endAdornment={
                         <InputAdornment position="end">
                           <IconButton
                             aria-label="toggle password visibility"
-                            onClick={handleClickShowPassword}
+                            onClick={handleClickShowLoginPassword}
                             onMouseDown={handleMouseDownPassword}
                             edge="end"
                           >
-                            {values.showPassword ? (
+                            {values.showLoginPassword ? (
                               <Visibility />
                             ) : (
                               <VisibilityOff />
@@ -272,6 +305,7 @@ function LoginForm() {
                     fullWidth
                     variant="contained"
                     color="primary"
+                    data-testid={"loginButton"}
                     onClick={login}
                   >
                     LOGIN
@@ -290,16 +324,21 @@ function LoginForm() {
                     label="Username"
                     autoComplete="Username"
                     autoFocus
+                    data-testid={"registerUsername"}
                     onChange={handleChange("username")}
+                    onKeyDown={(event) => handleRegister(event)}
                   />
+
                   <TextField
                     variant="outlined"
                     margin="normal"
                     required
                     fullWidth
-                    label="First name"
+                    label="First Name"
                     autoComplete="First name"
+                    data-testid={"fname"}
                     onChange={handleChange("first_name")}
+                    onKeyDown={(event) => handleRegister(event)}
                   />
 
                   <TextField
@@ -307,9 +346,11 @@ function LoginForm() {
                     margin="normal"
                     required
                     fullWidth
-                    label="Last name"
+                    label="Last Name"
                     autoComplete="Last name"
+                    data-testid={"lname"}
                     onChange={handleChange("last_name")}
+                    onKeyDown={(event) => handleRegister(event)}
                   />
 
                   <TextField
@@ -317,29 +358,40 @@ function LoginForm() {
                     margin="normal"
                     required
                     fullWidth
-                    label="email"
+                    label="Email"
                     autoComplete="email"
+                    data-testid={"email"}
                     onChange={handleChange("email")}
+                    onKeyDown={(event) => handleRegister(event)}
                   />
 
-                  <FormControl fullWidth margin="normal" variant="filled">
-                    <InputLabel htmlFor="outlined-adornment-password">
+                  <FormControl
+                    fullWidth
+                    margin="normal"
+                    variant="outlined"
+                    onKeyDown={(event) => handleRegister(event)}
+                  >
+                    <InputLabel
+                      variant="outlined"
+                      htmlFor="outlined-adornment-password"
+                      style={{ backgroundColor: "white", padding: "0px 5px" }}
+                    >
                       Password *
                     </InputLabel>
                     <OutlinedInput
-                      id="outlined-adornment-password"
-                      type={values.showPassword ? "text" : "password"}
-                      value={values.password}
-                      onChange={handleChange("password")}
+                      type={values.showRegisterPassword ? "text" : "password"}
+                      value={values.registerPassword}
+                      onChange={handleChange("registerPassword")}
+                      data-testid={"registerPassword"}
                       endAdornment={
                         <InputAdornment position="end">
                           <IconButton
                             aria-label="toggle password visibility"
-                            onClick={handleClickShowPassword}
+                            onClick={handleClickShowRegisterPassword}
                             onMouseDown={handleMouseDownPassword}
                             edge="end"
                           >
-                            {values.showPassword ? (
+                            {values.showRegisterPassword ? (
                               <Visibility />
                             ) : (
                               <VisibilityOff />
@@ -350,24 +402,32 @@ function LoginForm() {
                     />
                   </FormControl>
 
-                  <FormControl fullWidth margin="normal" variant="filled">
-                    <InputLabel htmlFor="outlined-adornment-password">
+                  <FormControl
+                    fullWidth
+                    margin="normal"
+                    variant="outlined"
+                    onKeyDown={(event) => handleRegister(event)}
+                  >
+                    <InputLabel
+                      htmlFor="outlined-adornment-password"
+                      style={{backgroundColor:"white",padding:"0px 5px"}}
+                    >
                       Confirm Password *
                     </InputLabel>
                     <OutlinedInput
-                      id="outlined-adornment-password"
-                      type={values.showPassword ? "text" : "password"}
+                      type={values.showRegisterPassword ? "text" : "password"}
                       value={values.confirmpassword}
                       onChange={handleChange("confirmpassword")}
+                      data-testid={"confirmPassword"}
                       endAdornment={
                         <InputAdornment position="end">
                           <IconButton
                             aria-label="toggle password visibility"
-                            onClick={handleClickShowPassword}
+                            onClick={handleClickShowRegisterPassword}
                             onMouseDown={handleMouseDownPassword}
                             edge="end"
                           >
-                            {values.showPassword ? (
+                            {values.showRegisterPassword ? (
                               <Visibility />
                             ) : (
                               <VisibilityOff />
@@ -377,7 +437,6 @@ function LoginForm() {
                       }
                     />
                   </FormControl>
-
                   <Grid container>
                     <Grid item lg={12} md={12} sm={12} xs={12}>
                       <br />
@@ -390,6 +449,7 @@ function LoginForm() {
                     variant="contained"
                     color="primary"
                     onClick={register}
+                    data-testid={"registerButton"}
                   >
                     Register
                   </Button>
@@ -398,11 +458,15 @@ function LoginForm() {
             </TabPanel>
           </div>
         </Grid>
-
         <Grid item lg={4} md={4} sm={1} xs={1}></Grid>
       </Grid>
 
-      <Snackbar open={open} autoHideDuration={6000} onClose={handleCloseAlert}>
+      <Snackbar
+        open={open}
+        data-testid={"warning"}
+        autoHideDuration={60000}
+        onClose={handleCloseAlert}
+      >
         <Alert onClose={handleCloseAlert} severity={alert.severity}>
           {alert.msg}
         </Alert>
