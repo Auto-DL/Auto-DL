@@ -1,6 +1,6 @@
 name: Conventional commits lint
 
-on: [push, pull_request]
+on: [push]
 
 jobs:
   commitlint:
