@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme: Theme) =>
     root: {
       display: 'flex',
     },
-    grow: {
+    sideBarGrow: {
       flexGrow: 1,
     },
     icon: {
@@ -84,7 +84,7 @@ export default function SideBar({ activeTab, projectName }: Props) {
 
   return (
     <Drawer
-      variant={open ? "permanent" : "permanent"}
+      variant={"permanent"}
       className={clsx(classes.drawer, {
         [classes.drawerOpen]: open,
         [classes.drawerClose]: !open,
@@ -104,7 +104,11 @@ export default function SideBar({ activeTab, projectName }: Props) {
           <ListItem
             button
             key={route.name}
-            onClick={() => Router.push(`/project${route.path}?projectName=${projectName}`)}
+            onClick={() => {
+              projectName ?
+                Router.push(`/project${route.path}?projectName=${projectName}`) :
+                Router.push(`/project${route.path}`)
+            }}
             className={clsx(classes.icon, {
               [classes.active]: route.name == activeTab,
               [classes.inactive]: route.name != activeTab,
@@ -115,7 +119,7 @@ export default function SideBar({ activeTab, projectName }: Props) {
           </ListItem>
         ))}
       </List>
-      <div className={classes.grow} />
+      <div className={classes.sideBarGrow} />
       <Divider />
       <List>
         <ListItem button key='Settings' onClick={() => Router.push('/')}>
