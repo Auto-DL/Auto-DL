@@ -3,7 +3,7 @@
 </p>
 
 <div align=center>
-  <h4>The TensorFlow and Pytorch supported no code Deep Learning Automation web framework</h4>
+  <h4>The TensorFlow and Pytorch supported no code Deep Learning Automation web framework</h4> �
 </div>  
 <br/>
 
@@ -23,7 +23,7 @@
 ## AutoDL is just DL but without code.
 
 Building deep learning models may take a lot of time. But not with AutoDL.  
-Automate your **meta-work** so that you can focus on building your models without the hassle of writing code.
+Automate your **meta-work** so that you can focus on building your models without the hassle of writing code. 💻🤩
 
 - **Use our interactive model builder and AI powered suggestion system to quickly whip out a working DL model.**
 <p align=center>
@@ -37,11 +37,11 @@ Automate your **meta-work** so that you can focus on building your models withou
 
 - **Host your model just as easily as you created it.**
 
-## User Guidelines
+## User Guidelines 📝
 
 The [Docs](https://auto-dl.readthedocs.io/en/latest/index.html) are the perfect place for you to start getting used to Auto-DL
 
-## Developer Guidelines
+## Developer Guidelines 📜
 
 The [community repository](https://github.com/Auto-DL/Auto-DL/blob/v1-beta/CONTRIBUTING.md) hosts all information about building Auto-DL from source, how to contribute code and documentation, who to contact about what, etc.
 
@@ -54,21 +54,21 @@ Setup Auto-DL:
 
 ---
 
-### Features/Enhancements planned
+### Features/Enhancements planned 📌🧐
 
-- Improve the UI and UX.
+-✔Improve the UI and UX.
 
-- Show model training realted stats on the frontend.
+-✔Show model training realted stats on the frontend.
 
-- Visualization and data preprocessing steps.
+-✔Visualization and data preprocessing steps.
 
-- Model Explainability.
+-✔Model Explainability.
 
-## Contact
+## 📍 Contact
 
 <!-- Actual text -->
 
-#### You can find us on [![Twitter][1.2]][1] or on [![LinkedIn][2.2]][2] or join our community on [Slack].
+#### 📩📭 You can find us on [![Twitter][1.2]][1] or on [![LinkedIn][2.2]][2] or join our community on [Slack].
 
 <!-- Icons -->
 
@@ -80,20 +80,20 @@ Setup Auto-DL:
 [1]: https://twitter.com/auto_dl
 [2]: https://www.linkedin.com/company/autodl/
 
-#### Have doubts?
+#### Have doubts? 🤔
 
-Read the [FAQ]() or send us a mail at info@auto-dl.tech
+Read the [FAQ]() or send us a mail at info@auto-dl.tech 📧
 
-For more details, visit our [website](https://auto-dl.tech/)
+For more details, visit our [website](https://auto-dl.tech/) 💻
 
 ---
 
-## Contributors
+## ❤ Contributors ❤
 
 <a href="https://github.com/Auto-DL/Auto-DL/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=Auto-DL/Auto-DL" />
 </a>
 
-## Copyright and Licensing
+## 🚩 Copyright and Licensing 🚩
 
 [GNU General Public License v3.0](https://github.com/Auto-DL/Auto-DL/blob/v1-beta/LICENSE)
