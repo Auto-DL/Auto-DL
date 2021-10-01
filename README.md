@@ -22,7 +22,7 @@
 
 ## AutoDL is just DL but without code.
 
-Building deep learning models may take a lot of time. But not with AutoDL.  
+Building deep learning models may take a lot of time,But not with AutoDL.  
 Automate your **meta-work** so that you can focus on building your models without the hassle of writing code.
 
 - **Use our interactive model builder and AI powered suggestion system to quickly whip out a working DL model.**
