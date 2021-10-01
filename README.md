@@ -20,7 +20,7 @@
 <hr/>
 
 
-## AutoDL is just DL but without code.
+## AutoDL is just Deep Learning but without code.
 
 Building deep learning models may take a lot of time. But not with AutoDL.  
 Automate your **meta-work** so that you can focus on building your models without the hassle of writing code.
