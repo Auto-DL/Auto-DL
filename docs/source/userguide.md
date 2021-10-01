@@ -12,10 +12,19 @@
 - Login into your account.
 - Once you login to your account, screen similar to following image will be shown.
 
-
+### Home Page
 !["alt"](./_static/1.png)
+
+### Hub
 !["alt"](./_static/2.png)
+
+### Pre-processing 
 !["alt"](./_static/3.png)
+
+### Model Maker
 !["alt"](./_static/4.png)
+
+### Hyperparameter
 !["alt"](./_static/5.png)
 
+**NOTE:** Above screenshots are the prototype for v2-UI, which is in development.(FrontEndApp/autodl-platform)
