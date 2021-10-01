@@ -10,7 +10,7 @@
 * Install [Node](https://nodejs.org/en/download/)
 * Download [Git](https://git-scm.com/download/) 
 
-## Setup using GitHub
+## Setup from Source Code
 ### Clone the Repository
 
 ```
@@ -21,11 +21,19 @@ git clone https://github.com/Auto-DL/Auto-DL.git
 
 
 ### Setup the .env file
+
 Clone the sample.env to create .env in both BackEndApp/ and FrontEndApp/v1-react/ and configure the necessary environment variables
 
-**Getting the .env File**
-* Auto-DL team has created an environment file for its contributers.
-* Download [the file](https://drive.google.com/file/d/15zGH1D_Uy3ZBWy4s873L9We5arpI7ls6/view?usp=sharing) and paste it in `Auto-DL/BackEndApp` directory.
+#### BackEnd Environment
+* `cd BackEndApp`
+* Rename `sample.env` to `.env`
+* Fill in the correct values.
+
+#### FrontEnd Environment
+* `cd FrontEndApp/v1-react`
+* Rename `sample.env` to `.env`
+* Fill in the correct values.
+
 * **NOTE:** Make sure the name of the file is `.env` (that " . " is important)
 
 
