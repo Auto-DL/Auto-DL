@@ -1,6 +1,5 @@
 # unit tests for methods in store class
 
-import pytest
 import os
 import posixpath
 import tempfile
