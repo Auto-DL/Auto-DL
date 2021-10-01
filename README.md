@@ -20,7 +20,7 @@
 <hr/>
 
 
-## AutoDL is just DL but without code.
+## Auto-DL is just DL but without code.
 
 Building deep learning models may take a lot of time. But not with AutoDL.  
 Automate your **meta-work** so that you can focus on building your models without the hassle of writing code.
@@ -40,6 +40,21 @@ Automate your **meta-work** so that you can focus on building your models withou
 ## User Guidelines
 
 The [Docs](https://auto-dl.readthedocs.io/en/latest/index.html) are the perfect place for you to start getting used to Auto-DL
+
+## Hactoberfest Guidelines
+
+* If an issue is not "assigned," you can assume that no one is working on it (may NOT be true). So to be sure, you can ask the following:
+
+  * Can I take this up?
+  * Also, mention a rough deadline until which you plan to fix the issue
+  * (Optionally) Potential fixes
+DO NOT CREATE a pull request FIRST if someone else is working on it then your efforts might be wasted. Claiming doable and unclaimed issues should be the priority
+
+* Conventional commits in the PR title are a must
+
+* For frontend, while creating a pull request attach a screenshot of the change
+
+* Last but not least, one pull request to fix a typo is fine, but 5 pull requests to remove a stray whitespace is not. [reference](https://hacktoberfest.digitalocean.com/resources/qualitystandards)
 
 ## Developer Guidelines
 
