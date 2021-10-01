@@ -49,8 +49,8 @@ The [community repository](https://github.com/Auto-DL/Auto-DL/blob/v1-beta/CONTR
 
 Setup Auto-DL:
 
-- [Bare-metal way](Setup.md#setup-using-github)
-- [Using Docker](Setup.md#setup-using-docker)
+- 👷 [Bare-metal way](Setup.md#setup-using-github)
+- 🐳 [Using Docker](Setup.md#setup-using-docker)
 
 ---
 
