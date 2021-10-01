@@ -75,7 +75,7 @@ interface UserState {
   email: string;
   firstName: string;
   lastName: string;
-  type: string;
+  accountType: 'user' | 'organization';
 }
 
 interface ErrorState {
@@ -96,7 +96,7 @@ export default function AuthForm() {
     email: '',
     firstName: '',
     lastName: '',
-    type: 'person',
+    accountType: 'user',
   });
 
   const [errors, setErrors] = React.useState<ErrorState>({
@@ -207,8 +207,8 @@ export default function AuthForm() {
                 ),
               }}
               autoFocus
-              autoComplete="Username"
               onChange={handleChange('username')}
+              value={values.username}
               error={errors.username}
               variant="outlined"
             />
@@ -223,8 +223,8 @@ export default function AuthForm() {
                 id="password"
                 name="password"
                 type={showPassword ? 'text' : 'password'}
-                value={values.password}
                 onChange={handleChange('password')}
+                value={values.password}
                 error={errors.password}
                 endAdornment={
                   <InputAdornment position="end">
@@ -285,11 +285,11 @@ export default function AuthForm() {
                   <RadioGroup
                     aria-label="user-type"
                     name="User Type"
-                    value={values.type}
-                    onChange={handleChange('type')}
+                    value={values.accountType}
+                    onChange={handleChange('accountType')}
                     className={classes.radioBtnGrp}
                   >
-                    <FormControlLabel value="person" control={<Radio color="primary" />} label="An Individual" />
+                    <FormControlLabel value="user" control={<Radio color="primary" />} label="An Individual" />
                     <FormControlLabel value="organization" disabled control={<Radio color="primary" />} label="An Organization" />
                   </RadioGroup>
                 </FormControl>
@@ -319,9 +319,9 @@ export default function AuthForm() {
                     ),
                   }}
                   autoFocus
-                  autoComplete="First Name"
                   onChange={handleChange('firstName')}
                   error={errors.firstName}
+                  value={values.firstName}
                   variant="outlined"
                 />
 
@@ -341,6 +341,7 @@ export default function AuthForm() {
                   autoComplete="First Name"
                   onChange={handleChange('lastName')}
                   error={errors.lastName}
+                  value={values.lastName}
                   variant="outlined"
                 />
 
@@ -357,9 +358,9 @@ export default function AuthForm() {
                       </InputAdornment>
                     ),
                   }}
-                  autoComplete="Email Address"
                   onChange={handleChange('email')}
-                  error={errors.lastName}
+                  error={errors.email}
+                  value={values.email}
                   variant="outlined"
                 />
               </>
