@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme: Theme) =>
     root: {
       display: 'flex',
     },
-    grow: {
+    sideBarGrow: {
       flexGrow: 1,
     },
     icon: {
@@ -119,7 +119,7 @@ export default function SideBar({ activeTab, projectName }: Props) {
           </ListItem>
         ))}
       </List>
-      <div className={classes.grow} />
+      <div className={classes.sideBarGrow} />
       <Divider />
       <List>
         <ListItem button key='Settings' onClick={() => Router.push('/')}>

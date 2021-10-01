@@ -22,7 +22,8 @@ export default function Auth({ children }: Props) {
   const classes = useStyles();
   return (
     <Box className={classes.root}>
-      <PrimaryAppBar />
+      {/* To be configured with Redux - isAuthenticated */}
+      <PrimaryAppBar isAuthenticated={false} />
       <Container maxWidth='lg'>
         {children!}
       </Container>
