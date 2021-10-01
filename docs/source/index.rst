@@ -12,12 +12,10 @@ Welcome to Auto-DL documentation!
    :caption: Overview
 
    installing.md
-   why.md
 
 .. toctree::
    :maxdepth: 2
    :caption: Getting started
 
    devguide.md
-   contributing.md
    userguide.md
