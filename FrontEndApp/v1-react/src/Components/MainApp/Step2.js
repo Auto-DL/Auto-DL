@@ -78,7 +78,7 @@ function Step2() {
   const [components, setcomponents] = useState([]);
   const [selected_layer_type, setselected_layer_type] = useState("");
   const [selected_layer, setselected_layer] = useState(-1);
-  const [setselected_layer_name] = useState("");
+  const [, setselected_layer_name] = useState("");
   const [value, setValue] = useState(0);
   const [gitusername, setGitusername] = useState("");
 
@@ -98,7 +98,7 @@ function Step2() {
   const [openModal, setOpenModal] = useState(false);
   const [openGitHubDetails, setOpenGitHubDetails] = useState(false);
 
-  const [setgenerated_file_path] = useState("");
+  const [, setgenerated_file_path] = useState("");
 
   const [alert, setalert] = React.useState({
     msg: "This is alert msg",
@@ -2139,13 +2139,13 @@ function Step2() {
     };
   }
 
-  const [all_optimizer] = useState(temp_optimizer);
-  const [all_loss] = useState(temp_loss);
+  const [all_optimizer, ] = useState(temp_optimizer);
+  const [all_loss, ] = useState(temp_loss);
   const [all_prepro, setall_prepro] = useState({});
-  const [render_prepro_meta] = useState(temp_pre_meta);
-  const [render_prepro] = useState(temp_pre);
+  const [render_prepro_meta, ] = useState(temp_pre_meta);
+  const [render_prepro, ] = useState(temp_pre);
   const [show_pre, setshow_pre] = useState(false);
-  const [jsondata] = useState(temp_json);
+  const [jsondata, ] = useState(temp_json);
 
   const [invalidLayerIndices, setInvalidLayerIndices] = useState(new Set());
   const [validLayerIndices, setValidLayerIndices] = useState([]);
