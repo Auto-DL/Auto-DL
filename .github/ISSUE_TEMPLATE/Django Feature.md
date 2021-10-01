@@ -1,6 +1,6 @@
 ## Django Feature Request
 
-This feature request is for features releted to the backend (Django) of Auto-DL.
+This feature request is for features related to the backend (Django) of Auto-DL.
 Is your feature request related to an existing [Issue](https://www.github.com/Auto-DL/Generator/issues) or a new implementation?
 <!--  If related to an issue, please link it here using "See #<issue-number>"  -->
 
