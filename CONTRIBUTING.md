@@ -2,7 +2,7 @@
 
 First off, thanks for taking the time to contribute! :tada::tada:
 
-The following is a set of guidelines for contributing to Auto-DL and it's packages, which are hosted in the [Auto-DL](https://github.com/Auto-DL) on GitHub. These are mostly guidelines, not rules. Use your best judgment, and feel free to propose changes to this document in a pull request.
+The following is a set of guidelines for contributing to Auto-DL and its packages, which are hosted in the [Auto-DL](https://github.com/Auto-DL) on GitHub. These are mostly guidelines, not rules. Use your best judgment, and feel free to propose changes to this document in a pull request.
 
 ## Code of Conduct
 
@@ -24,7 +24,7 @@ This project and everyone participating in it is governed by the [Auto-DL Code o
 
 ## How Can I Contribute?
 
-There are many ways you can contribute to Auto-DL but before contributing to the development of Auto-DL, please first check to see is an [issue exists](https://github.com/Auto-DL/Auto-DL/issues) already for the change you want to make. This is the entry point for your contributions.
+There are many ways you can contribute to Auto-DL but before contributing to the development of Auto-DL, please first check to see if an [issue exists](https://github.com/Auto-DL/Auto-DL/issues) already for the change you want to make. This is the entry point for your contributions.
 
 ### Don't see your issue? Open one
 
@@ -33,7 +33,7 @@ There are many ways you can contribute to Auto-DL but before contributing to the
 
 ### Local development
 
-Auto-DL and it's packages can be developed locally. For instructions on how to setup the repository you can [refer this](https://auto-dl.readthedocs.io/en/latest/installing.html).
+Auto-DL and its packages can be developed locally. For instructions on how to setup the repository you can [refer this](https://auto-dl.readthedocs.io/en/latest/installing.html).
 
 Once the entire environment is setup, you are all set to start developing. Before sending your pull request for review, make sure your changes are consistent with the guidelines and follow the [styleguides](#styleguides).
 
@@ -50,19 +50,19 @@ Once the entire environment is setup, you are all set to start developing. Befor
 
 #### Javascript
 
-* We use Prettier for linting javascript. Before commiting and pushing the code run
+* We use Prettier for linting javascript. Before committing and pushing the code run
 ```
 npx prettier --write
 ```
 
 #### Python
 
-* We use Black code style. Before commiting and pushing the code run the black formatter
+* We use Black code style. Before committing and pushing the code run the black formatter
 ```
 python -m black [source_file_or_directory]
 ```
 
-### Open a Pull Request
+### Open a Pull Request 
 
 If you think you have made appropriate changes to resolve a particular issue, you are all set to open a pull request. Please follow these steps while creating a pull request:
 
