@@ -2,7 +2,7 @@
 name: Bug report
 about: Create a bug report for Next js 
 title: ""
-labels: 'bug'
+labels: ['Next','bug']
 assignees: ''
 
 ---
@@ -12,12 +12,6 @@ assignees: ''
   FontEndApp/autodl-platform uses Nextjs in frontend, follow the guide (https://github.com/Auto-DL/Auto-DL/tree/main/FrontEndApp/autodl-platform)
   to run the code in your localhost before creating the bug report.  
 -->
-
-Thanks for taking the time to file a bug report! Please fill the details as completely as possible. 
-
-```
-Report bugs which you have discovered in FrontEndApp/autodl-platform
-```
 
 Before reporting the bug check if the bug already exits [here](https://github.com/Auto-DL/Auto-DL/issues)
 
@@ -31,10 +25,10 @@ Before reporting the bug check if the bug already exits [here](https://github.co
 
 
 ### Steps to Reproduce
-1. Go to '...'
+<!-- 1. Go to '...'
 2. Click on '....'
 3. Scroll down to '....'
-4. See error
+4. See error -->
 
 
 ### Expected behavior/code
@@ -44,8 +38,8 @@ Before reporting the bug check if the bug already exits [here](https://github.co
 ### ⚙️ Environment
 
 - `OS`: [e.g. Ubuntu 18.04, OSX 10.13.4, Windows 10]
-- `Node`: [ e.g. 14.18.1 ]
 
+<!-- 
 **Desktop (please complete the following information):**
  - OS: [e.g. iOS]
  - Browser [e.g. chrome, safari]
@@ -56,10 +50,10 @@ Before reporting the bug check if the bug already exits [here](https://github.co
  - OS: [e.g. iOS8.1]
  - Browser [e.g. chrome, safari, firefox]
  - Version [e.g. 22]
-
+ -->
 
 ``` 
-If relevant, paste all of your challenge code in here
+If relevant, paste all of your erroneous code in here
 ```
 
 
