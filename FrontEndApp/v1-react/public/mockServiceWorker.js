@@ -2,13 +2,13 @@
 /* tslint:disable */
 
 /**
- * Mock Service Worker (0.33.0).
+ * Mock Service Worker (0.33.2).
  * @see https://github.com/mswjs/msw
  * - Please do NOT modify this file.
  * - Please do NOT serve this file on production.
  */
 
-const INTEGRITY_CHECKSUM = '82ef9b96d8393b6da34527d1d6e19187'
+const INTEGRITY_CHECKSUM = 'a615cd395ea10f948a628bce3857a385'
 const bypassHeaderName = 'x-msw-bypass'
 const activeClientIds = new Set()
 
@@ -242,6 +242,12 @@ If you wish to mock an error response, please refer to this guide: https://mswjs
 
 self.addEventListener('fetch', function (event) {
   const { request } = event
+  const accept = request.headers.get('accept') || ''
+
+  // Bypass server-sent events.
+  if (accept.includes('text/event-stream')) {
+    return
+  }
 
   // Bypass navigation requests.
   if (request.mode === 'navigate') {
