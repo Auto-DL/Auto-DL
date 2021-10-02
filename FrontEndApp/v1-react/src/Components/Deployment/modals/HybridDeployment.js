@@ -49,7 +49,6 @@ export const HybridDeployStepThree = ({ handleCloseDeployModal, setDeployStep, v
                     variant="contained"
                     color="primary"
                     component="span"
-                    gutterBottom
                     disableElevation
                     onClick={handlePklUpload}
                     className={classes.pklUploadBtn}
@@ -73,6 +72,7 @@ export const HybridDeployStepThree = ({ handleCloseDeployModal, setDeployStep, v
                         variant="contained"
                         onClick={handleHybridDeployment}
                         color="primary"
+                        data-testid="hybrid-deploy-btn"
                     >
                         Initiate Deployment
                     </Button>
