@@ -1,8 +1,8 @@
 ---
-name: Bug report
-about: Create a bug report for Next js 
+name: NextJS Bug Report
+about: Highlight a bug in our NextJS codebase
 title: ""
-labels: ['Next','bug']
+labels: ['Nextjs','bug']
 assignees: ''
 
 ---
@@ -64,10 +64,3 @@ If relevant, paste all of your erroneous code in here
 
 ### Additional context/Screenshots
 <!-- Add any other context about the problem here. As this is a frontend bug it's highly recommended to attach screenshots -->
-
-
-<!-- 
-  Please note by far the quickest way to get a new feature is to file a Pull Request.
-  We will consider your request but it may be closed if it's something we're not actively planning to work on.
- -->
-
