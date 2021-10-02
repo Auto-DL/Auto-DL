@@ -1,5 +1,9 @@
 from os import name
+<<<<<<< HEAD
 from django.urls import path
+=======
+from django.urls import path, include
+>>>>>>> 523c2beac5154b975b1aca630e16cc033eb8b231
 from . import views
 
 urlpatterns = [
