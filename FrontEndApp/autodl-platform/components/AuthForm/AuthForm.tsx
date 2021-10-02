@@ -49,6 +49,12 @@ const useStyles = makeStyles({
     textDecoration: 'underline',
     display: 'inline-block',
   },
+  helperTextAlt: {
+    fontSize: '90%',
+    marginTop: '20px',
+    cursor: 'default',
+    display: 'inline-block',
+  },
   actionBtnGrp: {
     display: 'flex',
     justifyContent: 'space-evenly',
@@ -76,6 +82,7 @@ interface UserState {
   firstName: string;
   lastName: string;
   accountType: 'user' | 'organization';
+  otp: number | undefined,
 }
 
 interface ErrorState {
@@ -97,9 +104,11 @@ export default function AuthForm() {
     firstName: '',
     lastName: '',
     accountType: 'user',
+    otp: undefined,
   });
 
-  const [errors, setErrors] = React.useState<ErrorState>({
+  // setErrors to be implemented below
+  const [errors, ] = React.useState<ErrorState>({
     username: false,
     password: false,
     email: false,
@@ -109,7 +118,10 @@ export default function AuthForm() {
 
   const [showPassword, setShowPassword] = React.useState<boolean>(false);
   const [showProgress, setShowProgress] = React.useState<boolean>(false);
-  const [authStep, setAuthStep] = React.useState<number>(0);
+  const [showOtpResendText, setShowOtpResendText] = React.useState<boolean>(false);
+  const [authStep, setAuthStep] = React.useState<"login" | "register" | "forgotPass">("login");
+  const [otpStep, setOtpStep] = React.useState<"receive" | "validate" | "newPass">("receive");
+  const [resendText, setResendText] = React.useState<"Resend OTP?" | "OTP sent successfully!">("Resend OTP?");
   const [activeRegisterStep, setActiveRegisterStep] = React.useState<number>(0);
 
   const registerSteps = [
@@ -142,29 +154,65 @@ export default function AuthForm() {
     event.preventDefault();
   };
 
-  // const handleErrors = () => {
-  //   for (const [key, val] of Object.entries(values)) {
-  //     if (val.length === 0) {
-  //       setErrors({ ...errors, [key]: true });
-  //       setShowProgress(false);
-  //     } else {
-  //       setErrors({ ...errors, [key]: false });
-  //     }
-  //   }
-  // }
-
-  const handleAuthStep = () => {
+  const handleAuthRegister = () => {
     setShowProgress(true);
-    // handleErrors();
+    // Error Handling Required
     setTimeout(() => {
-      setAuthStep(1);
+      setAuthStep("register");
       setShowProgress(false);
+    }, 1500);
+  }
+
+  const handleAuthForgotPass = () => {
+    setShowProgress(true);
+    setTimeout(() => {
+      setAuthStep("forgotPass");
+      setShowProgress(false);
+    }, 1000);
+  }
+
+  const handleReceiveOtp = () => {
+    setShowProgress(true);
+    // Error Handling Required
+    setTimeout(() => {
+      setOtpStep("validate");
+      setShowProgress(false);
+    }, 1000);
+
+    setTimeout(() => {
+      setShowOtpResendText(true);
+    }, 5000);
+  }
+
+  const handleResendOtp = () => {
+    setShowProgress(true);
+    setTimeout(() => {
+      setShowProgress(false);
+      setResendText("OTP sent successfully!")
+    }, 1500);
+  }
+
+  const handleVerifyOtp = () => {
+    setShowProgress(true);
+    // Error Handling Required
+    setTimeout(() => {
+      setOtpStep("newPass");
+      setShowProgress(false);
+    }, 1500);
+  }
+
+  const handleNewPass = () => {
+    setShowProgress(true);
+    // Error Handling Required
+    console.log(values);
+    setTimeout(() => {
+      router.push("/home");
     }, 1500);
   }
 
   const handleLogin = () => {
     setShowProgress(true);
-    // handleErrors();
+    // Error Handling Required
     console.log(values);
     setTimeout(() => {
       router.push("/home");
@@ -173,7 +221,7 @@ export default function AuthForm() {
 
   const handleRegister = () => {
     setShowProgress(true);
-    // handleErrors();
+    // Error Handling Required
     console.log(values);
     setTimeout(() => {
       router.push("/home");
@@ -187,7 +235,7 @@ export default function AuthForm() {
         component="form"
         className={classes.formContainer}
       >
-        {authStep === 0 && (
+        {authStep === "login" && (
           <>
             <Typography variant="h4" component="h2" className={classes.formHeaderText}>
               Sign In
@@ -242,7 +290,10 @@ export default function AuthForm() {
               />
             </FormControl>
 
-            <Typography className={classes.helperText}>
+            <Typography
+              className={classes.helperText}
+              onClick={handleAuthForgotPass}
+            >
               Forgot your password?
             </Typography>
 
@@ -259,14 +310,165 @@ export default function AuthForm() {
                 color="primary"
                 variant="contained"
                 className={classes.actionBtn}
-                onClick={handleAuthStep}
+                onClick={handleAuthRegister}
               >
                 Register
               </Button>
             </div>
           </>
         )}
-        {authStep === 1 && (
+
+        {authStep === "forgotPass" && (
+          <>
+            <Typography variant="h4" component="h2" className={classes.formHeaderText}>
+              Receive an OTP
+            </Typography>
+
+            {otpStep === "receive" && (
+              <>
+                <TextField
+                  id="username"
+                  name="username"
+                  label="Enter Username"
+                  fullWidth
+                  className={classes.formElement}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <AlternateEmailIcon />
+                      </InputAdornment>
+                    ),
+                  }}
+                  autoFocus
+                  onChange={handleChange('username')}
+                  value={values.username}
+                  error={errors.username}
+                  variant="outlined"
+                />
+
+                <Typography className={classes.helperTextAlt}>
+                  You will be receiveing an OTP on your registered Email Address.
+                </Typography>
+
+                <div className={classes.actionBtnGrp}>
+                  <Button
+                    color="primary"
+                    variant="outlined"
+                    className={classes.actionBtn}
+                    onClick={() => setAuthStep("login")}
+                  >
+                    Go Back
+                  </Button>
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    className={classes.actionBtn}
+                    onClick={handleReceiveOtp}
+                  >
+                    Receive OTP
+                  </Button>
+                </div>
+              </>
+            )}
+
+            {otpStep === "validate" && (
+              <>
+                <TextField
+                  id="otp"
+                  name="otp"
+                  label="Enter OTP"
+                  fullWidth
+                  className={classes.formElement}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <AlternateEmailIcon />
+                      </InputAdornment>
+                    ),
+                  }}
+                  autoFocus
+                  onChange={handleChange('otp')}
+                  value={values.otp}
+                  variant="outlined"
+                />
+
+                {showOtpResendText && (
+                  <Typography
+                    className={classes.helperText}
+                    onClick={handleResendOtp}
+                  >
+                    {resendText}
+                  </Typography>
+                )}
+
+                <div className={classes.actionBtnGrp}>
+                  <Button
+                    color="primary"
+                    variant="outlined"
+                    className={classes.actionBtn}
+                    onClick={() => setOtpStep("receive")}
+                  >
+                    Go Back
+                  </Button>
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    className={classes.actionBtn}
+                    onClick={handleVerifyOtp}
+                  >
+                    Verify OTP
+                  </Button>
+                </div>
+              </>
+            )}
+
+            {otpStep === "newPass" && (
+              <>
+                <FormControl
+                  variant="outlined"
+                  fullWidth
+                  className={classes.formElement}
+                >
+                  <InputLabel htmlFor="password">New Password</InputLabel>
+                  <OutlinedInput
+                    id="password"
+                    name="password"
+                    type={showPassword ? 'text' : 'password'}
+                    onChange={handleChange('password')}
+                    value={values.password}
+                    error={errors.password}
+                    endAdornment={
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={handleClickShowPassword}
+                          onMouseDown={handleMouseDownPassword}
+                          edge="end"
+                        >
+                          {showPassword ? <Visibility /> : <VisibilityOff />}
+                        </IconButton>
+                      </InputAdornment>
+                    }
+                    label="Password"
+                  />
+                </FormControl>
+
+                <div className={classes.actionBtnGrp}>
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    className={classes.actionBtn}
+                    onClick={handleNewPass}
+                  >
+                    Confirm
+                  </Button>
+                </div>
+              </>
+            )}
+          </>
+        )}
+
+        {authStep === "register" && (
           <>
             <Stepper activeStep={activeRegisterStep} alternativeLabel>
               {registerSteps.map((label) => (
@@ -296,7 +498,7 @@ export default function AuthForm() {
                 <br />
                 <Typography
                   className={classes.helperText}
-                  onClick={() => setAuthStep(0)}
+                  onClick={() => setAuthStep("login")}
                 >
                   Already have an account?
                 </Typography>
