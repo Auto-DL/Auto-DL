@@ -1,4 +1,3 @@
-import os
 import re
 import bcrypt
 from authv1 import connector
