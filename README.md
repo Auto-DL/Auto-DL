@@ -3,7 +3,7 @@
 </p>
 
 <div align=center>
-  <h4>Introducing the "Futuristic" way of building Deep Learning Models</h4>
+  <h4>👨‍💻 Introducing the "Futuristic" way of building Deep Learning Models 👨‍💻</h4>
 </div>  
 <br/>
 
@@ -20,24 +20,24 @@
 <hr/>
 
 
-## Auto-DL is just DL but without code.
+## Auto-DL is just DL but without code.🤩
 
 Building deep learning models may take a lot of time. But not with AutoDL.  
-Automate your **meta-work** so that you can focus on building your models without the hassle of writing code.
+✨Automate your **meta-work** so that you can focus on building your models without the hassle of writing code.✨
 
-- **Use our interactive model builder and AI powered suggestion system to quickly whip out a working DL model.**
+- **✨Use our interactive model builder and AI powered suggestion system to quickly whip out a working DL model.✨**
 <p align=center>
   <img src="static/4.png" width=80% align=center>
 </p>
 
-- **Trained your model for multiple hours and found out that it's bugged? Not anymore. With AutoDL's AI ecosystem validate your model before you train it.**
+- **✨Trained your model for multiple hours and found out that it's bugged? Not anymore. With AutoDL's AI ecosystem validate your model before you train it.✨**
 <p align=center>
   <img src="static/2.png" width=80% align=center>
 </p>
 
-- **Host your model just as easily as you created it.**
+- **✨Host your model just as easily as you created it.✨**
 
-## Hactoberfest Guidelines
+## Hactoberfest Guidelines📝
 
 * If an issue is not "assigned," you can assume that no one is working on it (may NOT be true). So to be sure, you can ask the following:
   * Can I take this up?
@@ -51,11 +51,11 @@ DO NOT CREATE a pull request FIRST if someone else is working on it then your ef
 
 * Last but not least, one pull request to fix a typo is fine, but 5 pull requests to remove a stray whitespace is not ([reference](https://hacktoberfest.digitalocean.com/resources/qualitystandards)).
 
-## User Guidelines
+## User Guidelines🔊
 
 The [docs](https://auto-dl.readthedocs.io/en/latest/index.html) are the perfect place for you to start getting used to Auto-DL.
 
-#### Want to setup locally?
+#### Want to setup locally? 🏠
 
 * Start with our [getting started docs](https://docs.auto-dl.tech/en/latest/installing.html).
 
@@ -65,34 +65,34 @@ The [docs](https://auto-dl.readthedocs.io/en/latest/index.html) are the perfect 
 
 * You can directly jump to the [user guide](https://docs.auto-dl.tech/en/latest/userguide.html) :)
 
-## Developer Guidelines
+## Developer Guidelines 👩‍💻 
 
 The [contributing guidelines](https://github.com/Auto-DL/Auto-DL/blob/v1-beta/CONTRIBUTING.md) hosts all the information about building Auto-DL from source, how to contribute code and documentation, who to contact about what, etc.
 
-## Get started with Auto-DL (For Developers)
+## Get started with Auto-DL (For Developers) 🌐
 
 Setup Auto-DL:
 
-- [Bare-metal way](https://docs.auto-dl.tech/en/latest/installing.html#setup-from-source-code)
-- [Using Docker](https://docs.auto-dl.tech/en/latest/installing.html#setup-using-docker)
+- [Bare-metal way](https://docs.auto-dl.tech/en/latest/installing.html#setup-from-source-code) 👷
+- [Using Docker](https://docs.auto-dl.tech/en/latest/installing.html#setup-using-docker)  🐳
 
 ---
 
-### Features/Enhancements planned
+### Features/Enhancements planned 🗺
 
-- Improve the UI and UX.
+- Improve the UI and UX. 🖼
 
-- Show model training realted stats on the frontend.
+- Show model training realted stats on the frontend. 👨‍🔧
 
-- Visualization and data preprocessing steps.
+- Visualization and data preprocessing steps. 📅
 
-- Model Explainability.
+- Model Explainability.📳
 
-## Contact
+## Contact 🤙
 
 <!-- Actual text -->
 
-#### You can find us on [![Twitter][1.2]][1] or on [![LinkedIn][2.2]][2] or join our community on [Slack][3].
+#### You can find us on [![Twitter][1.2]][1] or on [![LinkedIn][2.2]][2] or join our community on [Slack][3]. 👯‍♂️👯‍♂️
 
 <!-- Icons -->
 
@@ -105,7 +105,7 @@ Setup Auto-DL:
 [2]: https://www.linkedin.com/company/autodl/
 [3]: https://join.slack.com/t/autodl/shared_invite/zt-qagxiwub-ywRM_oBvvF~F7YNtlBqy_Q
 
-#### Have doubts?
+#### Have doubts? 🤷‍♂️
 
 Read the [FAQ](#todo) or send us a mail at info@auto-dl.tech
 
@@ -113,12 +113,12 @@ For more details, visit our [website](https://auto-dl.tech/)
 
 ---
 
-## Contributors
+## Contributors 🤼
 
 <a href="https://github.com/Auto-DL/Auto-DL/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=Auto-DL/Auto-DL" />
 </a>
 
-## Copyright and Licensing
+## Copyright and Licensing 📰
 
 [GNU General Public License v3.0](https://github.com/Auto-DL/Auto-DL/blob/v1-beta/LICENSE)
