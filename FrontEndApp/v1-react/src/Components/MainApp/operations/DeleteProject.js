@@ -13,7 +13,6 @@ export const handleDeleteYes = async (setCloseDeleteModal, currentProject, usern
         project_description: currentProject.project_description,
         owner: currentProject.username,
     };
-    const res = await HomeService.delete_project(token, data);
-
+    await HomeService.delete_project(token, data);
     parentCallOnDelete();
 };
