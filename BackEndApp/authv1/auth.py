@@ -1,6 +1,5 @@
 import os
 import jwt
-import bcrypt
 import random
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
