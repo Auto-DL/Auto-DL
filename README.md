@@ -92,7 +92,7 @@ Setup Auto-DL:
 
 <!-- Actual text -->
 
-#### You can find us on [![Twitter][1.2]][1] or on [![LinkedIn][2.2]][2] or join our community on [Slack][3]. 
+#### You can find us on [![Twitter][1.2]][1] or on [![LinkedIn][2.2]][2] or join our community on [Slack][3].
 
 <!-- Icons -->
 
