@@ -23,7 +23,7 @@ body:
     attributes:
       label: Expected Behaviour
       description: How should we improve?
-      placeholder: A bug should not have happened!
+      placeholder: Fix the typo at line X!
 
   - type: dropdown
     id: browsers
