@@ -14,7 +14,7 @@ body:
     attributes:
       label: Current Behaviour
       description: Tell us what could be improved.
-      placeholder: A bug happened!
+      placeholder: A typo was encountered at line X!
     validations:
       required: true
 
