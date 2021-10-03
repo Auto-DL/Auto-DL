@@ -11,7 +11,7 @@
 
 **Please do not report security vulnerabilities through public GitHub issues.**
 
-Instead, please report them via [email](info@auto-dl.tech).
+Instead, please report them via [email](mailto:info@auto-dl.tech).
 
 You should receive a response within 24 hours. If for some reason you do not, please follow up via our slack or any social media handle to ensure that we have received your report.
 
