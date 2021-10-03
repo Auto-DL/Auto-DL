@@ -40,7 +40,13 @@ def login(request):
         {"message": message, "user": username, "token": token}, status=status
     )
 
+@api_view(["POST"])
+def profile(request):
 
+    username = request.data.get("username")
+    return JsonResponse(
+        {"user": username}
+    )
 @api_view(["POST"])
 def register(request):
     try:
