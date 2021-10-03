@@ -49,7 +49,7 @@ body:
     attributes:
       label: Additional Context
       description: Anything else that you want to share?
-      placeholder: The bug can be solved by...
+      placeholder: The change suggested is important because...
 
   - type: checkboxes
     id: terms
