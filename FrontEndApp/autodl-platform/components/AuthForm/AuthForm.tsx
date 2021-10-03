@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Props } from "react";
 import { useRouter } from "next/router";
 import Paper from "@material-ui/core/Paper";
 import Box from "@material-ui/core/Box";
@@ -15,6 +15,7 @@ import RadioGroup from "@material-ui/core/RadioGroup";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import LinearProgress from "@material-ui/core/LinearProgress";
+import Snackbar from '@material-ui/core/Snackbar';
 import Stepper from "@material-ui/core/Stepper";
 import Step from "@material-ui/core/Step";
 import StepLabel from "@material-ui/core/StepLabel";
@@ -24,6 +25,7 @@ import EmailIcon from '@material-ui/icons/Email';
 import VisibilityIcon from "@material-ui/icons/Visibility";
 import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
 import LockIcon from '@material-ui/icons/Lock';
+import MuiAlert from '@material-ui/lab/Alert';
 import { makeStyles } from "@material-ui/core/styles";
 
 import { UserState, ErrorState } from "./AuthModel";
@@ -79,6 +81,10 @@ const useStyles = makeStyles({
   },
 });
 
+function Alert(props: any) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
+
 export default function AuthForm() {
   const classes = useStyles();
   const router = useRouter();
@@ -91,7 +97,7 @@ export default function AuthForm() {
     firstName: '',
     lastName: '',
     accountType: 'user',
-    otp: undefined,
+    otp: '',
   });
 
   // setErrors to be implemented below
@@ -110,6 +116,18 @@ export default function AuthForm() {
   const [otpStep, setOtpStep] = React.useState<"receive" | "validate" | "newPass">("receive");
   const [resendText, setResendText] = React.useState<"Resend OTP?" | "OTP sent successfully!">("Resend OTP?");
   const [activeRegisterStep, setActiveRegisterStep] = React.useState<number>(0);
+  const [openAlert, setOpenAlert] = React.useState<boolean>(false);
+  const [alert, setAlert] = React.useState({
+    message: "This is alert msg",
+    severity: "warning",
+  });
+
+  const handleAlertClose = (_?: React.SyntheticEvent, reason?: string) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpenAlert(true);
+  };
 
   const registerSteps = ["Account Type", "Account Details"];
 
@@ -160,62 +178,106 @@ export default function AuthForm() {
   const handleReceiveOtp = () => {
     setShowProgress(true);
     // Error Handling Required
-    setTimeout(() => {
-      setOtpStep("validate");
+    AuthService.verifyEmail(values.username).then((response) => {
+      setAlert({
+        message: response.message,
+        severity: response.status ? "success" : "error",
+      });
+      setOpenAlert(true);
       setShowProgress(false);
-    }, 1000);
-
-    setTimeout(() => {
-      setShowOtpResendText(true);
-    }, 5000);
+    });
+    setOtpStep("validate");
+    setShowOtpResendText(true);
   }
 
   const handleResendOtp = () => {
     setShowProgress(true);
-    setTimeout(() => {
+    AuthService.verifyEmail(values.username).then((response) => {
+      setAlert({
+        message: response.message,
+        severity: response.status ? "success" : "error",
+      });
+      setOpenAlert(true);
       setShowProgress(false);
-      setResendText("OTP sent successfully!")
-    }, 1500);
+    });
+    setResendText("OTP sent successfully!");
   }
 
   const handleVerifyOtp = () => {
     setShowProgress(true);
-    // Error Handling Required
-    setTimeout(() => {
-      setOtpStep("newPass");
+    AuthService.verifyOTP(values.username, values.otp).then((response) => {
+      setAlert({
+        message: response.message,
+        severity: response.status ? "success" : "error",
+      });
+      setOpenAlert(true);
+      if(response.status) {
+        setOtpStep("newPass");
+      }
       setShowProgress(false);
-    }, 1500);
+    });
   }
 
   const handleNewPass = () => {
     setShowProgress(true);
-    // Error Handling Required
-    console.log(values);
-    setTimeout(() => {
-      router.push("/home");
-    }, 1500);
+    AuthService.updatePassword(values.username, values.password).then((response) => {
+      setAlert({
+        message: response.message,
+        severity: response.status ? "success" : "error",
+      });
+      setOpenAlert(true);
+      if(response.status) {
+        router.push("/");
+      }
+      setShowProgress(false);
+    });
   }
 
   const handleLogin = () => {
     setShowProgress(true);
     // handleErrors();
-    AuthService.login(values).then((loggedIn) => {
-      console.log(loggedIn);
-      if (loggedIn) {
+    AuthService.login(values).then((response) => {
+      if (response.status) {
         dispatch(login());
+        setAlert({
+          message: response.message,
+          severity: "success",
+        });
+        setOpenAlert(true);
         router.push("/home");
       }
+      else {
+        setAlert({
+          message: response.message,
+          severity: "error",
+        });
+        setOpenAlert(true);
+      }
+      setShowProgress(false);
     });
   };
 
   const handleRegister = () => {
     setShowProgress(true);
     // handleErrors();
-    AuthService.register(values).then((loggedIn) => {
-      if (loggedIn) {
+    AuthService.register(values).then((response) => {
+      if (response.status) {
         dispatch(login());
+        setAlert({
+          message: response.message,
+          severity: "success",
+        });
+        setOpenAlert(true);
         router.push("/home");
       }
+      else {
+        setAlert({
+          message: response.message,
+          severity: "error",
+        });
+        setOpenAlert(true);
+      }
+      setShowProgress(false);
     });
   };
 
@@ -606,6 +668,16 @@ export default function AuthForm() {
           </>
         )}
       </Box>
+      <Snackbar
+        open={openAlert}
+        data-testid={"warning"}
+        autoHideDuration={60000}
+        onClose={handleAlertClose}
+      >
+        <Alert onClose={handleAlertClose} severity={alert.severity}>
+          {alert.message}
+        </Alert>
+      </Snackbar>
     </Paper>
   );
 }

@@ -5,6 +5,7 @@ export type UserState = {
   firstName: string;
   lastName: string;
   accountType: "user" | "organization";
+  otp: string;
 };
 
 export type ErrorState = {
@@ -14,3 +15,8 @@ export type ErrorState = {
   firstName: boolean;
   lastName: boolean;
 };
+
+export type AuthAPIResponse = {
+  message: string;
+  status: boolean;
+}
