@@ -47,19 +47,19 @@ DO NOT CREATE a pull request FIRST if someone else is working on it then your ef
 
 * Conventional commits in the PR title are a must
 
-* For frontend, while creating a pull request attach a screenshot of the change
+* For the frontend, while creating a pull request attach a screenshot of the change
 
-* Last but not least, one pull request to fix a typo is fine, but 5 pull requests to remove a stray whitespace is not ([reference](https://hacktoberfest.digitalocean.com/resources/qualitystandards)).
+* Last but not least, one pull request to fix a typo is fine, but 5 pull requests to remove stray whitespace are not ([reference](https://hacktoberfest.digitalocean.com/resources/qualitystandards)).
 
 ## User Guidelines
 
 The [docs](https://auto-dl.readthedocs.io/en/latest/index.html) are the perfect place for you to start getting used to Auto-DL.
 
-#### Want to setup locally?
+#### Want to set up locally?
 
 * Start with our [getting started docs](https://docs.auto-dl.tech/en/latest/installing.html).
 
-* The doc didn't help? [Join our slack](https://join.slack.com/t/autodl/shared_invite/zt-qagxiwub-ywRM_oBvvF~F7YNtlBqy_Q) and ask your questions!
+* The doc didn't help? [Join our Slack](https://join.slack.com/t/autodl/shared_invite/zt-qagxiwub-ywRM_oBvvF~F7YNtlBqy_Q) and ask your questions!
 
 #### Just want to get a gist of "How to use the application"?
 
@@ -82,7 +82,7 @@ Setup Auto-DL:
 
 - Improve the UI and UX.
 
-- Show model training realted stats on the frontend.
+- Show model training-related stats on the frontend.
 
 - Visualization and data preprocessing steps.
 
@@ -122,3 +122,5 @@ For more details, visit our [website](https://auto-dl.tech/)
 ## Copyright and Licensing
 
 [GNU General Public License v3.0](https://github.com/Auto-DL/Auto-DL/blob/v1-beta/LICENSE)
+
+
