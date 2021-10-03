@@ -3,6 +3,7 @@ from . import views
 
 urlpatterns = [
     path("login/", views.login, name="login"),
+    # path("razorpay/", views.razorpay, name="razorpay"),
     path("register/", views.register, name="register"),
     path("logout/", views.logout, name="logout"),
     path("otp/verify/", views.verify_otp, name="verify-otp"),

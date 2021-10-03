@@ -3,6 +3,7 @@ import re
 import bcrypt
 from authv1 import connector
 from authv1.auth import Token
+# from django.db import models
 
 DATE_FORMAT = "%Y/%m/%d %H/%M/%S"
 

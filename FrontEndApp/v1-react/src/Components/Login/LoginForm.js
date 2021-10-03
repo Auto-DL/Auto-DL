@@ -182,6 +182,7 @@ function LoginForm() {
       email: values.email,
       password: values.registerPassword,
     };
+    console.log(data)
 
     // validation
     if (
@@ -195,7 +196,9 @@ function LoginForm() {
       values.email &&
       values.registerPassword === values.confirmpassword
     ) {
+      console.log("Validate: ", data)
       const res = await LoginService.register(data);
+      console.log("Register Response: ",res)
       if (res.status === 200) {
         setalert({ ...values, msg: res.data.message, severity: "success" });
 

@@ -5,6 +5,8 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 import json
 import bcrypt
+import razorpay
+import shortid
 
 from django.core.mail import send_mail
 from .auth import OTP
@@ -12,6 +14,23 @@ from .emails import EmailTemplates
 from .models import Session, User
 from .store import Store
 
+# razorpay_client = razorpay.Client(auth=("rzp_test_j9RsK0fDeYlYxn", "9DtW2UuzOVucuzvhJU4YDONJ"))
+
+# async def razorpay(request):
+#     order_amount = "50000"
+#     order_currency = 'INR'
+#     # order_receipt = 'order_rcptid_11'
+#     notes = {'Shipping address': 'Bommanahalli, Bangalore'}   # OPTIONAL
+
+#     response = await razorpay_client.order.create(
+#         amount=order_amount,
+#         currency=order_currency,
+#         # receipt=shortid.generate(), 
+#         receipt='order_rcptid_11', 
+#         # notes=notes,
+#         paymentCapture=1
+#         )    
+#     return JsonResponse(response)
 
 @api_view(["POST"])
 def login(request):
@@ -40,15 +59,19 @@ def login(request):
         {"message": message, "user": username, "token": token}, status=status
     )
 
-
 @api_view(["POST"])
 def register(request):
     try:
         username = request.data.get("username")
+        # username = "priyansh"
         email = request.data.get("email")
+        # email = "priyansh@gmail.com"
         password = request.data.get("password")
+        # password = "priyansh"
         first_name = request.data.get("first_name")
+        # first_name = "priyansh"
         last_name = request.data.get("last_name")
+        # last_name = "maheshwari"
 
         user = User(
             username,

@@ -5,6 +5,7 @@ from . import views
 
 urlpatterns = [
     # v0 routes
+    # path("razorpay/", views.razorpay, name="razorpay"),    
     path("generate/", views.generate, name="generate"),
     path("train/", views.train, name="train"),
     path("compile/", views.compile, name="compile"),

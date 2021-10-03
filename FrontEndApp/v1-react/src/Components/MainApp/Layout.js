@@ -1,5 +1,6 @@
 import React from "react";
 import clsx from "clsx";
+import Axios from "axios";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
 import AppBar from "@material-ui/core/AppBar";
@@ -16,10 +17,12 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import PowerSettingsNewIcon from "@material-ui/icons/PowerSettingsNew";
+import AttachMoneyIcon from '@material-ui/icons/AttachMoney';
 import HomeIcon from "@material-ui/icons/Home";
 import Icon from "@material-ui/core/Icon";
 import SvgIcon from '@material-ui/core/SvgIcon';
 import { useHistory } from "react-router-dom";
+// import Razorpay from 'razorpay';
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
@@ -85,6 +88,9 @@ const useStyles = makeStyles((theme) => ({
   logout: {
     bottom: "0",
   },
+  donateButton: {
+    top: "650px"
+  }
 }));
 
 function Layout() {
@@ -119,6 +125,85 @@ function Layout() {
     history.push("/login");
     window.location.reload();
   };
+
+  const loadScript = (src) => {
+    return new Promise(resolve => {
+      const script = document.createElement("script");
+      script.src = src
+      script.onload = () => {
+        resolve(true)
+      } 
+      script.onerror = () => {
+        resolve(false)
+      }
+      document.body.appendChild(script);
+    })
+  }
+
+  async function displayRazorpay() {
+
+    const res = await loadScript('https://checkout.razorpay.com/v1/checkout.js')
+
+    if(!res) {
+      alert("Razorpay Sdk Failed to load")
+      return
+    }
+
+    
+    // var data;
+    // try {
+    //    data = await fetch('http://localhost:8000/payments/', {method: 'POST'}).then((t) => {
+    //     console.log(t)
+    //   })
+    // } catch(e){
+    //   console.log(e)
+    // }
+    // console.log("Razorpay data: ", data)
+
+    const data = await Axios({
+      url: `http://localhost:8000/payments/pay/`,
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      // data: bodyData,
+    }).then((res) => {
+      console.log("Data: ",res)
+      return res;
+    });
+
+
+    var options = {
+        key: 'rzp_test_j9RsK0fDeYlYxn', // Enter the Key ID generated from the Dashboard
+        amount: data.data.payment.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+        currency: "INR",
+        name: "AutoDl",
+        description: "Donate/Support Us ",
+        image: "https://raw.githubusercontent.com/Auto-DL/Auto-DL/main/static/Logo.png",
+        order_id: data.data.payment.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+        handler: function (response){
+            alert(response.razorpay_payment_id);
+            alert(response.razorpay_order_id);
+            alert(response.razorpay_signature)
+        },
+        prefill: {
+            "name": "Gaurav Kumar",
+            "email": "gaurav.kumar@example.com",
+            "contact": "9999999999"
+        },
+        notes: {
+            "address": "Razorpay Corporate Office"
+        },
+        theme: {
+            "color": "#3399cc"
+        }
+    };
+    const paymentObject = new window.Razorpay(options)
+    paymentObject.open()
+    // var rzp1 = new Razorpay(options);
+  }
+
 
   return (
     <div className={classes.root}>
@@ -215,6 +300,21 @@ function Layout() {
               <ListItemText primary={"Logout"} />
             </ListItem>
           </List>
+
+
+          <List>
+            <ListItem 
+              button
+              className={classes.donateButton}
+              onClick={displayRazorpay}
+            >
+              <ListItemIcon>
+                <AttachMoneyIcon/>
+              </ListItemIcon>
+              <ListItemText primary={"Donate/Support Us"}/>
+            </ListItem>
+          </List>
+
 
         </Drawer>
       ) : null}

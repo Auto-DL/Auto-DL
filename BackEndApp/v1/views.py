@@ -7,6 +7,7 @@ import sys
 import os
 import json
 import importlib
+import razorpay
 
 from authv1.store import Store
 from authv1.models import User
@@ -27,6 +28,24 @@ from .utils import (
     get_git_username,
 )
 
+razorpay_client = razorpay.Client(auth=("rzp_test_j9RsK0fDeYlYxn", "9DtW2UuzOVucuzvhJU4YDONJ"))
+
+@api_view(["POST"])
+async def razorpay(request):
+    order_amount = "50000"
+    order_currency = 'INR'
+    # order_receipt = 'order_rcptid_11'
+    # notes = {'Shipping address': 'Bommanahalli, Bangalore'}   # OPTIONAL
+
+    response = await razorpay_client.order.create(
+        amount=order_amount,
+        currency=order_currency,
+        # receipt=shortid.generate(), 
+        receipt='order_rcptid_11', 
+        # notes=notes,
+        paymentCapture=1
+        )    
+    return JsonResponse("Hello")
 
 @api_view(["POST"])
 @is_authenticated

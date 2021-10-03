@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     "authv1",
     "v1",
     "deployments",
+    "payments"
 ]
 
 MIDDLEWARE = [
