@@ -84,7 +84,7 @@ Setup Auto-DL:
 
 - Show model training realted stats on the frontend.
 
-- Visualization and data preprocessing steps. 
+- Visualization and data preprocessing steps.
 
 - Model Explainability.
 
