@@ -30,13 +30,13 @@ def test_verify_email_pass():
     assert msg == validate_msg
 
 
-@pytest.mark.xfail(raises=TypeError)
 def test_verify_email_fail():
     wrong_user = MockUser().mock_wrong_user()
     email = EmailTemplates(wrong_user)
     otp = "ABC123"
     username = wrong_user["username"]
-    email.verify_email(username, otp)
+    with pytest.raises(TypeError):
+        email.verify_email(username, otp)
 
 
 def test_forgot_password_pass():
@@ -61,10 +61,10 @@ def test_forgot_password_pass():
     assert msg == validate_msg
 
 
-@pytest.mark.xfail(raises=TypeError)
 def test_forgot_password_fail():
     wrong_user = MockUser().mock_wrong_user()
     email = EmailTemplates(wrong_user)
     otp = "ABC123"
     username = wrong_user["username"]
-    email.forgot_password(username, otp)
+    with pytest.raises(TypeError):
+        email.forgot_password(username, otp)
