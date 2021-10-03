@@ -21,13 +21,13 @@ import StepLabel from '@material-ui/core/StepLabel';
 import AlternateEmailIcon from '@material-ui/icons/AlternateEmail';
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import EmailIcon from '@material-ui/icons/Email';
-import Visibility from "@material-ui/icons/Visibility";
-import VisibilityOff from "@material-ui/icons/VisibilityOff";
+import VisibilityIcon from "@material-ui/icons/Visibility";
+import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
+import LockIcon from '@material-ui/icons/Lock';
 import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles({
   formRoot: {
-    flexGrow: 1,
     marginTop: '8rem',
   },
   formContainer: {
@@ -39,8 +39,7 @@ const useStyles = makeStyles({
     paddingBottom: '20px',
   },
   formElement: {
-    marginTop: '15px',
-    marginBottom: '15px',
+    margin: '15px 0px',
   },
   helperText: {
     fontSize: '100%',
@@ -282,7 +281,7 @@ export default function AuthForm() {
                       onMouseDown={handleMouseDownPassword}
                       edge="end"
                     >
-                      {showPassword ? <Visibility /> : <VisibilityOff />}
+                      {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
                     </IconButton>
                   </InputAdornment>
                 }
@@ -382,7 +381,7 @@ export default function AuthForm() {
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">
-                        <AlternateEmailIcon />
+                        <LockIcon />
                       </InputAdornment>
                     ),
                   }}
@@ -445,7 +444,7 @@ export default function AuthForm() {
                           onMouseDown={handleMouseDownPassword}
                           edge="end"
                         >
-                          {showPassword ? <Visibility /> : <VisibilityOff />}
+                          {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
                         </IconButton>
                       </InputAdornment>
                     }
@@ -576,7 +575,7 @@ export default function AuthForm() {
                 color="primary"
                 className={classes.actionBtn}
               >
-                Back
+                Go Back
               </Button>
               {(activeRegisterStep === 0) && (
                 <Button
