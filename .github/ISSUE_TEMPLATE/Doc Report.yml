@@ -22,7 +22,7 @@ body:
     id: expected-behaviour
     attributes:
       label: Expected Behaviour
-      description: Tell us what was supposed to happen?
+      description: How should we improve?
       placeholder: A bug should not have happened!
 
   - type: dropdown
