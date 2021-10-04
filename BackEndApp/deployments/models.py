@@ -1,6 +1,7 @@
 import os
 import git
 import shutil
+import PyInstaller.__main__
 
 from .utils import zip_flask_app
 from .exceptions import (
@@ -86,14 +87,22 @@ class Deployment:
 
                 return response
             else:
-                status, success, message = (
-                    200,
-                    True,
-                    "Executable Downloaded Successfully",
+                app = os.path.join(self.deployment_dir, "app.py")
+                dist_path = os.path.abspath('dist')
+                PyInstaller.__main__.run([
+                    app,
+                    "--onefile",
+                    "--clean",
+                ])
+                response = HttpResponse(
+                    open(os.path.join(dist_path, 'app.exe'), "rb"),
+                    headers={
+                        "Content-Type": "application/vnd.microsoft.portable-executable",
+                        "Content-Disposition": "attachment; filename=app.exe",
+                    },
                 )
-                return JsonResponse(
-                    {"success": success, "message": message}, status=status
-                )
+
+                return response
 
         except Exception as e:
             raise AppDownloadFailed(self.deployment_dir) from e
