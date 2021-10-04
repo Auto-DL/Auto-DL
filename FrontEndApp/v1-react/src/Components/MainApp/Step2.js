@@ -78,7 +78,7 @@ function Step2() {
   const [components, setcomponents] = useState([]);
   const [selected_layer_type, setselected_layer_type] = useState("");
   const [selected_layer, setselected_layer] = useState(-1);
-  const [selected_layer_name, setselected_layer_name] = useState("");
+  const [, setselected_layer_name] = useState("");
   const [value, setValue] = useState(0);
   const [gitusername, setGitusername] = useState("");
 
@@ -98,7 +98,7 @@ function Step2() {
   const [openModal, setOpenModal] = useState(false);
   const [openGitHubDetails, setOpenGitHubDetails] = useState(false);
 
-  const [generated_file_path, setgenerated_file_path] = useState("");
+  const [, setgenerated_file_path] = useState("");
 
   const [alert, setalert] = React.useState({
     msg: "This is alert msg",
@@ -116,6 +116,7 @@ function Step2() {
     setOpen(false);
   };
 
+  
   const getProjectId = () => {
     const project_id =
       project_details.username !== username
@@ -2138,13 +2139,13 @@ function Step2() {
     };
   }
 
-  const [all_optimizer, setall_optimizer] = useState(temp_optimizer);
-  const [all_loss, setall_loss] = useState(temp_loss);
+  const [all_optimizer, ] = useState(temp_optimizer);
+  const [all_loss, ] = useState(temp_loss);
   const [all_prepro, setall_prepro] = useState({});
-  const [render_prepro_meta, setrender_prepro_meta] = useState(temp_pre_meta);
-  const [render_prepro, setrender_prepro] = useState(temp_pre);
+  const [render_prepro_meta, ] = useState(temp_pre_meta);
+  const [render_prepro, ] = useState(temp_pre);
   const [show_pre, setshow_pre] = useState(false);
-  const [jsondata, setjsondata] = useState(temp_json);
+  const [jsondata, ] = useState(temp_json);
 
   const [invalidLayerIndices, setInvalidLayerIndices] = useState(new Set());
   const [validLayerIndices, setValidLayerIndices] = useState([]);
@@ -2206,7 +2207,7 @@ function Step2() {
     }
 
     fetchDataHyper();
-  }, [getProjectId(), token, username]);
+  }, [getProjectId, token, username]);
 
   const handleDragEnd = async({ destination, source }) => {
     let tempArr = _.cloneDeep(components);
@@ -2348,19 +2349,6 @@ function Step2() {
       console.log(recommendations.data.predictions);
     }
 	}
-
-	
-
-  const handleInvalidLayers = (validate_res) => {
-    const indexSet = new Set();
-    //extracting indices of invalid layers and collecting them in a set
-    for (let i = 0; i < validate_res.length; i++) {
-      for (let j = 0; j < validate_res[i].indices.length; j++) {
-        indexSet.add(validate_res[i].indices[j]);
-      }
-    }
-    return indexSet;
-  };
 
   const showdetails = (element) => {
     setselected_layer_type(element);
