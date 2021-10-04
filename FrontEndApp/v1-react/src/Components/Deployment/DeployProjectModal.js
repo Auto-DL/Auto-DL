@@ -189,7 +189,7 @@ const DeployProjectModal = ({ setOpenDeployModal, setDeployOptions, localDeploy,
     const handleCloseDeployModal = () => {
         setDeployStep(0);
         setModelDeployCategories([]);
-        setLocalDeployVariant("zip");
+        setLocalDeployVariant("executable");
         setCurrentPklFile("");
         setPklFileName("");
         setNumberOfChunks(0);
@@ -215,9 +215,14 @@ const DeployProjectModal = ({ setOpenDeployModal, setDeployOptions, localDeploy,
         if (res.status === 200) {
             const { data } = await res;
             const downloadUrl = window.URL.createObjectURL(new Blob([data]));
+            const localDeployVariant = document.querySelector('[name=localDeployVariant]:checked').value;
             const link = document.createElement('a');
+            const fileName = {
+                zip: 'deployment.zip',
+                executable: 'app.exe',
+            };
             link.href = downloadUrl;
-            link.setAttribute('download', 'deployment.zip');
+            link.setAttribute('download', fileName[localDeployVariant]);
             document.body.appendChild(link);
             link.click();
             link.remove();
