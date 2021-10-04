@@ -55,7 +55,7 @@ body:
     id: terms
     attributes:
       label: Code of Conduct
-      description: By submitting this issue, you agree to follow our [Code of Conduct](https://github.com/Auto-DL/Auto-DL/blob/main/CODE_OF_CONDUCT.md)
+      description: By submitting this issue, you agree to follow our [Code of Conduct](https://github.com/Auto-DL/Auto-DL/blob/main/CODE_OF_CONDUCT.md) and [Contributing Guidelines](https://github.com/Auto-DL/Auto-DL/blob/main/CONTRIBUTING.md)
       options:
-        - label: I agree to follow this project's Code of Conduct
+        - label: I agree to follow this project's Code of Conduct and Contributing Guidelines
           required: true
