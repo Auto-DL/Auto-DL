@@ -1,14 +1,13 @@
 import axios from "axios";
 require('dotenv').config()
 const baseurl = process.env.NODE_ENV === "production" ? "/api" : "";
-// const BACKEND_API_URL = process.env.REACT_APP_BACKEND_API_URL || baseurl;
-const BACKEND_API_URL = "http://localhost:8000";
+const BACKEND_API_URL = process.env.REACT_APP_BACKEND_API_URL || baseurl;
 
 class LoginService {
   async login(data) {
     try {
       console.log("loginService", data)
-      const response = await axios.post(`http://127.0.0.1:8000/auth/login/`, data);
+      const response = await axios.post(`${BACKEND_API_URL}/auth/login/`, data);
       return response;
     } catch (error) {
       return error.response;
@@ -19,7 +18,7 @@ class LoginService {
     try {
       console.log("Register Service: ", data)
       const response = await axios.post(
-        `http://127.0.0.1:8000/auth/register/`,
+        `${BACKEND_API_URL}/auth/register/`,
         data
       );
       console.log("Response: ", response)

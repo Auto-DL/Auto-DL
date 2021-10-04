@@ -22,7 +22,6 @@ import HomeIcon from "@material-ui/icons/Home";
 import Icon from "@material-ui/core/Icon";
 import SvgIcon from '@material-ui/core/SvgIcon';
 import { useHistory } from "react-router-dom";
-// import Razorpay from 'razorpay';
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
@@ -149,17 +148,6 @@ function Layout() {
       return
     }
 
-    
-    // var data;
-    // try {
-    //    data = await fetch('http://localhost:8000/payments/', {method: 'POST'}).then((t) => {
-    //     console.log(t)
-    //   })
-    // } catch(e){
-    //   console.log(e)
-    // }
-    // console.log("Razorpay data: ", data)
-
     const data = await Axios({
       url: `http://localhost:8000/payments/pay/`,
       method: "POST",
@@ -167,7 +155,6 @@ function Layout() {
         Accept: "application/json",
         "Content-Type": "application/json",
       },
-      // data: bodyData,
     }).then((res) => {
       console.log("Data: ",res)
       return res;
@@ -175,7 +162,7 @@ function Layout() {
 
 
     var options = {
-        key: 'rzp_test_j9RsK0fDeYlYxn', // Enter the Key ID generated from the Dashboard
+        key: 'RAZORPAY_API_KEY', // Enter the Key ID generated from the Dashboard
         amount: data.data.payment.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
         currency: "INR",
         name: "AutoDl",
@@ -201,7 +188,6 @@ function Layout() {
     };
     const paymentObject = new window.Razorpay(options)
     paymentObject.open()
-    // var rzp1 = new Razorpay(options);
   }
 
 
@@ -314,8 +300,6 @@ function Layout() {
               <ListItemText primary={"Donate/Support Us"}/>
             </ListItem>
           </List>
-
-
         </Drawer>
       ) : null}
       <main className={classes.content}>
