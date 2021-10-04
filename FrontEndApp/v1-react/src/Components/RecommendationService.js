@@ -1,5 +1,5 @@
 import axios from "axios";
-const baseurl = process.env.NODE_ENV == "production" ? "/api" : "";
+const baseurl = process.env.NODE_ENV === "production" ? "/api" : "";
 const FASTAPI_URL = process.env.REACT_APP_FASTAPI_URL || baseurl;
 
 class RecommendationService {

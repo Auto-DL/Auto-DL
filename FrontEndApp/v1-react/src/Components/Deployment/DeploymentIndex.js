@@ -1,6 +1,5 @@
 import { useStyles } from "./styles";
 import { Typography, Grid } from "@material-ui/core";
-import AddCircleIcon from "@material-ui/icons/AddCircle";
 
 const Deployment = () => {
     const classes = useStyles();

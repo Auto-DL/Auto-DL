@@ -156,7 +156,7 @@ const DeployProjectStepTwo = ({ handleCloseDeployModal, setDeployStep, values, c
                 >
                     Previous Step
                 </Button>
-                {modelDeployCategories.length != 0 && (
+                {modelDeployCategories.length !== 0 && (
                     <Button
                         variant="contained"
                         onClick={() => setDeployStep(2)}
