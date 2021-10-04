@@ -1,4 +1,4 @@
-import React, { Props } from "react";
+import React from "react";
 import { useRouter } from "next/router";
 import Paper from "@material-ui/core/Paper";
 import Box from "@material-ui/core/Box";
