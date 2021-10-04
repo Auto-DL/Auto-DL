@@ -88,14 +88,16 @@ class Deployment:
                 return response
             else:
                 app = os.path.join(self.deployment_dir, "app.py")
-                dist_path = os.path.abspath('dist')
-                PyInstaller.__main__.run([
-                    app,
-                    "--onefile",
-                    "--clean",
-                ])
+                dist_path = os.path.abspath("dist")
+                PyInstaller.__main__.run(
+                    [
+                        app,
+                        "--onefile",
+                        "--clean",
+                    ]
+                )
                 response = HttpResponse(
-                    open(os.path.join(dist_path, 'app.exe'), "rb"),
+                    open(os.path.join(dist_path, "app.exe"), "rb"),
                     headers={
                         "Content-Type": "application/vnd.microsoft.portable-executable",
                         "Content-Disposition": "attachment; filename=app.exe",
