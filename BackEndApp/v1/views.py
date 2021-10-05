@@ -24,6 +24,9 @@ from .utils import (
     decrypt,
     get_git_username,
 )
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 @api_view(["POST"])
@@ -37,7 +40,9 @@ def generate(request):
     project_id = request.data.get("project_id")
     store_obj = Store(user)
     if not store_obj.exist(project_id):
-        raise Exception("No such project exists")
+        error_message = "No such project exists"
+        logger.error(f"[API][POST][generate] {error_message}")
+        raise Exception(error_message)
 
     project_dir = store_obj.path + os.sep + project_id
     with open(project_dir + os.sep + "meta.json", "r") as f:
@@ -75,15 +80,15 @@ def generate(request):
     status, error = parser.generate_code(inputs)
 
     if status:
-        print("Error", error)
         msg = "Could not generate code"
         path = ""
+        logger.error(f"[API][POST][generate] {msg} due to {error}")
     else:
-        print("File generated")
         msg = "File Generated Successfully"
         path = "file:///" + os.getcwd() + os.sep + "test.py"
         format_code("test.py")
         copy_file(project_dir)
+        logger.info(f"[API][POST][generate] {msg}")
 
     return JsonResponse({"message": msg, "path": path})
 
@@ -102,9 +107,11 @@ def train(request):
             raise NotImplementedError("Training not supported on your platform")
 
         msg = "Training started successfully"
+        logger.info(f"[API][POST][train] {msg}")
 
     except Exception as e:
         msg = "Could not start training"
+        logger.error(f"[API][POST][train] {msg}")
     return JsonResponse({"message": msg})
 
 
@@ -126,7 +133,7 @@ def compile(request):
         test_model = importlib.import_module(test_path)
 
         status, error = test_model.test_compile_model(inputs)
-        print(status, error)
+        logger.error(f"[API][POST][compile] {status} {error}")
     except Exception as e:
         status, error = 1, "Compile error"
     return JsonResponse({"status": status, "error": error})
@@ -152,6 +159,7 @@ def get_all_projects(request):
             list_item = {id: metadata}
             projects.append(list_item)
         status, success, message = 200, True, "Projects Fetched"
+        logger.info(f"[API][POST][get_all_projects] {message}")
     except Exception as e:
         status, success, message, projects = (
             500,
@@ -159,6 +167,7 @@ def get_all_projects(request):
             "Projects could not be fetched",
             [],
         )
+        logger.error(f"[API][POST][get_all_projects] {message}")
     return JsonResponse(
         {"success": success, "message": message, "projects": projects}, status=status
     )
@@ -183,7 +192,7 @@ def get_project(request):
 
         b2f_json = layers
         status, success, message = 200, True, "Layers Fetched"
-
+        logger.info(f"[API][POST][get_project] {message}")
     except Exception as e:
         status, success, message, b2f_json = (
             500,
@@ -191,6 +200,7 @@ def get_project(request):
             "Layers could not be fetched",
             {},
         )
+        logger.error(f"[API][POST][get_project] {message}")
     return JsonResponse(
         {"success": success, "message": message, "b2f_json": b2f_json}, status=status
     )
@@ -240,8 +250,10 @@ def edit_project(request):
         with open(project_dir + os.sep + "meta.json", "w") as f:
             json.dump(metadata, f)
         status, success, message = 200, True, "Project Updated Successfully"
+        logger.info(f"[API][POST][edit_project] {message}")
     except Exception as e:
         status, success, message = 500, False, "Could not update the Project"
+        logger.error(f"[API][POST][edit_project] {message}")
     return JsonResponse({"success": success, "message": message}, status=status)
 
 
@@ -277,8 +289,10 @@ def delete_project(request):
                 json.dump(metadata, f)
 
         status, success, message = 200, True, "Project Deleted Successfully"
+        logger.info(f"[API][POST][delete_project] {message}")
     except Exception as e:
         status, success, message = 500, False, "Project could not be deleted"
+        logger.error(f"[API][POST][delete_project] {message}")
     return JsonResponse({"success": success, "message": message}, status=status)
 
 
@@ -321,8 +335,10 @@ def create_project(request):
             json.dump(metadata, f)
 
         status, success, message = 200, True, "Project Created Successfully"
+        logger.info(f"[API][POST][create_project] {message}")
     except Exception as e:
         status, success, message = 500, False, "Project could not be created"
+        logger.error(f"[API][POST][create_project] {message}")
     return JsonResponse({"success": success, "message": message}, status=status)
 
 
@@ -397,8 +413,10 @@ def clone_project(request):
                     json.dump(hyperparams, f)
 
         status, success, message = 200, True, "Project Cloned Successfully"
+        logger.info(f"[API][POST][clone_project] {message}")
     except Exception as e:
         status, success, message = 500, False, "Project could not be cloned"
+        logger.error(f"[API][POST][clone_project] {message}")
     return JsonResponse({"success": success, "message": message}, status=status)
 
 
@@ -426,8 +444,10 @@ def save_layers(request):
             json.dump(components, f)
 
         status, success, message = 200, True, "Layers saved successfully"
+        logger.info(f"[API][POST][save_layers] {message}")
     except Exception as e:
         status, success, message = 500, False, "Could not save layers"
+        logger.error(f"[API][POST][save_layers] {message}")
     return JsonResponse({"success": success, "message": message}, status=status)
 
 
@@ -449,9 +469,10 @@ def get_layers(request):
             components = json.load(f)
 
         status, success, message = 200, True, "Components Array Fetched"
-
+        logger.info(f"[API][POST][get_layers] {message}")
     except Exception as e:
         status, success, message, components = 500, False, "Could not fetch Layers", {}
+        logger.error(f"[API][POST][get_layers] {message}")
     return JsonResponse(
         {"success": success, "message": message, "components": components},
         status=status,
@@ -478,9 +499,10 @@ def save_preprocessing_params(request):
             json.dump(preprocessing, f)
 
         status, success, message = 200, True, "Preprocessing params saved successfully"
-
+        logger.info(f"[API][POST][save_preprocessing_params] {message}")
     except Exception as e:
         status, success, message = 500, False, "Could not save preprocessing params"
+        logger.error(f"[API][POST][save_preprocessing_params] {message}")
     return JsonResponse({"success": success, "message": message}, status=status)
 
 
@@ -502,7 +524,7 @@ def get_preprocessing_params(request):
             preprocessing = json.load(f)
 
         status, success, message = 200, True, "preprocessing params fetched"
-
+        logger.info(f"[API][POST][get_preprocessing_params] {message}")
     except Exception as e:
         status, success, message, preprocessing = (
             500,
@@ -510,6 +532,7 @@ def get_preprocessing_params(request):
             "Could not fetch preprocessing params",
             {},
         )
+        logger.error(f"[API][POST][get_preprocessing_params] {message}")
     return JsonResponse(
         {"success": success, "message": message, "preprocessing": preprocessing},
         status=status,
@@ -536,9 +559,10 @@ def save_hyperparams(request):
             json.dump(hyperparams, f)
 
         status, success, message = 200, True, "Hyperparams saved successfully"
-
+        logger.info(f"[API][POST][save_hyperparams] {message}")
     except Exception as e:
         status, success, message = 500, False, "Could not save hyperparams"
+        logger.error(f"[API][POST][save_hyperparams] {message}")
     return JsonResponse({"success": success, "message": message}, status=status)
 
 
@@ -560,7 +584,7 @@ def get_hyperparams(request):
             hyperparams = json.load(f)
 
         status, success, message = 200, True, "hyperparams fetched"
-
+        logger.info(f"[API][POST][get_hyperparams] {message}")
     except Exception as e:
         status, success, message, hyperparams = (
             500,
@@ -568,6 +592,7 @@ def get_hyperparams(request):
             "Could not fetch hyperparams ",
             {},
         )
+        logger.error(f"[API][POST][get_hyperparams] {message}")
     return JsonResponse(
         {"success": success, "message": message, "hyperparams": hyperparams},
         status=status,
@@ -597,14 +622,19 @@ def download_code(request):
         store_obj = Store(user)
         project_id = request.data.get("project_id")
         if not store_obj.exist(project_id):
-            raise Exception("No such project exists")
+            message = "No such project exists"
+            logger.error(f"[API][POST][download_code] {message}")
+            raise Exception(message)
         project_dir = store_obj.path + os.sep + project_id
 
         f = open(project_dir + os.sep + "test.py", "r")
         response = HttpResponse(f, content_type="application/x-python-code")
         response["Content-Disposition"] = "attachment; filename=test.py"
-
+        logger.info(
+            "[API][POST][download_code] Download generated code file successful"
+        )
     except Exception as e:
+        logger.error("[API][POST][download_code] File not found")
         response = HttpResponse("<h1>File not found</h1>")
     return response
 
@@ -626,6 +656,7 @@ def all_users(request):
         rootpath = os.path.expanduser("~/.autodl/")
         users = os.listdir(rootpath)
         status, success, message, users = 200, True, "Users fetched", users
+        logger.info(f"[API][GET][all_users] {message}")
     except Exception as e:
         status, success, message, users = (
             500,
@@ -633,6 +664,7 @@ def all_users(request):
             "Could not fetch users ",
             [],
         )
+        logger.error(f"[API][GET][all_users] {message}")
     return JsonResponse(
         {
             "success": success,
@@ -686,13 +718,14 @@ def share_project(request):
         with open(project_dir + os.sep + "meta.json", "w") as f:
             json.dump(metadata, f)
         status, success, message = 200, True, "Shared Successfully"
-
+        logger.info(f"[API][POST][share_project] {message}")
     except FileExistsError:
         status, success, message = (
             500,
             False,
             "Project is already being shared",
         )
+        logger.error(f"[API][POST][share_project] {message}")
     except OSError as e:
         if e.winerror == 1314:
             status, success, message = (
@@ -700,14 +733,17 @@ def share_project(request):
                 False,
                 "System administrator privileges are required to share projects.",
             )
+            logger.error(f"[API][POST][share_project] {message}")
         else:
             status, success, message = (
                 500,
                 False,
                 "Could not share project",
             )
+            logger.error(f"[API][POST][share_project] {message}")
     except:
         status, success, message = 500, False, "Failed"
+        logger.error(f"[API][POST][share_project] {message}")
     return JsonResponse({"success": success, "message": message}, status=status)
 
 
@@ -735,9 +771,11 @@ def get_github_username(request):
         git_username = get_git_username(decrypted_token)
         assert git_username is not None
         status, success, message = 200, True, "Github username fetched"
+        logger.info(f"[API][POST][get_github_username] {message}")
     else:
         git_username = None
         status, success, message = 200, True, "Github access token not set"
+        logger.error(f"[API][POST][get_github_username] {message}")
     return JsonResponse(
         {
             "success": success,
@@ -769,9 +807,11 @@ def github_logout(request):
             user.update("GitAccessToken", None)
 
         status, success, message = 200, True, "Logged out"
+        logger.info(f"[API][POST][github_logout] {message}")
     except Exception as e:
         print(e)
         status, success, message = 500, False, "Something went wrong"
+        logger.error(f"[API][POST][github_logout] {message}")
     return JsonResponse({"success": success, "message": message}, status=status)
 
 
@@ -824,6 +864,7 @@ def publish_on_github(request):
                 "Successfully Published",
                 repo_full_name,
             )
+            logger.info(f"[API][POST][publish_on_github] {message}")
         else:
             status, success, message, repo_full_name = (
                 500,
@@ -831,6 +872,7 @@ def publish_on_github(request):
                 "Something went wrong",
                 "",
             )
+            logger.error(f"[API][POST][publish_on_github] {message}")
     except:
         status, success, message, repo_full_name = (
             500,
@@ -838,6 +880,7 @@ def publish_on_github(request):
             "Something went wrong",
             "",
         )
+        logger.error(f"[API][POST][publish_on_github] {message}")
     return JsonResponse(
         {"success": success, "message": message, "repo_full_name": repo_full_name},
         status=status,
@@ -872,6 +915,7 @@ def authorize_github(request):
             True,
             "Successfully authorized",
         )
+        logger.info(f"[API][POST][authorize_github] {message}")
     except Exception as e:
         print(e)
         status, success, message = (
@@ -879,6 +923,7 @@ def authorize_github(request):
             False,
             "Something went wrong",
         )
+        logger.error(f"[API][POST][authorize_github] {message}")
     return JsonResponse(
         {"success": success, "message": message},
         status=status,
