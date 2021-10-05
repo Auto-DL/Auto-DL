@@ -157,7 +157,7 @@ export default function SideBar({ activeTab, projectName }: Props) {
     const { amount, id: order_id } = result.data;
 
     var options = {
-        key: process.env.RAZORPAY_API_KEY, // Enter the Key ID generated from the Dashboard
+        key: "rzp_test_j9RsK0fDeYlYxn", // Enter the Key ID generated from the Dashboard
         amount: amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
         currency: "INR",
         name: "AutoDL",
