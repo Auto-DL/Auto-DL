@@ -19,6 +19,8 @@ import Typography from "@material-ui/core/Typography";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import InputAdornment  from "@material-ui/core/InputAdornment"
+import Axios from 'axios'
+import Razorpay from 'razorpay'
 
 type Props = {
   activeTab?: string;
@@ -99,29 +101,89 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export default function SideBar({ activeTab, projectName }: Props) {
 
+  const classes = useStyles();
   const defaultDonateAmount = [50, 100, 150, 200, ]
 
+  const [donateAmt, setDonateAmt] = React.useState({amt:"0"});
   const [donateModalOpen, setDonateModalOpen] = React.useState(false);
   const modalOpen = () => setDonateModalOpen(true);
   const modalClose = () => setDonateModalOpen(false);
 
-  const [donateAmt, setDonateAmt] = React.useState({amt:"0"});
   
-  const classes = useStyles();
   const [open, setOpen] = React.useState(false);
-
   const handleDrawerOpen = () => {
     setOpen(true);
   };
-
   const handleDrawerClose = () => {
     setOpen(false);
   };
 
-  const displayRazorpay = (amount: string) => {
-    alert(amount)
-    setDonateAmt({amt: "0"})
+  const loadScript = (src: string) => {
+    return new Promise(resolve => {
+      const script = document.createElement("script");
+      script.src = src
+      script.onload = () => {
+        resolve(true)
+      } 
+      script.onerror = () => {
+        resolve(false)
+      }
+      document.body.appendChild(script);
+    })
+  }
+
+  async function displayRazorpay(amt:string) {
     modalClose()
+    const res = await loadScript('https://checkout.razorpay.com/v1/checkout.js')
+
+    if(!res) {
+      alert("Razorpay Sdk Failed to load")
+      return
+    }
+    alert(amt)
+    const result = await Axios({
+      url: `http://localhost:8000/payments/pay/`,
+      data: {amount: amt},
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      }
+    }).then((res) => {
+      console.log("Data: ",res)
+      return res;
+    });
+
+    const { amount, id: order_id } = result.data;
+
+    var options = {
+        key: process.env.RAZORPAY_API_KEY, // Enter the Key ID generated from the Dashboard
+        amount: amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+        currency: "INR",
+        name: "AutoDL",
+        description: "Thansk For Supporting Auto-DL",
+        image: "https://raw.githubusercontent.com/Auto-DL/Auto-DL/main/static/Logo.png",
+        order_id: order_id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+        handler: function (response:any){
+            alert(response.razorpay_payment_id);
+            alert(response.razorpay_order_id);
+            alert(response.razorpay_signature)
+        },
+        prefill: {
+            "name": "Gaurav Kumar",
+            "email": "gaurav.kumar@example.com",
+            "contact": "9999999999"
+        },
+        notes: {
+            "address": "Razorpay Corporate Office"
+        },
+        theme: {
+            "color": "#3399cc"
+        }
+    };
+    // const paymentObject = new window.Razorpay(options)
+    var paymentObject = new Razorpay(options);
+    paymentObject.open()
   }
 
   return (
