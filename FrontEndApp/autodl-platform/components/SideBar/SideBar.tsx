@@ -166,7 +166,7 @@ export default function SideBar({ activeTab, projectName }: Props) {
         </ListItem>
       </List>
 
-      <ListItem button key='' onClick={modalOpen}>
+      <ListItem button key='Donate' onClick={modalOpen}>
           <ListItemIcon><AttachMoneyIcon style={{ color: 'white' }} /></ListItemIcon>
           <ListItemText primary='Donate Us' style={{ color: 'white' }} />
       </ListItem>
@@ -186,7 +186,7 @@ export default function SideBar({ activeTab, projectName }: Props) {
         </Typography>
         <div style={{display: 'flex', justifyContent: 'space-between', fontSize: '20px', margin: '30px'}}>
           {defaultDonateAmount.map((amount) => 
-          <TextField className={clsx(classes.donate)}
+          <TextField key='' className={clsx(classes.donate)}
             onClick={() => setDonateAmt({amt: `${amount}`})}
             id="standard-read-only-input"
             variant="outlined"

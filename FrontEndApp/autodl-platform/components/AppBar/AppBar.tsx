@@ -190,7 +190,7 @@ export default function PrimaryAppBar({ projectName }: Prop) {
             aria-label="open drawer"
           >
             <Link href="/">
-              <Image src={logo} width="30" height="30" />
+              <Image src={logo} width="30" height="30" alt="Logo" />
             </Link>
           </IconButton>
           <Typography className={classes.brand} variant="h6" noWrap>
