@@ -9,7 +9,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Settings from '@material-ui/icons/Settings';
-import Routes from 'utils/routes';
+import Routes from 'lib/routes';
 import Router from 'next/router';
 
 type Props = {

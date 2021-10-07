@@ -1,4 +1,6 @@
 import axios from "axios";
+import { parseCookies, setCookie } from 'nookies';
+
 import { AuthAPIResponse, FormValues } from "./AuthModel";
 
 const baseurl = process.env.NODE_ENV === "production" ? "/api" : "";
@@ -6,14 +8,22 @@ const BACKEND_API_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL || baseurl;
 
 class AuthService {
   async login(data: FormValues): Promise<AuthAPIResponse> {
+    console.log(process.env.BACKEND_API_URL);
     try {
       const response = await axios.post(`${BACKEND_API_URL}/auth/login/`, {
         username: data.username,
         password: data.password,
       });
+      if (response.data.token) {
+        setCookie(null, 'token', response.data.token, {
+          maxAge: 2 * 24 * 60 * 60,
+        });
+      }
+
       return {
         message: response.data.message,
         status: response.status == 200,
+        username: response.data.user,
       };
     } catch (error) { 
       return {
@@ -35,9 +45,16 @@ class AuthService {
           last_name: data.lastName,
         }
       );
+      if (response.data.token) {
+        setCookie(null, 'token', response.data.token, {
+          maxAge: 2 * 24 * 60 * 60,
+        });
+      }
+
       return {
         message: response.data.message,
         status: response.status == 200,
+        username: response.data.user,
       };
     } catch (error) {
       return {
@@ -115,6 +132,11 @@ class AuthService {
         {
           username: username,
           password: password
+        }, 
+        {
+          headers: {
+            Authorization: 'Bearer ' + parseCookies().token 
+          }
         }
       );
       return {

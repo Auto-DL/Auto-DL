@@ -1,9 +1,9 @@
 import { Action, configureStore, ThunkAction, } from "@reduxjs/toolkit";
-import authReducer from "components/AuthForm/AuthSlice";
+import userReducer from "app/userSlice";
 
 export const store = configureStore({
   reducer: {
-    auth: authReducer,
+    user: userReducer,
   },
 });
 
