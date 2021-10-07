@@ -95,7 +95,13 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     donate: {
       width: "80px"
-  }
+    },
+    paymentValueContainer: {
+      display: 'flex',
+      justifyContent: 'space-between', 
+      fontSize: "20px",
+      margin: "30px"
+    }
   }),
 );
 
@@ -173,7 +179,7 @@ export default function SideBar({ activeTab, projectName }: Props) {
       return
     }
     const result = await Axios({
-      url: `http://localhost:8000/payments/pay/`,
+      url: `${process.env.BACKEND_API_URL}/payments/pay/`,
       data: {"amount": amt, "name": "Priyansh"},
       method: "POST",
       headers: {
@@ -272,7 +278,7 @@ export default function SideBar({ activeTab, projectName }: Props) {
           <Typography id="modal-modal-description">
           Auto-DL helps you make Deep Learning models without writing a single line of code and giving as little input as possible.
         </Typography>
-        <div style={{display: 'flex', justifyContent: 'space-between', fontSize: '20px', margin: '30px'}}>
+        <div className={classes.paymentValueContainer}>
           {defaultDonateAmount.map((amount) => 
           <TextField key='' className={clsx(classes.donate)}
             onClick={() => setDonateAmt({amt: `${amount}`})}
