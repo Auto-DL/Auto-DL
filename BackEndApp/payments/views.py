@@ -26,20 +26,26 @@ def start_payment(request):
 
 @api_view(["POST"])
 def verify_payment(request):
+    
     res = json.loads(request.data["response"])
     print("Response: ",res)
+    
+    ord_id = ""
+    raz_pay_id = ""
+    raz_signature = ""
+    
     try:
         print("Going Ahead")
-        orderId = request.data.get("razorpay_order_id")
-        paymentId = request.data.get("razorpay_payment_id")
+        for key in res.keys():
+            if key == 'razorpay_order_id':
+                ord_id = res[key]
+            elif key == 'razorpay_payment_id':
+                raz_pay_id = res[key]
+            elif key == 'razorpay_signature':
+                raz_signature = res[key]        
         userName = "Priyansh"
-        status = 200
     except:
         print("Stopped Error")
-        orderId = None
+        order_id = None
         userName = None
-        status = 401
-    data = {
-        orderId, userName
-    }
-    return redirect(f'http://localhost:3000/project/paymentSuccess?name={userName}&orderId={orderId}')
+    return redirect(f'http://localhost:3000/project/paymentSuccess?name={userName}&orderId={order_id}')

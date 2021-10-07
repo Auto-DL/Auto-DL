@@ -12,7 +12,7 @@ import Settings from '@material-ui/icons/Settings';
 import Routes from 'utils/routes';
 import Router from 'next/router';
 
-import AttachMoneyIcon from '@material-ui/icons/AttachMoney';
+import PaymentIcon from '@material-ui/icons/Payment';
 import Modal from '@material-ui/core/Modal';
 import Box from "@material-ui/core/Box";
 import Typography from "@material-ui/core/Typography";
@@ -108,7 +108,7 @@ const useStyles = makeStyles((theme: Theme) =>
 export default function SideBar({ activeTab, projectName }: Props) {
 
   const classes = useStyles();
-  const defaultDonateAmount = [50, 100, 150, 200, ]
+  const defaultDonateAmount = [50, 200, 500, 1000, ]
 
   const [donateAmt, setDonateAmt] = React.useState({amt:"0"});
   const [donateModalOpen, setDonateModalOpen] = React.useState(false);
@@ -170,7 +170,7 @@ export default function SideBar({ activeTab, projectName }: Props) {
     })
   }
 
-   const  displayRazorpay = async(amt:string) => {
+   const  displayRazorpayNew = async(amt:string) => {
     modalClose()
     const res = await loadScript('https://checkout.razorpay.com/v1/checkout.js')
 
@@ -179,7 +179,7 @@ export default function SideBar({ activeTab, projectName }: Props) {
       return
     }
     const result = await Axios({
-      url: `${process.env.BACKEND_API_URL}/payments/pay/`,
+      url: `http://localhost:8000/payments/pay/`,
       data: {"amount": amt, "name": "Priyansh"},
       method: "POST",
       headers: {
@@ -261,8 +261,8 @@ export default function SideBar({ activeTab, projectName }: Props) {
       </List>
 
       <ListItem button key='Donate' onClick={modalOpen}>
-          <ListItemIcon><AttachMoneyIcon style={{ color: 'white' }} /></ListItemIcon>
-          <ListItemText primary='Donate Us' style={{ color: 'white' }} />
+          <ListItemIcon><PaymentIcon style={{ color: 'white' }} /></ListItemIcon>
+          <ListItemText primary='Donate' style={{ color: 'white' }} />
       </ListItem>
 
       <Modal
@@ -276,7 +276,7 @@ export default function SideBar({ activeTab, projectName }: Props) {
             Support Auto-DL
           </Typography>
           <Typography id="modal-modal-description">
-          Auto-DL helps you make Deep Learning models without writing a single line of code and giving as little input as possible.
+          We help you make Deep Learning models without writing a single line of code!
         </Typography>
         <div className={classes.paymentValueContainer}>
           {defaultDonateAmount.map((amount) => 
@@ -306,7 +306,7 @@ export default function SideBar({ activeTab, projectName }: Props) {
           />
 
         </div>
-        <Button onClick={() => displayRazorpay(donateAmt.amt)} type="submit" variant="contained" color="primary" >Donate</Button>
+        <Button onClick={() => displayRazorpayNew(donateAmt.amt)} type="submit" variant="contained" color="primary" >Donate</Button>
         
         </Box>
       </Modal>
