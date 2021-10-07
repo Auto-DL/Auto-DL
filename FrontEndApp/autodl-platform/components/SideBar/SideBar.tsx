@@ -93,7 +93,13 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     donate: {
       width: "80px"
-  }
+    },
+    paymentValueContainer: {
+      display: 'flex',
+      justifyContent: 'space-between', 
+      fontSize: "20px",
+      margin: "30px"
+    }  
   }),
 );
 
@@ -184,7 +190,7 @@ export default function SideBar({ activeTab, projectName }: Props) {
           <Typography id="modal-modal-description">
           We help you make Deep Learning models without writing a single line of code!
         </Typography>
-        <div style={{display: 'flex', justifyContent: 'space-between', fontSize: '20px', margin: '30px'}}>
+        <div className={classes.paymentValueContainer}>
           {defaultDonateAmount.map((amount) => 
           <TextField key='' className={clsx(classes.donate)}
             onClick={() => setDonateAmt({amt: `${amount}`})}
