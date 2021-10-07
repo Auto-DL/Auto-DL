@@ -168,7 +168,7 @@ export default function SideBar({ activeTab, projectName }: Props) {
 
       <ListItem button key='Donate' onClick={modalOpen}>
           <ListItemIcon><AttachMoneyIcon style={{ color: 'white' }} /></ListItemIcon>
-          <ListItemText primary='Donate Us' style={{ color: 'white' }} />
+          <ListItemText primary='Donate' style={{ color: 'white' }} />
       </ListItem>
 
       <Modal
