@@ -139,6 +139,7 @@ def compile(request):
 def get_all_projects(request):
     try:
         username = request.data.get("username")
+        print(username)
         user = User(username=username, password=None)
         user = user.find()
         store_obj = Store(user)
