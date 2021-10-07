@@ -1,7 +1,7 @@
 import axios from "axios";
 import { UserState, AuthAPIResponse } from "./AuthModel";
 
-const baseurl = process.env.NEXT_PUBLIC_NODE_ENV === "production" ? "/api" : "";
+const baseurl = process.env.NODE_ENV === "production" ? "/api" : "";
 const BACKEND_API_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL || baseurl;
 
 class AuthService {
@@ -15,7 +15,7 @@ class AuthService {
         message: response.data.message,
         status: response.status == 200,
       };
-    } catch (error) {
+    } catch (error) { 
       return {
         message: "Server error! Please try again later in some time",
         status: false,
