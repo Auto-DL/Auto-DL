@@ -92,7 +92,7 @@ const useStyles = makeStyles((theme: Theme) =>
       flexDirection: 'column',        
     },
     donate: {
-      width: "80px"
+      width: "84px"
     },
     paymentValueContainer: {
       display: 'flex',
