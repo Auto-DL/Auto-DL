@@ -12,7 +12,7 @@ import Settings from '@material-ui/icons/Settings';
 import Routes from 'utils/routes';
 import Router from 'next/router';
 
-import AttachMoneyIcon from '@material-ui/icons/AttachMoney';
+import PaymentIcon from '@material-ui/icons/Payment';
 import Modal from '@material-ui/core/Modal';
 import Box from "@material-ui/core/Box";
 import Typography from "@material-ui/core/Typography";
