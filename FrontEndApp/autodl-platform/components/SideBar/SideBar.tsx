@@ -182,7 +182,7 @@ export default function SideBar({ activeTab, projectName }: Props) {
             Support Auto-DL
           </Typography>
           <Typography id="modal-modal-description">
-          Auto-DL helps you make Deep Learning models without writing a single line of code and giving as little input as possible.
+          We help you make Deep Learning models without writing a single line of code!
         </Typography>
         <div style={{display: 'flex', justifyContent: 'space-between', fontSize: '20px', margin: '30px'}}>
           {defaultDonateAmount.map((amount) => 
