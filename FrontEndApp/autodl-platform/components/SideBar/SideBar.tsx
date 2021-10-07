@@ -36,8 +36,7 @@ const useStyles = makeStyles((theme: Theme) =>
       flexGrow: 1,
     },
     icon: {
-      color: "white",
-      // color: theme.palette.background.default,
+      color: theme.palette.background.default,
       opacity: '0.6',
       fontSize: '20px'
     },
