@@ -88,7 +88,13 @@ WSGI_APPLICATION = "BackEndApp.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
-DATABASES = {"default": {"ENGINE": "django.db.backends.dummy"}}
+# DATABASES = {"default": {"ENGINE": "django.db.backends.dummy"}}
+DATABASES = {
+    "default": {
+        'ENGINE': 'django',
+        'NAME': 'AutoDl'
+    }
+}
 
 CORS_ORIGIN_ALLOW_ALL = False
 CORS_ALLOWED_ORIGINS = [HOST, FRONTEND_HOST, "http://localhost:8000"]

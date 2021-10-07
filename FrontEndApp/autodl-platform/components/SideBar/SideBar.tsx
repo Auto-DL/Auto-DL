@@ -20,7 +20,7 @@ import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import InputAdornment  from "@material-ui/core/InputAdornment"
 import Axios from 'axios'
-import Razorpay from 'razorpay'
+// import Razorpay from 'razorpay'
 
 type Props = {
   activeTab?: string;
@@ -84,7 +84,7 @@ const useStyles = makeStyles((theme: Theme) =>
       left: '50%',
       transform: 'translate(-50%, -50%)',
       width: 600,
-      backgroundColor: 'white',
+      backgroundColor: '#e7eef4',
       border: '1px solid #000',
       borderRadius: '5px',
       boxShadow: "24px",
@@ -118,6 +118,38 @@ export default function SideBar({ activeTab, projectName }: Props) {
     setOpen(false);
   };
 
+  const handlePaymentSuccess = async (response:any) => {
+    console.log("Inside handlepaymentsuccess" )
+    try {
+      let bodyData = new FormData();
+      bodyData.append("response", JSON.stringify(response))
+      console.log("Response", response);
+
+      // we will send the response we've got from razorpay to the backend to validate the payment
+      // bodyData.append("response", JSON.stringify(response));
+
+      await Axios({
+        url: `http://localhost:8000/payments/verify/`,
+        method: "POST",
+        data: bodyData,
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      })
+        .then((res:any) => {
+          console.log("Everything is OK!", res);
+          // setName("");
+          // setAmount("");
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } catch (error) {
+      console.log(console.error());
+    }
+  };
+
   const loadScript = (src: string) => {
     return new Promise(resolve => {
       const script = document.createElement("script");
@@ -132,7 +164,7 @@ export default function SideBar({ activeTab, projectName }: Props) {
     })
   }
 
-  async function displayRazorpay(amt:string) {
+   const  displayRazorpay = async(amt:string) => {
     modalClose()
     const res = await loadScript('https://checkout.razorpay.com/v1/checkout.js')
 
@@ -140,10 +172,9 @@ export default function SideBar({ activeTab, projectName }: Props) {
       alert("Razorpay Sdk Failed to load")
       return
     }
-    alert(amt)
     const result = await Axios({
       url: `http://localhost:8000/payments/pay/`,
-      data: {amount: amt},
+      data: {"amount": amt, "name": "Priyansh"},
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -153,36 +184,31 @@ export default function SideBar({ activeTab, projectName }: Props) {
       console.log("Data: ",res)
       return res;
     });
-
     const { amount, id: order_id } = result.data;
 
     var options = {
-        key: "rzp_test_j9RsK0fDeYlYxn", // Enter the Key ID generated from the Dashboard
-        amount: amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+        key: process.env.RAZORPAY_API_KEY, // Enter the Key ID generated from the Dashboard
+        amount: amount , // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
         currency: "INR",
         name: "AutoDL",
         description: "Thansk For Supporting Auto-DL",
         image: "https://raw.githubusercontent.com/Auto-DL/Auto-DL/main/static/Logo.png",
         order_id: order_id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+        // callback_url: `http://localhost:8000/payments/verify/`,
+        // data: {"name":"Priyansh", "amount": amount},
         handler: function (response:any){
-            alert(response.razorpay_payment_id);
-            alert(response.razorpay_order_id);
-            alert(response.razorpay_signature)
+          handlePaymentSuccess(response)
         },
         prefill: {
             "name": "Gaurav Kumar",
             "email": "gaurav.kumar@example.com",
             "contact": "9999999999"
         },
-        notes: {
-            "address": "Razorpay Corporate Office"
-        },
         theme: {
             "color": "#3399cc"
         }
     };
-    // const paymentObject = new window.Razorpay(options)
-    var paymentObject = new Razorpay(options);
+    const paymentObject = new window.Razorpay(options)
     paymentObject.open()
   }
 
