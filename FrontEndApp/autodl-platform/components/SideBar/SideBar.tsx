@@ -99,7 +99,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export default function SideBar({ activeTab, projectName }: Props) {
 
-  const defaultDonateAmount = [50, 100, 150, 200, ]
+  const defaultDonateAmount = [50, 200, 500, 1000, ]
 
   const [donateModalOpen, setDonateModalOpen] = React.useState(false);
   const modalOpen = () => setDonateModalOpen(true);
