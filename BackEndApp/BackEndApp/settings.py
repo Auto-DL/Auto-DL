@@ -91,7 +91,7 @@ WSGI_APPLICATION = "BackEndApp.wsgi.application"
 # DATABASES = {"default": {"ENGINE": "django.db.backends.dummy"}}
 DATABASES = {
     "default": {
-        'ENGINE': 'django',
+        'ENGINE': 'django_mongodb_engine',
         'NAME': 'AutoDl'
     }
 }
