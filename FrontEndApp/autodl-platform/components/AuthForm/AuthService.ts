@@ -1,11 +1,11 @@
 import axios from "axios";
-import { UserState, AuthAPIResponse } from "./AuthModel";
+import { AuthAPIResponse, FormValues } from "./AuthModel";
 
 const baseurl = process.env.NODE_ENV === "production" ? "/api" : "";
 const BACKEND_API_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL || baseurl;
 
 class AuthService {
-  async login(data: UserState): Promise<AuthAPIResponse> {
+  async login(data: FormValues): Promise<AuthAPIResponse> {
     try {
       const response = await axios.post(`${BACKEND_API_URL}/auth/login/`, {
         username: data.username,
@@ -23,7 +23,7 @@ class AuthService {
     }
   }
 
-  async register(data: UserState): Promise<AuthAPIResponse> {
+  async register(data: FormValues): Promise<AuthAPIResponse> {
     try {
       const response = await axios.post(
         `${BACKEND_API_URL}/auth/register/`,
@@ -67,7 +67,7 @@ class AuthService {
     }
   }
 
-  async verifyOTP(username: string, otp: string): Promise<AuthAPIResponse> {
+  async verifyOTP(username: string, otp: number): Promise<AuthAPIResponse> {
     try {
       const response = await axios.post(
         `${BACKEND_API_URL}/auth/otp/verify/`,

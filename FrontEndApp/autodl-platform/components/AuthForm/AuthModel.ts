@@ -1,12 +1,11 @@
-export type UserState = {
+export type FormValues = {
   username: string;
   password: string;
-  email: string;
   firstName: string;
   lastName: string;
-  accountType: "user" | "organization";
-  otp: string;
-};
+  email: string;
+  otp: number;
+}
 
 export type ErrorState = {
   username: boolean;
