@@ -25,7 +25,7 @@
 Building deep learning models may take a lot of time. But not with AutoDL.  
 Automate your **meta-work** so that you can focus on building your models without the hassle of writing code.
 
-- **✨ Use our interactive model builder and AI powered suggestion system to quickly whip out a working DL model. ✨**
+- **✨ Use our interactive model builder and AI-powered suggestion system to quickly whip out a working DL model. ✨**
 <p align=center>
   <img src="static/4.png" width=80% align=center>
 </p>
@@ -47,15 +47,15 @@ DO NOT CREATE a pull request FIRST if someone else is working on it then your ef
 
 * Conventional commits in the PR title are a must
 
-* For frontend, while creating a pull request attach a screenshot of the change
+* For the frontend, while creating a pull request attach a screenshot of the change
 
-* Last but not least, one pull request to fix a typo is fine, but 5 pull requests to remove a stray whitespace is not ([reference](https://hacktoberfest.digitalocean.com/resources/qualitystandards)).
+* Last but not least, one pull request to fix a typo is fine, but 5 pull requests to remove stray whitespace are not ([reference](https://hacktoberfest.digitalocean.com/resources/qualitystandards)).
 
 ## User Guidelines 📋
 
 The [docs](https://auto-dl.readthedocs.io/en/latest/index.html) are the perfect place for you to start getting used to Auto-DL.
 
-#### Want to setup locally? 🏠
+#### Want to set up locally? 🏠
 
 * Start with our [getting started docs](https://docs.auto-dl.tech/en/latest/installing.html).
 
@@ -67,7 +67,7 @@ The [docs](https://auto-dl.readthedocs.io/en/latest/index.html) are the perfect 
 
 ## Developer Guidelines 👩‍💻 
 
-The [contributing guidelines](https://github.com/Auto-DL/Auto-DL/blob/v1-beta/CONTRIBUTING.md) hosts all the information about building Auto-DL from source, how to contribute code and documentation, who to contact about what, etc.
+The [contributing guidelines](https://github.com/Auto-DL/Auto-DL/blob/v1-beta/CONTRIBUTING.md) host all the information needed to build Auto-DL from source, how to contribute code and documentation, who to contact about what, etc.
 
 ## Get started with Auto-DL (For Developers) 🌐
 
@@ -82,7 +82,7 @@ Setup Auto-DL:
 
 - Improve the UI and UX.
 
-- Show model training realted stats on the frontend.
+- Show model training-related stats on the front end.
 
 - Visualization and data preprocessing steps.
 
