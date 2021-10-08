@@ -38,8 +38,7 @@ const useStyles = makeStyles((theme: Theme) =>
       flexGrow: 1,
     },
     icon: {
-      color: "white",
-      // color: theme.palette.background.default,
+      color: theme.palette.background.default,
       opacity: '0.6',
       fontSize: '20px'
     },
@@ -143,15 +142,16 @@ export default function SideBar({ activeTab, projectName }: Props) {
           "Content-Type": "application/json",
         },
       })
-        .then((res:any) => {
-          console.log("Everything is OK!", res);
-          // setName("");
-          // setAmount("");
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    } catch (error) {
+        // .then((res:any) => {
+        //   console.log("Everything is OK!", res);
+        //   // setName("");
+        //   // setAmount("");
+        // })
+        // .catch((err) => {
+        //   console.log(err);
+        // });
+    } 
+    catch (error) {
       console.log(console.error());
     }
   };
@@ -200,11 +200,11 @@ export default function SideBar({ activeTab, projectName }: Props) {
         description: "Thansk For Supporting Auto-DL",
         image: "https://raw.githubusercontent.com/Auto-DL/Auto-DL/main/static/Logo.png",
         order_id: order_id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
-        // callback_url: `http://localhost:8000/payments/verify/`,
-        // data: {"name":"Priyansh", "amount": amount},
-        handler: function (response:any){
-          handlePaymentSuccess(response)
-        },
+        callback_url: `http://localhost:8000/payments/verify/`,
+        data: {"name":"Priyansh", "amount": amount},
+        // handler: function (response:any){
+        //   handlePaymentSuccess(response)
+        // },
         prefill: {
             "name": "Gaurav Kumar",
             "email": "gaurav.kumar@example.com",

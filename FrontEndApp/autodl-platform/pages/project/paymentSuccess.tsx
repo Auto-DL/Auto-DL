@@ -22,21 +22,35 @@ export default function ProjectHome() {
             style={{width: 100}}
             value={userName}
             type="text"
-            label="User Name"
-            id="standard-read-only-input"
-            placeholder="Other"
+            // label="User Name"
+            id="filled-read-only-input"
             variant="outlined"
+            InputProps={{
+              readOnly: true,
+            }}
           />
           <TextField 
+            type="text"
+            style={{width: 500}}
+            value={orderId}
+            // label="Order Id"
+            id="filled-read-only-input"
+            variant="outlined"
+            InputProps={{
+              readOnly: true,
+            }}
+          />
+          {/* <TextField 
             style={{maxWidth: 500}}
             value={orderId}
             type="text"
             label="OrderId"
-            id="standard-read-only-input"
-            placeholder="Other"
+            id="outlined-read-only-input"
             variant="outlined"
-
-          />
+            InputProps={{
+              readOnly: true,
+            }}
+          /> */}
         </div>
         </Box>
     </Main>
