@@ -14,7 +14,7 @@ from .store import Store
 
 import logging
 
-logger = logging.get_logger(__name__)
+logger = logging.getLogger(__name__)
 
 
 @api_view(["POST"])
