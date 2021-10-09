@@ -42,6 +42,12 @@ const useStyles = makeStyles({
   formElement: {
     margin: "15px 0px",
   },
+  otpElement: {
+    margin: '15px 0px',
+    '& .MuiInputBase-input': {
+      letterSpacing: '25px',
+    },
+  },
   helperText: {
     fontSize: "100%",
     marginTop: "10px",
@@ -447,13 +453,13 @@ export default function AuthForm() {
                   autoFocus
                   fullWidth
                   id="otp"
-                  type="number"
                   label="Enter OTP"
                   variant="outlined"
-                  className={classes.formElement}
+                  placeholder="000000"
+                  className={classes.otpElement}
                   {...register("otp", {
                     required: "This field is Required",
-                    valueAsNumber: true,
+                    maxLength: { value: 6, message: "OTP is invalid" },
                   })}
                   error={errors?.otp ? true : false}
                   helperText={errors?.otp && errors.otp.message}
@@ -469,7 +475,7 @@ export default function AuthForm() {
                 {showOtpResendText && (
                   <Typography
                     className={classes.helperText}
-                    onClick={handleResendOtp}
+                    onClick={handleSubmit(handleResendOtp)}
                   >
                     {otpResendText}
                   </Typography>
@@ -653,13 +659,13 @@ export default function AuthForm() {
                   autoFocus
                   fullWidth
                   id="otp"
-                  type="number"
                   label="Enter OTP"
                   variant="outlined"
-                  className={classes.formElement}
+                  placeholder="000000"
+                  className={classes.otpElement}
                   {...register("otp", {
                     required: "This field is Required",
-                    valueAsNumber: true,
+                    maxLength: { value: 6, message: "OTP is invalid" },
                   })}
                   error={errors?.otp ? true : false}
                   helperText={errors?.otp && errors.otp.message}
@@ -681,7 +687,7 @@ export default function AuthForm() {
                 {showOtpResendText && (
                   <Typography
                     className={classes.helperText}
-                    onClick={handleResendOtp}
+                    onClick={handleSubmit(handleResendOtp)}
                   >
                     {otpResendText}
                   </Typography>

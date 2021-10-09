@@ -8,9 +8,11 @@ import Divider from '@material-ui/core/Divider';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import Settings from '@material-ui/icons/Settings';
-import Routes from 'lib/routes';
 import Router from 'next/router';
+
+import { AppRoutes, ProjectRoutes } from 'lib/routes';
+import { useAppDispatch } from "app/hooks";
+import { logout } from "app/userSlice";
 
 type Props = {
   activeTab?: string;
@@ -72,6 +74,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export default function SideBar({ activeTab, projectName }: Props) {
   const classes = useStyles();
+  const dispatch = useAppDispatch();
   const [open, setOpen] = React.useState(false);
 
   const handleDrawerOpen = () => {
@@ -80,6 +83,11 @@ export default function SideBar({ activeTab, projectName }: Props) {
 
   const handleDrawerClose = () => {
     setOpen(false);
+  };
+
+  const handleLogout = () => {
+    dispatch(logout);
+    Router.push("/");
   };
 
   return (
@@ -100,7 +108,7 @@ export default function SideBar({ activeTab, projectName }: Props) {
     >
       <Toolbar />
       <List>
-        {Routes.map((route) => (
+        {ProjectRoutes.map((route) => (
           <ListItem
             button
             key={route.name}
@@ -122,10 +130,24 @@ export default function SideBar({ activeTab, projectName }: Props) {
       <div className={classes.sideBarGrow} />
       <Divider />
       <List>
-        <ListItem button key='Settings' onClick={() => Router.push('/')}>
-          <ListItemIcon><Settings style={{ color: 'white' }} /></ListItemIcon>
-          <ListItemText primary='Settings' style={{ color: 'white' }} />
-        </ListItem>
+        {AppRoutes.map((route) => (
+            <ListItem
+              button
+              key={route.name}
+              onClick={route.name == "Logout" ?
+              handleLogout
+              : () => {
+                Router.push(route.path);
+              }}
+              className={clsx(classes.icon, {
+                [classes.active]: route.name == activeTab,
+                [classes.inactive]: route.name != activeTab,
+              })}
+            >
+              <ListItemIcon style={{ color: 'inherit' }}><route.icon /></ListItemIcon>
+              <ListItemText primary={route.name} />
+            </ListItem>
+          ))}
       </List>
     </Drawer>
   );

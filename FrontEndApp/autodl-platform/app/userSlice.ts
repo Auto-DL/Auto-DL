@@ -22,11 +22,16 @@ export const userSlice = createSlice({
     updateUser: (state, action: PayloadAction<userState>) => {
       state.username = action.payload.username;
     },
+
+    logout: (state) => {
+      state.username = "";
+    }
   },
 });
 // Here we are just exporting the actions from this slice, so that we can call them anywhere in our app.
 export const {
   updateUser,
+  logout,
 } = userSlice.actions;
 
 // calling the above actions would be useless if we could not access the data in the state. So, we use something called a selector which allows us to select a value from the state.
