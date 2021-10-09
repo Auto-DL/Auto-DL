@@ -65,6 +65,7 @@ class AuthService {
   }
 
   async verifyEmail(username: string): Promise<AuthAPIResponse> {
+    console.log(username);
     try {
       const response = await axios.post(
         `${BACKEND_API_URL}/auth/email/verify/`,

@@ -151,6 +151,7 @@ export default function AuthForm() {
 
   const handleReceiveOtp = (data: FormValues) => {
     setShowProgress(true);
+    console.log(data);
     // Error Handling Required
     AuthService.verifyEmail(data.username).then((response) => {
       setAlert({
@@ -220,16 +221,22 @@ export default function AuthForm() {
     }, 1500);
   };
 
-  const handleRegisterNext = () => {
+  const handleRegisterNext = (data: FormValues) => {
     setShowProgress(true);
-    setTimeout(() => {
-      setActiveRegisterStep((prevStep) => prevStep + 1);
-      setShowProgress(false);
-    }, 1500);
-
-    setTimeout(() => {
-      setShowOtpResendText(true);
-    }, 5000);
+    if (activeRegisterStep == 1) {
+      AuthService.verifyEmail(data.username).then((response) => {
+        setAlert({
+          message: response.message,
+          severity: response.status ? "success" : "error",
+        });
+        setOpenAlert(true);
+        setOtpResendText("OTP sent successfully!");
+        setShowProgress(false);
+      });
+      setTimeout(() => {
+        setShowOtpResendText(true);
+      }, 5000);
+    }
   };
 
   const handleRegisterBack = () => {
