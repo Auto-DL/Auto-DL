@@ -1,0 +1,61 @@
+name: Docs Report
+description: Help us improve our docs
+title: "docs: "
+labels: ["documentation"]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this report!
+
+  - type: textarea
+    id: current-behaviour
+    attributes:
+      label: Current Behaviour
+      description: Tell us what could be improved.
+      placeholder: A typo was encountered at line X!
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-behaviour
+    attributes:
+      label: Expected Behaviour
+      description: How should we improve?
+      placeholder: Fix the typo at line X!
+
+  - type: dropdown
+    id: browsers
+    attributes:
+      label: What browsers are you seeing the problem on?
+      multiple: true
+      options:
+        - Firefox
+        - Chrome
+        - Safari
+        - Microsoft Edge
+        - Other
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant log output
+      description: Please copy and paste any relevant log output. This will be automatically formatted into code, so no need for backticks.
+      render: shell
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Anything else that you want to share?
+      placeholder: The change suggested is important because...
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      description: By submitting this issue, you agree to follow our [Code of Conduct](https://github.com/Auto-DL/Auto-DL/blob/main/CODE_OF_CONDUCT.md) and [Contributing Guidelines](https://github.com/Auto-DL/Auto-DL/blob/main/CONTRIBUTING.md)
+      options:
+        - label: I agree to follow this project's Code of Conduct and Contributing Guidelines
+          required: true

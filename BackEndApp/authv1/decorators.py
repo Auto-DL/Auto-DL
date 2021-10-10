@@ -1,6 +1,6 @@
 from django.http import JsonResponse
 
-from .models import User, Session
+from .models import Session
 
 
 def is_authenticated(function):

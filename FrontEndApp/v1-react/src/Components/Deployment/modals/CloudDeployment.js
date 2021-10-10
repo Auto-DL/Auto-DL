@@ -41,7 +41,6 @@ export const CloudDeployStepThree = ({ handleCloseDeployModal, setDeployStep, va
                     disabled
                     fullWidth
                     defaultValue={"Project Name: " + values.project_name}
-                    gutterBottom
                 />
                 <TextField
                     variant="outlined"
@@ -49,14 +48,12 @@ export const CloudDeployStepThree = ({ handleCloseDeployModal, setDeployStep, va
                     disabled
                     fullWidth
                     defaultValue={"Description: " + values.project_description}
-                    gutterBottom
                 />
                 <Button
                     size="small"
                     variant="contained"
                     color="primary"
                     component="span"
-                    gutterBottom
                     disableElevation
                     onClick={handlePklUpload}
                     className={classes.pklUploadBtn}
@@ -80,6 +77,7 @@ export const CloudDeployStepThree = ({ handleCloseDeployModal, setDeployStep, va
                         variant="contained"
                         onClick={handleCloudDeployment}
                         color="primary"
+                        data-testid="cloud-deploy-btn"
                     >
                         Initiate Deployment
                     </Button>

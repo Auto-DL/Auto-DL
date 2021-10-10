@@ -81,7 +81,7 @@ run_install() {
 
 frontend_setup() {
     echo -e "${INFO} Setting up frontend"
-    cd $FRONTEND_PATH
+    cd "$FRONTEND_PATH"
     npm install
 }
 
@@ -92,14 +92,14 @@ backend_setup() {
 
 run() {
     echo -e "${INFO} Starting backend server"
-    cd $BACKEND_PATH
+    cd "$BACKEND_PATH"
     python3 manage.py runserver &
     BACKEND_PID=$!
     echo -e "${TICK} Backend server running"
     echo ""
 
     echo -e "${INFO} Starting frontend server"
-    cd $FRONTEND_PATH
+    cd "$FRONTEND_PATH"
     npm start &
     FRONTEND_PID=$!
     echo -e "${TICK} Frontend server running"
@@ -136,7 +136,7 @@ setup() {
     else
         echo -e "${CROSS} Frontend setup failed"
     fi
-    cd $WORKDIR
+    cd "$WORKDIR"
     echo ""
 
     backend_setup
@@ -146,7 +146,7 @@ setup() {
     else
         echo -e "${CROSS} Backend setup failed"
     fi
-    cd $WORKDIR
+    cd "$WORKDIR"
     echo ""
 }
 
