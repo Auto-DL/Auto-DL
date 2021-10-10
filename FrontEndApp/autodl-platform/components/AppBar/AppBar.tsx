@@ -1,11 +1,12 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { alpha, makeStyles, Theme, createStyles } from '@material-ui/core/styles';
+import { makeStyles, createStyles, alpha, Theme } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
 import InputBase from '@material-ui/core/InputBase';
 import Badge from '@material-ui/core/Badge';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -18,6 +19,7 @@ import logo from 'public/icon.png';
 
 type Prop = {
   projectName?: string | string[] | undefined;
+  isAuthenticated?: boolean | boolean[] | undefined;
 };
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -31,10 +33,11 @@ const useStyles = makeStyles((theme: Theme) =>
     grow: {
       flexGrow: 1,
     },
-    menuButton: {
-      marginRight: theme.spacing(2),
-    },
     brand: {
+      backgroundColor: theme.palette.primary.main,
+      color: '#fff',
+      fontSize: '1.5em',
+      textTransform: 'none',
       display: 'none',
       [theme.breakpoints.up('sm')]: {
         display: 'block',
@@ -105,8 +108,9 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-export default function PrimaryAppBar({ projectName }: Prop) {
+export default function PrimaryAppBar({ projectName, isAuthenticated }: Prop) {
   const classes = useStyles();
+
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState<null | HTMLElement>(null);
 
@@ -143,6 +147,7 @@ export default function PrimaryAppBar({ projectName }: Prop) {
     >
       <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
       <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+      <MenuItem onClick={handleMenuClose}>Sign Out</MenuItem>
     </Menu>
   );
 
@@ -185,7 +190,6 @@ export default function PrimaryAppBar({ projectName }: Prop) {
         <Toolbar>
           <IconButton
             edge="start"
-            className={classes.menuButton}
             color="inherit"
             aria-label="open drawer"
           >
@@ -193,53 +197,59 @@ export default function PrimaryAppBar({ projectName }: Prop) {
               <Image src={logo} width="30" height="30" />
             </Link>
           </IconButton>
-          <Typography className={classes.brand} variant="h6" noWrap>
-            AutoDL
-          </Typography>
+          <Link href="/">
+            <Button className={classes.brand} variant="text" size="large">
+              AutoDL
+            </Button>
+          </Link>
           <Typography className={classes.title} variant="h6" noWrap>
             {projectName}
           </Typography>
           <div className={classes.grow} />
-          <div className={classes.search}>
-            <div className={classes.searchIcon}>
-              <SearchIcon />
-            </div>
-            <InputBase
-              placeholder="Search…"
-              classes={{
-                root: classes.inputRoot,
-                input: classes.inputInput,
-              }}
-              inputProps={{ 'aria-label': 'search' }}
-            />
-          </div>
-          <div className={classes.sectionDesktop}>
-            <IconButton aria-label="show 17 new notifications" color="inherit">
-              <Badge badgeContent={17} color="secondary">
-                <NotificationsIcon />
-              </Badge>
-            </IconButton>
-            <IconButton
-              aria-label="account of current user"
-              aria-controls={menuId}
-              aria-haspopup="true"
-              onClick={handleProfileMenuOpen}
-              color="inherit"
-            >
-              <AccountCircle />
-            </IconButton>
-          </div>
-          <div className={classes.sectionMobile}>
-            <IconButton
-              aria-label="show more"
-              aria-controls={mobileMenuId}
-              aria-haspopup="true"
-              onClick={handleMobileMenuOpen}
-              color="inherit"
-            >
-              <MoreIcon />
-            </IconButton>
-          </div>
+          {isAuthenticated && (
+            <>
+              <div className={classes.search}>
+                <div className={classes.searchIcon}>
+                  <SearchIcon />
+                </div>
+                <InputBase
+                  placeholder="Search…"
+                  classes={{
+                    root: classes.inputRoot,
+                    input: classes.inputInput,
+                  }}
+                  inputProps={{ 'aria-label': 'search' }}
+                />
+              </div>
+              <div className={classes.sectionDesktop}>
+                <IconButton aria-label="show 17 new notifications" color="inherit">
+                  <Badge badgeContent={17} color="secondary">
+                    <NotificationsIcon />
+                  </Badge>
+                </IconButton>
+                <IconButton
+                  aria-label="account of current user"
+                  aria-controls={menuId}
+                  aria-haspopup="true"
+                  onClick={handleProfileMenuOpen}
+                  color="inherit"
+                >
+                  <AccountCircle />
+                </IconButton>
+              </div>
+              <div className={classes.sectionMobile}>
+                <IconButton
+                  aria-label="show more"
+                  aria-controls={mobileMenuId}
+                  aria-haspopup="true"
+                  onClick={handleMobileMenuOpen}
+                  color="inherit"
+                >
+                  <MoreIcon />
+                </IconButton>
+              </div>
+            </>
+          )}
         </Toolbar>
       </AppBar>
       {renderMobileMenu}
