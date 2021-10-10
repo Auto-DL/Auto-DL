@@ -2,6 +2,7 @@ import Main from "layouts/Main";
 import ProjectCard from "components/ProjectCard/ProjectCard";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
+import withAuthentication from "components/WithAuthentication/WithAuthentication";
 
 const useStyles = makeStyles({
   root: {
@@ -9,7 +10,7 @@ const useStyles = makeStyles({
   },
 });
 
-export default function Home() {
+function Home() {
   const classes = useStyles();
 
   return (
@@ -39,3 +40,5 @@ export default function Home() {
     </Main>
   );
 }
+
+export default withAuthentication(Home);

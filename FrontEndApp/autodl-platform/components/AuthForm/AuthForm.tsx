@@ -1,89 +1,98 @@
-import React from 'react';
-import { useRouter } from 'next/router';
-import { useForm } from 'react-hook-form';
-import Paper from '@material-ui/core/Paper';
-import Box from '@material-ui/core/Box';
-import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import TextField from '@material-ui/core/TextField';
-import Button from '@material-ui/core/Button';
-import LinearProgress from '@material-ui/core/LinearProgress';
-import Stepper from '@material-ui/core/Stepper';
-import Step from '@material-ui/core/Step';
-import StepLabel from '@material-ui/core/StepLabel';
-import AlternateEmailIcon from '@material-ui/icons/AlternateEmail';
-import AccountCircle from '@material-ui/icons/AccountCircle';
-import EmailIcon from '@material-ui/icons/Email';
-import VisibilityIcon from '@material-ui/icons/Visibility';
-import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
-import LockIcon from '@material-ui/icons/Lock';
-import { makeStyles } from '@material-ui/core/styles';
+import React, { MouseEvent } from "react";
+import { useRouter } from "next/router";
+import { useForm } from "react-hook-form";
+import Paper from "@material-ui/core/Paper";
+import Box from "@material-ui/core/Box";
+import Typography from "@material-ui/core/Typography";
+import IconButton from "@material-ui/core/IconButton";
+import InputAdornment from "@material-ui/core/InputAdornment";
+import TextField from "@material-ui/core/TextField";
+import Button from "@material-ui/core/Button";
+import LinearProgress from "@material-ui/core/LinearProgress";
+import Stepper from "@material-ui/core/Stepper";
+import Step from "@material-ui/core/Step";
+import StepLabel from "@material-ui/core/StepLabel";
+import AlternateEmailIcon from "@material-ui/icons/AlternateEmail";
+import AccountCircle from "@material-ui/icons/AccountCircle";
+import EmailIcon from "@material-ui/icons/Email";
+import VisibilityIcon from "@material-ui/icons/Visibility";
+import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
+import LockIcon from "@material-ui/icons/Lock";
+import { IoLogoGoogle } from "react-icons/io5";
+import { makeStyles } from "@material-ui/core/styles";
+import { signIn } from "next-auth/react";
 
 const useStyles = makeStyles({
   formRoot: {
-    marginTop: '8rem',
+    marginTop: "8rem",
   },
   formContainer: {
-    padding: '20px',
-    margin: '25px',
+    padding: "20px",
+    margin: "25px",
   },
   formHeaderText: {
-    textAlign: 'center',
-    paddingTop: '5px',
-    paddingBottom: '20px',
+    textAlign: "center",
+    paddingTop: "5px",
+    paddingBottom: "20px",
   },
   formElement: {
-    margin: '15px 0px',
+    margin: "15px 0px",
   },
   otpElement: {
-    margin: '15px 0px',
-    '& .MuiInputBase-input': {
-      letterSpacing: '38px',
+    margin: "15px 0px",
+    "& .MuiInputBase-input": {
+      letterSpacing: "38px",
     },
   },
   helperText: {
-    fontSize: '100%',
-    marginTop: '20px',
-    cursor: 'pointer',
-    textDecoration: 'underline',
-    display: 'inline-block',
+    fontSize: "100%",
+    marginTop: "20px",
+    cursor: "pointer",
+    textDecoration: "underline",
+    display: "inline-block",
   },
   helperTextAlt: {
-    fontSize: '90%',
-    marginTop: '20px',
-    cursor: 'default',
-    display: 'inline-block',
+    fontSize: "90%",
+    marginTop: "20px",
+    cursor: "default",
+    display: "inline-block",
   },
   actionBtnGrp: {
-    display: 'flex',
-    justifyContent: 'space-evenly',
+    display: "flex",
+    justifyContent: "space-evenly",
   },
   actionBtn: {
-    margin: '30px 0px 10px 0px',
-    paddingTop: '5px 0px',
+    margin: "30px 0px 10px 0px",
+    paddingTop: "5px 0px",
     width: 200,
   },
   actionBtnLeft: {
-    margin: '30px 10px 30px 0px',
-    paddingTop: '5px 0px',
-    width: 200,
+    margin: "30px 10px 30px 0px",
+    paddingTop: "5px 0px",
+    flex: "1",
   },
   actionBtnRight: {
-    margin: '30px 0px 30px 10px',
-    paddingTop: '5px 0px',
-    width: 200,
+    margin: "30px 0px 30px 10px",
+    paddingTop: "5px 0px",
+    flex: "1",
+  },
+  googleLogin: {
+    margin: "0",
+    width: "100%",
+    display: "flex",
+    justifyContent: "space-evenly",
+    alignItems: "center",
   },
   radioBtnGrp: {
-    padding: '10px 0px',
+    padding: "10px 0px",
   },
   legend: {
-    paddingTop: '20px',
-    paddingBottom: '5px',
+    paddingTop: "20px",
+    paddingBottom: "5px",
   },
   stepper: {
-    padding: '20px 0px 30px 0px',
-  }
+    padding: "20px 0px 30px 0px",
+  },
 });
 
 type FormValues = {
@@ -93,7 +102,7 @@ type FormValues = {
   lastName: string;
   email: string;
   otp: string;
-}
+};
 
 export default function AuthForm() {
   const classes = useStyles();
@@ -101,8 +110,11 @@ export default function AuthForm() {
 
   const [showPassword, setShowPassword] = React.useState<boolean>(false);
   const [showProgress, setShowProgress] = React.useState<boolean>(false);
-  const [otpResendText, setOtpResendText] = React.useState<"Resend OTP?" | "OTP sent successfully!">("Resend OTP?");
-  const [showOtpResendText, setShowOtpResendText] = React.useState<boolean>(false);
+  const [otpResendText, setOtpResendText] = React.useState<
+    "Resend OTP?" | "OTP sent successfully!"
+  >("Resend OTP?");
+  const [showOtpResendText, setShowOtpResendText] =
+    React.useState<boolean>(false);
 
   const {
     register,
@@ -111,28 +123,26 @@ export default function AuthForm() {
   } = useForm<FormValues>();
 
   // Main Auth Steps
-  const [authStep, setAuthStep] = React.useState<"login" | "register" | "forgotPass">("login");
+  const [authStep, setAuthStep] = React.useState<
+    "login" | "register" | "forgotPass"
+  >("login");
 
   // Forgot Pass Steps
-  const [activeForgotPassStep, setActiveForgotPassStep] = React.useState<number>(0);
-  const forgotPassSteps = [
-    "Receive OTP",
-    "Confirm OTP",
-    "New Password",
-  ];
+  const [activeForgotPassStep, setActiveForgotPassStep] =
+    React.useState<number>(0);
+  const forgotPassSteps = ["Receive OTP", "Confirm OTP", "New Password"];
 
   // Register Steps
   const [activeRegisterStep, setActiveRegisterStep] = React.useState<number>(0);
-  const registerSteps = [
-    "Account Details",
-    "Verify Account",
-  ];
+  const registerSteps = ["Account Details", "Verify Account"];
 
   const handleClickShowPassword = () => {
-    setShowPassword(value => !value);
+    setShowPassword((value) => !value);
   };
 
-  const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleMouseDownPassword = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
     event.preventDefault();
   };
 
@@ -229,6 +239,12 @@ export default function AuthForm() {
     }, 1500);
   };
 
+  const handleGoogleSignIn = (e: MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    signIn("google");
+  };
+
   return (
     <Paper elevation={3} className={classes.formRoot}>
       {showProgress && <LinearProgress color="primary" />}
@@ -239,7 +255,11 @@ export default function AuthForm() {
       >
         {authStep === "login" && (
           <>
-            <Typography variant="h4" component="h2" className={classes.formHeaderText}>
+            <Typography
+              variant="h4"
+              component="h2"
+              className={classes.formHeaderText}
+            >
               Sign In
             </Typography>
 
@@ -253,10 +273,10 @@ export default function AuthForm() {
               {...register("username", {
                 required: "This field is Required",
                 minLength: { value: 4, message: "Username is too short" },
-                maxLength: { value: 20, message: "Username is too long" }
+                maxLength: { value: 20, message: "Username is too long" },
               })}
               error={errors?.username && true}
-              helperText={errors?.username && (errors.username.message)}
+              helperText={errors?.username && errors.username.message}
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
@@ -270,16 +290,16 @@ export default function AuthForm() {
               id="password"
               variant="outlined"
               label="Enter Password"
-              type={showPassword ? 'text' : 'password'}
+              type={showPassword ? "text" : "password"}
               fullWidth
               className={classes.formElement}
               {...register("password", {
                 required: "This field is Required",
                 minLength: { value: 4, message: "Password is too short" },
-                maxLength: { value: 20, message: "Password is too long" }
+                maxLength: { value: 20, message: "Password is too long" },
               })}
               error={errors?.password && true}
-              helperText={errors?.password && (errors.password.message)}
+              helperText={errors?.password && errors.password.message}
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
@@ -289,7 +309,11 @@ export default function AuthForm() {
                       onMouseDown={handleMouseDownPassword}
                       edge="end"
                     >
-                      {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
+                      {showPassword ? (
+                        <VisibilityIcon />
+                      ) : (
+                        <VisibilityOffIcon />
+                      )}
                     </IconButton>
                   </InputAdornment>
                 ),
@@ -321,12 +345,25 @@ export default function AuthForm() {
                 Register
               </Button>
             </div>
+            <Button
+              type="submit"
+              color="primary"
+              variant="outlined"
+              className={classes.googleLogin}
+              onClick={(e) => handleGoogleSignIn(e)}
+            >
+              <IoLogoGoogle /> <span>Log in with google</span>
+            </Button>
           </>
         )}
 
         {authStep === "forgotPass" && (
           <>
-            <Stepper activeStep={activeForgotPassStep} alternativeLabel className={classes.stepper}>
+            <Stepper
+              activeStep={activeForgotPassStep}
+              alternativeLabel
+              className={classes.stepper}
+            >
               {forgotPassSteps.map((label) => (
                 <Step key={label}>
                   <StepLabel>{label}</StepLabel>
@@ -346,10 +383,10 @@ export default function AuthForm() {
                   {...register("username", {
                     required: "This field is Required",
                     minLength: { value: 4, message: "Username is too short" },
-                    maxLength: { value: 20, message: "Username is too long" }
+                    maxLength: { value: 20, message: "Username is too long" },
                   })}
                   error={errors?.username && true}
-                  helperText={errors?.username && (errors.username.message)}
+                  helperText={errors?.username && errors.username.message}
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">
@@ -360,7 +397,8 @@ export default function AuthForm() {
                 />
 
                 <Typography className={classes.helperTextAlt}>
-                  You will be receiveing an OTP on your registered Email Address.
+                  You will be receiveing an OTP on your registered Email
+                  Address.
                 </Typography>
 
                 <div className={classes.actionBtnGrp}>
@@ -399,7 +437,7 @@ export default function AuthForm() {
                     maxLength: { value: 6, message: "OTP is invalid" },
                   })}
                   error={errors?.otp ? true : false}
-                  helperText={errors?.otp && (errors.otp.message)}
+                  helperText={errors?.otp && errors.otp.message}
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">
@@ -446,16 +484,16 @@ export default function AuthForm() {
                   id="password"
                   variant="outlined"
                   label="New Password"
-                  type={showPassword ? 'text' : 'password'}
+                  type={showPassword ? "text" : "password"}
                   fullWidth
                   className={classes.formElement}
                   {...register("password", {
                     required: "This field is Required",
                     minLength: { value: 4, message: "Password is too short" },
-                    maxLength: { value: 20, message: "Password is too long" }
+                    maxLength: { value: 20, message: "Password is too long" },
                   })}
                   error={errors?.password && true}
-                  helperText={errors?.password && (errors.password.message)}
+                  helperText={errors?.password && errors.password.message}
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">
@@ -465,7 +503,11 @@ export default function AuthForm() {
                           onMouseDown={handleMouseDownPassword}
                           edge="end"
                         >
-                          {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
+                          {showPassword ? (
+                            <VisibilityIcon />
+                          ) : (
+                            <VisibilityOffIcon />
+                          )}
                         </IconButton>
                       </InputAdornment>
                     ),
@@ -497,7 +539,7 @@ export default function AuthForm() {
               ))}
             </Stepper>
 
-            {(activeRegisterStep === 0) && (
+            {activeRegisterStep === 0 && (
               <>
                 <TextField
                   autoFocus
@@ -510,7 +552,7 @@ export default function AuthForm() {
                     required: "This field is Required",
                   })}
                   error={errors?.firstName && true}
-                  helperText={errors?.firstName && (errors.firstName.message)}
+                  helperText={errors?.firstName && errors.firstName.message}
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">
@@ -530,7 +572,7 @@ export default function AuthForm() {
                     required: "This field is Required",
                   })}
                   error={errors?.lastName && true}
-                  helperText={errors?.lastName && (errors.lastName.message)}
+                  helperText={errors?.lastName && errors.lastName.message}
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">
@@ -548,10 +590,13 @@ export default function AuthForm() {
                   className={classes.formElement}
                   {...register("email", {
                     required: "This field is Required",
-                    pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/i, message: "Not a valid Email Address" }
+                    pattern: {
+                      value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/i,
+                      message: "Not a valid Email Address",
+                    },
                   })}
                   error={errors?.email && true}
-                  helperText={errors?.email && (errors.email.message)}
+                  helperText={errors?.email && errors.email.message}
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">
@@ -583,7 +628,7 @@ export default function AuthForm() {
               </>
             )}
 
-            {(activeRegisterStep === 1) && (
+            {activeRegisterStep === 1 && (
               <>
                 <TextField
                   autoFocus
@@ -598,7 +643,7 @@ export default function AuthForm() {
                     maxLength: { value: 6, message: "OTP is invalid" },
                   })}
                   error={errors?.otp ? true : false}
-                  helperText={errors?.otp && (errors.otp.message)}
+                  helperText={errors?.otp && errors.otp.message}
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">
@@ -647,5 +692,5 @@ export default function AuthForm() {
         )}
       </Box>
     </Paper>
-  )
+  );
 }

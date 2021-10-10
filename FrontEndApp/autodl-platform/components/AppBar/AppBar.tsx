@@ -2,6 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { makeStyles, createStyles, alpha, Theme } from '@material-ui/core/styles';
+import { signOut } from 'next-auth/react';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
@@ -15,6 +16,7 @@ import SearchIcon from '@material-ui/icons/Search';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import MoreIcon from '@material-ui/icons/MoreVert';
+import { PowerSettingsNew } from '@material-ui/icons';
 import logo from 'public/icon.png';
 
 type Prop = {
@@ -147,7 +149,7 @@ export default function PrimaryAppBar({ projectName, isAuthenticated }: Prop) {
     >
       <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
       <MenuItem onClick={handleMenuClose}>My account</MenuItem>
-      <MenuItem onClick={handleMenuClose}>Sign Out</MenuItem>
+      <MenuItem onClick={() => signOut()}>Sign Out</MenuItem>
     </Menu>
   );
 
@@ -180,6 +182,17 @@ export default function PrimaryAppBar({ projectName, isAuthenticated }: Prop) {
           <AccountCircle />
         </IconButton>
         <p>Profile</p>
+      </MenuItem>
+      <MenuItem onClick={() => signOut()}>
+        <IconButton
+          aria-label="account of current user"
+          aria-controls="primary-search-account-menu"
+          aria-haspopup="true"
+          color="inherit"
+        >
+          <PowerSettingsNew />
+        </IconButton>
+        <p>Sign Out</p>
       </MenuItem>
     </Menu>
   );

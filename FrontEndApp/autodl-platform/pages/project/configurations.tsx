@@ -1,7 +1,8 @@
 import { useRouter } from "next/router";
 import Main from "layouts/Main";
+import withAuthentication from "components/WithAuthentication/WithAuthentication";
 
-export default function Deployments() {
+function Configurations() {
   const router = useRouter();
   const projectName = router.query.projectName;
   return (
@@ -10,3 +11,5 @@ export default function Deployments() {
     </Main>
   );
 }
+
+export default withAuthentication(Configurations);
