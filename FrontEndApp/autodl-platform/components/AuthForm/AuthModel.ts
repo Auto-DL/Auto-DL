@@ -11,4 +11,5 @@ export type AuthAPIResponse = {
   message: string;
   status: boolean;
   username?: string;
+  token?: string;
 }

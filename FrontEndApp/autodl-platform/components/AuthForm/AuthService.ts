@@ -8,12 +8,12 @@ const BACKEND_API_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL || baseurl;
 
 class AuthService {
   async login(data: FormValues): Promise<AuthAPIResponse> {
-    console.log(process.env.BACKEND_API_URL);
     try {
       const response = await axios.post(`${BACKEND_API_URL}/auth/login/`, {
         username: data.username,
         password: data.password,
       });
+      
       if (response.data.token) {
         setCookie(null, 'token', response.data.token, {
           maxAge: 2 * 24 * 60 * 60,
