@@ -6,6 +6,7 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
 import InputBase from '@material-ui/core/InputBase';
 import Badge from '@material-ui/core/Badge';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -32,10 +33,11 @@ const useStyles = makeStyles((theme: Theme) =>
     grow: {
       flexGrow: 1,
     },
-    menuButton: {
-      marginRight: theme.spacing(2),
-    },
     brand: {
+      backgroundColor: theme.palette.primary.main,
+      color: '#fff',
+      fontSize: '1.5em',
+      textTransform: 'none',
       display: 'none',
       [theme.breakpoints.up('sm')]: {
         display: 'block',
@@ -188,7 +190,6 @@ export default function PrimaryAppBar({ projectName, isAuthenticated }: Prop) {
         <Toolbar>
           <IconButton
             edge="start"
-            className={classes.menuButton}
             color="inherit"
             aria-label="open drawer"
           >
@@ -196,9 +197,11 @@ export default function PrimaryAppBar({ projectName, isAuthenticated }: Prop) {
               <Image src={logo} width="30" height="30" />
             </Link>
           </IconButton>
-          <Typography className={classes.brand} variant="h6" noWrap>
-            AutoDL
-          </Typography>
+          <Link href="/">
+            <Button className={classes.brand} variant="text" size="large">
+              AutoDL
+            </Button>
+          </Link>
           <Typography className={classes.title} variant="h6" noWrap>
             {projectName}
           </Typography>

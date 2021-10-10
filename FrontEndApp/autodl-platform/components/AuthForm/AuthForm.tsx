@@ -26,6 +26,7 @@ const useStyles = makeStyles({
   },
   formContainer: {
     padding: '20px',
+    margin: '25px',
   },
   formHeaderText: {
     textAlign: 'center',
@@ -38,12 +39,12 @@ const useStyles = makeStyles({
   otpElement: {
     margin: '15px 0px',
     '& .MuiInputBase-input': {
-      letterSpacing: '25px',
+      letterSpacing: '38px',
     },
   },
   helperText: {
     fontSize: '100%',
-    marginTop: '10px',
+    marginTop: '20px',
     cursor: 'pointer',
     textDecoration: 'underline',
     display: 'inline-block',
@@ -57,12 +58,20 @@ const useStyles = makeStyles({
   actionBtnGrp: {
     display: 'flex',
     justifyContent: 'space-evenly',
-    padding: '20px',
   },
   actionBtn: {
-    margin: '12px',
-    paddingTop: '5px',
-    paddingBottom: '5px',
+    margin: '30px 0px 10px 0px',
+    paddingTop: '5px 0px',
+    width: 200,
+  },
+  actionBtnLeft: {
+    margin: '30px 10px 30px 0px',
+    paddingTop: '5px 0px',
+    width: 200,
+  },
+  actionBtnRight: {
+    margin: '30px 0px 30px 10px',
+    paddingTop: '5px 0px',
     width: 200,
   },
   radioBtnGrp: {
@@ -72,6 +81,9 @@ const useStyles = makeStyles({
     paddingTop: '20px',
     paddingBottom: '5px',
   },
+  stepper: {
+    padding: '20px 0px 30px 0px',
+  }
 });
 
 type FormValues = {
@@ -296,14 +308,14 @@ export default function AuthForm() {
                 type="submit"
                 color="primary"
                 variant="outlined"
-                className={classes.actionBtn}
+                className={classes.actionBtnLeft}
               >
                 Log in
               </Button>
               <Button
                 color="primary"
                 variant="contained"
-                className={classes.actionBtn}
+                className={classes.actionBtnRight}
                 onClick={handleSubmit(handleAuthRegister)}
               >
                 Register
@@ -314,7 +326,7 @@ export default function AuthForm() {
 
         {authStep === "forgotPass" && (
           <>
-            <Stepper activeStep={activeForgotPassStep} alternativeLabel>
+            <Stepper activeStep={activeForgotPassStep} alternativeLabel className={classes.stepper}>
               {forgotPassSteps.map((label) => (
                 <Step key={label}>
                   <StepLabel>{label}</StepLabel>
@@ -355,7 +367,7 @@ export default function AuthForm() {
                   <Button
                     color="primary"
                     variant="outlined"
-                    className={classes.actionBtn}
+                    className={classes.actionBtnLeft}
                     onClick={() => setAuthStep("login")}
                   >
                     Go Back
@@ -363,7 +375,7 @@ export default function AuthForm() {
                   <Button
                     color="primary"
                     variant="contained"
-                    className={classes.actionBtn}
+                    className={classes.actionBtnRight}
                     onClick={handleSubmit(handleReceiveOtp)}
                   >
                     Receive OTP
@@ -410,7 +422,7 @@ export default function AuthForm() {
                   <Button
                     color="primary"
                     variant="outlined"
-                    className={classes.actionBtn}
+                    className={classes.actionBtnLeft}
                     onClick={() => setActiveForgotPassStep(0)}
                   >
                     Go Back
@@ -418,7 +430,7 @@ export default function AuthForm() {
                   <Button
                     color="primary"
                     variant="contained"
-                    className={classes.actionBtn}
+                    className={classes.actionBtnRight}
                     onClick={handleSubmit(handleVerifyOtp)}
                   >
                     Verify OTP
@@ -616,14 +628,14 @@ export default function AuthForm() {
                     onClick={handleRegisterBack}
                     variant="outlined"
                     color="primary"
-                    className={classes.actionBtn}
+                    className={classes.actionBtnLeft}
                   >
                     Go Back
                   </Button>
                   <Button
                     color="primary"
                     variant="contained"
-                    className={classes.actionBtn}
+                    className={classes.actionBtnRight}
                     onClick={handleSubmit(handleRegister)}
                   >
                     Finish
