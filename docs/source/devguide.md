@@ -56,6 +56,12 @@ Once the entire environment is setup, you are all set to start developing. Befor
 npx prettier --write
 ```
 
+- If prettier shows more changes than you expected make sure that prettier is getting the correct config path or provide config path manually
+
+``` 
+npx prettier --config ./Auto-DL/FrontEndApp/.prettierrc --write
+```
+
 #### Python
 
 - We use Black code style. Before commiting and pushing the code run the black formatter
