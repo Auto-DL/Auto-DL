@@ -32,4 +32,4 @@ jobs:
           npm test
       - name: Run prettier check
         run: |
-          npx prettier --check
+          npx prettier --check .
