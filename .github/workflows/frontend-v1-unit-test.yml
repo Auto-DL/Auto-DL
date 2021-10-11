@@ -30,6 +30,3 @@ jobs:
         run: |
           npm ci
           npm test
-      - name: Run prettier check
-        run: |
-          npx prettier --check .
