@@ -29,3 +29,6 @@ jobs:
         run: npm ci
       - name: Build NextJS app
         run: npm run build
+      - name: Run prettier check
+        run: |
+          npx prettier --check
