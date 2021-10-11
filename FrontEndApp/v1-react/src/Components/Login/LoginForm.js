@@ -163,13 +163,7 @@ function LoginForm() {
       } else {
         setalert({ ...values, msg: res.data.message, severity: "error" });
       }
-    } else if (values.registerPassword !== values.confirmpassword) {
-      setalert({
-          ...values,
-          msg: 'Passwords dont match!',
-          severity: 'warning',
-      });
-  } else {
+    } else {
       setalert({
         ...values,
         msg: "Please fill all the details",
