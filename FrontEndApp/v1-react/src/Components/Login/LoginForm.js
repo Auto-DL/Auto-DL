@@ -209,7 +209,7 @@ function LoginForm() {
     } else if (values.registerPassword !== values.confirmpassword) {
       setalert({
           ...values,
-          msg: 'Passwords dont match!',
+          msg: 'Passwords do not match',
           severity: 'warning',
       });
   } else {
