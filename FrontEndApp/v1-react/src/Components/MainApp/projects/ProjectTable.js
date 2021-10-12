@@ -393,9 +393,9 @@ export default function Project_table(props) {
                                 data-testid={`project-description-${index}`}
                                 onClick={() => props.handlestep(project[p])}
                               >
-                                {project[p].project_description.length <= 40
+                                {project[p].project_description?.length <= 40
                                   ? project[p].project_description
-                                  : project[p].project_description.slice(
+                                  : project[p].project_description?.slice(
                                       0,
                                       40
                                     ) + "..."}
@@ -574,9 +574,9 @@ export default function Project_table(props) {
                                 align="center"
                                 onClick={() => props.handlestep(project[p])}
                               >
-                                {project[p].project_description.length <= 40
+                                {project[p].project_description?.length <= 40
                                   ? project[p].project_description
-                                  : project[p].project_description.slice(
+                                  : project[p].project_description?.slice(
                                       0,
                                       40
                                     ) + "..."}
