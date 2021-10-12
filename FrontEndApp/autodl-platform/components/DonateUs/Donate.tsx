@@ -2,15 +2,10 @@ import React from 'react';
 import clsx from 'clsx';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
-import List from '@material-ui/core/List';
 import Toolbar from '@material-ui/core/Toolbar';
-import Divider from '@material-ui/core/Divider';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import Settings from '@material-ui/icons/Settings';
-import Routes from 'utils/routes';
-import Router from 'next/router';
 
 import PaymentIcon from '@material-ui/icons/Payment';
 import Modal from '@material-ui/core/Modal';
@@ -20,12 +15,6 @@ import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import InputAdornment  from "@material-ui/core/InputAdornment"
 import Axios from 'axios'
-// import Razorpay from 'razorpay'
-
-type Props = {
-  activeTab?: string;
-  projectName?: string | string[] | undefined;
-};
 
 const drawerWidth = 240;
 
@@ -104,7 +93,7 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-export default function SideBar({ activeTab, projectName }: Props) {
+export default function SideBar() {
 
   const classes = useStyles();
   const defaultDonateAmount = [50, 200, 500, 1000, ]
@@ -123,38 +112,6 @@ export default function SideBar({ activeTab, projectName }: Props) {
     setOpen(false);
   };
 
-//   const handlePaymentSuccess = async (response:any) => {
-//     console.log("Inside handlepaymentsuccess",response )
-//     try {
-//       let bodyData = new FormData();
-//       bodyData.append("response", JSON.stringify(response))
-//       console.log("Response", response);
-
-//       // we will send the response we've got from razorpay to the backend to validate the payment
-//       // bodyData.append("response", JSON.stringify(response));
-
-//       await Axios({
-//         url: `http://localhost:8000/payments/verify/`,
-//         method: "POST",
-//         data: bodyData,
-//         headers: {
-//           Accept: "application/json",
-//           "Content-Type": "application/json",
-//         },
-//       })
-//         // .then((res:any) => {
-//         //   console.log("Everything is OK!", res);
-//         //   // setName("");
-//         //   // setAmount("");
-//         // })
-//         // .catch((err) => {
-//         //   console.log(err);
-//         // });
-//     } 
-//     catch (error) {
-//       console.log(console.error());
-//     }
-//   };
 
   const loadScript = (src: string) => {
     return new Promise(resolve => {
@@ -235,31 +192,6 @@ export default function SideBar({ activeTab, projectName }: Props) {
       onMouseLeave={handleDrawerClose}
     >
       <Toolbar />
-      <List>
-        {Routes.map((route) => (
-          <ListItem
-            button
-            key={route.name}
-            onClick={() => Router.push(`/project${route.path}?projectName=${projectName}`)}
-            className={clsx(classes.icon, {
-              [classes.active]: route.name == activeTab,
-              [classes.inactive]: route.name != activeTab,
-            })}
-          >
-            <ListItemIcon style={{ color: 'white' }}><route.icon /></ListItemIcon>
-            <ListItemText primary={route.name} style={{color: "white"}}/>
-          </ListItem>
-        ))}
-      </List>
-      <div className={classes.grow} />
-      <Divider />
-      <List>
-        <ListItem button key='Settings' onClick={() => Router.push('/')}>
-          <ListItemIcon><Settings style={{ color: 'white' }} /></ListItemIcon>
-          <ListItemText primary='Settings' style={{ color: 'white' }} />
-        </ListItem>
-      </List>
-
       <ListItem button key='Donate' onClick={modalOpen}>
           <ListItemIcon><PaymentIcon style={{ color: 'white' }} /></ListItemIcon>
           <ListItemText primary='Donate' style={{ color: 'white' }} />
