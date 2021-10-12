@@ -26,7 +26,8 @@ export default function Main({ children, projectName, activeTab }: Props) {
   const classes = useStyles();
   return (
     <Box className={classes.root}>
-      <PrimaryAppBar projectName={projectName} />
+      {/* To be configured with Redux - isAuthenticated */}
+      <PrimaryAppBar projectName={projectName} isAuthenticated={true} />
       <SideBar activeTab={activeTab} projectName={projectName} />
       <Container maxWidth='lg'>
         <Toolbar />
