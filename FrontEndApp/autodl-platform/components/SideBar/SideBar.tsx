@@ -139,8 +139,8 @@ export default function SideBar({ activeTab, projectName }: Props) {
               [classes.inactive]: route.name != activeTab,
             })}
           >
-            <ListItemIcon style={{ color: 'white' }}><route.icon /></ListItemIcon>
-            <ListItemText primary={route.name} style={{color: "white"}}/>
+            <ListItemIcon style={{ color: 'inherit' }}><route.icon /></ListItemIcon>
+            <ListItemText primary={route.name}/>
           </ListItem>
         ))}
       </List>
