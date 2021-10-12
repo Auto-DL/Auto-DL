@@ -133,7 +133,7 @@ def compile(request):
 
 
 @api_view(["POST"])
-@is_authenticated
+# @is_authenticated
 def get_all_projects(request):
     try:
         username = request.data.get("username")
@@ -143,10 +143,11 @@ def get_all_projects(request):
 
         delete_broken_symlinks(store_obj.path)
         project_ids = store_obj.enlist()
+        print("project_ids", project_ids)
 
         projects = []
         for id in project_ids:
-            path = store_obj.path + os.sep + id + os.sep + "meta.json"
+            path = store_obj.path + "/" + id + os.sep + "meta.json"
             with open(path, "r") as f:
                 metadata = json.load(f)
             list_item = {id: metadata}
@@ -543,18 +544,22 @@ def save_hyperparams(request):
 
 
 @api_view(["POST"])
-@is_authenticated
+# @is_authenticated
 def get_hyperparams(request):
     try:
         username = request.data.get("username")
         user = User(username=username, password=None)
         user = user.find()
+        print("user found usert", str(user))
 
         store_obj = Store(user)
         project_id = request.data.get("project_id")
+        print("project_id", project_id)
         if not store_obj.exist(project_id):
             raise Exception("No such project exists")
-        project_dir = store_obj.path + os.sep + project_id
+        project_dir = store_obj.path + "\\" + project_id
+        project_dir = "C:\\Users\\Anonymouse\\Documents\\Auto-DL\\data"
+        print("project_dir", str(project_dir))
 
         with open(project_dir + os.sep + "hyperparams.json", "r") as f:
             hyperparams = json.load(f)
