@@ -3,11 +3,13 @@ import Main from "layouts/Main";
 import Box from "@material-ui/core/Box";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
+import InputAdornment  from "@material-ui/core/InputAdornment"
+
 
 export default function ProjectHome() {
   const router = useRouter();
   const userName = router.query.name;
-  const orderId = router.query.orderId;
+  const amount = router.query.amount;
   return (
     <Main activeTab="Dashboard">
         <Box >
@@ -31,26 +33,16 @@ export default function ProjectHome() {
           />
           <TextField 
             type="text"
-            style={{width: 500}}
-            value={orderId}
+            style={{width: 100}}
+            value={amount}
             // label="Order Id"
             id="filled-read-only-input"
             variant="outlined"
             InputProps={{
+              startAdornment: <InputAdornment position="start">₹</InputAdornment>,
               readOnly: true,
             }}
           />
-          {/* <TextField 
-            style={{maxWidth: 500}}
-            value={orderId}
-            type="text"
-            label="OrderId"
-            id="outlined-read-only-input"
-            variant="outlined"
-            InputProps={{
-              readOnly: true,
-            }}
-          /> */}
         </div>
         </Box>
     </Main>
