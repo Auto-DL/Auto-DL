@@ -45,7 +45,7 @@ export default function Donate() {
 
   const defaultDonateAmount = [50, 200, 500, 1000, ]
 
-  const [donateAmt, setDonateAmt] = React.useState({amt:"0"});
+  const [donateAmt, setDonateAmt] = React.useState({amt:0});
   const [donateModalOpen, setDonateModalOpen] = React.useState<boolean>(false);
   const modalOpen = () => setDonateModalOpen(true);
   const modalClose = () => setDonateModalOpen(false);
@@ -53,7 +53,7 @@ export default function Donate() {
 
   const displayRazorpay = (amt:any) => {
     alert(amt)
-    setDonateAmt({amt: "0"})
+    setDonateAmt({amt: 0})
     modalClose()
   }
 
@@ -82,7 +82,7 @@ export default function Donate() {
           <TextField 
             key={amount}
             className={classes.amountField}
-            onClick={() => setDonateAmt({amt: `${amount}`})}
+            onClick={() => setDonateAmt({amt: amount})}
             id="standard-read-only-input"
             variant="outlined"
             value={amount}
