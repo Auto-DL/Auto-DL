@@ -30,6 +30,8 @@
     "@types/react": "17.0.16",
     "eslint": "7.32.0",
     "eslint-config-next": "11.0.1",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^4.0.0",
     "typescript": "4.3.5"
   }
 }
