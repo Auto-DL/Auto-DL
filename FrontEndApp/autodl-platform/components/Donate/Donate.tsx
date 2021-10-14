@@ -79,7 +79,7 @@ export default function Donate() {
           We help you make Deep Learning models without writing a single line of code!
         </Typography>
         <div className={classes.modalTextField}>
-          {defaultDonateAmount.map((amount:any) => 
+          {defaultDonateAmount.map((amount:number) => 
           <TextField 
             key={amount}
             className={classes.amountField}
