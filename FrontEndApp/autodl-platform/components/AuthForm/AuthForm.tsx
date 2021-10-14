@@ -95,8 +95,8 @@ export default function AuthForm() {
   const [showOtpResendText, setShowOtpResendText] =
     React.useState<boolean>(false);
   const [otpResendText, setOtpResendText] = React.useState<
-    "Resend OTP?" | "OTP sent successfully!"
-  >("Resend OTP?");
+    "Send OTP?" | "Resend OTP?" | "OTP sent successfully!"
+  >("Send OTP?");
   const [openAlert, setOpenAlert] = React.useState<boolean>(false);
   const [alert, setAlert] = React.useState({
     message: "This is alert msg",
@@ -151,7 +151,6 @@ export default function AuthForm() {
 
   const handleReceiveOtp = (data: FormValues) => {
     setShowProgress(true);
-    console.log(data);
     // Error Handling Required
     AuthService.verifyEmail(data.username).then((response) => {
       setAlert({
@@ -221,33 +220,6 @@ export default function AuthForm() {
     }, 1500);
   };
 
-  const handleRegisterNext = (data: FormValues) => {
-    setShowProgress(true);
-    console.log(activeRegisterStep);
-    if (activeRegisterStep == 0) {
-      AuthService.verifyEmail(data.username).then((response) => {
-        setAlert({
-          message: response.message ? response.message : "",
-          severity: response.status ? "success" : "error",
-        });
-        setOpenAlert(true);
-        setOtpResendText("OTP sent successfully!");
-        setShowProgress(false);
-      });
-      setTimeout(() => {
-        setShowOtpResendText(true);
-      }, 5000);
-      setActiveRegisterStep((prevStep) => prevStep + 1);
-    } else {
-      setActiveRegisterStep((prevStep) => prevStep + 1);
-      setShowProgress(false);
-    }
-  };
-
-  const handleRegisterBack = () => {
-    setActiveRegisterStep((prevStep) => prevStep - 1);
-  };
-
   const handleRegister = (data: FormValues) => {
     setShowProgress(true);
     // handleErrors();
@@ -259,7 +231,6 @@ export default function AuthForm() {
         });
         dispatch(updateUser({username: response.username}));
         setOpenAlert(true);
-        router.push("/home");
       } else {
         setAlert({
           message: response.message ? response.message : "",
@@ -267,6 +238,26 @@ export default function AuthForm() {
         });
         setOpenAlert(true);
       }
+      setShowProgress(false);
+      setActiveRegisterStep((prevStep) => prevStep + 1);
+    });
+  };
+
+  const handleLater = () => {
+    router.push("/home");
+  };
+
+  const handleVerifyAccount = (data: FormValues) => {
+    setShowProgress(true);
+    AuthService.verifyOTP(data.username, data.otp).then((response) => {
+      setAlert({
+        message: response.message ? response.message : "",
+        severity: response.status ? "success" : "error",
+      });
+      if (response.status) {
+        router.push("/home");
+      }
+      setOpenAlert(true);
       setShowProgress(false);
     });
   };
@@ -657,9 +648,9 @@ export default function AuthForm() {
                     color="primary"
                     variant="contained"
                     className={classes.actionBtn}
-                    onClick={handleSubmit(handleRegisterNext)}
+                    onClick={handleSubmit(handleRegister)}
                   >
-                    Next
+                    Create account
                   </Button>
                 </div>
               </>
@@ -676,7 +667,6 @@ export default function AuthForm() {
                   placeholder="000000"
                   className={classes.otpElement}
                   {...register("otp", {
-                    required: "This field is Required",
                     maxLength: { value: 6, message: "OTP is invalid" },
                   })}
                   error={errors?.otp ? true : false}
@@ -707,20 +697,20 @@ export default function AuthForm() {
 
                 <div className={classes.actionBtnGrp}>
                   <Button
-                    onClick={handleRegisterBack}
+                    onClick={handleLater}
                     variant="outlined"
                     color="primary"
                     className={classes.actionBtn}
                   >
-                    Go Back
+                    Later
                   </Button>
                   <Button
                     color="primary"
                     variant="contained"
                     className={classes.actionBtn}
-                    onClick={handleSubmit(handleRegister)}
+                    onClick={handleSubmit(handleVerifyAccount)}
                   >
-                    Finish
+                    Verify
                   </Button>
                 </div>
               </>
