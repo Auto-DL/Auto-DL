@@ -5,13 +5,19 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 import json
 import bcrypt
+import shutil
+import os
+import sys
 
 from django.core.mail import send_mail
 from .auth import OTP
 from .emails import EmailTemplates
 from .models import Session, User
 from .store import Store
+from authv1.decorators import is_authenticated
 
+sys.path.append('../')
+from constants import ROOT_DIR
 
 @api_view(["POST"])
 def login(request):
@@ -74,6 +80,38 @@ def register(request):
         username = None
     return JsonResponse(
         {"message": message, "username": username, "token": token}, status=status
+    )
+
+@api_view(["POST"])
+@is_authenticated
+def delete_user(request):
+    try:
+        username = request.data.get("username")
+        password = request.data.get("password")
+
+        user = User(username=username, password=password)
+        user.delete()
+        message = "Deleted Successfully"
+        status = 200
+    except Exception as e:
+        message = "Failed to delete user"
+        status = 401
+        token = None
+        username = None
+    try:
+        delete_path = os.path.join(ROOT_DIR, username)
+        print('delete_path', delete_path)
+        if os.path.exists(delete_path):
+            print("deleting projects")
+            shutil.rmtree(delete_path)
+    except Exception as e:
+        message = "Failed to delete projects"
+        status = 401
+        token = None
+        username = None
+
+    return JsonResponse(
+        {"message": message, "username deleted": username}, status=status
     )
 
 
