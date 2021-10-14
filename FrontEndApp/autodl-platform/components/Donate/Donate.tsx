@@ -60,7 +60,7 @@ export default function Donate() {
 
   return (
     <div>
-        <ListItem button key='' onClick={modalOpen}>
+        <ListItem button key='Donate' onClick={modalOpen}>
           <ListItemIcon><PaymentIcon style={{ color: 'white' }} /></ListItemIcon>
           <ListItemText primary='Donate' style={{ color: 'white' }} />
         </ListItem>        
