@@ -47,7 +47,7 @@ export default function Donate() {
   const defaultDonateAmount = [50, 200, 500, 1000, ]
 
   const [donateAmt, setDonateAmt] = React.useState({amt:"0"});
-  const [donateModalOpen, setDonateModalOpen] = React.useState(false);
+  const [donateModalOpen, setDonateModalOpen] = React.useState<boolean>(false);
   const modalOpen = () => setDonateModalOpen(true);
   const modalClose = () => setDonateModalOpen(false);
 
