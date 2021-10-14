@@ -175,7 +175,7 @@ const DeployProjectModal = ({ setOpenDeployModal, setDeployOptions, localDeploy,
 
     const [deployStep, setDeployStep] = useState(0);
     const [modelDeployCategories, setModelDeployCategories] = useState([]);
-    const [localDeployVariant, setLocalDeployVariant] = useState("zip");
+    const [localDeployVariant, setLocalDeployVariant] = useState("executable");
 
     // States to handle Pickle File for CLoud Deployments
     const [currentPklFile, setCurrentPklFile] = useState("");
@@ -203,29 +203,14 @@ const DeployProjectModal = ({ setOpenDeployModal, setDeployOptions, localDeploy,
     };
 
     const handleLocalDeployment = async () => {
-        const data = {
-            username: username,
-            project_id: SelectedProject.project_id,
-            model_download_type: localDeployVariant,
-            model_categories: modelDeployCategories,
-        }
+        const platforms = [];
+        if (document.querySelector('[name=linux]').checked) platforms.push('linux');
+        if (document.querySelector('[name=windows]').checked) platforms.push('windows');
 
-        const res = await DeploymentService.local_deploy(token, data);
-
-        if (res.status === 200) {
-            const { data } = await res;
-            const downloadUrl = window.URL.createObjectURL(new Blob([data]));
-            const localDeployVariant = document.querySelector('[name=localDeployVariant]:checked').value;
-            const link = document.createElement('a');
-            const fileName = {
-                zip: 'deployment.zip',
-                executable: 'app.exe',
-            };
-            link.href = downloadUrl;
-            link.setAttribute('download', fileName[localDeployVariant]);
-            document.body.appendChild(link);
-            link.click();
-            link.remove();
+        const localDeployVariant = document.querySelector('[name=localDeployVariant]:checked').value;
+        const { assets, status } = await DeploymentService.local_deploy(platforms, localDeployVariant);
+        if (status === 200) {
+            assets.forEach(url => window.open(url));
             setalert({ ...values, msg: "Local Deployment Successful", severity: "success" });
         } else {
             setalert({ ...values, msg: "Deployment Attempt Failed", severity: "error" });
@@ -359,6 +344,7 @@ const DeployProjectModal = ({ setOpenDeployModal, setDeployOptions, localDeploy,
                     localDeployVariant={localDeployVariant}
                     setLocalDeployVariant={setLocalDeployVariant}
                     handleLocalDeployment={handleLocalDeployment}
+                    handleDeployChange={handleDeployChange}
                 />
             )}
             {(deployStep === 2 && !localDeploy && (awsDeploy || gcpDeploy)) && (
