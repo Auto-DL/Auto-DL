@@ -5,7 +5,7 @@ const BACKEND_API_URL = process.env.REACT_APP_BACKEND_API_URL || baseurl;
 class DeploymentService {
     async local_deploy(platforms, localDeployVariant) {
         try {
-            const res = await axios.get('https://api.github.com/repos/Aditya-ds-1806/Deployment-Flask/releases/latest');
+            const res = await axios.get('https://api.github.com/repos/Auto-DL/Deployment-Flask/releases/latest');
             const data = await res.data;
             const response = {
                 assets: [],
