@@ -70,6 +70,8 @@ function Home() {
     localDeploy: false,
     awsDeploy: false,
     gcpDeploy: false,
+    linux: false,
+    windows: false,
   });
 
   const {
