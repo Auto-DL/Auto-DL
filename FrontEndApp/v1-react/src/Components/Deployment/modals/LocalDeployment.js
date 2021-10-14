@@ -1,7 +1,7 @@
-import { Radio, RadioGroup, FormControl, FormControlLabel, Typography, Button } from '@material-ui/core';
-import { DialogActions, DialogTitle, DialogContent } from "../styles";
+import { Radio, RadioGroup, FormControl, FormGroup, FormControlLabel, Typography, Button } from '@material-ui/core';
+import { DialogActions, DialogTitle, DialogContent, StyledCheckbox } from "../styles";
 
-export const LocalDeployStepThree = ({ handleCloseDeployModal, setDeployStep, classes, localDeployVariant, setLocalDeployVariant, handleLocalDeployment }) => {
+export const LocalDeployStepThree = ({ handleCloseDeployModal, setDeployStep, classes, localDeployVariant, setLocalDeployVariant, handleLocalDeployment, handleDeployChange }) => {
     return (
         <div>
             <DialogTitle
@@ -19,6 +19,28 @@ export const LocalDeployStepThree = ({ handleCloseDeployModal, setDeployStep, cl
                         <FormControlLabel value="executable" control={<Radio />} label="Download an Executable" />
                         <FormControlLabel value="zip" control={<Radio />} label="Download a Zipped Folder" />
                     </RadioGroup>
+                    <FormGroup>
+                        <FormControlLabel
+                            control={
+                                <StyledCheckbox
+                                    color="primary"
+                                    name="windows"
+                                    onChange={handleDeployChange}
+                                />
+                            }
+                            label="Windows"
+                        />
+                        <FormControlLabel
+                            control={
+                                <StyledCheckbox
+                                    color="primary"
+                                    name="linux"
+                                    onChange={handleDeployChange}
+                                />
+                            }
+                            label="Linux"
+                        />
+                    </FormGroup>
                 </FormControl>
             </DialogContent>
             <DialogActions style={{ justifyContent: "space-evenly" }}>
