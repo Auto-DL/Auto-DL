@@ -95,7 +95,6 @@ export default function Donate() {
           )}
           <TextField 
             style={{width: 100}}
-            type="Number"
             label="Amount"
             onChange={(e) => setDonateAmt({amt: (e.target as HTMLInputElement).valueAsNumber})}
             id="outlined-number"
