@@ -299,7 +299,7 @@ describe("Registration Form", () => {
     });
     fireEvent.click(registerButton);
 
-    const warning = component.getByText("Passwords dont match!");
+    const warning = component.getByText("Passwords do not match");
     expect(warning).toBeInTheDocument();
   });
 
@@ -334,7 +334,7 @@ describe("Registration Form", () => {
     });
     fireEvent.click(registerButton);
 
-    const warning = component.getByText("Passwords dont match!");
+    const warning = component.getByText("Passwords do not match");
     expect(warning).toBeInTheDocument();
   });
 
@@ -373,7 +373,7 @@ describe("Registration Form", () => {
     });
     fireEvent.click(registerButton);
 
-    const warning = component.getByText("Passwords dont match!");
+    const warning = component.getByText("Passwords do not match");
     expect(warning).toBeInTheDocument();
   });
 
