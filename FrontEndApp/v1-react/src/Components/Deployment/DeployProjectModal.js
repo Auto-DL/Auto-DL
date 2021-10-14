@@ -305,8 +305,7 @@ const DeployProjectModal = ({ setOpenDeployModal, setDeployOptions, localDeploy,
             }
         };
 
-        handleCloseDeployModal();
-        setOpen(true);
+        handleLocalDeployment();
     }
 
     return (
@@ -377,6 +376,7 @@ const DeployProjectModal = ({ setOpenDeployModal, setDeployOptions, localDeploy,
                     localDeployVariant={localDeployVariant}
                     setLocalDeployVariant={setLocalDeployVariant}
                     handleHybridDeployment={handleHybridDeployment}
+                    handleDeployChange={handleDeployChange}
                 />
             )}
         </Dialog>

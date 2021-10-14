@@ -1,7 +1,7 @@
-import { Radio, RadioGroup, FormControl, FormControlLabel, Typography, Button } from '@material-ui/core';
-import { DialogActions, DialogTitle, DialogContent } from "../styles";
+import { Radio, RadioGroup, FormControl, FormGroup, FormControlLabel, Typography, Button } from '@material-ui/core';
+import { DialogActions, DialogTitle, DialogContent, StyledCheckbox } from "../styles";
 
-export const HybridDeployStepThree = ({ handleCloseDeployModal, setDeployStep, values, classes, pklFileName, setNumberOfChunks, setPklFileName, currentPklFile, setCurrentPklFile, pklChunkSize, handleHybridDeployment, localDeployVariant, setLocalDeployVariant }) => {
+export const HybridDeployStepThree = ({ handleCloseDeployModal, setDeployStep, values, classes, pklFileName, setNumberOfChunks, setPklFileName, currentPklFile, setCurrentPklFile, pklChunkSize, handleHybridDeployment, handleDeployChange, localDeployVariant, setLocalDeployVariant }) => {
     const handlePklUpload = async () => {
         const pklHandle = await window.showOpenFilePicker({
             types: [
@@ -40,6 +40,28 @@ export const HybridDeployStepThree = ({ handleCloseDeployModal, setDeployStep, v
                         <FormControlLabel value="executable" disabled control={<Radio />} label="Download an Executable" />
                         <FormControlLabel value="zip" control={<Radio />} label="Download a Zipped Folder" />
                     </RadioGroup>
+                    <FormGroup>
+                        <FormControlLabel
+                            control={
+                                <StyledCheckbox
+                                    color="primary"
+                                    name="windows"
+                                    onChange={handleDeployChange}
+                                />
+                            }
+                            label="Windows"
+                        />
+                        <FormControlLabel
+                            control={
+                                <StyledCheckbox
+                                    color="primary"
+                                    name="linux"
+                                    onChange={handleDeployChange}
+                                />
+                            }
+                            label="Linux"
+                        />
+                    </FormGroup>
                 </FormControl>
                 <Typography variant="body1" gutterBottom>
                     Step 3.2: Upload the <i>.pkl</i>&nbsp; file required to initiate cloud deployment.
