@@ -81,6 +81,7 @@ export default function Donate() {
         <div className={classes.modalTextField}>
           {defaultDonateAmount.map((amount:any) => 
           <TextField 
+            key={amount}
             className={classes.amountField}
             onClick={() => setDonateAmt({amt: `${amount}`})}
             id="standard-read-only-input"
