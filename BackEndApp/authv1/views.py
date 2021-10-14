@@ -113,7 +113,7 @@ def delete_user(request):
         username = None
 
     return JsonResponse(
-        {"message": message, "username deleted": username}, status=status
+        {"message": message, "user deleted": username}, status=status
     )
 
 
