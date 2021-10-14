@@ -155,7 +155,7 @@ export default function AuthForm() {
     // Error Handling Required
     AuthService.verifyEmail(data.username).then((response) => {
       setAlert({
-        message: response.message,
+        message: response.message ? response.message : "",
         severity: response.status ? "success" : "error",
       });
       setActiveForgotPassStep(1);
@@ -171,7 +171,7 @@ export default function AuthForm() {
     setShowProgress(true);
     AuthService.verifyEmail(data.username).then((response) => {
       setAlert({
-        message: response.message,
+        message: response.message ? response.message : "",
         severity: response.status ? "success" : "error",
       });
       setOpenAlert(true);
@@ -184,7 +184,7 @@ export default function AuthForm() {
     setShowProgress(true);
     AuthService.verifyOTP(data.username, data.otp).then((response) => {
       setAlert({
-        message: response.message,
+        message: response.message ? response.message : "",
         severity: response.status ? "success" : "error",
       });
       if (response.status) {
@@ -200,7 +200,7 @@ export default function AuthForm() {
     AuthService.updatePassword(data.username, data.password).then(
       (response) => {
         setAlert({
-          message: response.message,
+          message: response.message ? response.message : "",
           severity: response.status ? "success" : "error",
         });
         setOpenAlert(true);
@@ -223,10 +223,11 @@ export default function AuthForm() {
 
   const handleRegisterNext = (data: FormValues) => {
     setShowProgress(true);
-    if (activeRegisterStep == 1) {
+    console.log(activeRegisterStep);
+    if (activeRegisterStep == 0) {
       AuthService.verifyEmail(data.username).then((response) => {
         setAlert({
-          message: response.message,
+          message: response.message ? response.message : "",
           severity: response.status ? "success" : "error",
         });
         setOpenAlert(true);
@@ -236,6 +237,10 @@ export default function AuthForm() {
       setTimeout(() => {
         setShowOtpResendText(true);
       }, 5000);
+      setActiveRegisterStep((prevStep) => prevStep + 1);
+    } else {
+      setActiveRegisterStep((prevStep) => prevStep + 1);
+      setShowProgress(false);
     }
   };
 
@@ -249,7 +254,7 @@ export default function AuthForm() {
     AuthService.register(data).then((response) => {
       if (response.status) {
         setAlert({
-          message: response.message,
+          message: response.message ? response.message : "",
           severity: "success",
         });
         dispatch(updateUser({username: response.username}));
@@ -257,7 +262,7 @@ export default function AuthForm() {
         router.push("/home");
       } else {
         setAlert({
-          message: response.message,
+          message: response.message ? response.message : "",
           severity: "error",
         });
         setOpenAlert(true);
@@ -273,7 +278,7 @@ export default function AuthForm() {
     AuthService.login(data).then((response) => {
       if (response.status) {
         setAlert({
-          message: response.message,
+          message: response.message ? response.message : "",
           severity: "success",
         });
         dispatch(updateUser({username: response.username}));
@@ -281,7 +286,7 @@ export default function AuthForm() {
         router.push("/home");
       } else {
         setAlert({
-          message: response.message,
+          message: response.message ? response.message : "",
           severity: "error",
         });
         setOpenAlert(true);

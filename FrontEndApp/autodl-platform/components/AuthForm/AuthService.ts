@@ -1,19 +1,19 @@
 import axios from "axios";
-import { parseCookies, setCookie } from 'nookies';
+import { parseCookies, setCookie, destroyCookie } from 'nookies';
 
-import { AuthAPIResponse, FormValues } from "./AuthModel";
+import { AuthAPI, FormValues } from "./AuthModel";
 
 const baseurl = process.env.NODE_ENV === "production" ? "/api" : "";
 const BACKEND_API_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL || baseurl;
 
 class AuthService {
-  async login(data: FormValues): Promise<AuthAPIResponse> {
+  async login(data: FormValues): Promise<AuthAPI> {
     try {
-      const response = await axios.post(`${BACKEND_API_URL}/auth/login/`, {
+      const response = await axios.post<AuthAPI>(`${BACKEND_API_URL}/auth/login/`, {
         username: data.username,
         password: data.password,
       });
-      
+
       if (response.data.token) {
         setCookie(null, 'token', response.data.token, {
           maxAge: 2 * 24 * 60 * 60,
@@ -25,7 +25,7 @@ class AuthService {
         status: response.status == 200,
         username: response.data.user,
       };
-    } catch (error) { 
+    } catch (error) {
       return {
         message: "Server error! Please try again later in some time",
         status: false,
@@ -33,9 +33,9 @@ class AuthService {
     }
   }
 
-  async register(data: FormValues): Promise<AuthAPIResponse> {
+  async register(data: FormValues): Promise<AuthAPI> {
     try {
-      const response = await axios.post(
+      const response = await axios.post<AuthAPI>(
         `${BACKEND_API_URL}/auth/register/`,
         {
           username: data.username,
@@ -64,10 +64,10 @@ class AuthService {
     }
   }
 
-  async verifyEmail(username: string): Promise<AuthAPIResponse> {
+  async verifyEmail(username: string): Promise<AuthAPI> {
     console.log(username);
     try {
-      const response = await axios.post(
+      const response = await axios.post<AuthAPI>(
         `${BACKEND_API_URL}/auth/email/verify/`,
         {
           username: username,
@@ -85,9 +85,9 @@ class AuthService {
     }
   }
 
-  async verifyOTP(username: string, otp: number): Promise<AuthAPIResponse> {
+  async verifyOTP(username: string, otp: string): Promise<AuthAPI> {
     try {
-      const response = await axios.post(
+      const response = await axios.post<AuthAPI>(
         `${BACKEND_API_URL}/auth/otp/verify/`,
         {
           username: username,
@@ -106,9 +106,9 @@ class AuthService {
     }
   }
 
-  async forgotPassword(username: string): Promise<AuthAPIResponse> {
+  async forgotPassword(username: string): Promise<AuthAPI> {
     try {
-      const response = await axios.post(
+      const response = await axios.post<AuthAPI>(
         `${BACKEND_API_URL}/auth/password/forgot`,
         {
           username: username,
@@ -126,20 +126,48 @@ class AuthService {
     }
   }
 
-  async updatePassword(username: string, password: string): Promise<AuthAPIResponse> {
+  async updatePassword(username: string, password: string): Promise<AuthAPI> {
     try {
-      const response = await axios.post(
+      const response = await axios.post<AuthAPI>(
         `${BACKEND_API_URL}/auth/password/update/`,
         {
           username: username,
           password: password
-        }, 
+        },
         {
           headers: {
-            Authorization: 'Bearer ' + parseCookies().token 
+            Authorization: 'Bearer ' + parseCookies().token
           }
         }
       );
+      return {
+        message: response.data.message,
+        status: response.status == 200,
+      };
+    } catch (error) {
+      return {
+        message: "Server error! Please try again in some time",
+        status: false,
+      };
+    }
+  }
+
+  async logout(username: string): Promise<AuthAPI> {
+    try {
+      destroyCookie({}, "token");
+      
+      const response = await axios.post<AuthAPI>(
+        `${BACKEND_API_URL}/auth/logout/`,
+        {
+          username: username,
+        },
+        {
+          headers: {
+            Authorization: 'Bearer ' + parseCookies().token
+          }
+        }
+      );
+
       return {
         message: response.data.message,
         status: response.status == 200,

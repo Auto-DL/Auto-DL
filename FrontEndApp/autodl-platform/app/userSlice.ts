@@ -9,7 +9,7 @@ export type userState = {
 };
 
 const initialState: userState = {
-  username: "Username",
+  username: "username",
 };
 
 export const userSlice = createSlice({
