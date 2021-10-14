@@ -206,7 +206,7 @@ function LoginForm() {
       } else {
         setalert({ ...values, msg: res.data.message, severity: "error" });
       }
-    } else if (values.registerPassword !== values.confirmpassword) {
+    } else if (values.registerPassword !== values.confirmpassword && values.confirmpassword !== "") {
       setalert({
           ...values,
           msg: 'Passwords dont match!',
