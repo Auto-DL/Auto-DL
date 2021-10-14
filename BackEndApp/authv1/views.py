@@ -16,8 +16,9 @@ from .models import Session, User
 from .store import Store
 from authv1.decorators import is_authenticated
 
-sys.path.append('../')
+sys.path.append("../")
 from constants import ROOT_DIR
+
 
 @api_view(["POST"])
 def login(request):
@@ -82,6 +83,7 @@ def register(request):
         {"message": message, "username": username, "token": token}, status=status
     )
 
+
 @api_view(["POST"])
 @is_authenticated
 def delete_user(request):
@@ -100,7 +102,7 @@ def delete_user(request):
         username = None
     try:
         delete_path = os.path.join(ROOT_DIR, username)
-        print('delete_path', delete_path)
+        print("delete_path", delete_path)
         if os.path.exists(delete_path):
             print("deleting projects")
             shutil.rmtree(delete_path)

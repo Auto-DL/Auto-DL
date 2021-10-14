@@ -25,7 +25,7 @@ from .utils import (
     get_git_username,
 )
 
-sys.path.append('../')
+sys.path.append("../")
 from constants import ROOT_DIR
 
 

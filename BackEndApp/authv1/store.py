@@ -2,8 +2,10 @@ import os
 import posixpath
 import shutil
 import sys
-sys.path.append('../')
+
+sys.path.append("../")
 from constants import ROOT_DIR
+
 
 class Store:
     def __init__(self, user):
