@@ -112,9 +112,7 @@ def delete_user(request):
         token = None
         username = None
 
-    return JsonResponse(
-        {"message": message, "user deleted": username}, status=status
-    )
+    return JsonResponse({"message": message, "user deleted": username}, status=status)
 
 
 @api_view(["POST"])
