@@ -82,7 +82,7 @@ Setup Auto-DL:
 
 - Improve the UI and UX.
 
-- Show model training realted stats on the frontend.
+- Show model training related stats on the frontend.
 
 - Visualization and data preprocessing steps.
 
