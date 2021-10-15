@@ -85,7 +85,7 @@ export default function Donate() {
       alert("Razorpay Sdk Failed to load")
       return
     }
-    const result = await Axios({
+    const result:any = await Axios({
       url: `http://localhost:8000/payments/pay/`,
       data: {"amount": amt},
       method: "POST",
@@ -96,7 +96,8 @@ export default function Donate() {
     }).then((res: AxiosResponse) => {
       return res;
     });
-    const { amount, id: order_id } = result.data;
+    const amount:number = result.data["amount"];
+    const order_id:string = result.data["id"];
 
     var options = {
         key: process.env.RAZORPAY_API_KEY, // Enter the Key ID generated from the Dashboard
@@ -107,7 +108,6 @@ export default function Donate() {
         image: "https://raw.githubusercontent.com/Auto-DL/Auto-DL/main/static/Logo.png",
         order_id: order_id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
         callback_url: `http://localhost:8000/payments/verify/`,
-        data: {"amount": amount},
         theme: {
             "color": "#252934"
         }

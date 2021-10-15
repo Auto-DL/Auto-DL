@@ -1,7 +1,7 @@
 import os
 import razorpay
 
-from authv1.decorators import is_authenticated
+# from authv1.decorators import is_authenticated
 
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -10,12 +10,12 @@ from django.shortcuts import redirect
 RAZORPAY_API_KEY = os.getenv('RAZORPAY_API_KEY')
 RAZORPAY_API_SECRET = os.getenv('RAZORPAY_API_SECRET')
 FRONTEND_HOST = os.getenv('FRONTEND_HOST')
-USERNAME = os.getenv('USERNAME')
+USER = "testUser"
 
 client = razorpay.Client(auth=(RAZORPAY_API_KEY, RAZORPAY_API_SECRET))
 
 @api_view(["POST"])
-@is_authenticated
+# @is_authenticated
 def start_payment(request): 
     payableAmount = request.data.get("amount")
     payment = client.order.create(
@@ -24,14 +24,16 @@ def start_payment(request):
             "currency": "INR", 
             "payment_capture": "1",
             "notes": {
-                "username": USERNAME,
+                "username": USER,
             }
         })
+    print("Order Created: ", payment)
     return Response(payment)
 
 @api_view(["POST"])
-@is_authenticated
+# @is_authenticated
 def verify_payment(request):
+    print("Request Data",request.data)
     payment_id = request.POST.get("razorpay_payment_id")
     razorpay_order_id = request.POST.get("razorpay_order_id")
     signature = request.POST.get("razorpay_signature")
