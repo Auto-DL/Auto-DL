@@ -28,14 +28,19 @@ const useStyles = makeStyles({
         display: 'flex',
         flexDirection: 'column',
     },
-    modalTextField: {
+    amountContainer: {
         display: 'flex', 
         justifyContent: 'space-between', 
         fontSize: '20px', 
         margin: '30px'        
     },
-    amountField: {
-        width: "84px"
+    modalTextField: {
+        width: "84px",
+        cursor: "pointer"
+    },
+    buttonContainer:{
+      display: "flex",
+      justifyContent: "space-evenly"
     }
   });
 
@@ -45,7 +50,10 @@ export default function Donate() {
 
   const defaultDonateAmount = [50, 200, 500, 1000, ]
 
-  const [donateAmt, setDonateAmt] = React.useState({amt:0});
+  type donateAmount = {
+    amt: number
+  }
+  const [donateAmount, setDonateAmt] = React.useState<donateAmount>({ amt: 0 });
   const [donateModalOpen, setDonateModalOpen] = React.useState<boolean>(false);
   const modalOpen = () => setDonateModalOpen(true);
   const modalClose = () => setDonateModalOpen(false);
@@ -77,11 +85,11 @@ export default function Donate() {
           <Typography id="modal-modal-description">
           We help you make Deep Learning models without writing a single line of code!
         </Typography>
-        <div className={classes.modalTextField}>
+        <div className={classes.amountContainer}>
           {defaultDonateAmount.map((amount:number) => 
           <TextField 
             key={amount}
-            className={classes.amountField}
+            className={classes.modalTextField}
             onClick={() => setDonateAmt({amt: amount})}
             id="standard-read-only-input"
             variant="outlined"
@@ -95,7 +103,10 @@ export default function Donate() {
           <TextField 
             style={{width: 100}}
             label="Amount"
-            onChange={(e) => setDonateAmt({amt: (e.target as HTMLInputElement).valueAsNumber})}
+            type="number"
+            onChange={
+              (e) => setDonateAmt({amt: (e.target as HTMLInputElement).valueAsNumber})
+            }
             id="outlined-number"
             placeholder="Other"
             variant="outlined"
@@ -105,10 +116,14 @@ export default function Donate() {
           />
 
         </div>
-        <Button
-          onClick={() => displayRazorpay(donateAmt.amt)} 
-          type="submit" variant="contained" color="primary" >Donate</Button>
-        
+        <div className={classes.buttonContainer}>
+          <Button
+            onClick={() => modalClose()}
+            type="submit" variant="outlined" color="primary" >Go Back</Button>
+          <Button
+            onClick={() => displayRazorpay(donateAmount.amt)} 
+            type="submit" variant="contained" color="primary" >Donate</Button>
+        </div>
         </Box>
       </Modal>      
     </div>
