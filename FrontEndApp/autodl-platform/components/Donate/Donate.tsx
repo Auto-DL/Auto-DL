@@ -115,7 +115,7 @@ export default function Donate() {
             "contact": "9999999999"
         },
         theme: {
-            "color": "#3399cc"
+            "color": "#252934"
         }
     };
     
