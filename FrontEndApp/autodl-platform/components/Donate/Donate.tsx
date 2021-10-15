@@ -51,14 +51,18 @@ const useStyles = makeStyles({
 
 export default function Donate() {
   const classes = useStyles();
+
   const defaultDonateAmount = [50, 200, 500, 1000, ];
   const [donateAmount, setDonateAmt] = React.useState<number>(0);
   const [donateModalOpen, setDonateModalOpen] = React.useState<boolean>(false);
+
   const modalOpen = () => setDonateModalOpen(true);
   const modalClose = () => setDonateModalOpen(false);
+
   const handleDonateAmount = (amount: number) => {
     setDonateAmt(amount);
   }
+
   const loadScript = (src: string) => {
     return new Promise(resolve => {
       const script = document.createElement("script");
@@ -92,7 +96,6 @@ export default function Donate() {
     }).then((res: AxiosResponse) => {
       return res;
     });
-    console.log(result.data)
     const { amount, id: order_id } = result.data;
 
     var options = {
