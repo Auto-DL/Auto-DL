@@ -5,7 +5,7 @@ import LaptopMacIcon from '@material-ui/icons/LaptopMac';
 import CloudIcon from '@material-ui/icons/Cloud';
 import CloudDoneIcon from '@material-ui/icons/CloudDone';
 import DeploymentService from "./DeploymentService";
-import { LocalDeployStepThree } from "./modals/LocalDeployment";
+import { LocalDeployStepThree, LocalDeployStepFour } from "./modals/LocalDeployment";
 import { CloudDeployStepThree } from "./modals/CloudDeployment";
 import { HybridDeployStepThree } from "./modals/HybridDeployment";
 
@@ -207,7 +207,6 @@ const DeployProjectModal = ({ setOpenDeployModal, setDeployOptions, localDeploy,
         if (document.querySelector('[name=linux]').checked) platforms.push('linux');
         if (document.querySelector('[name=windows]').checked) platforms.push('windows');
 
-        const localDeployVariant = document.querySelector('[name=localDeployVariant]:checked').value;
         const { assets, status } = await DeploymentService.local_deploy(platforms, localDeployVariant);
         if (status === 200) {
             assets.forEach(url => window.open(url));
@@ -339,11 +338,8 @@ const DeployProjectModal = ({ setOpenDeployModal, setDeployOptions, localDeploy,
                 <LocalDeployStepThree
                     handleCloseDeployModal={handleCloseDeployModal}
                     setDeployStep={setDeployStep}
-                    classes={classes}
                     localDeployVariant={localDeployVariant}
                     setLocalDeployVariant={setLocalDeployVariant}
-                    handleLocalDeployment={handleLocalDeployment}
-                    handleDeployChange={handleDeployChange}
                 />
             )}
             {(deployStep === 2 && !localDeploy && (awsDeploy || gcpDeploy)) && (
@@ -376,6 +372,14 @@ const DeployProjectModal = ({ setOpenDeployModal, setDeployOptions, localDeploy,
                     localDeployVariant={localDeployVariant}
                     setLocalDeployVariant={setLocalDeployVariant}
                     handleHybridDeployment={handleHybridDeployment}
+                    handleDeployChange={handleDeployChange}
+                />
+            )}
+            {(deployStep === 3 && ((localDeploy && (awsDeploy || gcpDeploy)) || localDeploy)) && (
+                <LocalDeployStepFour
+                    handleCloseDeployModal={handleCloseDeployModal}
+                    setDeployStep={setDeployStep}
+                    handleLocalDeployment={handleLocalDeployment}
                     handleDeployChange={handleDeployChange}
                 />
             )}

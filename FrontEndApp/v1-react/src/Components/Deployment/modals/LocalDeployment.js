@@ -1,7 +1,7 @@
-import { Radio, RadioGroup, FormControl, FormGroup, FormControlLabel, Typography, Button, Checkbox } from '@material-ui/core';
+import { Radio, RadioGroup, FormControl, FormControlLabel, Typography, Button, Checkbox, FormGroup } from '@material-ui/core';
 import { DialogActions, DialogTitle, DialogContent } from "../styles";
 
-export const LocalDeployStepThree = ({ handleCloseDeployModal, setDeployStep, classes, localDeployVariant, setLocalDeployVariant, handleLocalDeployment, handleDeployChange }) => {
+export const LocalDeployStepThree = ({ handleCloseDeployModal, setDeployStep, localDeployVariant, setLocalDeployVariant }) => {
     return (
         <div>
             <DialogTitle
@@ -19,6 +19,44 @@ export const LocalDeployStepThree = ({ handleCloseDeployModal, setDeployStep, cl
                         <FormControlLabel value="executable" control={<Radio />} label="Download an Executable" />
                         <FormControlLabel value="zip" control={<Radio />} label="Download a Zipped Folder" />
                     </RadioGroup>
+                </FormControl>
+            </DialogContent>
+            <DialogActions style={{ justifyContent: "space-evenly" }}>
+                <Button
+                    variant="contained"
+                    onClick={() => setDeployStep(1)}
+                    color="secondary"
+                >
+                    Previous Step
+                </Button>
+                {(true) && (
+                    <Button
+                        variant="contained"
+                        onClick={() => setDeployStep(3)}
+                        color="primary"
+                    >
+                        Proceed to Step 4
+                    </Button>
+                )}
+            </DialogActions>
+        </div>
+    );
+};
+
+export const LocalDeployStepFour = ({ handleCloseDeployModal, setDeployStep, handleLocalDeployment, handleDeployChange }) => {
+    return (
+        <div>
+            <DialogTitle
+                id="project-cloning-dialog"
+                onClose={handleCloseDeployModal}
+            >
+                Choose Platforms
+            </DialogTitle>
+            <DialogContent dividers>
+                <Typography variant="body1" gutterBottom style={{ marginRight: "30px" }}>
+                    Step 4: Select the required platforms.
+                </Typography>
+                <FormControl component="fieldset">
                     <FormGroup>
                         <FormControlLabel
                             control={
@@ -46,7 +84,7 @@ export const LocalDeployStepThree = ({ handleCloseDeployModal, setDeployStep, cl
             <DialogActions style={{ justifyContent: "space-evenly" }}>
                 <Button
                     variant="contained"
-                    onClick={() => setDeployStep(1)}
+                    onClick={() => setDeployStep(2)}
                     color="secondary"
                 >
                     Previous Step
