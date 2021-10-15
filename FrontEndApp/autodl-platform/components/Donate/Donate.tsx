@@ -87,7 +87,7 @@ export default function Donate() {
     }
     const result = await Axios({
       url: `http://localhost:8000/payments/pay/`,
-      data: {"amount": amt, "name": "Priyansh"},
+      data: {"amount": amt},
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -108,12 +108,7 @@ export default function Donate() {
         image: "https://raw.githubusercontent.com/Auto-DL/Auto-DL/main/static/Logo.png",
         order_id: order_id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
         callback_url: `http://localhost:8000/payments/verify/`,
-        data: {"name":"Priyansh", "amount": amount},
-        prefill: {
-            "name": "Gaurav Kumar",
-            "email": "gaurav.kumar@example.com",
-            "contact": "9999999999"
-        },
+        data: {"amount": amount},
         theme: {
             "color": "#3399cc"
         }
