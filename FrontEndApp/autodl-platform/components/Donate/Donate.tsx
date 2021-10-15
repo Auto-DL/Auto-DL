@@ -10,7 +10,7 @@ import Typography from "@material-ui/core/Typography";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import InputAdornment  from "@material-ui/core/InputAdornment"
-// import Axios from "axios";
+import Axios from "axios";
 
 const useStyles = makeStyles({
   modalBox: {
@@ -63,11 +63,67 @@ export default function Donate() {
     setDonateAmt(amount);
   }
 
-  const displayRazorpay = (amt: number) => {
-    alert(amt);
-    setDonateAmt(0);
-    modalClose();
+  const loadScript = (src: string) => {
+    return new Promise(resolve => {
+      const script = document.createElement("script");
+      script.src = src
+      script.onload = () => {
+        resolve(true)
+      } 
+      script.onerror = () => {
+        resolve(false)
+      }
+      document.body.appendChild(script);
+    })
   }
+
+   const  displayRazorpay = async(amt:number) => {
+    modalClose()
+    const res = await loadScript('https://checkout.razorpay.com/v1/checkout.js')
+
+    if(!res) {
+      alert("Razorpay Sdk Failed to load")
+      return
+    }
+    const result = await Axios({
+      url: `http://localhost:8000/payments/pay/`,
+      data: {"amount": amt, "name": "Priyansh"},
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      }
+    }).then((res:any) => {
+      console.log("Data: ",res)
+      return res;
+    });
+    const { amount, id: order_id } = result.data;
+
+    var options = {
+        key: process.env.RAZORPAY_API_KEY, // Enter the Key ID generated from the Dashboard
+        amount: amount , // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+        currency: "INR",
+        name: "AutoDL",
+        description: "Thansk For Supporting Auto-DL",
+        image: "https://raw.githubusercontent.com/Auto-DL/Auto-DL/main/static/Logo.png",
+        order_id: order_id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+        callback_url: `http://localhost:8000/payments/verify/`,
+        data: {"name":"Priyansh", "amount": amount},
+        // handler: function (response:any){
+        //   handlePaymentSuccess(response)
+        // },
+        prefill: {
+            "name": "Gaurav Kumar",
+            "email": "gaurav.kumar@example.com",
+            "contact": "9999999999"
+        },
+        theme: {
+            "color": "#3399cc"
+        }
+    };
+    const paymentObject = new window.Razorpay(options)
+    paymentObject.open()
+  }  
 
   return (
     <div>
