@@ -51,18 +51,14 @@ const useStyles = makeStyles({
 
 export default function Donate() {
   const classes = useStyles();
-
   const defaultDonateAmount = [50, 200, 500, 1000, ];
   const [donateAmount, setDonateAmt] = React.useState<number>(0);
   const [donateModalOpen, setDonateModalOpen] = React.useState<boolean>(false);
-
   const modalOpen = () => setDonateModalOpen(true);
   const modalClose = () => setDonateModalOpen(false);
-
   const handleDonateAmount = (amount: number) => {
     setDonateAmt(amount);
   }
-
   const loadScript = (src: string) => {
     return new Promise(resolve => {
       const script = document.createElement("script");
@@ -76,11 +72,11 @@ export default function Donate() {
       document.body.appendChild(script);
     })
   }
-
-   const  displayRazorpay = async(amt:number) => {
+  
+  const  displayRazorpay = async(amt:number) => {
     modalClose()
     const res = await loadScript('https://checkout.razorpay.com/v1/checkout.js')
-
+    
     if(!res) {
       alert("Razorpay Sdk Failed to load")
       return
@@ -96,6 +92,7 @@ export default function Donate() {
     }).then((res: AxiosResponse) => {
       return res;
     });
+    console.log(result.data)
     const { amount, id: order_id } = result.data;
 
     var options = {
@@ -123,7 +120,6 @@ export default function Donate() {
           <ListItemIcon><PaymentIcon style={{ color: 'white' }} /></ListItemIcon>
           <ListItemText primary='Donate' style={{ color: 'white' }} />
         </ListItem>        
-
       <Modal
         open={donateModalOpen}
         onClose={modalClose}
@@ -134,11 +130,9 @@ export default function Donate() {
           <Typography id="amount-modal-title" variant="h5" component="h3" style={{paddingBottom: "10px"}}>
             Support Auto-DL
           </Typography>
-
           <Typography id="amount-modal-description">
             We help you make Deep Learning models without writing a single line of code!
           </Typography>
-
           <div className={classes.amountContainer}>
             {defaultDonateAmount.map((amount: number) => 
               <Button 
@@ -152,7 +146,6 @@ export default function Donate() {
                 ₹ {amount}
               </Button>
             )}
-
             <TextField 
               className={classes.amount}
               label="Amount"
@@ -166,7 +159,6 @@ export default function Donate() {
               }}
             />
           </div>
-
           <div className={classes.actionBtnContainer}>
             <Button
               onClick={() => modalClose()}

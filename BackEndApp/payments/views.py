@@ -15,7 +15,7 @@ USERNAME = os.getenv('USERNAME')
 client = razorpay.Client(auth=(RAZORPAY_API_KEY, RAZORPAY_API_SECRET))
 
 @api_view(["POST"])
-@is_authenticated
+# @is_authenticated
 def start_payment(request): 
     payableAmount = request.data.get("amount")
     payment = client.order.create(
@@ -30,7 +30,7 @@ def start_payment(request):
     return Response(payment)
 
 @api_view(["POST"])
-@is_authenticated
+# @is_authenticated
 def verify_payment(request):
     payment_id = request.POST.get("razorpay_payment_id")
     razorpay_order_id = request.POST.get("razorpay_order_id")
