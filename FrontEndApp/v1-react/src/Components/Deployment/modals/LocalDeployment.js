@@ -1,5 +1,5 @@
-import { Radio, RadioGroup, FormControl, FormGroup, FormControlLabel, Typography, Button } from '@material-ui/core';
-import { DialogActions, DialogTitle, DialogContent, StyledCheckbox } from "../styles";
+import { Radio, RadioGroup, FormControl, FormGroup, FormControlLabel, Typography, Button, Checkbox } from '@material-ui/core';
+import { DialogActions, DialogTitle, DialogContent } from "../styles";
 
 export const LocalDeployStepThree = ({ handleCloseDeployModal, setDeployStep, classes, localDeployVariant, setLocalDeployVariant, handleLocalDeployment, handleDeployChange }) => {
     return (
@@ -22,8 +22,8 @@ export const LocalDeployStepThree = ({ handleCloseDeployModal, setDeployStep, cl
                     <FormGroup>
                         <FormControlLabel
                             control={
-                                <StyledCheckbox
-                                    color="primary"
+                                <Checkbox
+                                    color="secondary"
                                     name="windows"
                                     onChange={handleDeployChange}
                                 />
@@ -32,8 +32,8 @@ export const LocalDeployStepThree = ({ handleCloseDeployModal, setDeployStep, cl
                         />
                         <FormControlLabel
                             control={
-                                <StyledCheckbox
-                                    color="primary"
+                                <Checkbox
+                                    color="secondary"
                                     name="linux"
                                     onChange={handleDeployChange}
                                 />

@@ -1,5 +1,5 @@
-import { Radio, RadioGroup, FormControl, FormGroup, FormControlLabel, Typography, Button } from '@material-ui/core';
-import { DialogActions, DialogTitle, DialogContent, StyledCheckbox } from "../styles";
+import { Radio, RadioGroup, FormControl, FormGroup, FormControlLabel, Typography, Button, Checkbox } from '@material-ui/core';
+import { DialogActions, DialogTitle, DialogContent } from "../styles";
 
 export const HybridDeployStepThree = ({ handleCloseDeployModal, setDeployStep, values, classes, pklFileName, setNumberOfChunks, setPklFileName, currentPklFile, setCurrentPklFile, pklChunkSize, handleHybridDeployment, handleDeployChange, localDeployVariant, setLocalDeployVariant }) => {
     const handlePklUpload = async () => {
@@ -43,8 +43,8 @@ export const HybridDeployStepThree = ({ handleCloseDeployModal, setDeployStep, v
                     <FormGroup>
                         <FormControlLabel
                             control={
-                                <StyledCheckbox
-                                    color="primary"
+                                <Checkbox
+                                    color="secondary"
                                     name="windows"
                                     onChange={handleDeployChange}
                                 />
@@ -53,8 +53,8 @@ export const HybridDeployStepThree = ({ handleCloseDeployModal, setDeployStep, v
                         />
                         <FormControlLabel
                             control={
-                                <StyledCheckbox
-                                    color="primary"
+                                <Checkbox
+                                    color="secondary"
                                     name="linux"
                                     onChange={handleDeployChange}
                                 />
