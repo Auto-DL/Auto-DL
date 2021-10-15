@@ -10,7 +10,7 @@ import Typography from "@material-ui/core/Typography";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import InputAdornment  from "@material-ui/core/InputAdornment"
-import Axios from "axios";
+import Axios, { AxiosResponse } from "axios";
 
 const useStyles = makeStyles({
   modalBox: {
