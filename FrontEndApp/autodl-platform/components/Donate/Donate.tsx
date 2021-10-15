@@ -118,7 +118,8 @@ export default function Donate() {
             "color": "#3399cc"
         }
     };
-    const paymentObject = new window.Razorpay(options)
+    
+    const paymentObject = new (window as any).Razorpay(options)
     paymentObject.open()
   }  
 
