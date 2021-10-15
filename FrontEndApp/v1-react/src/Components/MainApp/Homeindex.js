@@ -287,7 +287,6 @@ function Home() {
         values={values}
         classes={classes}
         handleDeployChange={handleDeployChange}
-        values={values}
         SelectedProject={SelectedProject}
         setOpen={setOpen}
         setalert={setalert}
