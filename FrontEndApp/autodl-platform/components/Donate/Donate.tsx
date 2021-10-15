@@ -104,7 +104,7 @@ export default function Donate() {
         amount: amount , // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
         currency: "INR",
         name: "AutoDL",
-        description: "Thansk For Supporting Auto-DL",
+        description: "Thanks For Supporting Us Grow",
         image: "https://raw.githubusercontent.com/Auto-DL/Auto-DL/main/static/Logo.png",
         order_id: order_id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
         callback_url: `http://localhost:8000/payments/verify/`,
