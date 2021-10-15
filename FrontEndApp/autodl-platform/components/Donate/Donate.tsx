@@ -94,7 +94,6 @@ export default function Donate() {
         "Content-Type": "application/json",
       }
     }).then((res:any) => {
-      console.log("Data: ",res)
       return res;
     });
     const { amount, id: order_id } = result.data;
