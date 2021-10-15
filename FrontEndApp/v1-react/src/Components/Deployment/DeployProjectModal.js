@@ -7,7 +7,7 @@ import CloudDoneIcon from '@material-ui/icons/CloudDone';
 import DeploymentService from "./DeploymentService";
 import { LocalDeployStepThree, LocalDeployStepFour } from "./modals/LocalDeployment";
 import { CloudDeployStepThree } from "./modals/CloudDeployment";
-import { HybridDeployStepThree } from "./modals/HybridDeployment";
+import { HybridDeployStepThree, HybridDeployStepFour } from "./modals/HybridDeployment";
 
 const DeployProjectStepOne = ({ handleCloseDeployModal, handleDeployChange, localDeploy, awsDeploy, gcpDeploy, setDeployStep, classes }) => {
     return (
@@ -363,7 +363,30 @@ const DeployProjectModal = ({ setOpenDeployModal, setDeployOptions, localDeploy,
                 <HybridDeployStepThree
                     handleCloseDeployModal={handleCloseDeployModal}
                     setDeployStep={setDeployStep}
-                    values={values}
+                    localDeployVariant={localDeployVariant}
+                    setLocalDeployVariant={setLocalDeployVariant}
+                    handleHybridDeployment={handleHybridDeployment}
+                    handleDeployChange={handleDeployChange}
+                    linux={linux}
+                    windows={windows}
+                />
+            )}
+            {(deployStep === 3 && localDeploy && !awsDeploy && !gcpDeploy) && (
+                <LocalDeployStepFour
+                    handleCloseDeployModal={handleCloseDeployModal}
+                    setDeployStep={setDeployStep}
+                    handleLocalDeployment={handleLocalDeployment}
+                    handleDeployChange={handleDeployChange}
+                    linux={linux}
+                    windows={windows}
+                />
+            )}
+            {(deployStep === 3 && localDeploy && (awsDeploy || gcpDeploy)) && (
+                <HybridDeployStepFour
+                    handleCloseDeployModal={handleCloseDeployModal}
+                    setDeployStep={setDeployStep}
+                    handleLocalDeployment={handleLocalDeployment}
+                    handleDeployChange={handleDeployChange}
                     classes={classes}
                     pklFileName={pklFileName}
                     currentPklFile={currentPklFile}
@@ -371,18 +394,7 @@ const DeployProjectModal = ({ setOpenDeployModal, setDeployOptions, localDeploy,
                     setNumberOfChunks={setNumberOfChunks}
                     setCurrentPklFile={setCurrentPklFile}
                     pklChunkSize={pklChunkSize}
-                    localDeployVariant={localDeployVariant}
-                    setLocalDeployVariant={setLocalDeployVariant}
                     handleHybridDeployment={handleHybridDeployment}
-                    handleDeployChange={handleDeployChange}
-                />
-            )}
-            {(deployStep === 3 && ((localDeploy && (awsDeploy || gcpDeploy)) || localDeploy)) && (
-                <LocalDeployStepFour
-                    handleCloseDeployModal={handleCloseDeployModal}
-                    setDeployStep={setDeployStep}
-                    handleLocalDeployment={handleLocalDeployment}
-                    handleDeployChange={handleDeployChange}
                     linux={linux}
                     windows={windows}
                 />
