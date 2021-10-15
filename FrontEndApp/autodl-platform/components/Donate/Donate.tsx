@@ -109,9 +109,6 @@ export default function Donate() {
         order_id: order_id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
         callback_url: `http://localhost:8000/payments/verify/`,
         data: {"name":"Priyansh", "amount": amount},
-        // handler: function (response:any){
-        //   handlePaymentSuccess(response)
-        // },
         prefill: {
             "name": "Gaurav Kumar",
             "email": "gaurav.kumar@example.com",

@@ -5,7 +5,6 @@ import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import InputAdornment  from "@material-ui/core/InputAdornment"
 
-
 export default function ProjectHome() {
   const router = useRouter();
   const userName = router.query.name;
@@ -24,7 +23,6 @@ export default function ProjectHome() {
             style={{width: 100}}
             value={userName}
             type="text"
-            // label="User Name"
             id="filled-read-only-input"
             variant="outlined"
             InputProps={{
@@ -35,7 +33,6 @@ export default function ProjectHome() {
             type="text"
             style={{width: 100}}
             value={amount}
-            // label="Order Id"
             id="filled-read-only-input"
             variant="outlined"
             InputProps={{
