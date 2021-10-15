@@ -49,4 +49,4 @@ def verify_payment(request):
             userName = "Not Found"
             amount = 0
 
-        return redirect(f'http://localhost:3000/project/paymentSuccess?name={userName}&amount={amount}')
+        return redirect(f'{FRONTEND_HOST}/project/paymentSuccess?name={userName}&amount={amount}')
