@@ -10,7 +10,7 @@ import Typography from "@material-ui/core/Typography";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import InputAdornment  from "@material-ui/core/InputAdornment"
-import Axios from "axios";
+import Axios, { AxiosResponse } from "axios";
 
 const useStyles = makeStyles({
   modalBox: {
@@ -93,8 +93,7 @@ export default function Donate() {
         Accept: "application/json",
         "Content-Type": "application/json",
       }
-    }).then((res:any) => {
-      console.log("Data: ",res)
+    }).then((res: AxiosResponse) => {
       return res;
     });
     const { amount, id: order_id } = result.data;
@@ -104,16 +103,17 @@ export default function Donate() {
         amount: amount , // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
         currency: "INR",
         name: "AutoDL",
-        description: "Thansk For Supporting Auto-DL",
+        description: "Thanks For Supporting Us Grow",
         image: "https://raw.githubusercontent.com/Auto-DL/Auto-DL/main/static/Logo.png",
         order_id: order_id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
         callback_url: `http://localhost:8000/payments/verify/`,
         data: {"amount": amount},
         theme: {
-            "color": "#3399cc"
+            "color": "#252934"
         }
     };
-    const paymentObject = new window.Razorpay(options)
+    
+    const paymentObject = new (window as any).Razorpay(options)
     paymentObject.open()
   }  
 

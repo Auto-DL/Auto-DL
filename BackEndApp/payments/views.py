@@ -1,11 +1,11 @@
-from django.shortcuts import render, redirect
-import razorpay 
-import json
-# Create your views here.
-from django.http import HttpResponse, JsonResponse
+import os
+import razorpay
+
+from authv1.decorators import is_authenticated
+
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-import os
+from django.shortcuts import redirect
 
 RAZORPAY_API_KEY = os.getenv('RAZORPAY_API_KEY')
 RAZORPAY_API_SECRET = os.getenv('RAZORPAY_API_SECRET')
@@ -15,6 +15,7 @@ USERNAME = os.getenv('USERNAME')
 client = razorpay.Client(auth=(RAZORPAY_API_KEY, RAZORPAY_API_SECRET))
 
 @api_view(["POST"])
+@is_authenticated
 def start_payment(request): 
     payableAmount = request.data.get("amount")
     payment = client.order.create(
@@ -29,8 +30,8 @@ def start_payment(request):
     return Response(payment)
 
 @api_view(["POST"])
+@is_authenticated
 def verify_payment(request):
-    print(request.data)
     payment_id = request.POST.get("razorpay_payment_id")
     razorpay_order_id = request.POST.get("razorpay_order_id")
     signature = request.POST.get("razorpay_signature")
@@ -51,4 +52,6 @@ def verify_payment(request):
         userName = "Not Found"
         amount = 0
     # return HttpResponse("<h1>Thanks {userName}</h1>")
-    return redirect(f'http://localhost:3000/project/paymentSuccess?name={userName}&amount={amount}')
+    return redirect(f'{FRONTEND_HOST}/project/paymentSuccess?name={userName}&amount={amount}')
+
+
