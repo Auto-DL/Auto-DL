@@ -43,7 +43,7 @@ export const LocalDeployStepThree = ({ handleCloseDeployModal, setDeployStep, lo
     );
 };
 
-export const LocalDeployStepFour = ({ handleCloseDeployModal, setDeployStep, handleLocalDeployment, handleDeployChange }) => {
+export const LocalDeployStepFour = ({ handleCloseDeployModal, setDeployStep, handleLocalDeployment, handleDeployChange, linux, windows }) => {
     return (
         <div>
             <DialogTitle
@@ -89,7 +89,7 @@ export const LocalDeployStepFour = ({ handleCloseDeployModal, setDeployStep, han
                 >
                     Previous Step
                 </Button>
-                {(true) && (
+                {(linux || windows) && (
                     <Button
                         variant="contained"
                         onClick={handleLocalDeployment}

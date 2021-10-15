@@ -84,6 +84,8 @@ function Home() {
     localDeploy,
     awsDeploy,
     gcpDeploy,
+    linux,
+    windows
   } = deployOptions;
 
   const handleCloneChange = (event) => {
@@ -284,6 +286,8 @@ function Home() {
         localDeploy={localDeploy}
         awsDeploy={awsDeploy}
         gcpDeploy={gcpDeploy}
+        linux={linux}
+        windows={windows}
         values={values}
         classes={classes}
         handleDeployChange={handleDeployChange}

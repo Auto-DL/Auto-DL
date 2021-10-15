@@ -170,7 +170,7 @@ const DeployProjectStepTwo = ({ handleCloseDeployModal, setDeployStep, values, c
     );
 };
 
-const DeployProjectModal = ({ setOpenDeployModal, setDeployOptions, localDeploy, awsDeploy, gcpDeploy, handleDeployChange,  openDeployModal, values, SelectedProject, setalert, username, token, setOpen }) => {
+const DeployProjectModal = ({ setOpenDeployModal, setDeployOptions, localDeploy, awsDeploy, gcpDeploy, handleDeployChange,  openDeployModal, values, SelectedProject, setalert, username, token, setOpen, linux, windows }) => {
     const classes = useStyles();
 
     const [deployStep, setDeployStep] = useState(0);
@@ -198,14 +198,16 @@ const DeployProjectModal = ({ setOpenDeployModal, setDeployOptions, localDeploy,
             localDeploy: false,
             awsDeploy: false,
             gcpDeploy: false,
+            linux: false,
+            windows: false,
         });
         setOpenDeployModal(false);
     };
 
     const handleLocalDeployment = async () => {
         const platforms = [];
-        if (document.querySelector('[name=linux]').checked) platforms.push('linux');
-        if (document.querySelector('[name=windows]').checked) platforms.push('windows');
+        if (linux) platforms.push('linux');
+        if (windows) platforms.push('windows');
 
         const { assets, status } = await DeploymentService.local_deploy(platforms, localDeployVariant);
         if (status === 200) {
@@ -381,6 +383,8 @@ const DeployProjectModal = ({ setOpenDeployModal, setDeployOptions, localDeploy,
                     setDeployStep={setDeployStep}
                     handleLocalDeployment={handleLocalDeployment}
                     handleDeployChange={handleDeployChange}
+                    linux={linux}
+                    windows={windows}
                 />
             )}
         </Dialog>
