@@ -27,13 +27,11 @@ def start_payment(request):
                 "username": USER,
             }
         })
-    print("Order Created: ", payment)
     return Response(payment)
 
 @api_view(["POST"])
 # @is_authenticated
 def verify_payment(request):
-    print("Request Data",request.data)
     payment_id = request.POST.get("razorpay_payment_id")
     razorpay_order_id = request.POST.get("razorpay_order_id")
     signature = request.POST.get("razorpay_signature")
@@ -42,12 +40,9 @@ def verify_payment(request):
             'razorpay_payment_id': payment_id,
             'razorpay_signature': signature
         }
-    print("Details: ", details)
     result = client.utility.verify_payment_signature(details)   
-    print(result)
     if result is None:
         orderDetails = client.order.fetch(razorpay_order_id)
-        print("order :", orderDetails)
         userName = orderDetails["notes"]["username"]
         amount = orderDetails["amount"]/100
     else: 
