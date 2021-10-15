@@ -13,6 +13,7 @@ FRONTEND_HOST = os.getenv('FRONTEND_HOST')
 client = razorpay.Client(auth=(RAZORPAY_API_KEY, RAZORPAY_API_SECRET))
 
 @api_view(["POST"])
+@is_authenticated
 def start_payment(request): 
     payableAmount = request.data["amount"]
 
