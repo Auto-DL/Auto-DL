@@ -93,7 +93,7 @@ export default function Donate() {
         Accept: "application/json",
         "Content-Type": "application/json",
       }
-    }).then((res:any) => {
+    }).then((res: AxiosResponse) => {
       return res;
     });
     const { amount, id: order_id } = result.data;
