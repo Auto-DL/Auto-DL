@@ -1,11 +1,10 @@
-from django.shortcuts import render, redirect
-import razorpay 
-import json
-# Create your views here.
-from django.http import HttpResponse, JsonResponse
+import os
+import razorpay
+
+from authv1.decorators import is_authenticated
+
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-import os
 
 RAZORPAY_API_KEY = os.getenv('RAZORPAY_API_KEY')
 RAZORPAY_API_SECRET = os.getenv('RAZORPAY_API_SECRET')
