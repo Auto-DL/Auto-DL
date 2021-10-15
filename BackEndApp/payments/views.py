@@ -26,6 +26,7 @@ def start_payment(request):
     return Response(payment)
 
 @api_view(["POST"])
+@is_authenticated
 def verify_payment(request):
 
     if request.method == "POST": 
