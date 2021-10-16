@@ -1,11 +1,11 @@
-from datetime import datetime
+from tests.mocks import MockOS
 import sys
+from datetime import datetime
 
 from .utils_tests import TestOTP
 
 sys.path.append("..")
 
-from tests.mocks import MockOS
 
 mock_os_obj = MockOS()
 
@@ -47,14 +47,16 @@ def test_verify(mocker):
     username = otp.username
 
     otp.create()
-    assert otp.verify(collection.find_one({"username": username}).get("otp")) == True
+    assert otp.verify(collection.find_one(
+        {"username": username}).get("otp")) == True
     otp.create()
     collection.update_one(
         {"username": username},
         {"$set": {"expire": datetime.now()}},
         upsert=False,
     )
-    assert otp.verify(collection.find_one({"username": username}).get("otp")) == False
+    assert otp.verify(collection.find_one(
+        {"username": username}).get("otp")) == False
 
 
 def test_delete(mocker):

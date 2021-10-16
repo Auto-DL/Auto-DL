@@ -1,14 +1,14 @@
 # User class objects for unit testing of User class
-import sys
+from tests.mocks import MockOS, MockUser
+from authv1.models import Session, User
+from authv1.auth import OTP
 import os
+import sys
+
 import mongomock
 
 sys.path.append("..")
 
-from authv1.auth import OTP
-from authv1.models import User
-from authv1.models import Session
-from tests.mocks import MockUser, MockOS
 
 mock_os_obj = MockOS()
 

@@ -5,6 +5,7 @@ import posixpath
 import tempfile
 
 from authv1.store import Store
+
 from tests.mocks import MockUser
 
 tempdir = tempfile.mkdtemp()

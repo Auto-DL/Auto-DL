@@ -1,16 +1,12 @@
 import os
-import git
 import shutil
 
-from .utils import zip_flask_app
-from .exceptions import (
-    AppDownloadFailed,
-    AppUpsertionFailed,
-    CloneGenerationFailed,
-    PickleCopyFailed,
-)
+import git
+from django.http import HttpResponse, JsonResponse
 
-from django.http import JsonResponse, HttpResponse
+from .exceptions import (AppDownloadFailed, AppUpsertionFailed,
+                         CloneGenerationFailed, PickleCopyFailed)
+from .utils import zip_flask_app
 
 
 class Deployment:

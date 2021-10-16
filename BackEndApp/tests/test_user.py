@@ -1,11 +1,12 @@
 # unit tests for User class methods
 
-import pytest
-import sys
-
-sys.path.append("..")
 from .utils_tests import TestUser
 from .mocks import MockOS
+import sys
+
+import pytest
+
+sys.path.append("..")
 
 mock_os_obj = MockOS()
 

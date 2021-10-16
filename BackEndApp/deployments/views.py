@@ -1,27 +1,21 @@
-from genericpath import isdir
-from django.shortcuts import render
-from django.http import JsonResponse
-from rest_framework.decorators import api_view
+import logging
 import os
 
-from authv1.store import Store
-from authv1.models import User
 from authv1.decorators import is_authenticated
+from authv1.models import User
+from authv1.store import Store
+from django.http import JsonResponse
+from django.shortcuts import render
+from dlmml.parser import *
+from genericpath import isdir
+from rest_framework.decorators import api_view
+
 from deployments.models import Deployment
 
-from dlmml.parser import *
-
-from .utils import remove_dir, append_pkl_contents
-from .exceptions import (
-    AppDownloadFailed,
-    AppUpsertionFailed,
-    CloneGenerationFailed,
-    PickleAppendFailed,
-    PickleCopyFailed,
-    ProjectNotFound,
-)
-
-import logging
+from .exceptions import (AppDownloadFailed, AppUpsertionFailed,
+                         CloneGenerationFailed, PickleAppendFailed,
+                         PickleCopyFailed, ProjectNotFound)
+from .utils import append_pkl_contents, remove_dir
 
 logger = logging.getLogger(__name__)
 
@@ -141,7 +135,8 @@ def cloud_deploy(request):
             deployment_dir = os.path.join(project_dir, "deployment")
             remove_dir(deployment_dir)
 
-            deployment = Deployment(project_dir, deployment_dir, model_categories)
+            deployment = Deployment(
+                project_dir, deployment_dir, model_categories)
             deployment.clone_flask_app()
             logger.debug("Cloned Flask App to be deployed")
 

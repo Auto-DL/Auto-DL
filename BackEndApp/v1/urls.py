@@ -1,5 +1,7 @@
 from os import name
+
 from django.urls import path
+
 from . import views
 
 urlpatterns = [
@@ -34,7 +36,8 @@ urlpatterns = [
     # post-processing routes
     path("code/download/", views.download_code, name="dowload-code"),
     # publish to github routes
-    path("github/getusername/", views.get_github_username, name="get-github-username"),
+    path("github/getusername/", views.get_github_username,
+         name="get-github-username"),
     path("github/authorize/", views.authorize_github, name="authorize-github"),
     path(
         "github/publish/",

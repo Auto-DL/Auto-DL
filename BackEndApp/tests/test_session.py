@@ -1,7 +1,8 @@
 # unit tests for methods in Session class
 
-from .utils_tests import TestSession
 from tests.mocks import MockOS
+
+from .utils_tests import TestSession
 
 mock_os_obj = MockOS()
 

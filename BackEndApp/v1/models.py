@@ -1,11 +1,16 @@
+from django.db import models
+from authv1.connector import connect
+import logging
 import sys
 
 sys.path.append("..")
 
-from django.db import models
-from authv1.connector import connect
 
 db = connect(db_name="user_data")
+
+logging.basicConfig(level=logging.DEBUG,
+                    format='%(asctime)-15s | %(levelname)s - %(levelno)s | Line No: %(lineno)d | Module: %(module)s | %(message)s')
+log = logging.getLogger(__name__)
 
 
 class UserData:
@@ -29,4 +34,5 @@ class UserData:
             self.collection.insert_one(data_doc)
             return {"status": 1, "msg": "success"}
         except Exception as e:
+            log.exception('Exception Occured', e)
             return {"status": 0, "msg": str(e)}

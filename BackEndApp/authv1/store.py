@@ -1,6 +1,11 @@
+import logging
 import os
 import posixpath
 import shutil
+
+logging.basicConfig(level=logging.DEBUG,
+                    format='%(asctime)-15s | %(levelname)s - %(levelno)s | Line No: %(lineno)d | Module: %(module)s | %(message)s')
+log = logging.getLogger(__name__)
 
 
 class Store:
@@ -40,6 +45,7 @@ class Store:
                 shutil.rmtree(_path)
             return 0, None
         except Exception as e:
+            log.exception('Exception Occured', e)
             return 1, str(e)
 
     def enlist(self):

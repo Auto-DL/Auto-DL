@@ -1,11 +1,17 @@
-import os
-import jwt
-import random
-from datetime import datetime, timedelta
-from dotenv import load_dotenv
-import string
-
 from .connector import connect
+import logging
+import os
+import random
+import string
+from datetime import datetime, timedelta
+
+import jwt
+from dotenv import load_dotenv
+
+logging.basicConfig(level=logging.DEBUG,
+                    format='%(asctime)-15s | %(levelname)s - %(levelno)s | Line No: %(lineno)d | Module: %(module)s | %(message)s')
+log = logging.getLogger(__name__)
+
 
 load_dotenv()
 
@@ -48,7 +54,8 @@ class Token:
 
         secret = os.getenv("JWT_SECRET")
         decoded = jwt.decode(self.token, secret, algorithms="HS256")
-        decoded["expire"] = datetime.strptime(decoded.get("expire"), DATE_FORMAT)
+        decoded["expire"] = datetime.strptime(
+            decoded.get("expire"), DATE_FORMAT)
 
         if (
             decoded.get("username") == self.user.get("username")
@@ -92,6 +99,7 @@ class OTP:
             self.collection.insert_one(doc_otp)
             return self.otp
         except Exception as e:
+            log.exception('Exception Occured', e)
             return None
 
     def find(self):

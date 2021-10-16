@@ -1,29 +1,27 @@
-from django.http import JsonResponse, HttpResponse
+import importlib
+import json
+import logging
+import os
+import sys
+
+from authv1.decorators import is_authenticated
+from authv1.models import User
+from authv1.store import Store
+from django.http import HttpResponse, JsonResponse
+from dlmml.parser import *
+from dlmml.utils import json_to_dict
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-import sys
-import os
-import json
-import importlib
 
-from authv1.store import Store
-from authv1.models import User
-from authv1.decorators import is_authenticated
 from v1.models import UserData
-from dlmml.utils import json_to_dict
-from dlmml.parser import *
 
-from .utils import (
-    generate_uid,
-    copy_file,
-    format_code,
-    delete_broken_symlinks,
-    generate_git_access_token,
-    push_to_github,
-    encrypt,
-    decrypt,
-    get_git_username,
-)
+from .utils import (copy_file, decrypt, delete_broken_symlinks, encrypt,
+                    format_code, generate_git_access_token, generate_uid,
+                    get_git_username, push_to_github)
+
+logging.basicConfig(level=logging.DEBUG,
+                    format='%(asctime)-15s | %(levelname)s - %(levelno)s | Line No: %(lineno)d | Module: %(module)s | %(message)s')
+log = logging.getLogger(__name__)
 
 
 @api_view(["POST"])
@@ -75,11 +73,11 @@ def generate(request):
     status, error = parser.generate_code(inputs)
 
     if status:
-        print("Error", error)
+        log.error("Error", error)
         msg = "Could not generate code"
         path = ""
     else:
-        print("File generated")
+        log.info("File generated")
         msg = "File Generated Successfully"
         path = "file:///" + os.getcwd() + os.sep + "test.py"
         format_code("test.py")
@@ -99,11 +97,13 @@ def train(request):
         elif user_os == "win32":
             os.system("start cmd /k call train.bat")
         else:
-            raise NotImplementedError("Training not supported on your platform")
+            raise NotImplementedError(
+                "Training not supported on your platform")
 
         msg = "Training started successfully"
 
     except Exception as e:
+        log.exception('Could not start training', e)
         msg = "Could not start training"
     return JsonResponse({"message": msg})
 
@@ -126,8 +126,9 @@ def compile(request):
         test_model = importlib.import_module(test_path)
 
         status, error = test_model.test_compile_model(inputs)
-        print(status, error)
+        log.exception(status, error)
     except Exception as e:
+        log.exception('Compile Error', e)
         status, error = 1, "Compile error"
     return JsonResponse({"status": status, "error": error})
 
@@ -153,6 +154,7 @@ def get_all_projects(request):
             projects.append(list_item)
         status, success, message = 200, True, "Projects Fetched"
     except Exception as e:
+        log.exception('Projects could not be fetched', e)
         status, success, message, projects = (
             500,
             False,
@@ -185,6 +187,7 @@ def get_project(request):
         status, success, message = 200, True, "Layers Fetched"
 
     except Exception as e:
+        log.exception('Layers could not be fetched', e)
         status, success, message, b2f_json = (
             500,
             False,
@@ -241,6 +244,7 @@ def edit_project(request):
             json.dump(metadata, f)
         status, success, message = 200, True, "Project Updated Successfully"
     except Exception as e:
+        log.exception('Could not update the project', e)
         status, success, message = 500, False, "Could not update the Project"
     return JsonResponse({"success": success, "message": message}, status=status)
 
@@ -278,6 +282,7 @@ def delete_project(request):
 
         status, success, message = 200, True, "Project Deleted Successfully"
     except Exception as e:
+        log.exception('Project could not be deleted', e)
         status, success, message = 500, False, "Project could not be deleted"
     return JsonResponse({"success": success, "message": message}, status=status)
 
@@ -322,6 +327,7 @@ def create_project(request):
 
         status, success, message = 200, True, "Project Created Successfully"
     except Exception as e:
+        log.exception('Project could not be created', e)
         status, success, message = 500, False, "Project could not be created"
     return JsonResponse({"success": success, "message": message}, status=status)
 
@@ -398,6 +404,7 @@ def clone_project(request):
 
         status, success, message = 200, True, "Project Cloned Successfully"
     except Exception as e:
+        log.exception('Project could not be cloned', e)
         status, success, message = 500, False, "Project could not be cloned"
     return JsonResponse({"success": success, "message": message}, status=status)
 
@@ -427,6 +434,7 @@ def save_layers(request):
 
         status, success, message = 200, True, "Layers saved successfully"
     except Exception as e:
+        log.exception('Could not save layers', e)
         status, success, message = 500, False, "Could not save layers"
     return JsonResponse({"success": success, "message": message}, status=status)
 
@@ -451,6 +459,7 @@ def get_layers(request):
         status, success, message = 200, True, "Components Array Fetched"
 
     except Exception as e:
+        log.exception('Could not fetch layers', e)
         status, success, message, components = 500, False, "Could not fetch Layers", {}
     return JsonResponse(
         {"success": success, "message": message, "components": components},
@@ -480,6 +489,7 @@ def save_preprocessing_params(request):
         status, success, message = 200, True, "Preprocessing params saved successfully"
 
     except Exception as e:
+        log.exception('Could not save preprocessing time', e)
         status, success, message = 500, False, "Could not save preprocessing params"
     return JsonResponse({"success": success, "message": message}, status=status)
 
@@ -504,6 +514,7 @@ def get_preprocessing_params(request):
         status, success, message = 200, True, "preprocessing params fetched"
 
     except Exception as e:
+        log.exception('Could not fetch preprocessing params', e)
         status, success, message, preprocessing = (
             500,
             False,
@@ -538,6 +549,7 @@ def save_hyperparams(request):
         status, success, message = 200, True, "Hyperparams saved successfully"
 
     except Exception as e:
+        log.exception('Could not save hyperparams', e)
         status, success, message = 500, False, "Could not save hyperparams"
     return JsonResponse({"success": success, "message": message}, status=status)
 
@@ -562,6 +574,7 @@ def get_hyperparams(request):
         status, success, message = 200, True, "hyperparams fetched"
 
     except Exception as e:
+        log.exception('Could not fetch hyperparams', e)
         status, success, message, hyperparams = (
             500,
             False,
@@ -605,6 +618,7 @@ def download_code(request):
         response["Content-Disposition"] = "attachment; filename=test.py"
 
     except Exception as e:
+        log.warning('File not found', e)
         response = HttpResponse("<h1>File not found</h1>")
     return response
 
@@ -627,6 +641,7 @@ def all_users(request):
         users = os.listdir(rootpath)
         status, success, message, users = 200, True, "Users fetched", users
     except Exception as e:
+        log.exception('Could not fetch users', e)
         status, success, message, users = (
             500,
             False,
@@ -688,6 +703,7 @@ def share_project(request):
         status, success, message = 200, True, "Shared Successfully"
 
     except FileExistsError:
+        log.exception("Project is already being shared")
         status, success, message = (
             500,
             False,
@@ -729,7 +745,6 @@ def get_github_username(request):
     user = user.find()
 
     if user["GitAccessToken"]:
-        print(user["GitAccessToken"])
         decrypted_token = decrypt(user["GitAccessToken"])
         assert decrypted_token is not None
         git_username = get_git_username(decrypted_token)
@@ -770,7 +785,7 @@ def github_logout(request):
 
         status, success, message = 200, True, "Logged out"
     except Exception as e:
-        print(e)
+        log.exception('Exception Occured', e)
         status, success, message = 500, False, "Something went wrong"
     return JsonResponse({"success": success, "message": message}, status=status)
 
@@ -832,6 +847,7 @@ def publish_on_github(request):
                 "",
             )
     except:
+        log.exception("Something went wrong")
         status, success, message, repo_full_name = (
             500,
             False,
@@ -873,7 +889,7 @@ def authorize_github(request):
             "Successfully authorized",
         )
     except Exception as e:
-        print(e)
+        log.exception('Exception Occured', e)
         status, success, message = (
             500,
             False,

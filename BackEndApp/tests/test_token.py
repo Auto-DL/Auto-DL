@@ -1,12 +1,13 @@
+from tests.mocks import MockOS, MockUser
+from authv1.auth import DATE_FORMAT, Token
 import os
 import sys
-import pytest
 from datetime import datetime
+
+import pytest
 
 sys.path.append("..")
 
-from authv1.auth import Token, DATE_FORMAT
-from tests.mocks import MockOS, MockUser
 
 mock_os_obj = MockOS()
 user = MockUser()

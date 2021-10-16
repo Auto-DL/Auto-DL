@@ -31,7 +31,8 @@ class AppDownloadFailed(DeploymentException):
 class PickleAppendFailed(DeploymentException):
     def __init__(self, project_id) -> None:
         self.project_id = project_id
-        super().__init__(f"\nPickle chunk append for Project {project_id} failed.")
+        super().__init__(
+            f"\nPickle chunk append for Project {project_id} failed.")
 
 
 class PickleCopyFailed(DeploymentException):

@@ -1,16 +1,21 @@
+import json
+import logging
+
 import bcrypt
 from BackEndApp.settings import EMAIL_HOST_USER
+from django.core.mail import send_mail
 from django.http import JsonResponse
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-import json
-import bcrypt
 
-from django.core.mail import send_mail
 from .auth import OTP
 from .emails import EmailTemplates
 from .models import Session, User
 from .store import Store
+
+logging.basicConfig(level=logging.DEBUG,
+                    format='%(asctime)-15s | %(levelname)s - %(levelno)s | Line No: %(lineno)d | Module: %(module)s | %(message)s')
+log = logging.getLogger(__name__)
 
 
 @api_view(["POST"])
@@ -72,6 +77,7 @@ def register(request):
         status = 401
         token = None
         username = None
+        llog.exception("Some error occured!", e)
     return JsonResponse(
         {"message": message, "username": username, "token": token}, status=status
     )
@@ -95,6 +101,7 @@ def logout(request):
         status = 200
 
     except Exception as e:
+        log.exception("Some error occured", e)
         message = "Some error occurred!! Please try again."
         status = 500
 
@@ -132,6 +139,7 @@ def forgot_password(request):
             status = 500
 
     except Exception as e:
+        log.exception("Some error occured", e)
         message = "Some error occurred! Please try again."
         status = 500
 
@@ -156,6 +164,7 @@ def verify_email(request):
         status = 200
 
     except Exception as e:
+        log.exception("Some error occured", e)
         message = "Some error occured! Please try again."
         status = 500
 
@@ -186,6 +195,7 @@ def verify_otp(request):
             status = 401
 
     except Exception as e:
+        log.exception("Some error occured", e)
         message = "Some error occurred! Please try again."
         status = 500
 
@@ -204,7 +214,8 @@ def update_password(request):
             status = 401
 
         new_password = request.data.get("password")
-        hashed_password = bcrypt.hashpw(new_password.encode("utf-8"), bcrypt.gensalt())
+        hashed_password = bcrypt.hashpw(
+            new_password.encode("utf-8"), bcrypt.gensalt())
         old_password = this_user.get("password", "")
 
         if str(old_password) == str(hashed_password):
@@ -217,6 +228,7 @@ def update_password(request):
             status = 200
 
     except Exception as e:
+        log.exception("Some error occured", e)
         message = "Some error occurred! Please try again."
         status = 500
 

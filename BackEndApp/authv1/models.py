@@ -1,7 +1,14 @@
+import logging
 import re
+
 import bcrypt
+
 from authv1 import connector
 from authv1.auth import Token
+
+logging.basicConfig(level=logging.DEBUG,
+                    format='%(asctime)-15s | %(levelname)s - %(levelno)s | Line No: %(lineno)d | Module: %(module)s | %(message)s')
+log = logging.getLogger(__name__)
 
 DATE_FORMAT = "%Y/%m/%d %H/%M/%S"
 
@@ -33,7 +40,8 @@ class User:
         if self.find():
             raise ValueError("Invalid username or username already exists")
 
-        hashed_password = bcrypt.hashpw(self.password.encode("utf-8"), bcrypt.gensalt())
+        hashed_password = bcrypt.hashpw(
+            self.password.encode("utf-8"), bcrypt.gensalt())
 
         user_document = {
             "username": self.username,
@@ -61,6 +69,7 @@ class User:
             )
             return 0, None
         except Exception as e:
+            log.exception('Could not update', e)
             return 1, "Could not update."
 
     def delete(self):
@@ -93,11 +102,13 @@ class Session:
         token = str(token, "utf-8")
         expire = token_obj.expire.strftime(DATE_FORMAT)
 
-        session_document = {"token": token, "expire": expire, "user": self.user}
+        session_document = {"token": token,
+                            "expire": expire, "user": self.user}
         try:
             self.collection.insert_one(session_document)
             return token
         except:
+            log.exception('Exception Occured', e)
             return None
 
     def delete(self, token):

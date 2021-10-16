@@ -1,16 +1,20 @@
-from uuid import uuid4 as uid
+import base64
+import logging
 import os
-from github import Github
+from shutil import copyfile
+from uuid import uuid4 as uid
 
 from cryptography.fernet import Fernet
-import base64
+from github import Github
 
-from shutil import copyfile
+logging.basicConfig(level=logging.DEBUG,
+                    format='%(asctime)-15s | %(levelname)s - %(levelno)s | Line No: %(lineno)d | Module: %(module)s | %(message)s')
+log = logging.getLogger(__name__)
 
 
 def generate_uid():
-    id = uid()
-    return str(id.hex)
+    id_ = uid()
+    return str(id_.hex)
 
 
 def get_augument_params():
@@ -74,8 +78,9 @@ def generate_git_access_token(code):
         oauth = g.get_oauth_application(clientID, secret)
         access_token = oauth.get_access_token(code=code)
         tokenID = access_token.token
-        print("new acess token is", tokenID)
+        log.info("new acess token is", tokenID)
     except:
+        log.exception('Exception Occured')
         tokenID = None
     return tokenID
 
@@ -86,7 +91,7 @@ def get_git_username(tokenID):
         user = g.get_user()
         username = user.login
     except Exception as e:
-        print(e)
+        log.exception('Exception Occured', e)
         username = None
     return username
 
@@ -110,7 +115,9 @@ def push_to_github(
         status, message, repo_full_name = 200, "Success", repo_full_name
 
     except Exception as e:
+        log.exception('Exception Occured', e)
         res = list(str(e).split(" ", 1))
-        status, message, repo_full_name = int(res[0]), eval(res[1])["message"], ""
+        status, message, repo_full_name = int(
+            res[0]), eval(res[1])["message"], ""
 
     return status, message, repo_full_name
