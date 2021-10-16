@@ -62,25 +62,23 @@ def verify_payment(request):
     raz_pay_id = ""
     raz_signature = ""
     for key in res.keys():
-        if key == 'razorpay_order_id':
+        if key == "razorpay_order_id":
             ord_id = res[key]
-        elif key == 'razorpay_payment_id':
+        elif key == "razorpay_payment_id":
             raz_pay_id = res[key]
-        elif key == 'razorpay_signature':
-            raz_signature = res[key]        
+        elif key == "razorpay_signature":
+            raz_signature = res[key]
     orderDetails = client.order.fetch(ord_id)
     print("Order Details: ", orderDetails)
     data = {
-        'razorpay_order_id': ord_id,
-        'razorpay_payment_id': raz_pay_id,
-        'razorpay_signature': raz_signature
-    }    
+        "razorpay_order_id": ord_id,
+        "razorpay_payment_id": raz_pay_id,
+        "razorpay_signature": raz_signature,
+    }
     check = client.utility.verify_payment_signature(data)
     if check is not None:
         print("Redirect to error url or error page")
-        return Response({'error': 'Something went wrong'})    
-    res_data = {
-        'message': 'payment successfully received!'
-    }
+        return Response({"error": "Something went wrong"})
+    res_data = {"message": "payment successfully received!"}
 
-    return Response(res_data)        
+    return Response(res_data)
