@@ -204,7 +204,7 @@ const DeployProjectModal = ({ setOpenDeployModal, setDeployOptions, localDeploy,
         setOpenDeployModal(false);
     };
 
-    const handleLocalDeployment = async () => {
+    const handleLocalDeployment = async (deployVariant="Local") => {
         const platforms = [];
         if (linux) platforms.push('linux');
         if (windows) platforms.push('windows');
@@ -212,7 +212,7 @@ const DeployProjectModal = ({ setOpenDeployModal, setDeployOptions, localDeploy,
         const { assets, status } = await DeploymentService.local_deploy(platforms, localDeployVariant);
         if (status === 200) {
             assets.forEach(url => window.open(url));
-            setalert({ ...values, msg: "Local Deployment Successful", severity: "success" });
+            setalert({ ...values, msg: `${deployVariant} Deployment Successful`, severity: "success" });
         } else {
             setalert({ ...values, msg: "Deployment Attempt Failed", severity: "error" });
         }
@@ -287,17 +287,7 @@ const DeployProjectModal = ({ setOpenDeployModal, setDeployOptions, localDeploy,
 
             let res = await DeploymentService.hybrid_deploy(token, data);
 
-            if (res.status === 200) {
-                const { data } = await res;
-                const downloadUrl = window.URL.createObjectURL(new Blob([data]));
-                const link = document.createElement('a');
-                link.href = downloadUrl;
-                link.setAttribute('download', 'deployment.zip');
-                document.body.appendChild(link);
-                link.click();
-                link.remove();
-                setalert({ ...values, msg: "Hybrid Deployment Successful", severity: "success" });
-            } else if (res.status === 204) {
+            if (res.status === 204) {
                 uploadStatus = uploadStatus + "% Pickle Uploaded"
                 setalert({ ...values, msg: uploadStatus, severity: "info", title: "Deployment Underway" });
                 setOpen(true);
@@ -306,7 +296,7 @@ const DeployProjectModal = ({ setOpenDeployModal, setDeployOptions, localDeploy,
             }
         };
 
-        handleLocalDeployment();
+        handleLocalDeployment("Hybrid");
     }
 
     return (

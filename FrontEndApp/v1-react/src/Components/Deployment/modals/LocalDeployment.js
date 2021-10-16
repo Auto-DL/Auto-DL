@@ -92,7 +92,7 @@ export const LocalDeployStepFour = ({ handleCloseDeployModal, setDeployStep, han
                 {(linux || windows) && (
                     <Button
                         variant="contained"
-                        onClick={handleLocalDeployment}
+                        onClick={() => handleLocalDeployment()}
                         color="primary"
                     >
                         Initiate Deployment

@@ -248,6 +248,7 @@ def hybrid_deploy(request):
             deployment.edit_flask_app()
             logger.debug("Modified Flask App to be deployed")
             status, success, message = 200, True, "Hybrid Deployment Successful"
+            return JsonResponse({"success": success, "message": message}, status=status)
 
         else:
             status, success, message = 204, True, "Hybrid Deployment Underway"
