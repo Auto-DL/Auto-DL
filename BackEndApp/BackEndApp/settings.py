@@ -1,26 +1,41 @@
-import os
-from urllib.parse import urlparse
-from corsheaders.defaults import default_headers
-
+import ast
 import logging
 import logging.config
+import os
+from pathlib import Path
+from urllib.parse import urlparse
+
+import dotenv
+from corsheaders.defaults import default_headers
+
 from .logging import LOGGING
 
 HOST = os.getenv("HOST", "http://localhost:8000")
 FRONTEND_HOST = os.getenv("FRONTEND_HOST", "http://localhost:3000")
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = Path(__file__).resolve().parent.parent
 
+if not os.path.exists(BASE_DIR / 'logs'):
+    os.makedirs(BASE_DIR / 'logs')
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "q$2lre_hyydi(w7hb!*03()$y*q#rzy#ny^9hitqjb^q1_a6q="
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+dotenv_file = BASE_DIR / ".env"
+ENV_EXISTS = os.path.isfile(dotenv_file)
+if ENV_EXISTS:
+    import secrets
+    import string
+    dotenv.load_dotenv(dotenv_file)
+    PRODUCTION_SERVER = ast.literal_eval(
+        os.environ.get('PRODUCTION_SERVER').capitalize(), 'False')
+    SECRET_KEY = ''.join(secrets.choice(string.ascii_letters +
+                         string.digits + str(secrets.randbits(7))) for i in range(10))
+    DEBUG = ast.literal_eval(os.environ.get('DEBUG').capitalize(), 'True')
+else:
+    PRODUCTION_SERVER = ast.literal_eval(
+        os.environ.get('PRODUCTION_SERVER').capitalize(), 'True')
+    DEBUG = ast.literal_eval(os.environ.get('DEBUG').capitalize(), 'False')
+    SECRET_KEY = os.environ.get('SECRET_KEY', ''.join(secrets.choice(
+        string.ascii_letters + string.digits + str(secrets.randbits(7))) for i in range(10)))
 
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", urlparse(HOST).hostname]
 
@@ -133,6 +148,15 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
+
+if PRODUCTION_SERVER:
+    CSRF_COOKIE_SECURE = True
+    SESSION_COOKIE_SECURE = True
+    SECURE_SSL_REDIRECT = True
+    SECURE_HSTS_SECONDS = 31536000
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+    SECURE_REFERRER_POLICY = "same-origin"
 
 # Logging
 logging.config.dictConfig(LOGGING)
