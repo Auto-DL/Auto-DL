@@ -72,7 +72,7 @@ export default function Donate() {
       bodyData.append("response", JSON.stringify(response));
 
       await Axios({
-        url: `${process.env.BACKEND_API_URL}/payments/verify/`,
+        url: `http://localhost:8000/payments/verify/`,
         method: "POST",
         data: bodyData,
         headers: {
@@ -114,7 +114,7 @@ export default function Donate() {
       return
     }
     const result:any = await Axios({
-      url: `${process.env.BACKEND_API_URL}/payments/pay/`,
+      url: `http://localhost:8000/payments/pay/`,
       data: {"amount": amt},
       method: "POST",
       headers: {
