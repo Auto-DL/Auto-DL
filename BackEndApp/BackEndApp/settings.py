@@ -1,6 +1,5 @@
 import ast
 import logging
-import logging.config
 import os
 from pathlib import Path
 from urllib.parse import urlparse
@@ -8,7 +7,9 @@ from urllib.parse import urlparse
 import dotenv
 from corsheaders.defaults import default_headers
 
-from .logging import LOGGING
+logging.basicConfig(level=logging.DEBUG,
+                    format='%(asctime)-15s | %(levelname)s - %(levelno)s | Line No: %(lineno)d | Module: %(module)s | %(message)s')
+log = logging.getLogger(__name__)
 
 HOST = os.getenv("HOST", "http://localhost:8000")
 FRONTEND_HOST = os.getenv("FRONTEND_HOST", "http://localhost:3000")
@@ -157,6 +158,3 @@ if PRODUCTION_SERVER:
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True
     SECURE_REFERRER_POLICY = "same-origin"
-
-# Logging
-logging.config.dictConfig(LOGGING)
