@@ -55,6 +55,7 @@ export default function Donate() {
   const defaultDonateAmount = [50, 200, 500, 1000, ];
   const [donateAmount, setDonateAmt] = React.useState<number>(0);
   const [donateModalOpen, setDonateModalOpen] = React.useState<boolean>(false);
+  const [successModalOpen, setSuccessModalOpen] = React.useState<boolean>(false);
 
   const modalOpen = () => setDonateModalOpen(true);
   const modalClose = () => setDonateModalOpen(false);
@@ -62,6 +63,33 @@ export default function Donate() {
   const handleDonateAmount = (amount: number) => {
     setDonateAmt(amount);
   }
+
+  const handlePaymentSuccess = async (response:any) => {
+    try {
+      let bodyData = new FormData();
+
+      // we will send the response we've got from razorpay to the backend to validate the payment
+      bodyData.append("response", JSON.stringify(response));
+
+      await Axios({
+        url: `${process.env.BACKEND_API_URL}/payments/verify/`,
+        method: "POST",
+        data: bodyData,
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      })
+        .then(() => {
+          setSuccessModalOpen(true)
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } catch (error) {
+      console.log(console.error());
+    }
+  };  
 
   const loadScript = (src: string) => {
     return new Promise(resolve => {
@@ -86,7 +114,7 @@ export default function Donate() {
       return
     }
     const result:any = await Axios({
-      url: `http://localhost:8000/payments/pay/`,
+      url: `${process.env.BACKEND_API_URL}/payments/pay/`,
       data: {"amount": amt},
       method: "POST",
       headers: {
@@ -107,7 +135,9 @@ export default function Donate() {
         description: "Thanks For Supporting Us Grow",
         image: "https://raw.githubusercontent.com/Auto-DL/Auto-DL/main/static/Logo.png",
         order_id: order_id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
-        callback_url: `http://localhost:8000/payments/verify/`,
+        handler: function (response:any) {
+          handlePaymentSuccess(response);
+        },        
         theme: {
             "color": "#252934"
         }
@@ -122,7 +152,15 @@ export default function Donate() {
         <ListItem button key='Donate' onClick={modalOpen}>
           <ListItemIcon><PaymentIcon style={{ color: 'white' }} /></ListItemIcon>
           <ListItemText primary='Donate' style={{ color: 'white' }} />
-        </ListItem>        
+        </ListItem>   
+      <Modal
+        onClose={() => setSuccessModalOpen(false)}
+        open={successModalOpen}
+      >
+        <Box className={classes.modalBox}>
+          <Typography>Successsfully Donated to autodl</Typography>
+        </Box>
+      </Modal>        
       <Modal
         open={donateModalOpen}
         onClose={modalClose}
