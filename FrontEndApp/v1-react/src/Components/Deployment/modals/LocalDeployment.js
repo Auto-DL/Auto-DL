@@ -64,6 +64,7 @@ export const LocalDeployStepFour = ({ handleCloseDeployModal, setDeployStep, han
                                     color="secondary"
                                     name="windows"
                                     onChange={handleDeployChange}
+                                    checked={windows}
                                 />
                             }
                             label="Windows"
@@ -74,6 +75,7 @@ export const LocalDeployStepFour = ({ handleCloseDeployModal, setDeployStep, han
                                     color="secondary"
                                     name="linux"
                                     onChange={handleDeployChange}
+                                    checked={linux}
                                 />
                             }
                             label="Linux"

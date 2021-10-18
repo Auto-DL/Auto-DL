@@ -30,6 +30,7 @@ export const HybridDeployStepThree = ({ handleCloseDeployModal, setDeployStep, h
                                 color="secondary"
                                 name="windows"
                                 onChange={handleDeployChange}
+                                checked={windows}
                             />
                         }
                         label="Windows"
@@ -40,6 +41,7 @@ export const HybridDeployStepThree = ({ handleCloseDeployModal, setDeployStep, h
                                 color="secondary"
                                 name="linux"
                                 onChange={handleDeployChange}
+                                checked={linux}
                             />
                         }
                         label="Linux"
