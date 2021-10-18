@@ -158,7 +158,7 @@ export default function Donate() {
         open={successModalOpen}
       >
         <Box className={classes.modalBox}>
-          <Typography>Successsfully Donated to autodl</Typography>
+          <Typography>Successfully Donated to AutoDL 🎉</Typography>
         </Box>
       </Modal>        
       <Modal
