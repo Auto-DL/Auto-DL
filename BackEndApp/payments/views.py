@@ -37,7 +37,8 @@ def start_payment(request):
 @api_view(["POST"])
 # @is_authenticated
 def verify_payment(request):
-    res = json.loads(request.data["response"])
+    res = json.loads(request.data.get("response"))
+    
     ord_id = ""
     raz_pay_id = ""
     raz_signature = ""
