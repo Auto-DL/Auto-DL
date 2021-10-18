@@ -38,11 +38,11 @@ def start_payment(request):
 # @is_authenticated
 def verify_payment(request):
     res = json.loads(request.data.get("response"))
-    
+
     ord_id = ""
     raz_pay_id = ""
     raz_signature = ""
-    
+
     for key in res.keys():
         if key == "razorpay_order_id":
             ord_id = res[key]
@@ -50,19 +50,19 @@ def verify_payment(request):
             raz_pay_id = res[key]
         elif key == "razorpay_signature":
             raz_signature = res[key]
-    
+
     orderDetails = RAZORPAY_CLIENT.order.fetch(ord_id)
-    
+
     data = {
         "razorpay_order_id": ord_id,
         "razorpay_payment_id": raz_pay_id,
         "razorpay_signature": raz_signature,
     }
-    
+
     check = RAZORPAY_CLIENT.utility.verify_payment_signature(data)
-    
+
     if check is not None:
         return Response({"error": "Something went wrong"})
-    
+
     res_data = {"message": "payment successfully received!"}
     return Response(res_data)
