@@ -52,16 +52,27 @@ class User:
 
         return self.collection.find_one({"username": self.username})
 
+    def search(self, email=None, username=None):
+        if email is None and username is None:
+            raise ValueError("Nothing to search")
+        query = {}
+        if username:
+            query["username"] = username
+        if email:
+            query["email"] = str(email)
+        # not working as expected. only returning logged in user. Need to find in entire user collection.
+        return self.collection.find(query)
+    
     def update(self, field_name, new_value, **kwargs):
         try:
-            self.collection.update(
+            self.collection.update_one(
                 {"username": self.username},
                 {"$set": {field_name: new_value}},
                 upsert=False,
             )
-            return 0, None
+            return 200, "User detail updated successfully"
         except Exception as e:
-            return 1, "Could not update."
+            return 500, "Could not update."
 
     def delete(self):
 
