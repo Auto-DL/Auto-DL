@@ -53,7 +53,6 @@ def verify_payment(request):
     
     orderDetails = RAZORPAY_CLIENT.order.fetch(ord_id)
     
-    print("Order Details: ", orderDetails)
     data = {
         "razorpay_order_id": ord_id,
         "razorpay_payment_id": raz_pay_id,
