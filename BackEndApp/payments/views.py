@@ -14,7 +14,7 @@ RAZORPAY_API_SECRET = os.getenv("RAZORPAY_API_SECRET")
 FRONTEND_HOST = os.getenv("FRONTEND_HOST")
 USER = "testUser"
 
-client = razorpay.Client(auth=(RAZORPAY_API_KEY, RAZORPAY_API_SECRET))
+RAZORPAY_CLIENT = razorpay.Client(auth=(RAZORPAY_API_KEY, RAZORPAY_API_SECRET))
 
 
 @api_view(["POST"])
