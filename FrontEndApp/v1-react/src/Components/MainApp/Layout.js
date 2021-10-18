@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import clsx from "clsx";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
@@ -18,57 +18,67 @@ import ListItemText from "@material-ui/core/ListItemText";
 import PowerSettingsNewIcon from "@material-ui/icons/PowerSettingsNew";
 import HomeIcon from "@material-ui/icons/Home";
 import Icon from "@material-ui/core/Icon";
-import SvgIcon from '@material-ui/core/SvgIcon';
+import SvgIcon from "@material-ui/core/SvgIcon";
 import { useHistory } from "react-router-dom";
+
+// Layout Container UIs
+import Stack from "@mui/material/Stack";
+import Box from "@mui/material/Box";
+
+// Display
+import Avatar from "@mui/material/Avatar";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    display: "flex",
+    display: "flex"
   },
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
     transition: theme.transitions.create(["width", "margin"], {
       easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
+      duration: theme.transitions.duration.leavingScreen
+    })
   },
   appBarShift: {
     marginLeft: drawerWidth,
     width: `calc(100% - ${drawerWidth}px)`,
     transition: theme.transitions.create(["width", "margin"], {
       easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
+      duration: theme.transitions.duration.enteringScreen
+    })
   },
   menuButton: {
-    marginRight: 36,
+    marginRight: 36
   },
   hide: {
-    display: "none",
+    display: "none"
   },
   drawer: {
     width: drawerWidth,
     flexShrink: 0,
-    whiteSpace: "nowrap",
+    whiteSpace: "nowrap"
   },
   drawerOpen: {
     width: drawerWidth,
     transition: theme.transitions.create("width", {
       easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
+      duration: theme.transitions.duration.enteringScreen
+    })
   },
   drawerClose: {
     transition: theme.transitions.create("width", {
       easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
+      duration: theme.transitions.duration.leavingScreen
     }),
     overflowX: "hidden",
     width: theme.spacing(7) + 1,
     [theme.breakpoints.up("sm")]: {
-      width: theme.spacing(9) + 1,
-    },
+      width: theme.spacing(9) + 1
+    }
   },
   toolbar: {
     display: "flex",
@@ -76,15 +86,15 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "flex-end",
     padding: theme.spacing(0, 1),
     // necessary for content to be below app bar
-    ...theme.mixins.toolbar,
+    ...theme.mixins.toolbar
   },
   content: {
     flexGrow: 1,
-    padding: theme.spacing(1),
+    padding: theme.spacing(1)
   },
   logout: {
-    bottom: "0",
-  },
+    bottom: "0"
+  }
 }));
 
 function Layout() {
@@ -93,6 +103,18 @@ function Layout() {
   const history = useHistory();
   const [open, setOpen] = React.useState(false);
   var username = JSON.parse(localStorage.getItem("username"));
+
+  // State variables
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const openAvatarDropdown = Boolean(anchorEl);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -127,7 +149,7 @@ function Layout() {
         style={{ background: "#4467c6" }}
         position="fixed"
         className={clsx(classes.appBar, {
-          [classes.appBarShift]: open,
+          [classes.appBarShift]: open
         })}
       >
         <Toolbar>
@@ -138,16 +160,61 @@ function Layout() {
               onClick={handleDrawerOpen}
               edge="start"
               className={clsx(classes.menuButton, {
-                [classes.hide]: open,
+                [classes.hide]: open
               })}
             >
               <MenuIcon />
             </IconButton>
           ) : null}
 
-          <Typography variant="h6" noWrap>
-            Auto-DL
-          </Typography>
+          <Stack
+            direction="row"
+            sx={{
+              width: "100%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between"
+            }}
+          >
+            <Typography variant="h6" noWrap>
+              Auto-DL
+            </Typography>
+
+            {/* Overflow Btn */}
+            <Box>
+              <IconButton
+                size="large"
+                sx={{ 
+                  color: `${theme === "light" ? "#aaa" : "#3f51b5"}`,
+                  cursor: "pointer"
+                  }}
+                aria-label="Overflow Button"
+                id="basic-button"
+                aria-controls="basic-menu"
+                aria-haspopup="true"
+                aria-expanded={openAvatarDropdown ? "true" : undefined}
+                onClick={handleClick}
+              >
+                <Avatar alt="Precious Adeyinka" src="" />
+              </IconButton>
+
+              <Menu
+                id="basic-menu"
+                anchorEl={anchorEl}
+                open={openAvatarDropdown}
+                onClose={handleClose}
+                MenuListProps={{
+                  "aria-labelledby": "basic-button"
+                }}
+              >
+                <MenuItem onClick={() => history.push('/profile')}>Profile</MenuItem>
+                <MenuItem onClick={logout}>Logout</MenuItem>
+                <MenuItem onClick={handleClose}>
+                  Delete Account
+                </MenuItem>
+              </Menu>
+            </Box>
+          </Stack>
         </Toolbar>
       </AppBar>
       {username !== null ? (
@@ -155,13 +222,13 @@ function Layout() {
           variant="permanent"
           className={clsx(classes.drawer, {
             [classes.drawerOpen]: open,
-            [classes.drawerClose]: !open,
+            [classes.drawerClose]: !open
           })}
           classes={{
             paper: clsx({
               [classes.drawerOpen]: open,
-              [classes.drawerClose]: !open,
-            }),
+              [classes.drawerClose]: !open
+            })
           }}
         >
           <div className={classes.toolbar}>
@@ -192,7 +259,10 @@ function Layout() {
               <ListItemIcon>
                 <Icon aria-label="deploy">
                   <SvgIcon viewBox="0 0 24 24">
-                    <path fill="currentColor" d="M20 22L16.14 20.45C16.84 18.92 17.34 17.34 17.65 15.73L20 22M7.86 20.45L4 22L6.35 15.73C6.66 17.34 7.16 18.92 7.86 20.45M12 2C12 2 17 4 17 12C17 15.1 16.25 17.75 15.33 19.83C15 20.55 14.29 21 13.5 21H10.5C9.71 21 9 20.55 8.67 19.83C7.76 17.75 7 15.1 7 12C7 4 12 2 12 2M12 12C13.1 12 14 11.1 14 10C14 8.9 13.1 8 12 8C10.9 8 10 8.9 10 10C10 11.1 10.9 12 12 12Z" />
+                    <path
+                      fill="currentColor"
+                      d="M20 22L16.14 20.45C16.84 18.92 17.34 17.34 17.65 15.73L20 22M7.86 20.45L4 22L6.35 15.73C6.66 17.34 7.16 18.92 7.86 20.45M12 2C12 2 17 4 17 12C17 15.1 16.25 17.75 15.33 19.83C15 20.55 14.29 21 13.5 21H10.5C9.71 21 9 20.55 8.67 19.83C7.76 17.75 7 15.1 7 12C7 4 12 2 12 2M12 12C13.1 12 14 11.1 14 10C14 8.9 13.1 8 12 8C10.9 8 10 8.9 10 10C10 11.1 10.9 12 12 12Z"
+                    />
                   </SvgIcon>
                 </Icon>
               </ListItemIcon>
@@ -215,7 +285,6 @@ function Layout() {
               <ListItemText primary={"Logout"} />
             </ListItem>
           </List>
-
         </Drawer>
       ) : null}
       <main className={classes.content}>

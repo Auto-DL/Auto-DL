@@ -52,6 +52,9 @@ function ProfileIndex(props) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
 
+  // UI State Variables
+  const [theme, setTheme] = useState("light");
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -65,6 +68,13 @@ function ProfileIndex(props) {
     let url = URL.createObjectURL(evt.target.files[0]);
     console.log(name);
     setAvatarSrc(url);
+  };
+
+  // Logout
+  const logout = () => {
+    localStorage.clear();
+    history.push("/login");
+    window.location.reload();
   };
 
   // Life Cycle
@@ -83,7 +93,7 @@ function ProfileIndex(props) {
           width: "100vw",
           overflowX: "hidden",
           overflowY: "scroll",
-          bgcolor: "#181820",
+          bgcolor: `${theme === "light" ? "#E5E5E5" : "#181820"}`,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -101,8 +111,8 @@ function ProfileIndex(props) {
           sx={{
             height: "auto",
             width: "100vw",
-            pt: { xs: 0, sm: 7 },
-            bgcolor: "#181820",
+            pt: { xs: 7, sm: 7 },
+            bgcolor: `${theme === "light" ? "#E5E5E5" : "#181820"}`,
             display: "flex",
             alignItems: "center",
             justifyContent: "center"
@@ -111,7 +121,7 @@ function ProfileIndex(props) {
           {/* User Card Wrapper */}
           <Box
             sx={{
-              bgcolor: "#181820",
+              bgcolor: `${theme === "light" ? "#E5E5E5" : "#181820"}`,
               height: "100%",
               width: "100%"
             }}
@@ -170,9 +180,10 @@ function ProfileIndex(props) {
                           justifyContent: "center"
                         }}
                       >
+                        {/* Back Button */}
                         <Box
                           sx={{
-                            bgcolor: "#0066FF",
+                            bgcolor: "#3f51b5",
                             height: "30px",
                             width: "30px",
                             borderRadius: "100%",
@@ -185,6 +196,7 @@ function ProfileIndex(props) {
                             size="large"
                             sx={{ color: "#fff" }}
                             aria-label="Overflow Button"
+                            onClick={() => history.goBack()}
                           >
                             <KeyboardArrowLeftIcon fontSize="inherit" />
                           </IconButton>
@@ -193,7 +205,7 @@ function ProfileIndex(props) {
                           variant="body1"
                           fontWeight={400}
                           sx={{
-                            color: "#fff",
+                            color: `${theme === "light" ? "#181820" : "#ffffff"}`,
                             ml: 1
                           }}
                         >
@@ -202,10 +214,12 @@ function ProfileIndex(props) {
                       </Stack>
 
                       {/* Overflow Btn */}
-                      <Box>
+                      <Box sx={{ display: { xs: "block", sm: "block", md: "block", lg: "none" } }}>
                         <IconButton
                           size="large"
-                          sx={{ color: "#0066FF" }}
+                          sx={{ 
+                            color: `${theme === "light" ? "#aaa" : "#3f51b5"}`
+                            }}
                           aria-label="Overflow Button"
                           id="basic-button"
                           aria-controls="basic-menu"
@@ -225,9 +239,7 @@ function ProfileIndex(props) {
                             "aria-labelledby": "basic-button"
                           }}
                         >
-                          <MenuItem onClick={handleClose}>Profile</MenuItem>
-                          <MenuItem onClick={handleClose}>My account</MenuItem>
-                          <MenuItem onClick={handleClose}>Logout</MenuItem>
+                          <MenuItem onClick={logout}>Logout</MenuItem>
                           <MenuItem onClick={handleClose}>
                             Delete Account
                           </MenuItem>
@@ -275,13 +287,13 @@ function ProfileIndex(props) {
                               <Box
                                 aria-label="upload picture"
                                 sx={{
-                                  color: "#181820",
+                                  color: `${theme === "light" ? "#E5E5E5" : "#181820"}`,
                                   bgcolor: "#fff",
                                   borderRadius: "100%",
                                   p: 2,
                                   height: 30,
                                   width: 30,
-                                  border: "3px solid #181820",
+                                  border: `${theme === "light" ? "3px solid #E5E5E5" : "3px solid #181820"}`,
                                   display: "flex",
                                   alignItems: "center",
                                   justifyContent: "center",
@@ -310,7 +322,9 @@ function ProfileIndex(props) {
                           <Typography
                             fontWeight={700}
                             variant="body1"
-                            sx={{ color: "#fff" }}
+                            sx={{
+                              color: `${theme === "light" ? "#181820" : "#ffffff"}`,
+                            }}
                           >
                             John Doe
                           </Typography>
@@ -324,7 +338,7 @@ function ProfileIndex(props) {
                                 "linear-gradient(to left, #1D87F6, #4BCB90)",
                               borderRadius: "7px",
                               borderColor: "primary.main",
-                              color: "#fff",
+                              color: `${theme === "light" ? "#181820" : "#ffffff"}`,
                               fontSize: "14px",
                               fontWeight: "400",
                               display: "flex",
@@ -332,7 +346,7 @@ function ProfileIndex(props) {
                               justifyContent: "center"
                             }}
                           >
-                            MEMBER
+                            USER
                           </Box>
                         </Stack>
                       </Box>
@@ -341,30 +355,35 @@ function ProfileIndex(props) {
 
                   {/* Field Block */}
                   <ProfileFieldBlock
+                    theme={theme}
                     data={[
                       {
                         id: 1,
                         name: "First Name",
                         value: "John",
-                        btnLabel: "Edit"
+                        btnLabel: "Edit",
+                        buttonProps: { disabled: true }
                       },
                       {
                         id: 2,
                         name: "Last Name",
                         value: "Doe",
-                        btnLabel: "Edit"
+                        btnLabel: "Edit",
+                        buttonProps: { disabled: true }
                       }
                     ]}
                   />
 
                   {/* Field Block */}
                   <ProfileFieldBlock
+                    theme={theme}
                     data={[
                       {
                         id: 1,
                         name: "Display Name",
                         value: "John Doe",
-                        btnLabel: "Edit"
+                        btnLabel: "Edit",
+                        buttonProps: { disabled: true }
                       },
                       {
                         id: 2,
@@ -372,14 +391,15 @@ function ProfileIndex(props) {
                         value: "johndoe@gmail.com",
                         btnLabel: "Default",
                         buttonProps: { disabled: true }
-                      },
-                      {
-                        id: 3,
-                        name: "Password",
-                        value: "**********",
-                        btnLabel: "Change",
-                        type: "password"
                       }
+                      // {
+                      //   id: 3,
+                      //   name: "Password",
+                      //   value: "**********",
+                      //   btnLabel: "Change",
+                      //   type: "password",
+                      //   buttonProps: { disabled: true }
+                      // }
                     ]}
                   />
 
@@ -400,10 +420,11 @@ function ProfileIndex(props) {
                       sx={{
                         width: { xs: "100%", sm: "150px" },
                         mx: "auto",
-                        bgcolor: "#252934",
-                        color: "#fff",
-                        fontWeight: "500"
+                        bgcolor: `${theme === "light" ? "#aaa" : "#252934"}`,
+                        color: `${theme === "light" ? "#131313" : "#fff"}`,
+                        fontWeight: `${theme === "light" ? 700 : 500}`,
                       }}
+                      onClick={logout}
                     >
                       Sign Out
                     </Button>

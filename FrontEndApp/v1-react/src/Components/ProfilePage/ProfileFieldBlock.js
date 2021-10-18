@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, {useState}from "react";
 
 // UI Components
 import Box from "@mui/material/Box";
@@ -13,9 +13,61 @@ import { green } from "@mui/material/colors";
 function ProfileFieldBlock(props) {
   const [fields, setFields] = React.useState([]);
 
+  // Form State
+  const [fname, setFname] = useState("");
+  const [lname, setLname] = useState("");
+  const [displayName, setDisplayName] = useState("");
+  const [email, setEmail] = useState("");
+
+  const handleFname = (val) => {
+    setFname(val);
+  }
+
+   const handleLname = (val) => {
+    setLname(val);
+  }
+
+   const handleDisplayName = (val) => {
+    setDisplayName(val);
+  }
+
+   const handleEmail = (val) => {
+    setEmail(val);
+  }
+
+  // Life Cycle
   React.useEffect(() => {
     setFields(props.data);
   }, [props.data]);
+
+  // Dynamic Field Controller
+  const dynamicInputFieldController = (input) => {
+    switch(input.toLowerCase().trim().split(" ")[0]){
+      case "first":
+        return [
+          fname, handleFname
+        ];
+        break
+      case "last":
+        return [
+          lname, handleLname
+        ];
+        break
+      case "display":
+        return [
+          displayName, handleDisplayName
+        ];
+        break
+      case "email":
+        return [
+          email, handleEmail
+        ];
+        break
+      default:
+        return false;
+        break
+    }
+  }
 
   return (
     <>
@@ -25,7 +77,7 @@ function ProfileFieldBlock(props) {
           width: "100%",
           p: 2,
           borderRadius: 3,
-          bgcolor: "#21212B"
+          bgcolor: `${props.theme === "light" ? "#bdbdbd" : "#21212B"}`,
         }}
       >
         {/* Fields */}
@@ -35,12 +87,16 @@ function ProfileFieldBlock(props) {
               <>
                 {field.buttonProps ? (
                   <ProfileField
-                    key={field.id}
+                    key={field.name + "-" + field.id}
                     nameLabel={field.name}
                     defaultValue={field.value}
                     buttonLabel={field.btnLabel}
                     btnProps={field.buttonProps}
                     data={field}
+                    theme={props.theme}
+
+                    inputVal={dynamicInputFieldController(field.name)[0]}
+                    handlerFunc={dynamicInputFieldController(field.name)[1]}
                   />
                 ) : (
                   <ProfileField
@@ -49,6 +105,10 @@ function ProfileFieldBlock(props) {
                     defaultValue={field.value}
                     buttonLabel={field.btnLabel}
                     data={field}
+                    theme={props.theme}
+
+                    inputVal={dynamicInputFieldController(field.name)[0]}
+                    handlerFunc={dynamicInputFieldController(field.name)[1]}
                   />
                 )}
               </>
@@ -65,20 +125,25 @@ const ProfileField = ({
   defaultValue,
   buttonLabel,
   btnProps,
-  data
+  data,
+  theme,
+  inputVal,
+  handlerFunc
 }) => {
   const [fieldValue, setFieldValue] = React.useState(defaultValue);
-  const [inputValue, setInputValue] = React.useState("");
+  const [inputValue, setInputValue] = React.useState(inputVal);
   const [isEditing, setIsEditing] = React.useState(false);
 
   const handleSave = () => {
     setFieldValue(inputValue.trim());
+    handlerFunc(inputValue.trim());
     setIsEditing(false);
     // TODO - Update user details on Server Asynchronously
   };
 
   const handleChange = (e) => {
     setInputValue(e.target.value);
+    handlerFunc(e.target.value);
   };
 
   return (
@@ -97,7 +162,7 @@ const ProfileField = ({
               sx={{
                 fontSize: "10px",
                 fontWeight: "400",
-                color: "#0066FF"
+                color: "#3f51b5"
               }}
               variant="caption"
             >
@@ -131,7 +196,7 @@ const ProfileField = ({
               sx={{
                 fontSize: "17px",
                 fontWeight: "500",
-                color: "#fff"
+                color: `${theme === "light" ? "#181820" : "#ffffff"}`,
               }}
             >
               {data.type === "password"
@@ -165,11 +230,11 @@ const ProfileField = ({
             size="small"
             variant="container"
             sx={{
-              bgcolor: "#252934",
+              bgcolor: `${theme === "light" ? "#aaa" : "#252934"}`,
               borderRadius: 2,
               fontSize: "14px",
-              color: "#fff",
-              fontWeight: 400,
+              color: `${theme === "light" ? "#131313" : "#fff"}`,
+              fontWeight: `${theme === "light" ? 700 : 400}`,
               textTransform: "capitalize"
             }}
             onClick={() => setIsEditing(!isEditing)}
