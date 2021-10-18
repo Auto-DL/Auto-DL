@@ -50,7 +50,9 @@ def verify_payment(request):
             raz_pay_id = res[key]
         elif key == "razorpay_signature":
             raz_signature = res[key]
-    orderDetails = client.order.fetch(ord_id)
+    
+    orderDetails = RAZORPAY_CLIENT.order.fetch(ord_id)
+    
     print("Order Details: ", orderDetails)
     data = {
         "razorpay_order_id": ord_id,
