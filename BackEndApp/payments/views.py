@@ -57,7 +57,9 @@ def verify_payment(request):
         "razorpay_payment_id": raz_pay_id,
         "razorpay_signature": raz_signature,
     }
-    check = client.utility.verify_payment_signature(data)
+    
+    check = RAZORPAY_CLIENT.utility.verify_payment_signature(data)
+    
     if check is not None:
         return Response({"error": "Something went wrong"})
     
