@@ -21,7 +21,7 @@ RAZORPAY_CLIENT = razorpay.Client(auth=(RAZORPAY_API_KEY, RAZORPAY_API_SECRET))
 # @is_authenticated
 def start_payment(request):
     payableAmount = request.data.get("amount")
-    payment = client.order.create(
+    payment = RAZORPAY_CLIENT.order.create(
         {
             "amount": int(payableAmount) * 100,
             "currency": "INR",
