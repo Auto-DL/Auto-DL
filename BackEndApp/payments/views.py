@@ -61,6 +61,6 @@ def verify_payment(request):
     if check is not None:
         print("Redirect to error url or error page")
         return Response({"error": "Something went wrong"})
+    
     res_data = {"message": "payment successfully received!"}
-
     return Response(res_data)
