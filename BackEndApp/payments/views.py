@@ -59,7 +59,6 @@ def verify_payment(request):
     }
     check = client.utility.verify_payment_signature(data)
     if check is not None:
-        print("Redirect to error url or error page")
         return Response({"error": "Something went wrong"})
     
     res_data = {"message": "payment successfully received!"}
