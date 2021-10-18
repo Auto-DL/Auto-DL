@@ -42,6 +42,7 @@ def verify_payment(request):
     ord_id = ""
     raz_pay_id = ""
     raz_signature = ""
+    
     for key in res.keys():
         if key == "razorpay_order_id":
             ord_id = res[key]
