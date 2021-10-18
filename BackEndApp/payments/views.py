@@ -37,26 +37,6 @@ def start_payment(request):
 @api_view(["POST"])
 # @is_authenticated
 def verify_payment(request):
-    # payment_id = request.POST.get("razorpay_payment_id")
-    # razorpay_order_id = request.POST.get("razorpay_order_id")
-    # signature = request.POST.get("razorpay_signature")
-    # details = {
-    #     "razorpay_order_id": razorpay_order_id,
-    #     "razorpay_payment_id": payment_id,
-    #     "razorpay_signature": signature,
-    # }
-    # result = client.utility.verify_payment_signature(details)
-    # if result is None:
-    #     orderDetails = client.order.fetch(razorpay_order_id)
-    #     userName = orderDetails["notes"]["username"]
-    #     amount = orderDetails["amount"] / 100
-    # else:
-    #     userName = "Not Found"
-    #     amount = 0
-    # return redirect(
-    #     f"{FRONTEND_HOST}/project/paymentSuccess?name={userName}&amount={amount}"
-    # )
-
     res = json.loads(request.data["response"])
     ord_id = ""
     raz_pay_id = ""
