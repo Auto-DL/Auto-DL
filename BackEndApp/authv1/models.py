@@ -62,7 +62,7 @@ class User:
             query["email"] = str(email)
         # not working as expected. only returning logged in user. Need to find in entire user collection.
         return self.collection.find(query)
-    
+
     def update(self, field_name, new_value, **kwargs):
         try:
             self.collection.update_one(

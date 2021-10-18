@@ -240,7 +240,7 @@ def update_profile(request):
     elif this_user is not None:
         # checking if any changes have been provided to be done
         if new_username is None and new_email is None:
-            status =200
+            status = 200
             message = "No change provided"
         else:
             # checking for existing user with given data. Not working as expected. Need to improve to check in entire user collection.
@@ -248,20 +248,20 @@ def update_profile(request):
             if this_user["email"] == new_email or this_user["username"] == new_username:
                 exist_user = "exist"
             if exist_user is not None:
-                message ="user with this username or email already exists"
+                message = "user with this username or email already exists"
                 status = 200
             else:
                 # validating
                 len_email = len(new_email) if new_email else 0
                 len_usrname = len(new_username) if new_username else 0
                 # if only key is provided with no value, cause wrong data updation in db
-                if len_email < 1 and len_usrname<1:
-                    return JsonResponse({"message":"Invalid data"}, status=500)
-                if len_usrname>0:
+                if len_email < 1 and len_usrname < 1:
+                    return JsonResponse({"message": "Invalid data"}, status=500)
+                if len_usrname > 0:
                     status, message = user.update("username", new_username)
                     if status != 200:
                         return JsonResponse({"message": message}, status=status)
-                if len_email>0:
+                if len_email > 0:
                     status, message = user.update("email", new_email)
                     if status != 200:
                         return JsonResponse({"message": message}, status=status)
