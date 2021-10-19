@@ -114,9 +114,9 @@ export default function SideBar({ activeTab, projectName }: Props) {
           severity: response.status ? "success" : "error",
         });
         dispatch(logout);
+        Router.push("/");
       });
     }
-    Router.push("/");
   };
 
   return (
@@ -181,7 +181,7 @@ export default function SideBar({ activeTab, projectName }: Props) {
       <Snackbar
         open={openAlert}
         data-testid={"warning"}
-        autoHideDuration={60000}
+        autoHideDuration={5000}
         onClose={handleAlertClose}
       >
         <Alert onClose={handleAlertClose} severity={alert.severity}>

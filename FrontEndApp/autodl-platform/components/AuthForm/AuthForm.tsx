@@ -43,9 +43,9 @@ const useStyles = makeStyles({
     margin: "15px 0px",
   },
   otpElement: {
-    margin: '15px 0px',
-    '& .MuiInputBase-input': {
-      letterSpacing: '25px',
+    margin: "15px 0px",
+    "& .MuiInputBase-input": {
+      letterSpacing: "38px",
     },
   },
   helperText: {
@@ -67,9 +67,18 @@ const useStyles = makeStyles({
     padding: "20px",
   },
   actionBtn: {
-    margin: "12px",
-    paddingTop: "5px",
-    paddingBottom: "5px",
+    margin: "30px 0px 10px 0px",
+    paddingTop: "5px 0px",
+    width: 200,
+  },
+  actionBtnLeft: {
+    margin: "30px 10px 30px 0px",
+    paddingTop: "5px 0px",
+    width: 200,
+  },
+  actionBtnRight: {
+    margin: "30px 0px 30px 10px",
+    paddingTop: "5px 0px",
     width: 200,
   },
   radioBtnGrp: {
@@ -78,6 +87,9 @@ const useStyles = makeStyles({
   legend: {
     paddingTop: "20px",
     paddingBottom: "5px",
+  },
+  stepper: {
+    padding: "20px 0px 30px 0px",
   },
 });
 
@@ -114,6 +126,7 @@ export default function AuthForm() {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm<FormValues>();
 
   // Main Auth Steps
@@ -129,6 +142,18 @@ export default function AuthForm() {
   // Register Steps
   const [activeRegisterStep, setActiveRegisterStep] = React.useState<number>(0);
   const registerSteps = ["Account Details", "Verify Account"];
+
+  const resetState = () => {
+    setAuthStep("login");
+    setActiveForgotPassStep(0);
+    setActiveRegisterStep(0);
+    setOtpResendText("Send OTP?");
+    setOpenAlert(false);
+    setShowPassword(false);
+    setShowProgress(false);
+    setShowOtpResendText(false);
+    reset();
+  };
 
   const handleClickShowPassword = () => {
     setShowPassword((value) => !value);
@@ -149,10 +174,9 @@ export default function AuthForm() {
     }, 1000);
   };
 
-  const handleReceiveOtp = (data: FormValues) => {
+  const handleSendPasswordOtp = (data: FormValues) => {
     setShowProgress(true);
-    // Error Handling Required
-    AuthService.verifyEmail(data.username).then((response) => {
+    AuthService.forgotPassword(data.username).then((response) => {
       setAlert({
         message: response.message ? response.message : "",
         severity: response.status ? "success" : "error",
@@ -166,7 +190,7 @@ export default function AuthForm() {
     }, 5000);
   };
 
-  const handleResendOtp = (data: FormValues) => {
+  const handleSendEmailOtp = (data: FormValues) => {
     setShowProgress(true);
     AuthService.verifyEmail(data.username).then((response) => {
       setAlert({
@@ -205,6 +229,7 @@ export default function AuthForm() {
         setOpenAlert(true);
         if (response.status) {
           router.push("/home");
+          resetState();
         }
         setShowProgress(false);
       }
@@ -222,14 +247,13 @@ export default function AuthForm() {
 
   const handleRegister = (data: FormValues) => {
     setShowProgress(true);
-    // handleErrors();
     AuthService.register(data).then((response) => {
       if (response.status) {
         setAlert({
           message: response.message ? response.message : "",
           severity: "success",
         });
-        dispatch(updateUser({username: response.username}));
+        dispatch(updateUser({ username: data.username }));
         setOpenAlert(true);
       } else {
         setAlert({
@@ -240,11 +264,13 @@ export default function AuthForm() {
       }
       setShowProgress(false);
       setActiveRegisterStep((prevStep) => prevStep + 1);
+      handleSendEmailOtp(data);
     });
   };
 
   const handleLater = () => {
     router.push("/home");
+    resetState();
   };
 
   const handleVerifyAccount = (data: FormValues) => {
@@ -265,14 +291,13 @@ export default function AuthForm() {
   // Account Login Handler
   const handleLogin = (data: FormValues) => {
     setShowProgress(true);
-    // handleErrors();
     AuthService.login(data).then((response) => {
       if (response.status) {
         setAlert({
           message: response.message ? response.message : "",
           severity: "success",
         });
-        dispatch(updateUser({username: response.username}));
+        dispatch(updateUser({ username: data.username }));
         setOpenAlert(true);
         router.push("/home");
       } else {
@@ -373,14 +398,14 @@ export default function AuthForm() {
                 type="submit"
                 color="primary"
                 variant="outlined"
-                className={classes.actionBtn}
+                className={classes.actionBtnLeft}
               >
                 Log in
               </Button>
               <Button
                 color="primary"
                 variant="contained"
-                className={classes.actionBtn}
+                className={classes.actionBtnRight}
                 onClick={handleSubmit(handleAuthRegister)}
               >
                 Register
@@ -391,7 +416,11 @@ export default function AuthForm() {
 
         {authStep === "forgotPass" && (
           <>
-            <Stepper activeStep={activeForgotPassStep} alternativeLabel>
+            <Stepper
+              activeStep={activeForgotPassStep}
+              alternativeLabel
+              className={classes.stepper}
+            >
               {forgotPassSteps.map((label) => (
                 <Step key={label}>
                   <StepLabel>{label}</StepLabel>
@@ -433,7 +462,7 @@ export default function AuthForm() {
                   <Button
                     color="primary"
                     variant="outlined"
-                    className={classes.actionBtn}
+                    className={classes.actionBtnLeft}
                     onClick={() => setAuthStep("login")}
                   >
                     Go Back
@@ -441,8 +470,8 @@ export default function AuthForm() {
                   <Button
                     color="primary"
                     variant="contained"
-                    className={classes.actionBtn}
-                    onClick={handleSubmit(handleReceiveOtp)}
+                    className={classes.actionBtnRight}
+                    onClick={handleSubmit(handleSendPasswordOtp)}
                   >
                     Receive OTP
                   </Button>
@@ -478,7 +507,7 @@ export default function AuthForm() {
                 {showOtpResendText && (
                   <Typography
                     className={classes.helperText}
-                    onClick={handleSubmit(handleResendOtp)}
+                    onClick={handleSubmit(handleSendPasswordOtp)}
                   >
                     {otpResendText}
                   </Typography>
@@ -488,7 +517,7 @@ export default function AuthForm() {
                   <Button
                     color="primary"
                     variant="outlined"
-                    className={classes.actionBtn}
+                    className={classes.actionBtnLeft}
                     onClick={() => setActiveForgotPassStep(0)}
                   >
                     Go Back
@@ -496,7 +525,7 @@ export default function AuthForm() {
                   <Button
                     color="primary"
                     variant="contained"
-                    className={classes.actionBtn}
+                    className={classes.actionBtnRight}
                     onClick={handleSubmit(handleVerifyOtp)}
                   >
                     Verify OTP
@@ -559,7 +588,11 @@ export default function AuthForm() {
 
         {authStep === "register" && (
           <>
-            <Stepper activeStep={activeRegisterStep} alternativeLabel>
+            <Stepper
+              activeStep={activeRegisterStep}
+              alternativeLabel
+              className={classes.stepper}
+            >
               {registerSteps.map((label) => (
                 <Step key={label}>
                   <StepLabel>{label}</StepLabel>
@@ -689,7 +722,7 @@ export default function AuthForm() {
                 {showOtpResendText && (
                   <Typography
                     className={classes.helperText}
-                    onClick={handleSubmit(handleResendOtp)}
+                    onClick={handleSubmit(handleSendEmailOtp)}
                   >
                     {otpResendText}
                   </Typography>
@@ -697,10 +730,10 @@ export default function AuthForm() {
 
                 <div className={classes.actionBtnGrp}>
                   <Button
-                    onClick={handleLater}
                     variant="outlined"
                     color="primary"
                     className={classes.actionBtn}
+                    onClick={handleLater}
                   >
                     Later
                   </Button>
@@ -721,7 +754,7 @@ export default function AuthForm() {
       <Snackbar
         open={openAlert}
         data-testid={"warning"}
-        autoHideDuration={60000}
+        autoHideDuration={5000}
         onClose={handleAlertClose}
       >
         <Alert onClose={handleAlertClose} severity={alert.severity}>

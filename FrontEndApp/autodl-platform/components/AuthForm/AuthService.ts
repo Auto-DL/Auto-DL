@@ -109,7 +109,7 @@ class AuthService {
   async forgotPassword(username: string): Promise<AuthAPI> {
     try {
       const response = await axios.post<AuthAPI>(
-        `${BACKEND_API_URL}/auth/password/forgot`,
+        `${BACKEND_API_URL}/auth/password/forgot/`,
         {
           username: username,
         }
@@ -154,8 +154,7 @@ class AuthService {
 
   async logout(username: string): Promise<AuthAPI> {
     try {
-      destroyCookie({}, "token");
-      
+
       const response = await axios.post<AuthAPI>(
         `${BACKEND_API_URL}/auth/logout/`,
         {
@@ -167,6 +166,8 @@ class AuthService {
           }
         }
       );
+
+      destroyCookie({}, "token");
 
       return {
         message: response.data.message,

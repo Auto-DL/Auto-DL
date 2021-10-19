@@ -85,7 +85,7 @@ def logout(request):
         user = User(username=username, password=None)
         user = user.find()
         session_obj = Session(user)
-        token = request.META.get("HTTP_TOKEN")
+        token = request.META.get("HTTP_AUTHORIZATION").split("Bearer ")[1]
         flag = session_obj.delete(token)
 
         if not flag:
@@ -114,7 +114,7 @@ def forgot_password(request):
 
         email_verified = this_user.get("is_verified")
 
-        if email_verified == True:
+        if not email_verified:
 
             otp = OTP(this_user)
             generated_otp = otp.create()
@@ -128,8 +128,8 @@ def forgot_password(request):
             status = 200
 
         else:
-            message = "Sorry we can't help you right now, please email info.autodl@gmail.com if you think it's a mistake."
-            status = 500
+            message = "Your email is already verified. Please email info.autodl@gmail.com if you think it's a mistake."
+            status = 200
 
     except Exception as e:
         message = "Some error occurred! Please try again."
