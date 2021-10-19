@@ -19,8 +19,7 @@ from .utils import (copy_file, decrypt, delete_broken_symlinks, encrypt,
                     format_code, generate_git_access_token, generate_uid,
                     get_git_username, push_to_github)
 
-logging.basicConfig(level=logging.DEBUG,
-                    format='%(asctime)-15s | %(levelname)s - %(levelno)s | Line No: %(lineno)d | Module: %(module)s | %(message)s')
+
 log = logging.getLogger(__name__)
 
 

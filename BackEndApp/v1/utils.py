@@ -7,8 +7,7 @@ from uuid import uuid4 as uid
 from cryptography.fernet import Fernet
 from github import Github
 
-logging.basicConfig(level=logging.DEBUG,
-                    format='%(asctime)-15s | %(levelname)s - %(levelno)s | Line No: %(lineno)d | Module: %(module)s | %(message)s')
+
 log = logging.getLogger(__name__)
 
 

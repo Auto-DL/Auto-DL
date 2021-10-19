@@ -14,12 +14,12 @@ LOGGING = {
     "formatters": {
         "console": {
             "()": "colorlog.ColoredFormatter",
-            "format": "%(log_color)s %(asctime)s | %(name)s/%(funcName)s | "
+            "format": "%(log_color)s %(asctime)s | %(name)s/%(funcName)s | Line No: %(lineno)d | Module: %(module)s |"
             "%(levelname)s:%(reset)s %(message)s",
             "datefmt": "%Y-%m-%d %H:%M:%S",
         },
         "file": {
-            "format": "%(asctime)s | %(name)s/%(funcName)s | "
+            "format": "%(asctime)s | %(name)s/%(funcName)s | %(lineno)d | %(module)s |"
             "%(levelname)s: %(message)s",
             "datefmt": "%Y-%m-%d %H:%M:%S",
         },

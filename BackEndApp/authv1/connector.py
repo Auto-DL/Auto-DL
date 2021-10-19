@@ -5,8 +5,7 @@ import ssl
 import pymongo
 from dotenv import load_dotenv
 
-logging.basicConfig(level=logging.DEBUG,
-                    format='%(asctime)-15s | %(levelname)s - %(levelno)s | Line No: %(lineno)d | Module: %(module)s | %(message)s')
+
 log = logging.getLogger(__name__)
 
 load_dotenv()

@@ -6,8 +6,7 @@ import bcrypt
 from authv1 import connector
 from authv1.auth import Token
 
-logging.basicConfig(level=logging.DEBUG,
-                    format='%(asctime)-15s | %(levelname)s - %(levelno)s | Line No: %(lineno)d | Module: %(module)s | %(message)s')
+
 log = logging.getLogger(__name__)
 
 DATE_FORMAT = "%Y/%m/%d %H/%M/%S"

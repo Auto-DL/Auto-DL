@@ -8,8 +8,7 @@ sys.path.append("..")
 
 db = connect(db_name="user_data")
 
-logging.basicConfig(level=logging.DEBUG,
-                    format='%(asctime)-15s | %(levelname)s - %(levelno)s | Line No: %(lineno)d | Module: %(module)s | %(message)s')
+
 log = logging.getLogger(__name__)
 
 
