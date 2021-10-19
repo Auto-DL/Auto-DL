@@ -37,7 +37,7 @@ Automate your **meta-work** so that you can focus on building your models withou
 
 - **✨ Host your model just as easily as you created it. ✨**
 
-## Hactoberfest Guidelines 📝
+## Hacktoberfest Guidelines 📝
 
 * If an issue is not "assigned," you can assume that no one is working on it (may NOT be true). So to be sure, you can ask the following:
   * Can I take this up?
@@ -82,7 +82,7 @@ Setup Auto-DL:
 
 - Improve the UI and UX.
 
-- Show model training realted stats on the frontend.
+- Show model training related stats on the frontend.
 
 - Visualization and data preprocessing steps.
 
