@@ -102,9 +102,7 @@ def delete_user(request):
         username = None
     try:
         delete_path = os.path.join(ROOT_DIR, username)
-        print("delete_path", delete_path)
         if os.path.exists(delete_path):
-            print("deleting projects")
             shutil.rmtree(delete_path)
     except Exception as e:
         message = "Failed to delete projects"
