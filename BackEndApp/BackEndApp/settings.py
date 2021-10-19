@@ -34,7 +34,7 @@ SECRET_KEY = "q$2lre_hyydi(w7hb!*03()$y*q#rzy#ny^9hitqjb^q1_a6q="
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", urlparse(HOST).hostname]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", urlparse(HOST).hostname, 'autodl-backend.herokuapp.com']
 
 
 # Application definition
