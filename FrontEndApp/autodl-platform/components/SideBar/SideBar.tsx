@@ -12,6 +12,8 @@ import Settings from '@material-ui/icons/Settings';
 import Routes from 'utils/routes';
 import Router from 'next/router';
 
+import Donate from "../Donate/Donate";
+
 type Props = {
   activeTab?: string;
   projectName?: string | string[] | undefined;
@@ -24,7 +26,7 @@ const useStyles = makeStyles((theme: Theme) =>
     root: {
       display: 'flex',
     },
-    grow: {
+    sideBarGrow: {
       flexGrow: 1,
     },
     icon: {
@@ -61,11 +63,17 @@ const useStyles = makeStyles((theme: Theme) =>
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.leavingScreen,
       }),
-      overflowX: 'hidden',
+    overflowX: 'hidden',
+    width: theme.spacing(7) + 1,
+    [theme.breakpoints.up('sm')]: {
       width: theme.spacing(7) + 1,
-      [theme.breakpoints.up('sm')]: {
-        width: theme.spacing(7) + 1,
-      },
+    },
+    paymentValueContainer: {
+      display: 'flex',
+      justifyContent: 'space-between', 
+      fontSize: "20px",
+      margin: "30px"
+    }      
     },
   }),
 );
@@ -84,7 +92,7 @@ export default function SideBar({ activeTab, projectName }: Props) {
 
   return (
     <Drawer
-      variant={open ? "permanent" : "permanent"}
+      variant={"permanent"}
       className={clsx(classes.drawer, {
         [classes.drawerOpen]: open,
         [classes.drawerClose]: !open,
@@ -104,7 +112,11 @@ export default function SideBar({ activeTab, projectName }: Props) {
           <ListItem
             button
             key={route.name}
-            onClick={() => Router.push(`/project${route.path}?projectName=${projectName}`)}
+            onClick={() => {
+              projectName ?
+                Router.push(`/project${route.path}?projectName=${projectName}`) :
+                Router.push(`/project${route.path}`)
+            }}
             className={clsx(classes.icon, {
               [classes.active]: route.name == activeTab,
               [classes.inactive]: route.name != activeTab,
@@ -115,14 +127,16 @@ export default function SideBar({ activeTab, projectName }: Props) {
           </ListItem>
         ))}
       </List>
-      <div className={classes.grow} />
+      <div className={classes.sideBarGrow} />
       <Divider />
       <List>
         <ListItem button key='Settings' onClick={() => Router.push('/')}>
           <ListItemIcon><Settings style={{ color: 'white' }} /></ListItemIcon>
           <ListItemText primary='Settings' style={{ color: 'white' }} />
         </ListItem>
+
       </List>
+      <Donate/>
     </Drawer>
   );
 }

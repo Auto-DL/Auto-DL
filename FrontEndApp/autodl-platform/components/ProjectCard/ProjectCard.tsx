@@ -46,7 +46,7 @@ export default function ProjectCard({ projectName }: Props) {
         </Typography>
       </CardContent>
       <CardActions>
-        <Link href={`/project?projectName=${projectName}`}>
+        <Link href={`/project?projectName=${projectName}`} passHref>
           <Button size="small">Open</Button>
         </Link>
       </CardActions>
