@@ -12,6 +12,8 @@ import Settings from '@material-ui/icons/Settings';
 import Routes from 'utils/routes';
 import Router from 'next/router';
 
+import Donate from "../Donate/Donate";
+
 type Props = {
   activeTab?: string;
   projectName?: string | string[] | undefined;
@@ -61,11 +63,17 @@ const useStyles = makeStyles((theme: Theme) =>
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.leavingScreen,
       }),
-      overflowX: 'hidden',
+    overflowX: 'hidden',
+    width: theme.spacing(7) + 1,
+    [theme.breakpoints.up('sm')]: {
       width: theme.spacing(7) + 1,
-      [theme.breakpoints.up('sm')]: {
-        width: theme.spacing(7) + 1,
-      },
+    },
+    paymentValueContainer: {
+      display: 'flex',
+      justifyContent: 'space-between', 
+      fontSize: "20px",
+      margin: "30px"
+    }      
     },
   }),
 );
@@ -126,7 +134,9 @@ export default function SideBar({ activeTab, projectName }: Props) {
           <ListItemIcon><Settings style={{ color: 'white' }} /></ListItemIcon>
           <ListItemText primary='Settings' style={{ color: 'white' }} />
         </ListItem>
+
       </List>
+      <Donate/>
     </Drawer>
   );
 }
