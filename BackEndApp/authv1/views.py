@@ -87,19 +87,7 @@ def register(request):
 @api_view(["POST"])
 @is_authenticated
 def delete_user(request):
-    try:
-        username = request.data.get("username")
-        password = request.data.get("password")
-
-        user = User(username=username, password=password)
-        user.delete()
-        message = "Deleted Successfully"
-        status = 200
-    except Exception as e:
-        message = "Failed to delete user"
-        status = 401
-        token = None
-        username = None
+    # does not delete from the DB just the root dir
     try:
         delete_path = os.path.join(ROOT_DIR, username)
         if os.path.exists(delete_path):
