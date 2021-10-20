@@ -17,6 +17,7 @@ import { store } from "app/store";
 import { useAppDispatch } from "app/hooks";
 import { logout } from "app/userSlice";
 import AuthService from "components/AuthForm/AuthService";
+import Donate from "../Donate/Donate";
 
 type Props = {
   activeTab?: string;
@@ -67,11 +68,17 @@ const useStyles = makeStyles((theme: Theme) =>
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.leavingScreen,
       }),
-      overflowX: 'hidden',
+    overflowX: 'hidden',
+    width: theme.spacing(7) + 1,
+    [theme.breakpoints.up('sm')]: {
       width: theme.spacing(7) + 1,
-      [theme.breakpoints.up('sm')]: {
-        width: theme.spacing(7) + 1,
-      },
+    },
+    paymentValueContainer: {
+      display: 'flex',
+      justifyContent: 'space-between', 
+      fontSize: "20px",
+      margin: "30px"
+    }      
     },
   }),
 );
@@ -188,6 +195,7 @@ export default function SideBar({ activeTab, projectName }: Props) {
           {alert.message}
         </Alert>
       </Snackbar>
+      <Donate/>
     </Drawer>
   );
 }

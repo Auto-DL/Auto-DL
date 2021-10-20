@@ -193,11 +193,11 @@ export default function PrimaryAppBar({ projectName, isAuthenticated }: Prop) {
             color="inherit"
             aria-label="open drawer"
           >
-            <Link href="/">
-              <Image src={logo} width="30" height="30" />
+            <Link href="/" passHref>
+              <Image src={logo} width="30" height="30" alt="Logo" />
             </Link>
           </IconButton>
-          <Link href="/">
+          <Link href="/" passHref>
             <Button className={classes.brand} variant="text" size="large">
               AutoDL
             </Button>
