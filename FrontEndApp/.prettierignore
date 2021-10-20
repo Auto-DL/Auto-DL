@@ -1,2 +1,9 @@
+# files
 package.json
+package-lock.json
+
+# hidden
 .github
+
+# directories 
+node_modules/
