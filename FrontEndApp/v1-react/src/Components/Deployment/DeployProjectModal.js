@@ -5,9 +5,9 @@ import LaptopMacIcon from '@material-ui/icons/LaptopMac';
 import CloudIcon from '@material-ui/icons/Cloud';
 import CloudDoneIcon from '@material-ui/icons/CloudDone';
 import DeploymentService from "./DeploymentService";
-import { LocalDeployStepThree } from "./modals/LocalDeployment";
+import { LocalDeployStepThree, LocalDeployStepFour } from "./modals/LocalDeployment";
 import { CloudDeployStepThree } from "./modals/CloudDeployment";
-import { HybridDeployStepThree } from "./modals/HybridDeployment";
+import { HybridDeployStepThree, HybridDeployStepFour } from "./modals/HybridDeployment";
 
 const DeployProjectStepOne = ({ handleCloseDeployModal, handleDeployChange, localDeploy, awsDeploy, gcpDeploy, setDeployStep, classes }) => {
     return (
@@ -170,12 +170,12 @@ const DeployProjectStepTwo = ({ handleCloseDeployModal, setDeployStep, values, c
     );
 };
 
-const DeployProjectModal = ({ setOpenDeployModal, setDeployOptions, localDeploy, awsDeploy, gcpDeploy, handleDeployChange,  openDeployModal, values, SelectedProject, setalert, username, token, setOpen }) => {
+const DeployProjectModal = ({ setOpenDeployModal, setDeployOptions, localDeploy, awsDeploy, gcpDeploy, handleDeployChange,  openDeployModal, values, SelectedProject, setalert, username, token, setOpen, linux, windows }) => {
     const classes = useStyles();
 
     const [deployStep, setDeployStep] = useState(0);
     const [modelDeployCategories, setModelDeployCategories] = useState([]);
-    const [localDeployVariant, setLocalDeployVariant] = useState("zip");
+    const [localDeployVariant, setLocalDeployVariant] = useState("executable");
 
     // States to handle Pickle File for CLoud Deployments
     const [currentPklFile, setCurrentPklFile] = useState("");
@@ -189,7 +189,7 @@ const DeployProjectModal = ({ setOpenDeployModal, setDeployOptions, localDeploy,
     const handleCloseDeployModal = () => {
         setDeployStep(0);
         setModelDeployCategories([]);
-        setLocalDeployVariant("zip");
+        setLocalDeployVariant("executable");
         setCurrentPklFile("");
         setPklFileName("");
         setNumberOfChunks(0);
@@ -198,30 +198,21 @@ const DeployProjectModal = ({ setOpenDeployModal, setDeployOptions, localDeploy,
             localDeploy: false,
             awsDeploy: false,
             gcpDeploy: false,
+            linux: false,
+            windows: false,
         });
         setOpenDeployModal(false);
     };
 
-    const handleLocalDeployment = async () => {
-        const data = {
-            username: username,
-            project_id: SelectedProject.project_id,
-            model_download_type: localDeployVariant,
-            model_categories: modelDeployCategories,
-        }
+    const handleLocalDeployment = async (deployVariant="Local") => {
+        const platforms = [];
+        if (linux) platforms.push('linux');
+        if (windows) platforms.push('windows');
 
-        const res = await DeploymentService.local_deploy(token, data);
-
-        if (res.status === 200) {
-            const { data } = await res;
-            const downloadUrl = window.URL.createObjectURL(new Blob([data]));
-            const link = document.createElement('a');
-            link.href = downloadUrl;
-            link.setAttribute('download', 'deployment.zip');
-            document.body.appendChild(link);
-            link.click();
-            link.remove();
-            setalert({ ...values, msg: "Local Deployment Successful", severity: "success" });
+        const { assets, status } = await DeploymentService.local_deploy(platforms, localDeployVariant);
+        if (status === 200) {
+            assets.forEach(url => window.open(url));
+            setalert({ ...values, msg: `${deployVariant} Deployment Successful`, severity: "success" });
         } else {
             setalert({ ...values, msg: "Deployment Attempt Failed", severity: "error" });
         }
@@ -296,17 +287,7 @@ const DeployProjectModal = ({ setOpenDeployModal, setDeployOptions, localDeploy,
 
             let res = await DeploymentService.hybrid_deploy(token, data);
 
-            if (res.status === 200) {
-                const { data } = await res;
-                const downloadUrl = window.URL.createObjectURL(new Blob([data]));
-                const link = document.createElement('a');
-                link.href = downloadUrl;
-                link.setAttribute('download', 'deployment.zip');
-                document.body.appendChild(link);
-                link.click();
-                link.remove();
-                setalert({ ...values, msg: "Hybrid Deployment Successful", severity: "success" });
-            } else if (res.status === 204) {
+            if (res.status === 204) {
                 uploadStatus = uploadStatus + "% Pickle Uploaded"
                 setalert({ ...values, msg: uploadStatus, severity: "info", title: "Deployment Underway" });
                 setOpen(true);
@@ -315,8 +296,7 @@ const DeployProjectModal = ({ setOpenDeployModal, setDeployOptions, localDeploy,
             }
         };
 
-        handleCloseDeployModal();
-        setOpen(true);
+        handleLocalDeployment("Hybrid");
     }
 
     return (
@@ -350,10 +330,8 @@ const DeployProjectModal = ({ setOpenDeployModal, setDeployOptions, localDeploy,
                 <LocalDeployStepThree
                     handleCloseDeployModal={handleCloseDeployModal}
                     setDeployStep={setDeployStep}
-                    classes={classes}
                     localDeployVariant={localDeployVariant}
                     setLocalDeployVariant={setLocalDeployVariant}
-                    handleLocalDeployment={handleLocalDeployment}
                 />
             )}
             {(deployStep === 2 && !localDeploy && (awsDeploy || gcpDeploy)) && (
@@ -375,7 +353,30 @@ const DeployProjectModal = ({ setOpenDeployModal, setDeployOptions, localDeploy,
                 <HybridDeployStepThree
                     handleCloseDeployModal={handleCloseDeployModal}
                     setDeployStep={setDeployStep}
-                    values={values}
+                    localDeployVariant={localDeployVariant}
+                    setLocalDeployVariant={setLocalDeployVariant}
+                    handleHybridDeployment={handleHybridDeployment}
+                    handleDeployChange={handleDeployChange}
+                    linux={linux}
+                    windows={windows}
+                />
+            )}
+            {(deployStep === 3 && localDeploy && !awsDeploy && !gcpDeploy) && (
+                <LocalDeployStepFour
+                    handleCloseDeployModal={handleCloseDeployModal}
+                    setDeployStep={setDeployStep}
+                    handleLocalDeployment={handleLocalDeployment}
+                    handleDeployChange={handleDeployChange}
+                    linux={linux}
+                    windows={windows}
+                />
+            )}
+            {(deployStep === 3 && localDeploy && (awsDeploy || gcpDeploy)) && (
+                <HybridDeployStepFour
+                    handleCloseDeployModal={handleCloseDeployModal}
+                    setDeployStep={setDeployStep}
+                    handleLocalDeployment={handleLocalDeployment}
+                    handleDeployChange={handleDeployChange}
                     classes={classes}
                     pklFileName={pklFileName}
                     currentPklFile={currentPklFile}
@@ -383,9 +384,9 @@ const DeployProjectModal = ({ setOpenDeployModal, setDeployOptions, localDeploy,
                     setNumberOfChunks={setNumberOfChunks}
                     setCurrentPklFile={setCurrentPklFile}
                     pklChunkSize={pklChunkSize}
-                    localDeployVariant={localDeployVariant}
-                    setLocalDeployVariant={setLocalDeployVariant}
                     handleHybridDeployment={handleHybridDeployment}
+                    linux={linux}
+                    windows={windows}
                 />
             )}
         </Dialog>
