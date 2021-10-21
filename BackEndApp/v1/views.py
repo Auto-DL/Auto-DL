@@ -22,6 +22,9 @@ from .utils import (copy_file, decrypt, delete_broken_symlinks, encrypt,
 
 log = logging.getLogger(__name__)
 
+sys.path.append("../")
+from constants import ROOT_DIR
+
 
 @api_view(["POST"])
 @is_authenticated
@@ -636,7 +639,7 @@ def all_users(request):
     response: JsonResponse returning list of all the users
     """
     try:
-        rootpath = os.path.expanduser("~/.autodl/")
+        rootpath = ROOT_DIR
         users = os.listdir(rootpath)
         status, success, message, users = 200, True, "Users fetched", users
     except Exception as e:

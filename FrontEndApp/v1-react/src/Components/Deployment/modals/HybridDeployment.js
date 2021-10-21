@@ -1,7 +1,77 @@
-import { Radio, RadioGroup, FormControl, FormControlLabel, Typography, Button } from '@material-ui/core';
+import { Radio, RadioGroup, FormControl, FormGroup, FormControlLabel, Typography, Button, Checkbox } from '@material-ui/core';
 import { DialogActions, DialogTitle, DialogContent } from "../styles";
 
-export const HybridDeployStepThree = ({ handleCloseDeployModal, setDeployStep, values, classes, pklFileName, setNumberOfChunks, setPklFileName, currentPklFile, setCurrentPklFile, pklChunkSize, handleHybridDeployment, localDeployVariant, setLocalDeployVariant }) => {
+export const HybridDeployStepThree = ({ handleCloseDeployModal, setDeployStep, handleDeployChange, localDeployVariant, setLocalDeployVariant, linux, windows }) => {
+    return (
+        <div>
+            <DialogTitle
+                id="project-cloning-dialog"
+                onClose={handleCloseDeployModal}
+            >
+                Hybrid Deployment: Preferences
+            </DialogTitle>
+            <DialogContent dividers>
+                <Typography variant="body1" gutterBottom style={{ marginRight: "30px" }}>
+                    Step 3.1: Select the most suitable option as per local deployment needs.
+                </Typography>
+                <FormControl component="fieldset" style={{ marginBottom: "20px" }}>
+                    <RadioGroup aria-label="gender" name="localDeployVariant" value={localDeployVariant} onChange={(e) => setLocalDeployVariant(e.target.value)}>
+                        <FormControlLabel value="executable" control={<Radio />} label="Download an Executable" />
+                        <FormControlLabel value="zip" control={<Radio />} label="Download a Zipped Folder" />
+                    </RadioGroup>
+                </FormControl>
+                <Typography variant="body1" gutterBottom style={{ marginRight: "30px" }}>
+                    Step 3.2: Select the required platforms.
+                </Typography>
+                <FormGroup>
+                    <FormControlLabel
+                        control={
+                            <Checkbox
+                                color="secondary"
+                                name="windows"
+                                onChange={handleDeployChange}
+                                checked={windows}
+                            />
+                        }
+                        label="Windows"
+                    />
+                    <FormControlLabel
+                        control={
+                            <Checkbox
+                                color="secondary"
+                                name="linux"
+                                onChange={handleDeployChange}
+                                checked={linux}
+                            />
+                        }
+                        label="Linux"
+                    />
+                </FormGroup>
+            </DialogContent>
+            <DialogActions style={{ justifyContent: "space-evenly" }}>
+                <Button
+                    variant="contained"
+                    onClick={() => setDeployStep(1)}
+                    color="secondary"
+                >
+                    Previous Step
+                </Button>
+                {(linux || windows) && (
+                    <Button
+                        variant="contained"
+                        onClick={() => setDeployStep(3)}
+                        color="primary"
+                        data-testid="hybrid-deploy-btn"
+                    >
+                        Proceed to Step 4
+                    </Button>
+                )}
+            </DialogActions>
+        </div>
+    );
+};
+
+export const HybridDeployStepFour = ({ handleCloseDeployModal, setDeployStep, classes, pklFileName, setNumberOfChunks, setPklFileName, currentPklFile, setCurrentPklFile, pklChunkSize, handleHybridDeployment }) => {
     const handlePklUpload = async () => {
         const pklHandle = await window.showOpenFilePicker({
             types: [
@@ -29,20 +99,11 @@ export const HybridDeployStepThree = ({ handleCloseDeployModal, setDeployStep, v
                 id="project-cloning-dialog"
                 onClose={handleCloseDeployModal}
             >
-                Hybrid Deployment: Preferences
+                Hybrid Deployment: Pkl file upload
             </DialogTitle>
             <DialogContent dividers>
                 <Typography variant="body1" gutterBottom style={{ marginRight: "30px" }}>
-                    Step 3.1: Select the most suitable option as per local deployment needs.
-                </Typography>
-                <FormControl component="fieldset" style={{ marginBottom: "20px" }}>
-                    <RadioGroup aria-label="gender" name="localDeployVariant" value={localDeployVariant} onChange={(e) => setLocalDeployVariant(e.target.value)}>
-                        <FormControlLabel value="executable" disabled control={<Radio />} label="Download an Executable" />
-                        <FormControlLabel value="zip" control={<Radio />} label="Download a Zipped Folder" />
-                    </RadioGroup>
-                </FormControl>
-                <Typography variant="body1" gutterBottom>
-                    Step 3.2: Upload the <i>.pkl</i>&nbsp; file required to initiate cloud deployment.
+                    Step 4: Upload the <i>.pkl</i>&nbsp; file required to initiate cloud deployment.
                 </Typography>
                 <Button
                     size="small"
@@ -62,7 +123,7 @@ export const HybridDeployStepThree = ({ handleCloseDeployModal, setDeployStep, v
             <DialogActions style={{ justifyContent: "space-evenly" }}>
                 <Button
                     variant="contained"
-                    onClick={() => setDeployStep(1)}
+                    onClick={() => setDeployStep(2)}
                     color="secondary"
                 >
                     Previous Step
@@ -80,4 +141,4 @@ export const HybridDeployStepThree = ({ handleCloseDeployModal, setDeployStep, v
             </DialogActions>
         </div>
     );
-};
+}

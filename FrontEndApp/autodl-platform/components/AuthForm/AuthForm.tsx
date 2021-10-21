@@ -1,138 +1,167 @@
-import React from 'react';
-import { useRouter } from 'next/router';
-import { useForm } from 'react-hook-form';
-import Paper from '@material-ui/core/Paper';
-import Box from '@material-ui/core/Box';
-import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import TextField from '@material-ui/core/TextField';
-import Button from '@material-ui/core/Button';
-import LinearProgress from '@material-ui/core/LinearProgress';
-import Stepper from '@material-ui/core/Stepper';
-import Step from '@material-ui/core/Step';
-import StepLabel from '@material-ui/core/StepLabel';
-import AlternateEmailIcon from '@material-ui/icons/AlternateEmail';
-import AccountCircle from '@material-ui/icons/AccountCircle';
-import EmailIcon from '@material-ui/icons/Email';
-import VisibilityIcon from '@material-ui/icons/Visibility';
-import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
-import LockIcon from '@material-ui/icons/Lock';
-import { makeStyles } from '@material-ui/core/styles';
+import React from "react";
+import { useRouter } from "next/router";
+import { useForm } from "react-hook-form";
+import Paper from "@material-ui/core/Paper";
+import Box from "@material-ui/core/Box";
+import Typography from "@material-ui/core/Typography";
+import IconButton from "@material-ui/core/IconButton";
+import InputAdornment from "@material-ui/core/InputAdornment";
+import TextField from "@material-ui/core/TextField";
+import Button from "@material-ui/core/Button";
+import LinearProgress from "@material-ui/core/LinearProgress";
+import Snackbar from "@material-ui/core/Snackbar";
+import Stepper from "@material-ui/core/Stepper";
+import Step from "@material-ui/core/Step";
+import StepLabel from "@material-ui/core/StepLabel";
+import AlternateEmailIcon from "@material-ui/icons/AlternateEmail";
+import AccountCircle from "@material-ui/icons/AccountCircle";
+import EmailIcon from "@material-ui/icons/Email";
+import VisibilityIcon from "@material-ui/icons/Visibility";
+import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
+import LockIcon from "@material-ui/icons/Lock";
+import MuiAlert from "@material-ui/lab/Alert";
+import { makeStyles } from "@material-ui/core/styles";
+
+import { FormValues } from "./AuthModel";
+import AuthService from "./AuthService";
+import { useAppDispatch } from "app/hooks";
+import { updateUser } from "app/userSlice";
 
 const useStyles = makeStyles({
   formRoot: {
-    marginTop: '8rem',
+    marginTop: "8rem",
   },
   formContainer: {
-    padding: '20px',
-    margin: '25px',
+    padding: "20px",
   },
   formHeaderText: {
-    textAlign: 'center',
-    paddingTop: '5px',
-    paddingBottom: '20px',
+    textAlign: "center",
+    paddingTop: "5px",
+    paddingBottom: "20px",
   },
   formElement: {
-    margin: '15px 0px',
+    margin: "15px 0px",
   },
   otpElement: {
-    margin: '15px 0px',
-    '& .MuiInputBase-input': {
-      letterSpacing: '38px',
+    margin: "15px 0px",
+    "& .MuiInputBase-input": {
+      letterSpacing: "38px",
     },
   },
   helperText: {
-    fontSize: '100%',
-    marginTop: '20px',
-    cursor: 'pointer',
-    textDecoration: 'underline',
-    display: 'inline-block',
+    fontSize: "100%",
+    marginTop: "10px",
+    cursor: "pointer",
+    textDecoration: "underline",
+    display: "inline-block",
   },
   helperTextAlt: {
-    fontSize: '90%',
-    marginTop: '20px',
-    cursor: 'default',
-    display: 'inline-block',
+    fontSize: "90%",
+    marginTop: "20px",
+    cursor: "default",
+    display: "inline-block",
   },
   actionBtnGrp: {
-    display: 'flex',
-    justifyContent: 'space-evenly',
+    display: "flex",
+    justifyContent: "space-evenly",
+    padding: "20px",
   },
   actionBtn: {
-    margin: '30px 0px 10px 0px',
-    paddingTop: '5px 0px',
+    margin: "30px 0px 10px 0px",
+    paddingTop: "5px 0px",
     width: 200,
   },
   actionBtnLeft: {
-    margin: '30px 10px 30px 0px',
-    paddingTop: '5px 0px',
+    margin: "30px 10px 30px 0px",
+    paddingTop: "5px 0px",
     width: 200,
   },
   actionBtnRight: {
-    margin: '30px 0px 30px 10px',
-    paddingTop: '5px 0px',
+    margin: "30px 0px 30px 10px",
+    paddingTop: "5px 0px",
     width: 200,
   },
   radioBtnGrp: {
-    padding: '10px 0px',
+    padding: "10px 0px",
   },
   legend: {
-    paddingTop: '20px',
-    paddingBottom: '5px',
+    paddingTop: "20px",
+    paddingBottom: "5px",
   },
   stepper: {
-    padding: '20px 0px 30px 0px',
-  }
+    padding: "20px 0px 30px 0px",
+  },
 });
 
-type FormValues = {
-  username: string;
-  password: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  otp: string;
+function Alert(props: any) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
 export default function AuthForm() {
   const classes = useStyles();
   const router = useRouter();
+  const dispatch = useAppDispatch();
 
   const [showPassword, setShowPassword] = React.useState<boolean>(false);
   const [showProgress, setShowProgress] = React.useState<boolean>(false);
-  const [otpResendText, setOtpResendText] = React.useState<"Resend OTP?" | "OTP sent successfully!">("Resend OTP?");
-  const [showOtpResendText, setShowOtpResendText] = React.useState<boolean>(false);
+  const [showOtpResendText, setShowOtpResendText] =
+    React.useState<boolean>(false);
+  const [otpResendText, setOtpResendText] = React.useState<
+    "Send OTP?" | "Resend OTP?" | "OTP sent successfully!"
+  >("Send OTP?");
+  const [openAlert, setOpenAlert] = React.useState<boolean>(false);
+  const [alert, setAlert] = React.useState({
+    message: "This is alert msg",
+    severity: "warning",
+  });
+
+  const handleAlertClose = (_?: React.SyntheticEvent, reason?: string) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpenAlert(true);
+  };
 
   const {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm<FormValues>();
 
   // Main Auth Steps
-  const [authStep, setAuthStep] = React.useState<"login" | "register" | "forgotPass">("login");
+  const [authStep, setAuthStep] = React.useState<
+    "login" | "register" | "forgotPass"
+  >("login");
 
   // Forgot Pass Steps
-  const [activeForgotPassStep, setActiveForgotPassStep] = React.useState<number>(0);
-  const forgotPassSteps = [
-    "Receive OTP",
-    "Confirm OTP",
-    "New Password",
-  ];
+  const [activeForgotPassStep, setActiveForgotPassStep] =
+    React.useState<number>(0);
+  const forgotPassSteps = ["Receive OTP", "Confirm OTP", "New Password"];
 
   // Register Steps
   const [activeRegisterStep, setActiveRegisterStep] = React.useState<number>(0);
-  const registerSteps = [
-    "Account Details",
-    "Verify Account",
-  ];
+  const registerSteps = ["Account Details", "Verify Account"];
 
-  const handleClickShowPassword = () => {
-    setShowPassword(value => !value);
+  const resetState = () => {
+    setAuthStep("login");
+    setActiveForgotPassStep(0);
+    setActiveRegisterStep(0);
+    setOtpResendText("Send OTP?");
+    setOpenAlert(false);
+    setShowPassword(false);
+    setShowProgress(false);
+    setShowOtpResendText(false);
+    reset();
   };
 
-  const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleClickShowPassword = () => {
+    setShowPassword((value) => !value);
+  };
+
+  const handleMouseDownPassword = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
     event.preventDefault();
   };
 
@@ -145,88 +174,141 @@ export default function AuthForm() {
     }, 1000);
   };
 
-  const handleReceiveOtp = () => {
+  const handleSendPasswordOtp = (data: FormValues) => {
     setShowProgress(true);
-    setTimeout(() => {
+    AuthService.forgotPassword(data.username).then((response) => {
+      setAlert({
+        message: response.message ? response.message : "",
+        severity: response.status ? "success" : "error",
+      });
       setActiveForgotPassStep(1);
+      setOpenAlert(true);
       setShowProgress(false);
-    }, 1000);
-
+    });
     setTimeout(() => {
       setShowOtpResendText(true);
     }, 5000);
   };
 
-  const handleResendOtp = () => {
+  const handleSendEmailOtp = (data: FormValues) => {
     setShowProgress(true);
-    setTimeout(() => {
-      setShowProgress(false);
+    AuthService.verifyEmail(data.username).then((response) => {
+      setAlert({
+        message: response.message ? response.message : "",
+        severity: response.status ? "success" : "error",
+      });
+      setOpenAlert(true);
       setOtpResendText("OTP sent successfully!");
-    }, 1500);
+      setShowProgress(false);
+    });
   };
 
   const handleVerifyOtp = (data: FormValues) => {
     setShowProgress(true);
-    console.log(data);
-    setTimeout(() => {
-      setActiveForgotPassStep(2);
+    AuthService.verifyOTP(data.username, data.otp).then((response) => {
+      setAlert({
+        message: response.message ? response.message : "",
+        severity: response.status ? "success" : "error",
+      });
+      if (response.status) {
+        setActiveForgotPassStep(2);
+      }
+      setOpenAlert(true);
       setShowProgress(false);
-    }, 1500);
+    });
   };
 
   const handleNewPass = (data: FormValues) => {
     setShowProgress(true);
-    console.log(data);
-    setTimeout(() => {
-      setShowProgress(false);
-      router.push("/home");
-    }, 1500);
+    AuthService.updatePassword(data.username, data.password).then(
+      (response) => {
+        setAlert({
+          message: response.message ? response.message : "",
+          severity: response.status ? "success" : "error",
+        });
+        setOpenAlert(true);
+        if (response.status) {
+          router.push("/home");
+          resetState();
+        }
+        setShowProgress(false);
+      }
+    );
   };
 
   // Account Register Handlers
-  const handleAuthRegister = (data: FormValues) => {
+  const handleAuthRegister = () => {
     setShowProgress(true);
-    console.log(data);
     setTimeout(() => {
       setAuthStep("register");
       setShowProgress(false);
     }, 1500);
   };
 
-  const handleRegisterNext = (data: FormValues) => {
-    setShowProgress(true);
-    console.log(data);
-    setTimeout(() => {
-      setActiveRegisterStep((prevStep) => prevStep + 1);
-      setShowProgress(false);
-    }, 1500);
-
-    setTimeout(() => {
-      setShowOtpResendText(true);
-    }, 5000);
-  };
-
-  const handleRegisterBack = () => {
-    setActiveRegisterStep((prevStep) => prevStep - 1);
-  };
-
   const handleRegister = (data: FormValues) => {
     setShowProgress(true);
-    console.log(data);
-    setTimeout(() => {
+    AuthService.register(data).then((response) => {
+      if (response.status) {
+        setAlert({
+          message: response.message ? response.message : "",
+          severity: "success",
+        });
+        dispatch(updateUser({ username: data.username }));
+        setOpenAlert(true);
+      } else {
+        setAlert({
+          message: response.message ? response.message : "",
+          severity: "error",
+        });
+        setOpenAlert(true);
+      }
       setShowProgress(false);
-      router.push("/home");
-    }, 1500);
+      setActiveRegisterStep((prevStep) => prevStep + 1);
+      handleSendEmailOtp(data);
+    });
+  };
+
+  const handleLater = () => {
+    router.push("/home");
+    resetState();
+  };
+
+  const handleVerifyAccount = (data: FormValues) => {
+    setShowProgress(true);
+    AuthService.verifyOTP(data.username, data.otp).then((response) => {
+      setAlert({
+        message: response.message ? response.message : "",
+        severity: response.status ? "success" : "error",
+      });
+      if (response.status) {
+        router.push("/home");
+      }
+      setOpenAlert(true);
+      setShowProgress(false);
+    });
   };
 
   // Account Login Handler
   const handleLogin = (data: FormValues) => {
     setShowProgress(true);
-    console.log(data);
-    setTimeout(() => {
+    AuthService.login(data).then((response) => {
+      if (response.status) {
+        setAlert({
+          message: response.message ? response.message : "",
+          severity: "success",
+        });
+        dispatch(updateUser({ username: data.username }));
+        setOpenAlert(true);
+        router.push("/home");
+      } else {
+        setAlert({
+          message: response.message ? response.message : "",
+          severity: "error",
+        });
+        setOpenAlert(true);
+      }
       setShowProgress(false);
-      router.push("/home");
-    }, 1500);
+    });
   };
 
   return (
@@ -239,7 +321,11 @@ export default function AuthForm() {
       >
         {authStep === "login" && (
           <>
-            <Typography variant="h4" component="h2" className={classes.formHeaderText}>
+            <Typography
+              variant="h4"
+              component="h2"
+              className={classes.formHeaderText}
+            >
               Sign In
             </Typography>
 
@@ -253,10 +339,10 @@ export default function AuthForm() {
               {...register("username", {
                 required: "This field is Required",
                 minLength: { value: 4, message: "Username is too short" },
-                maxLength: { value: 20, message: "Username is too long" }
+                maxLength: { value: 20, message: "Username is too long" },
               })}
               error={errors?.username && true}
-              helperText={errors?.username && (errors.username.message)}
+              helperText={errors?.username && errors.username.message}
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
@@ -270,16 +356,16 @@ export default function AuthForm() {
               id="password"
               variant="outlined"
               label="Enter Password"
-              type={showPassword ? 'text' : 'password'}
+              type={showPassword ? "text" : "password"}
               fullWidth
               className={classes.formElement}
               {...register("password", {
                 required: "This field is Required",
                 minLength: { value: 4, message: "Password is too short" },
-                maxLength: { value: 20, message: "Password is too long" }
+                maxLength: { value: 20, message: "Password is too long" },
               })}
               error={errors?.password && true}
-              helperText={errors?.password && (errors.password.message)}
+              helperText={errors?.password && errors.password.message}
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
@@ -289,7 +375,11 @@ export default function AuthForm() {
                       onMouseDown={handleMouseDownPassword}
                       edge="end"
                     >
-                      {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
+                      {showPassword ? (
+                        <VisibilityIcon />
+                      ) : (
+                        <VisibilityOffIcon />
+                      )}
                     </IconButton>
                   </InputAdornment>
                 ),
@@ -326,7 +416,11 @@ export default function AuthForm() {
 
         {authStep === "forgotPass" && (
           <>
-            <Stepper activeStep={activeForgotPassStep} alternativeLabel className={classes.stepper}>
+            <Stepper
+              activeStep={activeForgotPassStep}
+              alternativeLabel
+              className={classes.stepper}
+            >
               {forgotPassSteps.map((label) => (
                 <Step key={label}>
                   <StepLabel>{label}</StepLabel>
@@ -346,10 +440,10 @@ export default function AuthForm() {
                   {...register("username", {
                     required: "This field is Required",
                     minLength: { value: 4, message: "Username is too short" },
-                    maxLength: { value: 20, message: "Username is too long" }
+                    maxLength: { value: 20, message: "Username is too long" },
                   })}
                   error={errors?.username && true}
-                  helperText={errors?.username && (errors.username.message)}
+                  helperText={errors?.username && errors.username.message}
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">
@@ -360,7 +454,8 @@ export default function AuthForm() {
                 />
 
                 <Typography className={classes.helperTextAlt}>
-                  You will be receiveing an OTP on your registered Email Address.
+                  You will be receiveing an OTP on your registered Email
+                  Address.
                 </Typography>
 
                 <div className={classes.actionBtnGrp}>
@@ -376,7 +471,7 @@ export default function AuthForm() {
                     color="primary"
                     variant="contained"
                     className={classes.actionBtnRight}
-                    onClick={handleSubmit(handleReceiveOtp)}
+                    onClick={handleSubmit(handleSendPasswordOtp)}
                   >
                     Receive OTP
                   </Button>
@@ -399,7 +494,7 @@ export default function AuthForm() {
                     maxLength: { value: 6, message: "OTP is invalid" },
                   })}
                   error={errors?.otp ? true : false}
-                  helperText={errors?.otp && (errors.otp.message)}
+                  helperText={errors?.otp && errors.otp.message}
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">
@@ -412,7 +507,7 @@ export default function AuthForm() {
                 {showOtpResendText && (
                   <Typography
                     className={classes.helperText}
-                    onClick={handleResendOtp}
+                    onClick={handleSubmit(handleSendPasswordOtp)}
                   >
                     {otpResendText}
                   </Typography>
@@ -446,16 +541,16 @@ export default function AuthForm() {
                   id="password"
                   variant="outlined"
                   label="New Password"
-                  type={showPassword ? 'text' : 'password'}
+                  type={showPassword ? "text" : "password"}
                   fullWidth
                   className={classes.formElement}
                   {...register("password", {
                     required: "This field is Required",
                     minLength: { value: 4, message: "Password is too short" },
-                    maxLength: { value: 20, message: "Password is too long" }
+                    maxLength: { value: 20, message: "Password is too long" },
                   })}
                   error={errors?.password && true}
-                  helperText={errors?.password && (errors.password.message)}
+                  helperText={errors?.password && errors.password.message}
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">
@@ -465,7 +560,11 @@ export default function AuthForm() {
                           onMouseDown={handleMouseDownPassword}
                           edge="end"
                         >
-                          {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
+                          {showPassword ? (
+                            <VisibilityIcon />
+                          ) : (
+                            <VisibilityOffIcon />
+                          )}
                         </IconButton>
                       </InputAdornment>
                     ),
@@ -489,7 +588,11 @@ export default function AuthForm() {
 
         {authStep === "register" && (
           <>
-            <Stepper activeStep={activeRegisterStep} alternativeLabel>
+            <Stepper
+              activeStep={activeRegisterStep}
+              alternativeLabel
+              className={classes.stepper}
+            >
               {registerSteps.map((label) => (
                 <Step key={label}>
                   <StepLabel>{label}</StepLabel>
@@ -497,7 +600,7 @@ export default function AuthForm() {
               ))}
             </Stepper>
 
-            {(activeRegisterStep === 0) && (
+            {activeRegisterStep === 0 && (
               <>
                 <TextField
                   autoFocus
@@ -510,7 +613,7 @@ export default function AuthForm() {
                     required: "This field is Required",
                   })}
                   error={errors?.firstName && true}
-                  helperText={errors?.firstName && (errors.firstName.message)}
+                  helperText={errors?.firstName && errors.firstName.message}
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">
@@ -530,7 +633,7 @@ export default function AuthForm() {
                     required: "This field is Required",
                   })}
                   error={errors?.lastName && true}
-                  helperText={errors?.lastName && (errors.lastName.message)}
+                  helperText={errors?.lastName && errors.lastName.message}
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">
@@ -548,10 +651,13 @@ export default function AuthForm() {
                   className={classes.formElement}
                   {...register("email", {
                     required: "This field is Required",
-                    pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/i, message: "Not a valid Email Address" }
+                    pattern: {
+                      value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/i,
+                      message: "Not a valid Email Address",
+                    },
                   })}
                   error={errors?.email && true}
-                  helperText={errors?.email && (errors.email.message)}
+                  helperText={errors?.email && errors.email.message}
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">
@@ -575,15 +681,15 @@ export default function AuthForm() {
                     color="primary"
                     variant="contained"
                     className={classes.actionBtn}
-                    onClick={handleSubmit(handleRegisterNext)}
+                    onClick={handleSubmit(handleRegister)}
                   >
-                    Next
+                    Create account
                   </Button>
                 </div>
               </>
             )}
 
-            {(activeRegisterStep === 1) && (
+            {activeRegisterStep === 1 && (
               <>
                 <TextField
                   autoFocus
@@ -594,11 +700,10 @@ export default function AuthForm() {
                   placeholder="000000"
                   className={classes.otpElement}
                   {...register("otp", {
-                    required: "This field is Required",
                     maxLength: { value: 6, message: "OTP is invalid" },
                   })}
                   error={errors?.otp ? true : false}
-                  helperText={errors?.otp && (errors.otp.message)}
+                  helperText={errors?.otp && errors.otp.message}
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">
@@ -617,7 +722,7 @@ export default function AuthForm() {
                 {showOtpResendText && (
                   <Typography
                     className={classes.helperText}
-                    onClick={handleResendOtp}
+                    onClick={handleSubmit(handleSendEmailOtp)}
                   >
                     {otpResendText}
                   </Typography>
@@ -625,20 +730,20 @@ export default function AuthForm() {
 
                 <div className={classes.actionBtnGrp}>
                   <Button
-                    onClick={handleRegisterBack}
                     variant="outlined"
                     color="primary"
-                    className={classes.actionBtnLeft}
+                    className={classes.actionBtn}
+                    onClick={handleLater}
                   >
-                    Go Back
+                    Later
                   </Button>
                   <Button
                     color="primary"
                     variant="contained"
-                    className={classes.actionBtnRight}
-                    onClick={handleSubmit(handleRegister)}
+                    className={classes.actionBtn}
+                    onClick={handleSubmit(handleVerifyAccount)}
                   >
-                    Finish
+                    Verify
                   </Button>
                 </div>
               </>
@@ -646,6 +751,16 @@ export default function AuthForm() {
           </>
         )}
       </Box>
+      <Snackbar
+        open={openAlert}
+        data-testid={"warning"}
+        autoHideDuration={5000}
+        onClose={handleAlertClose}
+      >
+        <Alert onClose={handleAlertClose} severity={alert.severity}>
+          {alert.message}
+        </Alert>
+      </Snackbar>
     </Paper>
-  )
+  );
 }

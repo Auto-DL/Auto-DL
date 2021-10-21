@@ -4,7 +4,7 @@ import { LocalDeployStepThree } from "../LocalDeployment";
 const mockedClasses = jest.fn();
 const mockedHandleLocalDeployment = jest.fn();
 
-describe("Local deployment modal final step renders", () => {
+describe.skip("Local deployment modal final step renders", () => {
   test("should initiate local deploy", async () => {
     render(
       <LocalDeployStepThree

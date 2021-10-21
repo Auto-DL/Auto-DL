@@ -2,6 +2,10 @@ import logging
 import os
 import posixpath
 import shutil
+import sys
+
+sys.path.append("../")
+from constants import ROOT_DIR
 
 
 log = logging.getLogger(__name__)
@@ -15,7 +19,7 @@ class Store:
         user: (dict) User Dictionary as Output of User.find()
         """
         self.user = user
-        self.rootpath = os.path.expanduser("~/.autodl/")
+        self.rootpath = os.path.expanduser(ROOT_DIR)
         self.path = posixpath.join(self.rootpath, self.user.get("username"))
 
     def create(self, project=None):
