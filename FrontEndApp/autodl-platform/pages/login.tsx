@@ -1,7 +1,14 @@
+import React from "react";
+import Auth from "layouts/Auth";
+import AuthForm from "components/AuthForm/AuthForm";
 import { GetServerSidePropsContext } from "next";
 
-export default function Index() {
-  return ("Auto-DL");
+export default function Login() {
+  return (
+    <Auth>
+      <AuthForm />
+    </Auth>
+  );
 }
 
 export const getServerSideProps = async (context: GetServerSidePropsContext) => {
@@ -9,19 +16,16 @@ export const getServerSideProps = async (context: GetServerSidePropsContext) => 
   const { req } = context;
   const token = req.cookies.token;
 
-  if (!token) {
+  if (token) {
     return {
       redirect: {
-        destination: "/login",
+        destination: "/home",
         permanent: false,
       },
     };
   }
 
   return {
-    redirect: {
-      destination: "/home",
-      permanent: false,
-    },
+    props: {},
   };
 }

@@ -8,10 +8,19 @@ from django.http import JsonResponse
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
+import bcrypt
+import shutil
+import os
+import sys
+
 from .auth import OTP
 from .emails import EmailTemplates
 from .models import Session, User
 from .store import Store
+from authv1.decorators import is_authenticated
+
+sys.path.append("../")
+from constants import ROOT_DIR
 
 logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)-15s | %(levelname)s - %(levelno)s | Line No: %(lineno)d | Module: %(module)s | %(message)s')
@@ -84,6 +93,23 @@ def register(request):
 
 
 @api_view(["POST"])
+@is_authenticated
+def delete_user(request):
+    # does not delete from the DB just the root dir
+    try:
+        delete_path = os.path.join(ROOT_DIR, username)
+        if os.path.exists(delete_path):
+            shutil.rmtree(delete_path)
+    except Exception as e:
+        message = "Failed to delete projects"
+        status = 401
+        token = None
+        username = None
+
+    return JsonResponse({"message": message, "user deleted": username}, status=status)
+
+
+@api_view(["POST"])
 def logout(request):
     try:
 
@@ -91,7 +117,7 @@ def logout(request):
         user = User(username=username, password=None)
         user = user.find()
         session_obj = Session(user)
-        token = request.META.get("HTTP_TOKEN")
+        token = request.META.get("HTTP_AUTHORIZATION").split("Bearer ")[1]
         flag = session_obj.delete(token)
 
         if not flag:
@@ -121,7 +147,7 @@ def forgot_password(request):
 
         email_verified = this_user.get("is_verified")
 
-        if email_verified == True:
+        if not email_verified:
 
             otp = OTP(this_user)
             generated_otp = otp.create()
@@ -135,8 +161,8 @@ def forgot_password(request):
             status = 200
 
         else:
-            message = "Sorry we can't help you right now, please email info.autodl@gmail.com if you think it's a mistake."
-            status = 500
+            message = "Your email is already verified. Please email info.autodl@gmail.com if you think it's a mistake."
+            status = 200
 
     except Exception as e:
         log.exception("Some error occured", e)

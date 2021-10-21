@@ -1,12 +1,13 @@
 // @material-ui/icons
 import AccountTreeRoundedIcon from '@material-ui/icons/AccountTree';
-import Assignment from "@material-ui/icons/Assignment";
 import BuildIcon from '@material-ui/icons/Build';
 import Dashboard from "@material-ui/icons/Dashboard";
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import HistoryOutlinedIcon from '@material-ui/icons/HistoryOutlined';
+import Settings from '@material-ui/icons/Settings';
 import { IoRocketSharp } from 'react-icons/io5';
 
-const Routes = [
+export const ProjectRoutes = [
   {
     path: "/",
     name: "Dashboard",
@@ -34,4 +35,15 @@ const Routes = [
   },
 ];
 
-export default Routes;
+export const AppRoutes = [
+  {
+    path: "/settings",
+    name: "Settings",
+    icon: Settings,
+  },
+  {
+    path: "/logout",
+    name: "Logout",
+    icon: ExitToAppIcon,
+  },
+];
