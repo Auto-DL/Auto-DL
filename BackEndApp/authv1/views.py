@@ -225,10 +225,19 @@ def update_password(request):
 
 @api_view(["POST"])
 def update_profile(request):
+    """
+    .. http:post:: /auth/profile/update/
 
+        Update existing user details.
+
+        :form username: Username of existing user for which changes to happen.
+        :form new_username: (optional) new username for the user.
+        :form new_email: (optional) new email for the user.
+
+    """
     current_user = request.data.get("username")
     new_username = request.data.get("new_username", None)
-    new_email = request.data.get("email", None)
+    new_email = request.data.get("new_email", None)
     user = User(username=current_user, password=None)
     this_user = user.find()
 
