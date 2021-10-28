@@ -16,11 +16,6 @@ class TestUser(TestCase):
             **{"email": "testuser1@xyz.com", "first_name": "test", "last_name": "user1"}
         )
 
-    # not working, giving error unauthorised
-    # def test_user_registration(self):
-    #     response = self.client.post(self.register_url,params={"username":"testuser1","password":"Qwerty@123","email":"testuser1@xyz.com","first_name":"test","last_name":"user"})
-    #     print(response)
-    #     assert response.status_code != 200
 
     def test_login(self):
         data = {
@@ -31,8 +26,11 @@ class TestUser(TestCase):
         response = self.client.post(self.login_url, data)
         self.assertEqual(response.status_code, 200)
 
-    ## not aplicable until user is login
+    
     def test_user_profile_update(self):
+        '''
+        should not be aplicable until user is login
+        '''
         bad_data = {"username": ""}
         bad_response = self.client.post(self.profile_update_url, bad_data)
         existing_data = {"username": "testuser1", "new_email": ""}
