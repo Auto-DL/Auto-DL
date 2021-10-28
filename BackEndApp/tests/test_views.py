@@ -16,7 +16,6 @@ class TestUser(TestCase):
             **{"email": "testuser1@xyz.com", "first_name": "test", "last_name": "user1"}
         )
 
-
     def test_login(self):
         data = {
             "username": "testuser1",
@@ -26,11 +25,10 @@ class TestUser(TestCase):
         response = self.client.post(self.login_url, data)
         self.assertEqual(response.status_code, 200)
 
-    
     def test_user_profile_update(self):
-        '''
+        """
         should not be aplicable until user is login
-        '''
+        """
         bad_data = {"username": ""}
         bad_response = self.client.post(self.profile_update_url, bad_data)
         existing_data = {"username": "testuser1", "new_email": ""}
