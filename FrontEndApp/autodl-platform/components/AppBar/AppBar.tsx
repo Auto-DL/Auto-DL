@@ -1,20 +1,22 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { makeStyles, createStyles, alpha, Theme } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
-import InputBase from '@material-ui/core/InputBase';
-import Badge from '@material-ui/core/Badge';
-import MenuItem from '@material-ui/core/MenuItem';
-import Menu from '@material-ui/core/Menu';
-import SearchIcon from '@material-ui/icons/Search';
-import AccountCircle from '@material-ui/icons/AccountCircle';
-import NotificationsIcon from '@material-ui/icons/Notifications';
-import MoreIcon from '@material-ui/icons/MoreVert';
+import { alpha, Theme } from '@mui/material/styles';
+import makeStyles from '@mui/styles/makeStyles';
+import createStyles from '@mui/styles/createStyles';
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
+import InputBase from '@mui/material/InputBase';
+import Badge from '@mui/material/Badge';
+import MenuItem from '@mui/material/MenuItem';
+import Menu from '@mui/material/Menu';
+import SearchIcon from '@mui/icons-material/Search';
+import AccountCircle from '@mui/icons-material/AccountCircle';
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import MoreIcon from '@mui/icons-material/MoreVert';
 import logo from 'public/icon.png';
 
 type Prop = {
@@ -86,7 +88,7 @@ const useStyles = makeStyles((theme: Theme) =>
     inputInput: {
       padding: theme.spacing(1, 1, 1, 0),
       // vertical padding + font size from searchIcon
-      paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
+      paddingLeft: `calc(1em + ${theme.spacing(4)})`,
       transition: theme.transitions.create('width'),
       width: '100%',
       [theme.breakpoints.up('md')]: {
@@ -163,7 +165,7 @@ export default function PrimaryAppBar({ projectName, isAuthenticated }: Prop) {
       onClose={handleMobileMenuClose}
     >
       <MenuItem>
-        <IconButton aria-label="show 11 new notifications" color="inherit">
+        <IconButton aria-label="show 11 new notifications" color="inherit" size="large">
           <Badge badgeContent={11} color="secondary">
             <NotificationsIcon />
           </Badge>
@@ -176,7 +178,7 @@ export default function PrimaryAppBar({ projectName, isAuthenticated }: Prop) {
           aria-controls="primary-search-account-menu"
           aria-haspopup="true"
           color="inherit"
-        >
+          size="large">
           <AccountCircle />
         </IconButton>
         <p>Profile</p>
@@ -188,11 +190,7 @@ export default function PrimaryAppBar({ projectName, isAuthenticated }: Prop) {
     <div className={classes.grow}>
       <AppBar position="fixed" className={classes.bar}>
         <Toolbar>
-          <IconButton
-            edge="start"
-            color="inherit"
-            aria-label="open drawer"
-          >
+          <IconButton edge="start" color="inherit" aria-label="open drawer" size="large">
             <Link href="/" passHref>
               <Image src={logo} width="30" height="30" alt="Logo" />
             </Link>
@@ -222,7 +220,7 @@ export default function PrimaryAppBar({ projectName, isAuthenticated }: Prop) {
                 />
               </div>
               <div className={classes.sectionDesktop}>
-                <IconButton aria-label="show 17 new notifications" color="inherit">
+                <IconButton aria-label="show 17 new notifications" color="inherit" size="large">
                   <Badge badgeContent={17} color="secondary">
                     <NotificationsIcon />
                   </Badge>
@@ -233,7 +231,7 @@ export default function PrimaryAppBar({ projectName, isAuthenticated }: Prop) {
                   aria-haspopup="true"
                   onClick={handleProfileMenuOpen}
                   color="inherit"
-                >
+                  size="large">
                   <AccountCircle />
                 </IconButton>
               </div>
@@ -244,7 +242,7 @@ export default function PrimaryAppBar({ projectName, isAuthenticated }: Prop) {
                   aria-haspopup="true"
                   onClick={handleMobileMenuOpen}
                   color="inherit"
-                >
+                  size="large">
                   <MoreIcon />
                 </IconButton>
               </div>

@@ -1,8 +1,8 @@
 import React, { ReactChild } from "react";
-import { Theme } from "@material-ui/core/styles";
-import { createStyles, makeStyles } from "@material-ui/styles";
-import Box from "@material-ui/core/Box";
-import Container from "@material-ui/core/Container";
+import { Theme } from "@mui/material/styles";
+import { createStyles, makeStyles } from "@mui/styles";
+import Box from "@mui/material/Box";
+import Container from "@mui/material/Container";
 import PrimaryAppBar from "components/AppBar/AppBar";
 
 type Props = {

@@ -1,10 +1,10 @@
-// @material-ui/icons
-import AccountTreeRoundedIcon from '@material-ui/icons/AccountTree';
-import BuildIcon from '@material-ui/icons/Build';
-import Dashboard from "@material-ui/icons/Dashboard";
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import HistoryOutlinedIcon from '@material-ui/icons/HistoryOutlined';
-import Settings from '@material-ui/icons/Settings';
+// @mui/icons-material
+import AccountTreeRoundedIcon from '@mui/icons-material/AccountTree';
+import BuildIcon from '@mui/icons-material/Build';
+import Dashboard from "@mui/icons-material/Dashboard";
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import HistoryOutlinedIcon from '@mui/icons-material/HistoryOutlined';
+import Settings from '@mui/icons-material/Settings';
 import { IoRocketSharp } from 'react-icons/io5';
 
 export const ProjectRoutes = [

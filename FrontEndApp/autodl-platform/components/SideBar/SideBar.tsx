@@ -1,15 +1,17 @@
 import React from 'react';
 import clsx from 'clsx';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import Drawer from '@material-ui/core/Drawer';
-import Snackbar from '@material-ui/core/Snackbar';
-import MuiAlert from "@material-ui/lab/Alert";
-import List from '@material-ui/core/List';
-import Toolbar from '@material-ui/core/Toolbar';
-import Divider from '@material-ui/core/Divider';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
+import { Theme } from '@mui/material/styles';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
+import Drawer from '@mui/material/Drawer';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
+import List from '@mui/material/List';
+import Toolbar from '@mui/material/Toolbar';
+import Divider from '@mui/material/Divider';
+import ListItem from '@mui/material/ListItem';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
 import Router from 'next/router';
 
 import { AppRoutes, ProjectRoutes } from 'utils/routes';
