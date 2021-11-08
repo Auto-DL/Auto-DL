@@ -58,8 +58,16 @@ install_binaries() {
         echo -e "${INFO} Installing latest python"
         apt-get install -y python3
         apt-get install -y python3-pip
-        apt-get install -y python3-venv
         echo -e "${TICK} Python installed"
+    fi
+
+    if dpkg --list | grep python3-venv > /dev/null 2>&1
+    then 
+        echo -e "${TICK} Python virtual Environment already exists"
+    else
+        echo -e "${INFO} Installing Python virtual Environment"
+        apt-get install -y python3-venv
+        echo -e "${TICK} Python virtual Environment installed"
     fi
 
     if command -v node > /dev/null 2>&1
