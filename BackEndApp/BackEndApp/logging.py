@@ -1,5 +1,13 @@
 import logging
+import os
 
+directory =os.path.abspath(os.path.join(os.path.dirname( __file__ ), '..', 'logs'))
+
+def createNewLog():
+
+    # ensure log folder exists
+    if not os.path.exists(directory):
+        os.mkdir(directory)
 
 class AutoreloadLogFilter(logging.Filter):
     def filter(self, record: logging.LogRecord) -> bool:
