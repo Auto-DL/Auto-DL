@@ -87,12 +87,16 @@ frontend_setup() {
 
 backend_setup() {
     echo -e "${INFO} Setting up backend"
+    cd "$BACKEND_PATH"
+    python3 -m venv venv
+    source venv/bin/activate
     pip install -r requirements.txt
 }
 
 run() {
     echo -e "${INFO} Starting backend server"
     cd "$BACKEND_PATH"
+    source venv/bin/activate
     python3 manage.py runserver &
     BACKEND_PID=$!
     echo -e "${TICK} Backend server running"

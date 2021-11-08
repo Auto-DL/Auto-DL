@@ -58,6 +58,7 @@ install_binaries() {
         echo -e "${INFO} Installing latest python"
         apt-get install -y python3
         apt-get install -y python3-pip
+        apt-get install -y python3-venv
         echo -e "${TICK} Python installed"
     fi
 
