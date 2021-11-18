@@ -1,5 +1,5 @@
 import bcrypt
-from BackEndApp.settings import EMAIL_HOST_USER
+from django.conf import settings
 from django.http import JsonResponse
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -122,7 +122,7 @@ def forgot_password(request):
             user_email = this_user.get("email")
             email = EmailTemplates(this_user)
             subject, msg = email.forgot_password(username, generated_otp)
-            send_mail(subject, msg, EMAIL_HOST_USER, [user_email])
+            send_mail(subject, msg, settings.EMAIL_HOST_USER, [user_email])
 
             message = "Email sent successfully."
             status = 200
@@ -150,7 +150,7 @@ def verify_email(request):
         user_email = this_user.get("email")
         email = EmailTemplates(this_user)
         subject, msg = email.verify_email(username, generated_otp)
-        send_mail(subject, msg, EMAIL_HOST_USER, [user_email])
+        send_mail(subject, msg, settings.EMAIL_HOST_USER, [user_email])
 
         message = "Email sent successfully"
         status = 200
