@@ -2,10 +2,22 @@ from uuid import uuid4 as uid
 import os
 from github import Github
 
-from cryptography.fernet import Fernet
+from Crypto.Cipher import AES
 import base64
 
 from shutil import copyfile
+
+
+BLOCK_SIZE = 16  # Bytes
+
+
+def pad(data):
+    padding_len = BLOCK_SIZE - len(data) % BLOCK_SIZE
+    return data + padding_len * chr(padding_len)
+
+
+def unpad(data):
+    return data[: -ord(data[len(data) - 1 :])]
 
 
 def generate_uid():
@@ -53,8 +65,8 @@ def delete_broken_symlinks(path):
 
 
 def encrypt(txt):
-    txt = str(txt)
-    cipher_suite = Fernet(os.getenv("ENCRYPTION_KEY"))
+    txt = pad(str(txt))
+    cipher_suite = AES.new(os.getenv("ENCRYPTION_KEY").encode("ascii"), AES.MODE_ECB)
     encrypted_text = cipher_suite.encrypt(txt.encode("ascii"))
     encrypted_text = base64.urlsafe_b64encode(encrypted_text).decode("ascii")
     return encrypted_text
@@ -62,8 +74,9 @@ def encrypt(txt):
 
 def decrypt(txt):
     txt = base64.urlsafe_b64decode(txt)
-    cipher_suite = Fernet(os.getenv("ENCRYPTION_KEY"))
-    decoded_text = cipher_suite.decrypt(txt).decode("ascii")
+    cipher_suite = AES.new(os.getenv("ENCRYPTION_KEY").encode("ascii"), AES.MODE_ECB)
+    decoded_text = cipher_suite.decrypt(txt)
+    decoded_text = unpad(decoded_text).decode("ascii")
     return decoded_text
 
 
