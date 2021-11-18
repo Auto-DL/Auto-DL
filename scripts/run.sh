@@ -87,6 +87,7 @@ frontend_setup() {
 
 backend_setup() {
     echo -e "${INFO} Setting up backend"
+    cd "$BACKEND_PATH"
     pip install -r requirements.txt
 }
 
