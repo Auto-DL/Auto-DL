@@ -1,8 +1,9 @@
 import React, { ReactNode } from "react";
-import { createStyles, makeStyles } from "@material-ui/core/styles";
-import Box from "@material-ui/core/Box";
-import Toolbar from "@material-ui/core/Toolbar";
-import Container from "@material-ui/core/Container";
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
+import Box from "@mui/material/Box";
+import Toolbar from "@mui/material/Toolbar";
+import Container from "@mui/material/Container";
 import PrimaryAppBar from "components/AppBar/AppBar";
 import SideBar from "components/SideBar/SideBar";
 

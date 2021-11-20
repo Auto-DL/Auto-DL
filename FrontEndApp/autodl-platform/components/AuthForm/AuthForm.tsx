@@ -1,26 +1,26 @@
 import React from "react";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
-import Paper from "@material-ui/core/Paper";
-import Box from "@material-ui/core/Box";
-import Typography from "@material-ui/core/Typography";
-import IconButton from "@material-ui/core/IconButton";
-import InputAdornment from "@material-ui/core/InputAdornment";
-import TextField from "@material-ui/core/TextField";
-import Button from "@material-ui/core/Button";
-import LinearProgress from "@material-ui/core/LinearProgress";
-import Snackbar from "@material-ui/core/Snackbar";
-import Stepper from "@material-ui/core/Stepper";
-import Step from "@material-ui/core/Step";
-import StepLabel from "@material-ui/core/StepLabel";
-import AlternateEmailIcon from "@material-ui/icons/AlternateEmail";
-import AccountCircle from "@material-ui/icons/AccountCircle";
-import EmailIcon from "@material-ui/icons/Email";
-import VisibilityIcon from "@material-ui/icons/Visibility";
-import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
-import LockIcon from "@material-ui/icons/Lock";
-import MuiAlert from "@material-ui/lab/Alert";
-import { makeStyles } from "@material-ui/core/styles";
+import Paper from "@mui/material/Paper";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import IconButton from "@mui/material/IconButton";
+import InputAdornment from "@mui/material/InputAdornment";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import LinearProgress from "@mui/material/LinearProgress";
+import Snackbar from "@mui/material/Snackbar";
+import Stepper from "@mui/material/Stepper";
+import Step from "@mui/material/Step";
+import StepLabel from "@mui/material/StepLabel";
+import AlternateEmailIcon from "@mui/icons-material/AlternateEmail";
+import AccountCircle from "@mui/icons-material/AccountCircle";
+import EmailIcon from "@mui/icons-material/Email";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import LockIcon from "@mui/icons-material/Lock";
+import MuiAlert from '@mui/material/Alert';
+import makeStyles from '@mui/styles/makeStyles';
 
 import { FormValues } from "./AuthModel";
 import AuthService from "./AuthService";
@@ -374,7 +374,7 @@ export default function AuthForm() {
                       onClick={handleClickShowPassword}
                       onMouseDown={handleMouseDownPassword}
                       edge="end"
-                    >
+                      size="large">
                       {showPassword ? (
                         <VisibilityIcon />
                       ) : (
@@ -559,7 +559,7 @@ export default function AuthForm() {
                           onClick={handleClickShowPassword}
                           onMouseDown={handleMouseDownPassword}
                           edge="end"
-                        >
+                          size="large">
                           {showPassword ? (
                             <VisibilityIcon />
                           ) : (
