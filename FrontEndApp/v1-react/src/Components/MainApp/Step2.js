@@ -78,7 +78,7 @@ function Step2() {
   const [components, setcomponents] = useState([]);
   const [selected_layer_type, setselected_layer_type] = useState("");
   const [selected_layer, setselected_layer] = useState(-1);
-  const [, setselected_layer_name] = useState("");
+  const [selected_layer_name, setselected_layer_name] = useState("");
   const [value, setValue] = useState(0);
   const [gitusername, setGitusername] = useState("");
 
@@ -2207,7 +2207,7 @@ function Step2() {
     }
 
     fetchDataHyper();
-  }, [getProjectId, token, username]);
+  }, [token, username]);
 
   const handleDragEnd = async({ destination, source }) => {
     let tempArr = _.cloneDeep(components);

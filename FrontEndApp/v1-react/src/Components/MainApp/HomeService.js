@@ -11,7 +11,7 @@ class HomeService {
         {
           headers: {
             "Content-Type": "application/json",
-            token: `${token}`,
+            "Authorization": `Bearer ${token}`,
           },
         }
       );
@@ -28,7 +28,7 @@ class HomeService {
         {
           headers: {
             "Content-Type": "application/json",
-            token: `${token}`,
+            "Authorization": `Bearer ${token}`,
           },
         }
       );
@@ -45,7 +45,7 @@ class HomeService {
         {
           headers: {
             "Content-Type": "application/json",
-            token: `${token}`,
+            "Authorization": `Bearer ${token}`,
           },
         }
       );
@@ -62,7 +62,7 @@ class HomeService {
         {
           headers: {
             "Content-Type": "application/json",
-            token: `${token}`,
+            "Authorization": `Bearer ${token}`,
           },
         }
       );
@@ -79,7 +79,7 @@ class HomeService {
         {
           headers: {
             "Content-Type": "application/json",
-            token: `${token}`,
+            "Authorization": `Bearer ${token}`,
           },
         }
       );
@@ -96,7 +96,7 @@ class HomeService {
         {
           headers: {
             "Content-Type": "application/json",
-            token: `${token}`,
+            "Authorization": `Bearer ${token}`,
           },
         }
       );
@@ -110,7 +110,7 @@ class HomeService {
       const response = await axios.post(`${BACKEND_API_URL}/v1/train/`, data, {
         headers: {
           "Content-Type": "application/json",
-          token: `${token}`,
+          "Authorization": `Bearer ${token}`,
         },
       });
       return response;
@@ -127,7 +127,7 @@ class HomeService {
         {
           headers: {
             "Content-Type": "application/json",
-            token: `${token}`,
+            "Authorization": `Bearer ${token}`,
           },
         }
       );
@@ -145,7 +145,7 @@ class HomeService {
         {
           headers: {
             "Content-Type": "application/json",
-            token: `${token}`,
+            "Authorization": `Bearer ${token}`,
           },
         }
       );
@@ -163,7 +163,7 @@ class HomeService {
         {
           headers: {
             "Content-Type": "application/json",
-            token: `${token}`,
+            "Authorization": `Bearer ${token}`,
           },
         }
       );
@@ -181,7 +181,7 @@ class HomeService {
         {
           headers: {
             "Content-Type": "application/json",
-            token: `${token}`,
+            "Authorization": `Bearer ${token}`,
           },
         }
       );
@@ -199,7 +199,7 @@ class HomeService {
         {
           headers: {
             "Content-Type": "application/json",
-            token: `${token}`,
+            "Authorization": `Bearer ${token}`,
           },
         }
       );
@@ -216,7 +216,7 @@ class HomeService {
         {
           headers: {
             "Content-Type": "application/json",
-            token: `${token}`,
+            "Authorization": `Bearer ${token}`,
           },
         }
       );
@@ -231,7 +231,7 @@ class HomeService {
       const response = await axios.post(`v1/project/clone/`, data, {
         headers: {
           "Content-Type": "application/json",
-          token: `${token}`,
+          "Authorization": `Bearer ${token}`,
         },
       });
       return response;
@@ -248,7 +248,7 @@ class HomeService {
         {
           headers: {
             "Content-Type": "application/json",
-            token: `${token}`,
+            "Authorization": `Bearer ${token}`,
           },
         }
       );
@@ -265,7 +265,7 @@ class HomeService {
         {
           headers: {
             "Content-Type": "application/json",
-            token: `${token}`,
+            "Authorization": `Bearer ${token}`,
           },
         }
       );
@@ -280,7 +280,7 @@ class HomeService {
       const response = await axios.get(`${BACKEND_API_URL}/v1/users/all/`, {
         headers: {
           "Content-Type": "application/json",
-          token: `${token}`,
+          "Authorization": `Bearer ${token}`,
         },
       });
       return response;
@@ -297,7 +297,7 @@ class HomeService {
         {
           headers: {
             "Content-Type": "application/json",
-            token: `${token}`,
+            "Authorization": `Bearer ${token}`,
           },
         }
       );
@@ -315,7 +315,7 @@ class HomeService {
         {
           headers: {
             "Content-Type": "application/json",
-            token: `${token}`,
+            "Authorization": `Bearer ${token}`,
           },
         }
       );
@@ -333,7 +333,7 @@ class HomeService {
         {
           headers: {
             "Content-Type": "application/json",
-            token: `${token}`,
+            "Authorization": `Bearer ${token}`,
           },
         }
       );
@@ -351,7 +351,7 @@ class HomeService {
         {
           headers: {
             "Content-Type": "application/json",
-            token: `${token}`,
+            "Authorization": `Bearer ${token}`,
           },
         }
       );
