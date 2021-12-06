@@ -5,5 +5,5 @@ package-lock.json
 # hidden
 .github
 
-# directories 
+# directories
 node_modules/
