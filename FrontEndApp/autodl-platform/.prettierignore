@@ -4,6 +4,12 @@ package-lock.json
 
 # hidden
 .github
+.env
+.env.example
+.gitignore
+.prettierignore
+.prettierrc
 
 # directories
 node_modules/
+public/
