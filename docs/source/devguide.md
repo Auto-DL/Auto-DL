@@ -58,8 +58,8 @@ npx prettier --write
 
 - If prettier shows more changes than you expected make sure that prettier is getting the correct config path or provide config path manually
 
-``` 
-npx prettier --config ./Auto-DL/FrontEndApp/.prettierrc --write
+```
+npx prettier --config FrontEndApp/autodl-platform/.prettierrc --ignore-path FrontEndApp/autodl-platform/.prettierignore --check FrontEndApp/autodl-platform/*
 ```
 
 #### Python
