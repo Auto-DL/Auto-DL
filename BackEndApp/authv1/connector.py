@@ -2,6 +2,14 @@ import os
 import ssl
 import pymongo
 from dotenv import load_dotenv
+import logging
+
+
+logging.basicConfig(level=logging.DEBUG,
+format='%(asctime)s %(levelname)s %(message)s',
+      filename='/logs/backendapp.log',
+      filemode='w')
+
 
 load_dotenv()
 
@@ -22,7 +30,7 @@ def connect(db_name="auth_db"):
     """
     client = pymongo.MongoClient(os.getenv("MONGODB_URI"), ssl_cert_reqs=ssl.CERT_NONE)
     db = client[db_name]
-    print("MongoDB connected")
+    logging.info("MongoDB connected")
     return db
 
 
