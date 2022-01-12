@@ -251,7 +251,7 @@ def hybrid_deploy(request):
             remove_dir(pkl_dir)
 
             deployment.edit_flask_app()
-            logging.info("Modified Flask App to be deployed")
+            logging.debug("Modified Flask App to be deployed")
             status, success, message = 200, True, "Hybrid Deployment Successful"
             return JsonResponse({"success": success, "message": message}, status=status)
 
