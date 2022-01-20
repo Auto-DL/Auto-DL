@@ -9,6 +9,7 @@ trap terminate SIGTERM SIGINT
 WORKDIR=$PWD
 BACKEND_PATH="$PWD/BackEndApp"
 FRONTEND_PATH="$PWD/FrontEndApp/v1-react"
+FRONTEND_PATH_V2="$PWD/FrontEndApp/autodl-platform"
 
 
 set_cols(){
@@ -80,8 +81,14 @@ run_install() {
 }
 
 frontend_setup() {
-    echo -e "${INFO} Setting up frontend"
+    echo -e "${INFO} Setting up frontend V1"
     cd "$FRONTEND_PATH"
+    npm install
+}
+
+frontend_setup_v2(){
+    echo -e "${INFO} Setting up frontend V2"
+    cd "$FRONTEND_PATH_V2"
     npm install
 }
 
@@ -129,6 +136,15 @@ terminate(){
 }
 
 setup() {
+    echo "select the operation ************"
+    echo "  1)operation 1"
+    echo "  2)"
+    read n
+    case $n in
+        1) frontend_setup;;
+        2) frontend_setup_v2;;
+        *) echo "invalid option";;
+    esac
     echo -e "${INFO} Setting up..."
     frontend_setup
     if [ $? -eq 0 ]
