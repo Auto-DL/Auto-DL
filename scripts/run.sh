@@ -136,9 +136,11 @@ terminate(){
 }
 
 setup() {
+
     echo "************ select the versions of auto-dl ************"
     echo "  1) Version 1"
     echo "  2) Version 2"
+
     read n
     case $n in
         1) frontend_setup;;
