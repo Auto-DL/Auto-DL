@@ -143,7 +143,7 @@ setup() {
 
     read n
     case $n in
-        1) frontend_setup;;
+        1) frontend_setup_v1;;
         2) frontend_setup_v2;;
         *) echo "invalid option";;
     esac
