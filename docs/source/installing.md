@@ -49,7 +49,7 @@ pip install -r requirements.txt
 ```
 For Frontend
 ```
-cd Auto-DL/FrontEndApp
+cd Auto-DL/FrontEndApp/v1-react
 npm install
 ```
 
