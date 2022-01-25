@@ -137,9 +137,9 @@ terminate(){
 
 setup() {
 
-    echo "************ select the versions of auto-dl ************"
-    echo "  1) Version 1"
-    echo "  2) Version 2"
+    echo "************ Select a Version for the Frontend Setup ************"
+    echo "  1) Version 1 (React Client)"
+    echo "  2) Version 2 (NextJS Client)"
 
     read n
     case $n in
