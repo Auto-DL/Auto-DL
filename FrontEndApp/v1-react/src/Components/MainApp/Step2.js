@@ -75,6 +75,7 @@ function Step2() {
   var project_details = JSON.parse(localStorage.getItem("project_details"));
   var username = JSON.parse(localStorage.getItem("username"));
   var token = JSON.parse(localStorage.getItem("token"));
+  const [code, setCode] = useState("");
   const [components, setcomponents] = useState([]);
   const [selected_layer_type, setselected_layer_type] = useState("");
   const [selected_layer, setselected_layer] = useState(-1);
@@ -2587,6 +2588,7 @@ function Step2() {
         // setAllProjects([...res.data.projects]);
         setOpenModal(true);
         setgenerated_file_path(res.data.path);
+        save_code();
       } else {
         // localStorage.clear();
         // history.push("/login");
@@ -2598,16 +2600,22 @@ function Step2() {
     }
   };
 
-  const download_code = async () => {
+  const save_code = async () => {
     const data = {
       username: username,
       project_id: getProjectId(),
     };
     const res = await HomeService.download_code(token, data);
     if (res.status === 200) {
+      setCode(res.data);
+    }
+  }
+
+  const download_code = async () => {
+    if (code !== "") {
       var filename_of_download = project_details.output_file_name.trim();
       filename_of_download = filename_of_download.split(".")[0] || "output";
-      fileDownload(res.data, `${filename_of_download}.py`);
+      fileDownload(code, `${filename_of_download}.py`);
     }
   };
 
@@ -2801,31 +2809,7 @@ function Step2() {
       <Dialog onClose={handleCloseModal} open={openModal}>
         <DialogTitle onClose={handleCloseModal}>Code Generated!</DialogTitle>
         <DialogContent dividers>
-          <div>
-            <h3>Instructions:</h3>
-            <ul>
-              <li>
-                Click the "Download Code" button to download the generated code
-                to any directory of your choice.
-              </li>
-              <br></br>
-              <Tooltip title="See value of 'base' variable in the python file">
-                <li>
-                  Make sure you place the data files relative to the downloaded
-                  script
-                </li>
-              </Tooltip>
-              <br></br>
-              <li>
-                <Tooltip
-                  title="Exmaple: python3 test.py"
-                  placement="bottom-start"
-                >
-                  <div> Run the code.</div>
-                </Tooltip>
-              </li>
-            </ul>
-          </div>
+          <p style={{whiteSpace: 'pre'}}> { code } </p>
         </DialogContent>
         <DialogActions style={{ justifyContent: "center" }}>
           <Button variant="contained" onClick={download_code} color="primary">
