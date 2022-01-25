@@ -80,7 +80,7 @@ run_install() {
     sudo $WORKDIR/scripts/install.sh
 }
 
-frontend_setup() {
+frontend_setup_v1() {
     echo -e "${INFO} Setting up frontend V1"
     cd "$FRONTEND_PATH"
     npm install
