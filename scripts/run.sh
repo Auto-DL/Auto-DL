@@ -8,7 +8,7 @@ trap terminate SIGTERM SIGINT
 
 WORKDIR=$PWD
 BACKEND_PATH="$PWD/BackEndApp"
-FRONTEND_PATH="$PWD/FrontEndApp/v1-react"
+FRONTEND_PATH_V1="$PWD/FrontEndApp/v1-react"
 FRONTEND_PATH_V2="$PWD/FrontEndApp/autodl-platform"
 
 
