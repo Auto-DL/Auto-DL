@@ -147,8 +147,6 @@ setup() {
         2) frontend_setup_v2;;
         *) echo "invalid option";;
     esac
-    echo -e "${INFO} Setting up..."
-    frontend_setup
     if [ $? -eq 0 ]
     then
         echo -e "${TICK} Frontend setup complete"
