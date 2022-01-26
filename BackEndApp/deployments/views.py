@@ -26,7 +26,7 @@ import logging
 logging.basicConfig(
     level=logging.DEBUG,
     format="%(asctime)s %(levelname)s %(message)s",
-    filename="/tmp/myapp.log",
+    filename="./logs/deployments.log",
     filemode="w",
 )
 
