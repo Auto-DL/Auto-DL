@@ -47,9 +47,13 @@ For Backend
 cd Auto-DL/BackEndApp
 pip install -r requirements.txt
 ```
-For Frontend
-```
-cd Auto-DL/FrontEndApp/v1-react
+For Frontend, choose either 
+- /v1-react --> Old react application (not actively developed)
+- /autodl-platform --> New nextjs application (preferred)
+
+inside FrontEndApp. Then install the dependencies using:
+  
+```   
 npm install
 ```
 
