@@ -2809,7 +2809,38 @@ function Step2() {
       <Dialog onClose={handleCloseModal} open={openModal}>
         <DialogTitle onClose={handleCloseModal}>Great Work!</DialogTitle>
         <DialogContent dividers>
-          <p style={{whiteSpace: 'pre'}}> { code } </p>
+          <div>
+            <h3>Generated Code:</h3>
+            <p style={{ whiteSpace: 'pre' }}>
+              { code }
+            </p>
+            
+            <hr />
+
+            <h3>Instructions:</h3>
+            <ul>
+              <li>
+                Click the "Download Code" button to download the generated code
+                to any directory of your choice.
+              </li>
+              <br></br>
+              <Tooltip title="See value of 'base' variable in the python file">
+                <li>
+                  Make sure you place the data files relative to the downloaded
+                  script
+                </li>
+              </Tooltip>
+              <br></br>
+              <li>
+                <Tooltip
+                  title="Exmaple: python3 test.py"
+                  placement="bottom-start"
+                >
+                  <div> Run the code.</div>
+                </Tooltip>
+              </li>
+            </ul>
+          </div>
         </DialogContent>
         <DialogActions style={{ justifyContent: "center" }}>
           <Button variant="contained" onClick={download_code} color="primary">
