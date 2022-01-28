@@ -7,6 +7,7 @@ import createStyles from '@mui/styles/createStyles';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
+import MenuIcon from '@mui/icons-material/Menu';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import InputBase from '@mui/material/InputBase';
@@ -22,12 +23,14 @@ import logo from 'public/icon.png';
 type Prop = {
   projectName?: string | string[] | undefined;
   isAuthenticated?: boolean | boolean[] | undefined;
+  sidebarOpen?: boolean;
+  setSidebarOpen?:(open: boolean) => void;
 };
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     bar: {
-      zIndex: theme.zIndex.drawer + 1,
+      zIndex: theme.zIndex.drawer + 1
     },
     logo: {
       margin: '0px',
@@ -66,7 +69,7 @@ const useStyles = makeStyles((theme: Theme) =>
         backgroundColor: alpha(theme.palette.common.white, 0.25),
       },
       marginRight: theme.spacing(2),
-      marginLeft: 0,
+      marginLeft: theme.spacing(2),
       width: '100%',
       [theme.breakpoints.up('sm')]: {
         marginLeft: theme.spacing(3),
@@ -87,7 +90,6 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     inputInput: {
       padding: theme.spacing(1, 1, 1, 0),
-      // vertical padding + font size from searchIcon
       paddingLeft: `calc(1em + ${theme.spacing(4)})`,
       transition: theme.transitions.create('width'),
       width: '100%',
@@ -110,7 +112,7 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-export default function PrimaryAppBar({ projectName, isAuthenticated }: Prop) {
+export default function PrimaryAppBar({ projectName, isAuthenticated, sidebarOpen, setSidebarOpen }: Prop) {
   const classes = useStyles();
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -134,6 +136,10 @@ export default function PrimaryAppBar({ projectName, isAuthenticated }: Prop) {
 
   const handleMobileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setMobileMoreAnchorEl(event.currentTarget);
+  };
+
+  const handleDrawer = () => {
+    setSidebarOpen?.(!sidebarOpen);
   };
 
   const menuId = 'primary-search-account-menu';
@@ -190,6 +196,20 @@ export default function PrimaryAppBar({ projectName, isAuthenticated }: Prop) {
     <div className={classes.grow}>
       <AppBar position="fixed" className={classes.bar}>
         <Toolbar>
+         {isAuthenticated && 
+          <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              onClick={handleDrawer}
+              edge="start"
+              className={classes.sectionMobile}
+              sx={{
+                marginRight: '18px'
+              }}
+            >
+              <MenuIcon />
+            </IconButton>
+          }
           <IconButton edge="start" color="inherit" aria-label="open drawer" size="large">
             <Link href="/" passHref>
               <Image src={logo} width="30" height="30" alt="Logo" />

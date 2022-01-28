@@ -1,4 +1,5 @@
-import React, { ReactNode } from "react";
+import React, { ReactNode} from "react";
+import { Theme } from '@mui/material/styles';
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
 import Box from "@mui/material/Box";
@@ -13,24 +14,32 @@ type Props = {
   projectName?: string | string[] | undefined;
 };
 
-const useStyles = makeStyles(() =>
+const useStyles = makeStyles((theme : Theme) =>
   createStyles({
     root: {
       margin: 'auto',
       marginTop: '3rem',
-      minWidth: '100%',
+      maxWidth: '100%'
+    },
+    container: {
+      padding:' 0 5rem',
+      [theme.breakpoints.down('sm')]: {
+        padding:'0 4rem',
+      },
     }
   }),
 );
 
 export default function Main({ children, projectName, activeTab }: Props) {
   const classes = useStyles();
+  const [sidebarOpen, setSidebarOpen] = React.useState(false);
+
   return (
     <Box className={classes.root}>
       {/* To be configured with Redux - isAuthenticated */}
-      <PrimaryAppBar projectName={projectName} isAuthenticated={true} />
-      <SideBar activeTab={activeTab} projectName={projectName} />
-      <Container maxWidth='lg'>
+      <PrimaryAppBar projectName={projectName} isAuthenticated={true} sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}/>
+      <SideBar activeTab={activeTab} projectName={projectName} sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+      <Container className={classes.container} maxWidth={'xl'}>
         <Toolbar />
         {children}
       </Container>
