@@ -2807,7 +2807,7 @@ function Step2() {
   return (
     <div className={classes.App}>
       <Dialog onClose={handleCloseModal} open={openModal}>
-        <DialogTitle onClose={handleCloseModal}>Code Generated!</DialogTitle>
+        <DialogTitle onClose={handleCloseModal}>Great Work!</DialogTitle>
         <DialogContent dividers>
           <p style={{whiteSpace: 'pre'}}> { code } </p>
         </DialogContent>
