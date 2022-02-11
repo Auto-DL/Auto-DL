@@ -97,7 +97,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-function Layout() {
+function Layout( { step2Ref }) {
   const classes = useStyles();
   const theme = useTheme();
   const history = useHistory();
@@ -109,8 +109,10 @@ function Layout() {
   const openAvatarDropdown = Boolean(anchorEl);
 
   const handleClick = (event) => {
+    if(history.location.pathname == '/step-2') step2Ref.current.saveStep2();
     setAnchorEl(event.currentTarget);
   };
+
   const handleClose = () => {
     setAnchorEl(null);
   };
@@ -124,19 +126,29 @@ function Layout() {
     setOpen(false);
   };
 
+
   const home = () => {
     console.log("home");
+    if(history.location.pathname == '/step-2') step2Ref.current.saveStep2();
     history.push("/home");
     handleDrawerClose();
   };
 
   const deploy = () => {
     console.log("deployments");
+    if(history.location.pathname == '/step-2') step2Ref.current.saveStep2();
     history.push("/deploy");
     handleDrawerClose();
   };
 
+  const profile = () => {
+    console.log("profile");
+    if(history.location.pathname == '/step-2') step2Ref.current.saveStep2();
+    history.push("/profile");
+  }
+
   const logout = () => {
+    if(history.location.pathname == '/step-2') step2Ref.current.saveStep2();
     localStorage.clear();
     history.push("/login");
     window.location.reload();
@@ -207,7 +219,7 @@ function Layout() {
                   "aria-labelledby": "basic-button"
                 }}
               >
-                <MenuItem onClick={() => history.push('/profile')}>Profile</MenuItem>
+                <MenuItem onClick={profile}>Profile</MenuItem>
                 <MenuItem onClick={logout}>Logout</MenuItem>
                 <MenuItem onClick={handleClose}>
                   Delete Account
