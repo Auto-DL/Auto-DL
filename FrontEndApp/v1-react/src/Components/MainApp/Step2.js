@@ -76,6 +76,7 @@ const Step2 = forwardRef((props, ref) => {
   var project_details = JSON.parse(localStorage.getItem("project_details"));
   var username = JSON.parse(localStorage.getItem("username"));
   var token = JSON.parse(localStorage.getItem("token"));
+  const [code, setCode] = useState("");
   const [components, setcomponents] = useState([]);
   const [selected_layer_type, setselected_layer_type] = useState("");
   const [selected_layer, setselected_layer] = useState(-1);
@@ -2605,6 +2606,7 @@ const Step2 = forwardRef((props, ref) => {
         // setAllProjects([...res.data.projects]);
         setOpenModal(true);
         setgenerated_file_path(res.data.path);
+        save_code();
       } else {
         // localStorage.clear();
         // history.push("/login");
@@ -2616,16 +2618,22 @@ const Step2 = forwardRef((props, ref) => {
     }
   };
 
-  const download_code = async () => {
+  const save_code = async () => {
     const data = {
       username: username,
       project_id: getProjectId(),
     };
     const res = await HomeService.download_code(token, data);
     if (res.status === 200) {
+      setCode(res.data);
+    }
+  }
+
+  const download_code = async () => {
+    if (code !== "") {
       var filename_of_download = project_details.output_file_name.trim();
       filename_of_download = filename_of_download.split(".")[0] || "output";
-      fileDownload(res.data, `${filename_of_download}.py`);
+      fileDownload(code, `${filename_of_download}.py`);
     }
   };
 
@@ -2817,9 +2825,16 @@ const Step2 = forwardRef((props, ref) => {
   return (
     <div className={classes.App}>
       <Dialog onClose={handleCloseModal} open={openModal}>
-        <DialogTitle onClose={handleCloseModal}>Code Generated!</DialogTitle>
+        <DialogTitle onClose={handleCloseModal}>Great Work!</DialogTitle>
         <DialogContent dividers>
           <div>
+            <h3>Generated Code:</h3>
+            <p style={{ whiteSpace: 'pre' }}>
+              { code }
+            </p>
+            
+            <hr />
+
             <h3>Instructions:</h3>
             <ul>
               <li>

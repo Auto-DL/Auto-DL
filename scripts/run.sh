@@ -8,7 +8,8 @@ trap terminate SIGTERM SIGINT
 
 WORKDIR=$PWD
 BACKEND_PATH="$PWD/BackEndApp"
-FRONTEND_PATH="$PWD/FrontEndApp/v1-react"
+FRONTEND_PATH_V1="$PWD/FrontEndApp/v1-react"
+FRONTEND_PATH_V2="$PWD/FrontEndApp/autodl-platform"
 
 
 set_cols(){
@@ -79,9 +80,15 @@ run_install() {
     sudo $WORKDIR/scripts/install.sh
 }
 
-frontend_setup() {
-    echo -e "${INFO} Setting up frontend"
+frontend_setup_v1() {
+    echo -e "${INFO} Setting up frontend V1"
     cd "$FRONTEND_PATH"
+    npm install
+}
+
+frontend_setup_v2(){
+    echo -e "${INFO} Setting up frontend V2"
+    cd "$FRONTEND_PATH_V2"
     npm install
 }
 
@@ -129,8 +136,17 @@ terminate(){
 }
 
 setup() {
-    echo -e "${INFO} Setting up..."
-    frontend_setup
+
+    echo "************ Select a Version for the Frontend Setup ************"
+    echo "  1) Version 1 (React Client)"
+    echo "  2) Version 2 (NextJS Client)"
+
+    read n
+    case $n in
+        1) frontend_setup_v1;;
+        2) frontend_setup_v2;;
+        *) echo "invalid option";;
+    esac
     if [ $? -eq 0 ]
     then
         echo -e "${TICK} Frontend setup complete"
