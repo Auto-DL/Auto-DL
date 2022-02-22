@@ -11,7 +11,7 @@ import GitHubResponse from "../MainApp/step-2/GitHubResponse";
 
 function LoginIndex() {
   
-  const step2Ref = useRef();
+  const step2Ref = useRef(null);
 
   return (
     <>
