@@ -19,9 +19,8 @@ import EmailIcon from "@mui/icons-material/Email";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import LockIcon from "@mui/icons-material/Lock";
-import MuiAlert from '@mui/material/Alert';
+import MuiAlert, { AlertProps } from '@mui/material/Alert';
 import makeStyles from '@mui/styles/makeStyles';
-
 import { FormValues } from "./AuthModel";
 import AuthService from "./AuthService";
 import { useAppDispatch } from "app/hooks";
@@ -93,9 +92,9 @@ const useStyles = makeStyles({
   },
 });
 
-function Alert(props: any) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
+const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(props, ref,) {
+  return <MuiAlert elevation={6} ref={ref} variant="outlined" {...props} />;
+});
 
 export default function AuthForm() {
   const classes = useStyles();
@@ -757,7 +756,7 @@ export default function AuthForm() {
         autoHideDuration={5000}
         onClose={handleAlertClose}
       >
-        <Alert onClose={handleAlertClose} severity={alert.severity}>
+        <Alert onClose={handleAlertClose} severity={alert.severity == "success" ? "success" : "error"}>
           {alert.message}
         </Alert>
       </Snackbar>
