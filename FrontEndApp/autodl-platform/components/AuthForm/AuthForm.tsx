@@ -19,13 +19,15 @@ import EmailIcon from "@mui/icons-material/Email";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import LockIcon from "@mui/icons-material/Lock";
-import MuiAlert from '@mui/material/Alert';
-import makeStyles from '@mui/styles/makeStyles';
+import MuiAlert from "@mui/material/Alert";
+import makeStyles from "@mui/styles/makeStyles";
 
 import { FormValues } from "./AuthModel";
 import AuthService from "./AuthService";
 import { useAppDispatch } from "app/hooks";
 import { updateUser } from "app/userSlice";
+
+import { signIn } from "next-auth/react";
 
 const useStyles = makeStyles({
   formRoot: {
@@ -374,7 +376,8 @@ export default function AuthForm() {
                       onClick={handleClickShowPassword}
                       onMouseDown={handleMouseDownPassword}
                       edge="end"
-                      size="large">
+                      size="large"
+                    >
                       {showPassword ? (
                         <VisibilityIcon />
                       ) : (
@@ -392,6 +395,30 @@ export default function AuthForm() {
             >
               Forgot your password?
             </Typography>
+
+            <Button
+              type="submit"
+              color="primary"
+              variant="outlined"
+              className={classes.actionBtnLeft}
+              onClick={() => {
+                signIn("google");
+              }}
+            >
+              Sign in with Google
+            </Button>
+
+            <Button
+              type="submit"
+              color="primary"
+              variant="outlined"
+              className={classes.actionBtnLeft}
+              onClick={() => {
+                signIn("github");
+              }}
+            >
+              Sign in with Github
+            </Button>
 
             <div className={classes.actionBtnGrp}>
               <Button
@@ -559,7 +586,8 @@ export default function AuthForm() {
                           onClick={handleClickShowPassword}
                           onMouseDown={handleMouseDownPassword}
                           edge="end"
-                          size="large">
+                          size="large"
+                        >
                           {showPassword ? (
                             <VisibilityIcon />
                           ) : (

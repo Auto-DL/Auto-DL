@@ -8,6 +8,7 @@ import bcrypt
 import shutil
 import os
 import sys
+import jwt
 
 from django.core.mail import send_mail
 from .auth import OTP
@@ -245,3 +246,79 @@ def update_password(request):
         status = 500
 
     return JsonResponse({"message": message}, status=status)
+
+
+@api_view(["POST"])
+def verify_oauth(request):
+    try:
+        token = request.data.get("token")
+        secret = os.getenv("JWT_SECRET")
+        payload = jwt.decode(token, secret)
+
+        user = User(
+            payload["name"], **{"email": payload["email"], "login_type": "OAuth"}
+        )
+        user = user.find(by_oauth=True)
+
+        if user != None:
+            session = Session(user)
+            token = session.create()
+
+            status = 200
+            message = "Verified Successful"
+
+        else:
+            token = ""
+            status = 200
+            message = "User Not Found"
+
+        status = 200
+        message = "Verified Successful"
+
+    except Exception as e:
+        message = "Some error occurred!! Please try again."
+        status = 401
+        token = None
+
+    return JsonResponse({"message": message, "token": token}, status=status)
+
+
+@api_view(["POST"])
+def register_oauth(request):
+    try:
+        token = request.data.get("token")
+        username = request.data.get("username")
+        first_name = request.data.get("first_name")
+        last_name = request.data.get("last_name")
+
+        secret = os.getenv("JWT_SECRET")
+        payload = jwt.decode(token, secret, algorithms="HS256")
+
+        # save the data of user to database
+        user = User(
+            username,
+            **{
+                "email": payload["email"],
+                "first_name": first_name,
+                "last_name": last_name,
+                "login_type": "OAuth",
+            }
+        )
+        user_id = user.create()
+        user = user.find(by_email=True)
+
+        store_obj = Store(user)
+        cache_path = store_obj.create()
+
+        session = Session(user)
+        token = session.create()
+
+        status = 200
+        message = "Registered Successful"
+
+    except Exception as e:
+        message = "Some error occurred!! Please try again."
+        status = 401
+        token = None
+
+    return JsonResponse({"message": message, "token": token}, status=status)

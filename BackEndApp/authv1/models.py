@@ -33,22 +33,38 @@ class User:
         if self.find():
             raise ValueError("Invalid username or username already exists")
 
-        hashed_password = bcrypt.hashpw(self.password.encode("utf-8"), bcrypt.gensalt())
-
         user_document = {
             "username": self.username,
-            "password": hashed_password,
             "first_name": self.attributes.get("first_name", ""),
             "last_name": self.attributes.get("last_name", ""),
             "email": self.attributes.get("email").lower(),
             "is_verified": False,
+            "login_type": "default",
         }
+
+        if self.attributes.get("login_type") == "OAuth":
+            user_document["login_type"] = self.attributes.get("login_type")
+            user_document["is_verified"] = True
+        else:
+            hashed_password = bcrypt.hashpw(
+                self.password.encode("utf-8"), bcrypt.gensalt()
+            )
+            user_document["password"] = hashed_password
+
         return self.collection.insert_one(user_document)
 
-    def find(self, by_email=False):
+    def find(self, by_email=False, by_oauth=False):
         """Returns user object is exists else returns None."""
         if by_email:
             return self.collection.find_one({"email": self.attributes.get("email")})
+
+        if by_oauth:
+            return self.collection.find_one(
+                {
+                    "email": self.attributes.get("email"),
+                    "login_type": self.attributes.get("login_type"),
+                }
+            )
 
         return self.collection.find_one({"username": self.username})
 
