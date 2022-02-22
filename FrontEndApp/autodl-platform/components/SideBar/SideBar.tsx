@@ -5,7 +5,7 @@ import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
 import Drawer from '@mui/material/Drawer';
 import Snackbar from '@mui/material/Snackbar';
-import MuiAlert from '@mui/material/Alert';
+import MuiAlert, { AlertProps } from '@mui/material/Alert';
 import List from '@mui/material/List';
 import Toolbar from '@mui/material/Toolbar';
 import Divider from '@mui/material/Divider';
@@ -85,9 +85,9 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-function Alert(props: any) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
+const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(props, ref,) {
+  return <MuiAlert elevation={6} ref={ref} variant="outlined" {...props} />;
+});
 
 export default function SideBar({ activeTab, projectName }: Props) {
   const classes = useStyles();
@@ -193,7 +193,7 @@ export default function SideBar({ activeTab, projectName }: Props) {
         autoHideDuration={5000}
         onClose={handleAlertClose}
       >
-        <Alert onClose={handleAlertClose} severity={alert.severity}>
+        <Alert onClose={handleAlertClose} severity={alert.severity == "success" ? "success" : "error"}>
           {alert.message}
         </Alert>
       </Snackbar>
