@@ -1,3 +1,4 @@
+import email
 import bcrypt
 from django.conf import settings
 from django.http import JsonResponse
@@ -225,15 +226,13 @@ def update_password(request):
 
 @api_view(["POST"])
 def update_profile(request):
-    """
-    .. http:post:: /auth/profile/update/
+    """.. http:post:: /auth/profile/update/
 
-        Update existing user details.
+    Update existing user details.
 
-        :form username: Username of existing user for which changes to happen.
-        :form new_username: (optional) new username for the user.
-        :form new_email: (optional) new email for the user.
-
+    :form username: Username of existing user for which changes to happen.
+    :form new_username: (optional) new username for the user.
+    :form new_email: (optional) new email for the user.
     """
     current_user = request.data.get("username")
     new_username = request.data.get("new_username", None)
@@ -241,40 +240,36 @@ def update_profile(request):
     user = User(username=current_user, password=None)
     this_user = user.find()
 
-    # if not getting any user means user doesn't exist, can't update, redirect to register page
     if this_user is None:
         message = "No user found. Please register if visiting first time"
         status = 500
 
     elif this_user is not None:
-        # checking if any changes have been provided to be done
         if new_username is None and new_email is None:
             status = 200
             message = "No change provided"
         else:
-            # checking for existing user with given data. Not working as expected. Need to improve to check in entire user collection.
-            exist_user = None
-            if this_user["email"] == new_email or this_user["username"] == new_username:
-                exist_user = "exist"
-            if exist_user is not None:
+            exist_user_obj = User(username=new_username, email=new_email)
+            exist_user = exist_user_obj.find()
+            exist_user_by_email = exist_user_obj.find(by_email=True)
+
+            if exist_user or exist_user_by_email:
                 message = "user with this username or email already exists"
                 status = 200
             else:
-                # validating
-                len_email = len(new_email) if new_email else 0
-                len_usrname = len(new_username) if new_username else 0
-                # if only key is provided with no value, cause wrong data updation in db
-                if len_email < 1 and len_usrname < 1:
-                    return JsonResponse({"message": "Invalid data"}, status=500)
-                if len_usrname > 0:
-                    status, message = user.update("username", new_username)
-                    if status != 200:
-                        return JsonResponse({"message": message}, status=status)
-                if len_email > 0:
-                    status, message = user.update("email", new_email)
-                    if status != 200:
-                        return JsonResponse({"message": message}, status=status)
+                if new_username:
+                    err, _ = user.update("username", new_username)
+                    if err:
+                        status = 500
+                        message = "Error updating user profile."
 
+                if new_email:
+                    err, _ = user.update("email", new_email)
+                    if err:
+                        status = 500
+                        message = "Error updating user profile."
+                status = 200
+                message = "User profile info updated successfully"
     else:
         message = "Some error occurred! Please try again."
         status = 500
