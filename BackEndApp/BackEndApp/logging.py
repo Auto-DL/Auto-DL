@@ -1,7 +1,14 @@
 import logging
+import os
+from .constants import BASE_LOG_DIRECTORY
 
 
 class AutoreloadLogFilter(logging.Filter):
+
+    # ensure log folder exists
+    if not os.path.exists(BASE_LOG_DIRECTORY):
+        os.mkdir(BASE_LOG_DIRECTORY)
+
     def filter(self, record: logging.LogRecord) -> bool:
         if record.name.find("django.utils.autoreload") != -1:
             return False

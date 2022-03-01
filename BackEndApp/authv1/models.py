@@ -54,7 +54,7 @@ class User:
 
     def update(self, field_name, new_value, **kwargs):
         try:
-            self.collection.update(
+            self.collection.update_one(
                 {"username": self.username},
                 {"$set": {field_name: new_value}},
                 upsert=False,

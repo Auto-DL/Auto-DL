@@ -1,5 +1,6 @@
+import email
 import bcrypt
-from BackEndApp.settings import EMAIL_HOST_USER
+from django.conf import settings
 from django.http import JsonResponse
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -146,7 +147,7 @@ def forgot_password(request):
             user_email = this_user.get("email")
             email = EmailTemplates(this_user)
             subject, msg = email.forgot_password(username, generated_otp)
-            send_mail(subject, msg, EMAIL_HOST_USER, [user_email])
+            send_mail(subject, msg, settings.EMAIL_HOST_USER, [user_email])
 
             message = "Email sent successfully."
             status = 200
@@ -174,7 +175,7 @@ def verify_email(request):
         user_email = this_user.get("email")
         email = EmailTemplates(this_user)
         subject, msg = email.verify_email(username, generated_otp)
-        send_mail(subject, msg, EMAIL_HOST_USER, [user_email])
+        send_mail(subject, msg, settings.EMAIL_HOST_USER, [user_email])
 
         message = "Email sent successfully"
         status = 200
@@ -241,6 +242,59 @@ def update_password(request):
             status = 200
 
     except Exception as e:
+        message = "Some error occurred! Please try again."
+        status = 500
+
+    return JsonResponse({"message": message}, status=status)
+
+
+@api_view(["POST"])
+def update_profile(request):
+    """.. http:post:: /auth/profile/update/
+
+    Update existing user details.
+
+    :form username: Username of existing user for which changes to happen.
+    :form new_username: (optional) new username for the user.
+    :form new_email: (optional) new email for the user.
+    """
+    current_user = request.data.get("username")
+    new_username = request.data.get("new_username", None)
+    new_email = request.data.get("new_email", None)
+    user = User(username=current_user, password=None)
+    this_user = user.find()
+
+    if this_user is None:
+        message = "No user found. Please register if visiting first time"
+        status = 500
+
+    elif this_user is not None:
+        if new_username is None and new_email is None:
+            status = 200
+            message = "No change provided"
+        else:
+            exist_user_obj = User(username=new_username, email=new_email)
+            exist_user = exist_user_obj.find()
+            exist_user_by_email = exist_user_obj.find(by_email=True)
+
+            if exist_user or exist_user_by_email:
+                message = "user with this username or email already exists"
+                status = 200
+            else:
+                if new_username:
+                    err, _ = user.update("username", new_username)
+                    if err:
+                        status = 500
+                        message = "Error updating user profile."
+
+                if new_email:
+                    err, _ = user.update("email", new_email)
+                    if err:
+                        status = 500
+                        message = "Error updating user profile."
+                status = 200
+                message = "User profile info updated successfully"
+    else:
         message = "Some error occurred! Please try again."
         status = 500
 
