@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect,forwardRef, useImperativeHandle } from "react";
 import {
   Button,
   AppBar,
@@ -65,7 +65,8 @@ function a11yProps(index) {
   };
 }
 
-function Step2() {
+const Step2 = forwardRef((props, ref) => {
+
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
   const [alertopen, setAlertopen] = React.useState(false);
@@ -223,6 +224,23 @@ function Step2() {
     } else {
     }
   }
+
+  useImperativeHandle(ref, () => ({
+
+    saveStep2(){
+      if(value == 1){
+        saveData();
+      }
+      else if(value == 0){
+        savepre();
+      }
+      else {
+        savehyper();
+      }
+    }
+
+  }));
+
 
   const handleChangetabs = (event, newValue) => {
     if (newValue !== 1 && value === 1) {
@@ -2952,6 +2970,6 @@ function Step2() {
       </Snackbar>
     </div>
   );
-}
+})
 
 export default Step2;
