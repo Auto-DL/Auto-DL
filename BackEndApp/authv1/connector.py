@@ -1,4 +1,3 @@
-from asyncio.log import logger
 import logging
 import os
 import ssl
