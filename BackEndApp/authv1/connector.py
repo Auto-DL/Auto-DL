@@ -1,3 +1,5 @@
+from asyncio.log import logger
+import logging
 import os
 import ssl
 import pymongo
@@ -22,7 +24,7 @@ def connect(db_name="auth_db"):
     """
     client = pymongo.MongoClient(os.getenv("MONGODB_URI"), ssl_cert_reqs=ssl.CERT_NONE)
     db = client[db_name]
-    print("MongoDB connected")
+    logging.info("MongoDB connected")
     return db
 
 

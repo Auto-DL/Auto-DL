@@ -1,3 +1,5 @@
+from asyncio.log import logger
+import logging
 from uuid import uuid4 as uid
 import os
 from github import Github
@@ -8,7 +10,7 @@ import base64
 from shutil import copyfile
 
 
-def generate_uid():
+def generate_uid(): 
     id = uid()
     return str(id.hex)
 
@@ -74,7 +76,7 @@ def generate_git_access_token(code):
         oauth = g.get_oauth_application(clientID, secret)
         access_token = oauth.get_access_token(code=code)
         tokenID = access_token.token
-        print("new acess token is", tokenID)
+        logging.info("new acess token is", tokenID)
     except:
         tokenID = None
     return tokenID
@@ -86,7 +88,7 @@ def get_git_username(tokenID):
         user = g.get_user()
         username = user.login
     except Exception as e:
-        print(e)
+        logging.error(e)
         username = None
     return username
 

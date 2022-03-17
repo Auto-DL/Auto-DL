@@ -1,3 +1,4 @@
+import logging
 from django.http import JsonResponse, HttpResponse
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -78,11 +79,11 @@ def generate(request):
     status, error = parser.generate_code(inputs)
 
     if status:
-        print("Error", error)
+        logging.error("Error", error)
         msg = "Could not generate code"
         path = ""
     else:
-        print("File generated")
+        logging.info("File generated")
         msg = "File Generated Successfully"
         path = "file:///" + os.getcwd() + os.sep + "test.py"
         format_code("test.py")
@@ -129,7 +130,7 @@ def compile(request):
         test_model = importlib.import_module(test_path)
 
         status, error = test_model.test_compile_model(inputs)
-        print(status, error)
+        logging.error(status, error)
     except Exception as e:
         status, error = 1, "Compile error"
     return JsonResponse({"status": status, "error": error})
@@ -732,7 +733,7 @@ def get_github_username(request):
     user = user.find()
 
     if user["GitAccessToken"]:
-        print(user["GitAccessToken"])
+        logging.info(user["GitAccessToken"])
         decrypted_token = decrypt(user["GitAccessToken"])
         assert decrypted_token is not None
         git_username = get_git_username(decrypted_token)
@@ -773,7 +774,7 @@ def github_logout(request):
 
         status, success, message = 200, True, "Logged out"
     except Exception as e:
-        print(e)
+        logging.error(e)
         status, success, message = 500, False, "Something went wrong"
     return JsonResponse({"success": success, "message": message}, status=status)
 
@@ -876,7 +877,7 @@ def authorize_github(request):
             "Successfully authorized",
         )
     except Exception as e:
-        print(e)
+        logging.error(e)
         status, success, message = (
             500,
             False,
