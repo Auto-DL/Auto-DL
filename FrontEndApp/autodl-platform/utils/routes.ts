@@ -1,27 +1,27 @@
 // @mui/icons-material
-import AccountTreeRoundedIcon from '@mui/icons-material/AccountTree';
-import BuildIcon from '@mui/icons-material/Build';
+import AccountTreeRoundedIcon from "@mui/icons-material/AccountTree";
+import BuildIcon from "@mui/icons-material/Build";
 import Dashboard from "@mui/icons-material/Dashboard";
-import ExitToAppIcon from '@mui/icons-material/ExitToApp';
-import HistoryOutlinedIcon from '@mui/icons-material/HistoryOutlined';
-import Settings from '@mui/icons-material/Settings';
-import { IoRocketSharp } from 'react-icons/io5';
+import ExitToAppIcon from "@mui/icons-material/ExitToApp";
+import HistoryOutlinedIcon from "@mui/icons-material/HistoryOutlined";
+import Settings from "@mui/icons-material/Settings";
+import { IoRocketSharp } from "react-icons/io5";
 
 export const ProjectRoutes = [
   {
     path: "/",
     name: "Dashboard",
-    icon: Dashboard
+    icon: Dashboard,
   },
   {
     path: "/hub",
     name: "Hub",
-    icon: AccountTreeRoundedIcon
+    icon: AccountTreeRoundedIcon,
   },
   {
     path: "/configurations",
     name: "Configurations",
-    icon: BuildIcon
+    icon: BuildIcon,
   },
   {
     path: "/deployments",

@@ -1,6 +1,6 @@
 import React, { ReactNode } from "react";
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
+import createStyles from "@mui/styles/createStyles";
+import makeStyles from "@mui/styles/makeStyles";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import Container from "@mui/material/Container";
@@ -16,11 +16,11 @@ type Props = {
 const useStyles = makeStyles(() =>
   createStyles({
     root: {
-      margin: 'auto',
-      marginTop: '3rem',
-      minWidth: '100%',
-    }
-  }),
+      margin: "auto",
+      marginTop: "3rem",
+      minWidth: "100%",
+    },
+  })
 );
 
 export default function Main({ children, projectName, activeTab }: Props) {
@@ -30,7 +30,7 @@ export default function Main({ children, projectName, activeTab }: Props) {
       {/* To be configured with Redux - isAuthenticated */}
       <PrimaryAppBar projectName={projectName} isAuthenticated={true} />
       <SideBar activeTab={activeTab} projectName={projectName} />
-      <Container maxWidth='lg'>
+      <Container maxWidth="lg">
         <Toolbar />
         {children}
       </Container>

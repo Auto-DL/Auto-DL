@@ -33,10 +33,8 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
 
-* props
-* Redux
-* Global themes
+- props
+- Redux
+- Global themes
 
-/hub
-/project/hub -> /hub
-/project/hub?projectID=project-132412
+/hub /project/hub -> /hub /project/hub?projectID=project-132412

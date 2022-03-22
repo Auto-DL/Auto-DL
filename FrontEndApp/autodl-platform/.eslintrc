@@ -1,8 +1,8 @@
 {
   "plugins": ["prettier"],
-  "extends": ["next", "next/core-web-vitals", "prettier", "airbnb"],
+  "extends": ["next", "next/core-web-vitals", "prettier"],
   "rules": {
-    "no-console": 1,       // Means warning
+    "no-console": 1, // Means warning
     "prettier/prettier": 2 // Means error
   }
 }

@@ -1,4 +1,4 @@
-import makeStyles from '@mui/styles/makeStyles';
+import makeStyles from "@mui/styles/makeStyles";
 import Grid from "@mui/material/Grid";
 import { GetServerSidePropsContext } from "next";
 
@@ -58,5 +58,5 @@ export const getServerSideProps = async (context: GetServerSidePropsContext) => 
 
   return {
     props: {},
-  }
-}
+  };
+};

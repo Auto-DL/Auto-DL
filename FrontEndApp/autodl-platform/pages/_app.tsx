@@ -1,19 +1,17 @@
-import React from 'react';
-import Head from 'next/head';
-import { AppProps } from 'next/app';
-import { Provider } from 'react-redux';
-import { ThemeProvider, Theme, StyledEngineProvider } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
+import React from "react";
+import Head from "next/head";
+import { AppProps } from "next/app";
+import { Provider } from "react-redux";
+import { ThemeProvider, Theme, StyledEngineProvider } from "@mui/material/styles";
+import CssBaseline from "@mui/material/CssBaseline";
 
-import theme from 'styles/theme';
-import { store } from 'app/store';
+import theme from "styles/theme";
+import { store } from "app/store";
 
-
-declare module '@mui/styles/defaultTheme' {
+declare module "@mui/styles/defaultTheme" {
   // eslint-disable-next-line
   interface DefaultTheme extends Theme {}
 }
-
 
 export default function MyApp(props: AppProps) {
   const { Component, pageProps } = props;
