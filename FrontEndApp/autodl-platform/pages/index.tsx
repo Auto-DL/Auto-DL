@@ -1,7 +1,7 @@
 import { GetServerSidePropsContext } from "next";
 
 export default function Index() {
-  return ("Auto-DL");
+  return "Auto-DL";
 }
 
 export const getServerSideProps = async (context: GetServerSidePropsContext) => {
@@ -24,4 +24,4 @@ export const getServerSideProps = async (context: GetServerSidePropsContext) => 
       permanent: false,
     },
   };
-}
+};

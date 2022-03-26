@@ -5,7 +5,7 @@ export type FormValues = {
   lastName: string;
   email: string;
   otp: string;
-}
+};
 
 export type AuthAPI = {
   // request params
@@ -15,9 +15,9 @@ export type AuthAPI = {
   email?: string;
   first_name?: string;
   last_name?: string;
-  received_otp?: string; 
+  received_otp?: string;
   // response params
   message?: string;
   status?: boolean;
   token?: string;
-}
+};

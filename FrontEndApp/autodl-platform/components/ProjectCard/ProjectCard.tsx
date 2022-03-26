@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import makeStyles from '@mui/styles/makeStyles';
+import makeStyles from "@mui/styles/makeStyles";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
@@ -9,7 +9,7 @@ import Typography from "@mui/material/Typography";
 
 type Props = {
   projectName: string | string[] | undefined;
-}
+};
 
 const useStyles = makeStyles({
   root: {
@@ -29,11 +29,7 @@ export default function ProjectCard({ projectName }: Props) {
   return (
     <Card className={classes.root}>
       <CardContent>
-        <Typography
-          className={classes.title}
-          color="textSecondary"
-          gutterBottom
-        >
+        <Typography className={classes.title} color="textSecondary" gutterBottom>
           Project Name
         </Typography>
         <Typography className={classes.pos} color="textSecondary">

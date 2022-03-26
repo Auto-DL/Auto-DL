@@ -48,6 +48,8 @@
     ]
   },
   "devDependencies": {
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^4.0.0",
     "msw": "^0.33.0",
     "prettier": "2.2.1"
   },

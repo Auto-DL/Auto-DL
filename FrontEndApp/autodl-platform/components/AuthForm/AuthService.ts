@@ -1,5 +1,5 @@
 import axios from "axios";
-import { parseCookies, setCookie, destroyCookie } from 'nookies';
+import { parseCookies, setCookie, destroyCookie } from "nookies";
 
 import { AuthAPI, FormValues } from "./AuthModel";
 
@@ -15,7 +15,7 @@ class AuthService {
       });
 
       if (response.data.token) {
-        setCookie(null, 'token', response.data.token, {
+        setCookie(null, "token", response.data.token, {
           maxAge: 2 * 24 * 60 * 60,
         });
       }
@@ -35,18 +35,15 @@ class AuthService {
 
   async register(data: FormValues): Promise<AuthAPI> {
     try {
-      const response = await axios.post<AuthAPI>(
-        `${BACKEND_API_URL}/auth/register/`,
-        {
-          username: data.username,
-          email: data.email,
-          password: data.password,
-          first_name: data.firstName,
-          last_name: data.lastName,
-        }
-      );
+      const response = await axios.post<AuthAPI>(`${BACKEND_API_URL}/auth/register/`, {
+        username: data.username,
+        email: data.email,
+        password: data.password,
+        first_name: data.firstName,
+        last_name: data.lastName,
+      });
       if (response.data.token) {
-        setCookie(null, 'token', response.data.token, {
+        setCookie(null, "token", response.data.token, {
           maxAge: 2 * 24 * 60 * 60,
         });
       }
@@ -65,14 +62,10 @@ class AuthService {
   }
 
   async verifyEmail(username: string): Promise<AuthAPI> {
-    console.log(username);
     try {
-      const response = await axios.post<AuthAPI>(
-        `${BACKEND_API_URL}/auth/email/verify/`,
-        {
-          username: username,
-        }
-      );
+      const response = await axios.post<AuthAPI>(`${BACKEND_API_URL}/auth/email/verify/`, {
+        username: username,
+      });
       return {
         message: response.data.message,
         status: response.status == 200,
@@ -87,13 +80,10 @@ class AuthService {
 
   async verifyOTP(username: string, otp: string): Promise<AuthAPI> {
     try {
-      const response = await axios.post<AuthAPI>(
-        `${BACKEND_API_URL}/auth/otp/verify/`,
-        {
-          username: username,
-          received_otp: otp
-        }
-      );
+      const response = await axios.post<AuthAPI>(`${BACKEND_API_URL}/auth/otp/verify/`, {
+        username: username,
+        received_otp: otp,
+      });
       return {
         message: response.data.message,
         status: response.status == 200,
@@ -108,12 +98,9 @@ class AuthService {
 
   async forgotPassword(username: string): Promise<AuthAPI> {
     try {
-      const response = await axios.post<AuthAPI>(
-        `${BACKEND_API_URL}/auth/password/forgot/`,
-        {
-          username: username,
-        }
-      );
+      const response = await axios.post<AuthAPI>(`${BACKEND_API_URL}/auth/password/forgot/`, {
+        username: username,
+      });
       return {
         message: response.data.message,
         status: response.status == 200,
@@ -132,12 +119,12 @@ class AuthService {
         `${BACKEND_API_URL}/auth/password/update/`,
         {
           username: username,
-          password: password
+          password: password,
         },
         {
           headers: {
-            Authorization: 'Bearer ' + parseCookies().token
-          }
+            Authorization: "Bearer " + parseCookies().token,
+          },
         }
       );
       return {
@@ -154,7 +141,6 @@ class AuthService {
 
   async logout(username: string): Promise<AuthAPI> {
     try {
-
       const response = await axios.post<AuthAPI>(
         `${BACKEND_API_URL}/auth/logout/`,
         {
@@ -162,8 +148,8 @@ class AuthService {
         },
         {
           headers: {
-            Authorization: 'Bearer ' + parseCookies().token
-          }
+            Authorization: "Bearer " + parseCookies().token,
+          },
         }
       );
 

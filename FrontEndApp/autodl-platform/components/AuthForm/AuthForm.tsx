@@ -19,8 +19,8 @@ import EmailIcon from "@mui/icons-material/Email";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import LockIcon from "@mui/icons-material/Lock";
-import MuiAlert, { AlertProps } from '@mui/material/Alert';
-import makeStyles from '@mui/styles/makeStyles';
+import MuiAlert, { AlertProps } from "@mui/material/Alert";
+import makeStyles from "@mui/styles/makeStyles";
 
 import { FormValues } from "./AuthModel";
 import AuthService from "./AuthService";
@@ -93,7 +93,7 @@ const useStyles = makeStyles({
   },
 });
 
-const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(props, ref,) {
+const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="outlined" {...props} />;
 });
 
@@ -104,11 +104,10 @@ export default function AuthForm() {
 
   const [showPassword, setShowPassword] = React.useState<boolean>(false);
   const [showProgress, setShowProgress] = React.useState<boolean>(false);
-  const [showOtpResendText, setShowOtpResendText] =
-    React.useState<boolean>(false);
-  const [otpResendText, setOtpResendText] = React.useState<
-    "Send OTP?" | "Resend OTP?" | "OTP sent successfully!"
-  >("Send OTP?");
+  const [showOtpResendText, setShowOtpResendText] = React.useState<boolean>(false);
+  const [otpResendText, setOtpResendText] = React.useState<"Send OTP?" | "Resend OTP?" | "OTP sent successfully!">(
+    "Send OTP?"
+  );
   const [openAlert, setOpenAlert] = React.useState<boolean>(false);
   const [alert, setAlert] = React.useState({
     message: "This is alert msg",
@@ -130,13 +129,10 @@ export default function AuthForm() {
   } = useForm<FormValues>();
 
   // Main Auth Steps
-  const [authStep, setAuthStep] = React.useState<
-    "login" | "register" | "forgotPass"
-  >("login");
+  const [authStep, setAuthStep] = React.useState<"login" | "register" | "forgotPass">("login");
 
   // Forgot Pass Steps
-  const [activeForgotPassStep, setActiveForgotPassStep] =
-    React.useState<number>(0);
+  const [activeForgotPassStep, setActiveForgotPassStep] = React.useState<number>(0);
   const forgotPassSteps = ["Receive OTP", "Confirm OTP", "New Password"];
 
   // Register Steps
@@ -159,9 +155,7 @@ export default function AuthForm() {
     setShowPassword((value) => !value);
   };
 
-  const handleMouseDownPassword = (
-    event: React.MouseEvent<HTMLButtonElement>
-  ) => {
+  const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
   };
 
@@ -220,20 +214,18 @@ export default function AuthForm() {
 
   const handleNewPass = (data: FormValues) => {
     setShowProgress(true);
-    AuthService.updatePassword(data.username, data.password).then(
-      (response) => {
-        setAlert({
-          message: response.message ? response.message : "",
-          severity: response.status ? "success" : "error",
-        });
-        setOpenAlert(true);
-        if (response.status) {
-          router.push("/home");
-          resetState();
-        }
-        setShowProgress(false);
+    AuthService.updatePassword(data.username, data.password).then((response) => {
+      setAlert({
+        message: response.message ? response.message : "",
+        severity: response.status ? "success" : "error",
+      });
+      setOpenAlert(true);
+      if (response.status) {
+        router.push("/home");
+        resetState();
       }
-    );
+      setShowProgress(false);
+    });
   };
 
   // Account Register Handlers
@@ -314,18 +306,10 @@ export default function AuthForm() {
   return (
     <Paper elevation={3} className={classes.formRoot}>
       {showProgress && <LinearProgress color="primary" />}
-      <Box
-        component="form"
-        className={classes.formContainer}
-        onSubmit={handleSubmit(handleLogin)}
-      >
+      <Box component="form" className={classes.formContainer} onSubmit={handleSubmit(handleLogin)}>
         {authStep === "login" && (
           <>
-            <Typography
-              variant="h4"
-              component="h2"
-              className={classes.formHeaderText}
-            >
+            <Typography variant="h4" component="h2" className={classes.formHeaderText}>
               Sign In
             </Typography>
 
@@ -374,32 +358,21 @@ export default function AuthForm() {
                       onClick={handleClickShowPassword}
                       onMouseDown={handleMouseDownPassword}
                       edge="end"
-                      size="large">
-                      {showPassword ? (
-                        <VisibilityIcon />
-                      ) : (
-                        <VisibilityOffIcon />
-                      )}
+                      size="large"
+                    >
+                      {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
                     </IconButton>
                   </InputAdornment>
                 ),
               }}
             />
 
-            <Typography
-              className={classes.helperText}
-              onClick={handleAuthForgotPass}
-            >
+            <Typography className={classes.helperText} onClick={handleAuthForgotPass}>
               Forgot your password?
             </Typography>
 
             <div className={classes.actionBtnGrp}>
-              <Button
-                type="submit"
-                color="primary"
-                variant="outlined"
-                className={classes.actionBtnLeft}
-              >
+              <Button type="submit" color="primary" variant="outlined" className={classes.actionBtnLeft}>
                 Log in
               </Button>
               <Button
@@ -416,11 +389,7 @@ export default function AuthForm() {
 
         {authStep === "forgotPass" && (
           <>
-            <Stepper
-              activeStep={activeForgotPassStep}
-              alternativeLabel
-              className={classes.stepper}
-            >
+            <Stepper activeStep={activeForgotPassStep} alternativeLabel className={classes.stepper}>
               {forgotPassSteps.map((label) => (
                 <Step key={label}>
                   <StepLabel>{label}</StepLabel>
@@ -454,8 +423,7 @@ export default function AuthForm() {
                 />
 
                 <Typography className={classes.helperTextAlt}>
-                  You will be receiveing an OTP on your registered Email
-                  Address.
+                  You will be receiveing an OTP on your registered Email Address.
                 </Typography>
 
                 <div className={classes.actionBtnGrp}>
@@ -505,10 +473,7 @@ export default function AuthForm() {
                 />
 
                 {showOtpResendText && (
-                  <Typography
-                    className={classes.helperText}
-                    onClick={handleSubmit(handleSendPasswordOtp)}
-                  >
+                  <Typography className={classes.helperText} onClick={handleSubmit(handleSendPasswordOtp)}>
                     {otpResendText}
                   </Typography>
                 )}
@@ -559,12 +524,9 @@ export default function AuthForm() {
                           onClick={handleClickShowPassword}
                           onMouseDown={handleMouseDownPassword}
                           edge="end"
-                          size="large">
-                          {showPassword ? (
-                            <VisibilityIcon />
-                          ) : (
-                            <VisibilityOffIcon />
-                          )}
+                          size="large"
+                        >
+                          {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
                         </IconButton>
                       </InputAdornment>
                     ),
@@ -588,11 +550,7 @@ export default function AuthForm() {
 
         {authStep === "register" && (
           <>
-            <Stepper
-              activeStep={activeRegisterStep}
-              alternativeLabel
-              className={classes.stepper}
-            >
+            <Stepper activeStep={activeRegisterStep} alternativeLabel className={classes.stepper}>
               {registerSteps.map((label) => (
                 <Step key={label}>
                   <StepLabel>{label}</StepLabel>
@@ -669,10 +627,7 @@ export default function AuthForm() {
 
                 <br />
 
-                <Typography
-                  className={classes.helperText}
-                  onClick={() => setAuthStep("login")}
-                >
+                <Typography className={classes.helperText} onClick={() => setAuthStep("login")}>
                   Already have an account?
                 </Typography>
 
@@ -720,21 +675,13 @@ export default function AuthForm() {
                 <br />
 
                 {showOtpResendText && (
-                  <Typography
-                    className={classes.helperText}
-                    onClick={handleSubmit(handleSendEmailOtp)}
-                  >
+                  <Typography className={classes.helperText} onClick={handleSubmit(handleSendEmailOtp)}>
                     {otpResendText}
                   </Typography>
                 )}
 
                 <div className={classes.actionBtnGrp}>
-                  <Button
-                    variant="outlined"
-                    color="primary"
-                    className={classes.actionBtn}
-                    onClick={handleLater}
-                  >
+                  <Button variant="outlined" color="primary" className={classes.actionBtn} onClick={handleLater}>
                     Later
                   </Button>
                   <Button
@@ -751,12 +698,7 @@ export default function AuthForm() {
           </>
         )}
       </Box>
-      <Snackbar
-        open={openAlert}
-        data-testid={"warning"}
-        autoHideDuration={5000}
-        onClose={handleAlertClose}
-      >
+      <Snackbar open={openAlert} data-testid={"warning"} autoHideDuration={5000} onClose={handleAlertClose}>
         <Alert onClose={handleAlertClose} severity={alert.severity == "success" ? "success" : "error"}>
           {alert.message}
         </Alert>

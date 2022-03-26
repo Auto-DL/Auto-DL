@@ -12,17 +12,17 @@ type Props = {
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      margin: 'auto',
-      marginTop: '3rem',
-      width: '360px',
-      [theme.breakpoints.up('sm')]: {
-        width: '420px',
+      margin: "auto",
+      marginTop: "3rem",
+      width: "360px",
+      [theme.breakpoints.up("sm")]: {
+        width: "420px",
       },
-      [theme.breakpoints.up('md')]: {
-        width: '480px',
+      [theme.breakpoints.up("md")]: {
+        width: "480px",
       },
-    }
-  }),
+    },
+  })
 );
 
 export default function Auth({ children }: Props) {
@@ -31,9 +31,7 @@ export default function Auth({ children }: Props) {
     <Box className={classes.root}>
       {/* To be configured with Redux - isAuthenticated */}
       <PrimaryAppBar isAuthenticated={false} />
-      <Container maxWidth='lg'>
-        {children!}
-      </Container>
+      <Container maxWidth="lg">{children!}</Container>
     </Box>
   );
 }
