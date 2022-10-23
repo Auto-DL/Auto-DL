@@ -49,6 +49,7 @@ def start_payment(request):
 
 
 @api_view(["POST"])
+# @is_authenticated
 def verify_payment(request):
     try:
         res = json.loads(request.data.get("response"))
@@ -65,13 +66,13 @@ def verify_payment(request):
             elif key == "razorpay_signature":
                 raz_signature = res[key]
 
-        orderDetails = RAZORPAY_CLIENT.order.fetch(ord_id)
+            orderDetails = RAZORPAY_CLIENT.order.fetch(ord_id)
 
-        data = {
-            "razorpay_order_id": ord_id,
-            "razorpay_payment_id": raz_pay_id,
-            "razorpay_signature": raz_signature,
-        }
+            data = {
+                "razorpay_order_id": ord_id,
+                "razorpay_payment_id": raz_pay_id,
+                "razorpay_signature": raz_signature,
+            }
 
         check = RAZORPAY_CLIENT.utility.verify_payment_signature(data)
 
