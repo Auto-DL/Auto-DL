@@ -27,7 +27,7 @@ RAZORPAY_CLIENT = razorpay.Client(auth=(RAZORPAY_API_KEY, RAZORPAY_API_SECRET))
 @api_view(["POST"])
 # @is_authenticated
 def start_payment(request):
-
+    
     try:
         payableAmount = request.data.get("amount")
         payment = RAZORPAY_CLIENT.order.create(
@@ -38,10 +38,9 @@ def start_payment(request):
                 "notes": {
                     "username": USER,
                 },
-            }
-        )
+            })
     except PaymentFailed:
-        logger.error(f"Failed to create order of amount {int(payment.amount)}")
+        logger.error(f'Failed to create order of amount {int(payment.amount)}')
         raise
     else:
         logger.info(f"Created order of amount {int(payment.amount)}")
@@ -49,21 +48,22 @@ def start_payment(request):
 
 
 @api_view(["POST"])
+# @is_authenticated
 def verify_payment(request):
     try:
         res = json.loads(request.data.get("response"))
 
-        ord_id = ""
-        raz_pay_id = ""
-        raz_signature = ""
+    ord_id = ""
+    raz_pay_id = ""
+    raz_signature = ""
 
-        for key in res.keys():
-            if key == "razorpay_order_id":
-                ord_id = res[key]
-            elif key == "razorpay_payment_id":
-                raz_pay_id = res[key]
-            elif key == "razorpay_signature":
-                raz_signature = res[key]
+    for key in res.keys():
+        if key == "razorpay_order_id":
+            ord_id = res[key]
+        elif key == "razorpay_payment_id":
+            raz_pay_id = res[key]
+        elif key == "razorpay_signature":
+            raz_signature = res[key]
 
         orderDetails = RAZORPAY_CLIENT.order.fetch(ord_id)
 
@@ -73,10 +73,10 @@ def verify_payment(request):
             "razorpay_signature": raz_signature,
         }
 
-        check = RAZORPAY_CLIENT.utility.verify_payment_signature(data)
+    check = RAZORPAY_CLIENT.utility.verify_payment_signature(data)
 
-        if check is not None:
-            return Response({"error": "Something went wrong"})
+    if check is not None:
+        return Response({"error": "Something went wrong"})
 
         res_data = {
             "message": "payment successfully received!",
